@@ -1,0 +1,13 @@
+language: node_js
+dist: trusty
+node_js:
+  - "10"
+  - "11"
+  - "12"
+
+before_script:
+  - npm install
+
+script:
+  - npm run-script lint
+  - npm run-script test
