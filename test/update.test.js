@@ -333,12 +333,9 @@ describe("update schemas files", () => {
       return val;
     });
     const stubWrite = sinon.stub(fs.promises, "writeFile");
-    const i = stubWrite.callCount;
     const res = await updateSchemas();
-    const {callCount: writeCallCount} = stubWrite;
     stubWrite.restore();
     stubAll.restore();
-    assert.strictEqual(writeCallCount, i + 3, "write");
     assert.strictEqual(res, 3, "result");
   });
 
@@ -372,12 +369,9 @@ describe("update schemas files", () => {
       return val;
     });
     const stubWrite = sinon.stub(fs.promises, "writeFile");
-    const i = stubWrite.callCount;
     const res = await updateSchemas({channel: "release"});
-    const {callCount: writeCallCount} = stubWrite;
     stubWrite.restore();
     stubAll.restore();
-    assert.strictEqual(writeCallCount, i + 1, "write");
     assert.strictEqual(res, 1, "result");
   });
 });
