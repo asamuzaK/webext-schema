@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/asamuzaK/webext-schema.svg?branch=master)](https://travis-ci.org/asamuzaK/webext-schema)
+
 # webext-schema
 
 WebExtensions schemas fetched from hg.mozilla.org
