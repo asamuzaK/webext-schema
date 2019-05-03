@@ -1,0 +1,30 @@
+{
+  "name": "webext-schema",
+  "description": "WebExtensions schemas fetched from hg.mozilla.org",
+  "author": "asamuzaK",
+  "license": "MPL-2.0",
+  "main": "index.js",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "start": "node ./index.js",
+    "test": "nyc --reporter=text mocha test/*.test.js --exit",
+    "update": "node index update"
+  },
+  "dependencies": {
+    "commander": "^2.20.0",
+    "decamelize": "^3.2.0",
+    "json5": "^2.1.0",
+    "node-fetch": "^2.4.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.0.0",
+    "sinon": "^7.3.2"
+  },
+  "version": "0.0.1"
+}
