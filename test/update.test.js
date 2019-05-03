@@ -327,16 +327,27 @@ describe("update schemas files", () => {
             ],
           ];
           break;
-        default:
-          val = arr.length;
+        default: {
+          val = [];
+          for (const i of arr) {
+            const j = await i;
+            val.push(j);
+          }
+        }
       }
       return val;
     });
     const stubWrite = sinon.stub(fs.promises, "writeFile");
+    const releasePath =
+      path.join(process.cwd(), "schemas", "release", "all.json");
+    const betaPath =
+      path.join(process.cwd(), "schemas", "beta", "all.json");
+    const centralPath =
+      path.join(process.cwd(), "schemas", "central", "all.json");
     const res = await updateSchemas();
     stubWrite.restore();
     stubAll.restore();
-    assert.strictEqual(res, 3, "result");
+    assert.deepEqual(res, [releasePath, betaPath, centralPath], "result");
   });
 
   it("should get result", async () => {
@@ -363,15 +374,22 @@ describe("update schemas files", () => {
             ],
           ];
           break;
-        default:
-          val = arr.length;
+        default: {
+          val = [];
+          for (const i of arr) {
+            const j = await i;
+            val.push(j);
+          }
+        }
       }
       return val;
     });
     const stubWrite = sinon.stub(fs.promises, "writeFile");
+    const releasePath =
+      path.join(process.cwd(), "schemas", "release", "all.json");
     const res = await updateSchemas({channel: "release"});
     stubWrite.restore();
     stubAll.restore();
-    assert.strictEqual(res, 1, "result");
+    assert.deepEqual(res, [releasePath], "result");
   });
 });
