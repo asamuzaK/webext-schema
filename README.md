@@ -78,6 +78,6 @@ Note that the key of the object is the file name and the value is the scheme.
 ```
 const schema = new Schema();
 schema.getAll().then(res => {
-  console.log(res); // {"alarms.json": [...], "bookmarks.json": [...], ...}
+  console.log(res); // {"alarms.json": [{...}], "bookmarks.json": [{...}], ...}
 });
 ```
