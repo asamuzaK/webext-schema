@@ -1,4 +1,4 @@
-/* eslint-disable no-magic-numbers */
+/* eslint-disable no-magic-numbers, no-await-in-loop */
 "use strict";
 const {
   createUnifiedSchema, fetchText, getAllSchemaData, getChannelUrl, getFileList,
@@ -294,8 +294,8 @@ describe("save schema file", () => {
     const {callCount: writeCallCount} = stubWrite;
     const {callCount: infoCallCount} = stubInfo;
     stubInfo.restore();
-    stubAll.restore();
     stubWrite.restore();
+    stubAll.restore();
     assert.strictEqual(writeCallCount, i + 1, "write");
     assert.strictEqual(infoCallCount, j + 1, "info");
     assert.strictEqual(res, filePath, "result");
@@ -338,6 +338,7 @@ describe("update schemas files", () => {
       return val;
     });
     const stubWrite = sinon.stub(fs.promises, "writeFile");
+    const writeCount = stubWrite.callCount;
     const releasePath =
       path.join(process.cwd(), "schemas", "release", "all.json");
     const betaPath =
@@ -345,8 +346,10 @@ describe("update schemas files", () => {
     const centralPath =
       path.join(process.cwd(), "schemas", "central", "all.json");
     const res = await updateSchemas();
+    const {callCount: writeCallCount} = stubWrite;
     stubWrite.restore();
     stubAll.restore();
+    assert.strictEqual(writeCallCount, writeCount + 3, "write");
     assert.deepEqual(res, [releasePath, betaPath, centralPath], "result");
   });
 
@@ -385,11 +388,14 @@ describe("update schemas files", () => {
       return val;
     });
     const stubWrite = sinon.stub(fs.promises, "writeFile");
+    const writeCount = stubWrite.callCount;
     const releasePath =
       path.join(process.cwd(), "schemas", "release", "all.json");
     const res = await updateSchemas({channel: "release"});
+    const {callCount: writeCallCount} = stubWrite;
     stubWrite.restore();
     stubAll.restore();
+    assert.strictEqual(writeCallCount, writeCount + 1, "write");
     assert.deepEqual(res, [releasePath], "result");
   });
 });
