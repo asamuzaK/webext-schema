@@ -2,11 +2,17 @@
   "name": "webext-schema",
   "description": "WebExtensions schemas fetched from hg.mozilla.org",
   "author": "asamuzaK",
+  "homepage": "https://github.com/asamuzaK/webext-schema",
+  "bugs": "https://github.com/asamuzaK/webext-schema/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asamuzaK/webext-schema.git"
+  },
   "license": "MPL-2.0",
-  "main": "index.js",
   "engines": {
     "node": ">=10.0.0"
   },
+  "main": "index.js",
   "scripts": {
     "lint": "eslint .",
     "start": "node ./index.js",
