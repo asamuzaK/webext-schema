@@ -39,7 +39,8 @@ schema.channel = "beta";
 
 ### schema.list()
 
-Async function to get the list of schema files in an array.
+Async function to get the list of schema files.
+Returns an array.
 
 ```
 const schema = new Schema();
@@ -52,6 +53,7 @@ schema.list().then(res => {
 
 Async function to get the schema for a specific API.
 Argument can be either a file name or an API name.
+Returns an array.
 
 ```
 const schema = new Schema();
@@ -70,6 +72,7 @@ schema.get("browserAction").then(res => {
 ### schema.getAll()
 
 Async function to get all schemas as a single object.
+Returns an object.
 Note that the key of the object is the file name and the value is the scheme.
 
 ```
