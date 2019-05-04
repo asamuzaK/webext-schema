@@ -71,11 +71,23 @@ schema.get("browserAction").then(res => {
 });
 ```
 
-### schema.getAll()
+### schema.getAll(<var>opt</opt>)
+
+* @param {Object} [opt] - options
+* @param {string} [opt.module] - module name
 
 Async function to get all schemas as a single object.
-Returns an object.
-Note that the key of the object is the file name and the value is the scheme.
+
+If option with module name is given, returns formatted schema for that module.
+
+```
+const schema = new Schema();
+schema.getAll({module: "sinon-chrome"}).then(res => {
+  console.log(res); // [{namespace: "alarms", functions: [{...}], ...}];
+```
+
+If no arguments given, returns an object containing all schemas.
+Note that the key of the object is the file name and the value is the schema.
 
 ```
 const schema = new Schema();
