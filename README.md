@@ -86,7 +86,7 @@ schema.list().then(res => {
 });
 ```
 
-### modulate(<var>opt</var>)
+### schema.modulate(<var>opt</var>)
 
 Async function to get the modulated schema for the specific application.
 Returns Object, Array or any.
