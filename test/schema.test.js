@@ -1,3 +1,4 @@
+/* eslint-disable max-nested-callbacks */
 "use strict";
 /* api */
 const {Schema} = require("../modules/schema");
@@ -264,6 +265,8 @@ describe("application support", () => {
                         "storage.onChanged.addListener");
       assert.isObject(tabs, "tabs");
       assert.isFunction(tabs.get, "tabs.get");
+      assert.isObject(theme, "theme");
+      assert.isFunction(theme.getCurrent, "theme.getCurrent");
       assert.isObject(windows, "windows");
       assert.isFunction(windows.get, "windows.get");
       assert.isArray(res, "result");
