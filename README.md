@@ -32,31 +32,45 @@ If you want to specify a particular channel, pass it as an argument when creatin
 const schema = new Schema("beta");
 ```
 
-Or set it afterwards.
+Or you can set it afterwards.
 
 ```
 const schema = new Schema();
 schema.channel = "beta";
 ```
 
-### schema.get(<var>file</var>)
+### schema.arrange(<var>opt</var>)
 
-* @param {string} file - file name
+Async function to get the arranged schema for the specific application.
+
+* @param {Object} opt - options
+* @param {string} opt.name - application name
+
+```
+const schema = new Schema();
+schema.getAll({name: "sinon-chrome"}).then(res => {
+  console.log(res); // [{namespace: "alarms", functions: [{...}], ...}];
+});
+```
+
+### schema.get(<var>name</var>)
+
+* @param {string} name - API name or file name
 
 Async function to get the schema for a specific API.
-Argument can be either a file name or an API name.
+Argument can be either an API name or a file name.
 Returns an array.
 
 ```
 const schema = new Schema();
-schema.get("browser_action.json").then(res => {
+schema.get("browserAction").then(res => {
   console.log(res); // [{namespace: "browserAction", events: [...], ...}]
 });
 ```
 
 ```
 const schema = new Schema();
-schema.get("browserAction").then(res => {
+schema.get("browser_action.json").then(res => {
   console.log(res); // [{namespace: "browserAction", events: [...], ...}]
 });
 ```
@@ -83,20 +97,5 @@ Returns an array.
 const schema = new Schema();
 schema.list().then(res => {
   console.log(res); // ["alarms.json", "bookmarks.json", ...]
-});
-```
-
-### schema.modulate(<var>opt</var>)
-
-Async function to get the modulated schema for the specific application.
-Returns Object, Array or any.
-
-* @param {Object} opt - options
-* @param {string} opt.name - application name
-
-```
-const schema = new Schema();
-schema.getAll({name: "sinon-chrome"}).then(res => {
-  console.log(res); // [{namespace: "alarms", functions: [{...}], ...}];
 });
 ```

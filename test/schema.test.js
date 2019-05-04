@@ -183,13 +183,13 @@ describe("Schema", () => {
 
   it("should get null", async () => {
     const schema = new Schema();
-    const res = await schema.modulate();
+    const res = await schema.arrange();
     assert.isNull(res, "result");
   });
 
   it("should get array", async () => {
     const schema = new Schema();
-    const res = await schema.modulate({name: "sinon-chrome"});
+    const res = await schema.arrange({name: "sinon-chrome"});
     assert.isArray(res, "result");
   });
 });
@@ -198,11 +198,11 @@ describe("application support", () => {
   describe("sinon-chrome", () => {
     it("should get stubbed functions", async () => {
       const schema = new Schema();
-      const res = await schema.modulate({name: "sinon-chrome"});
+      const res = await schema.arrange({name: "sinon-chrome"});
       const browser = new Api(res).create();
       const {
         browserAction, contextMenus, menus, devtools: {inspectedWindow},
-        storage,
+        storage, runtime,
       } = browser;
       assert.isObject(browserAction, "browserAction");
       assert.isFunction(browserAction.setTitle, "browserAction.setTitle");
@@ -218,6 +218,8 @@ describe("application support", () => {
       assert.isFunction(storage.local.get, "storage.local.get");
       assert.isObject(storage.onChanged, "storage.onChanged");
       assert.isFunction(storage.onChanged.addListener, "addListener");
+      assert.isObject(runtime, "runtime");
+      assert.isFunction(runtime.connect, "runtime.connect");
       assert.isArray(res, "result");
     });
   });

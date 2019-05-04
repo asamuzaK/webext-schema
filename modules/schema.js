@@ -50,17 +50,73 @@ class Schema {
   }
 
   /**
+   * arrange schema to fit specific application
+   * @param {Object} opt - options
+   * @param {string} opt.name - app name
+   * @returns {*} - arranged schema
+   */
+  async arrange(opt = {}) {
+    const {name} = opt;
+    const schemas = await this._parseContent();
+    let schema;
+    if (name === "sinon-chrome") {
+      const items = Object.entries(schemas);
+      const menusChild = await this.get("menus_child.json");
+      const arr = [];
+      for (const [key, item] of items) {
+        const subItems = Object.values(item);
+        for (const subItem of subItems) {
+          const schemaItems = Object.entries(subItem);
+          for (const [schemaKey, schemaKeyValue] of schemaItems) {
+            if (schemaKey === "namespace") {
+              const camelizedKey = camelize(key.replace(/\.json$/, ""));
+              const camelizedSchemaKey = camelize(schemaKeyValue);
+              if (camelizedKey === camelizedSchemaKey ||
+                  camelizedSchemaKey.startsWith(camelizedKey) ||
+                  camelizedKey.startsWith(camelizedSchemaKey)) {
+                arr.push(subItem);
+              }
+            }
+          }
+        }
+      }
+      schema = [];
+      for (const item of arr) {
+        const {events, functions, namespace, types} = item;
+        if (events || functions) {
+          if (namespace === "menus") {
+            if (types) {
+              const [{functions: menusChildFunctions}] = menusChild;
+              const contextMenus = Object.assign({}, item);
+              contextMenus.namespace = "contextMenus";
+              contextMenus.permissions = "contextMenus";
+              for (const func of menusChildFunctions) {
+                functions.push(func);
+              }
+              schema.push(contextMenus);
+              schema.push(item);
+            }
+          } else {
+            schema.push(item);
+          }
+        }
+      }
+    }
+    return schema || null;
+  }
+
+  /**
    * get schema
-   * @param {string} file - file name
+   * @param {string} name - API name or file name
    * @returns {Object} - schema
    */
-  async get(file) {
-    if (!isString(file)) {
-      throw new TypeError(`Expected String but got ${getType(file)}.`);
+  async get(name) {
+    if (!isString(name)) {
+      throw new TypeError(`Expected String but got ${getType(name)}.`);
     }
     const schemas = await this._parseContent();
     const items = Object.entries(schemas);
-    const label = decamelize(file.replace(/\.json$/, ""));
+    const label = decamelize(name.replace(/\.json$/, ""));
     let schema;
     for (const [key, value] of items) {
       if (decamelize(key.replace(/.json$/, "")) === label) {
@@ -92,62 +148,6 @@ class Schema {
       arr.push(item);
     }
     return arr.sort();
-  }
-
-  /**
-   * modulate schema to fit specific application
-   * @param {Object} opt - options
-   * @param {string} opt.name - app name
-   * @returns {*} - modulated schema
-   */
-  async modulate(opt = {}) {
-    const {name} = opt;
-    const schemas = await this._parseContent();
-    let schema;
-    if (name === "sinon-chrome") {
-      const items = Object.entries(schemas);
-      const menusChild = await this.get("menus_child.json");
-      const arr = [];
-      for (const [key, item] of items) {
-        const subItems = Object.values(item);
-        for (const subItem of subItems) {
-          const schemaItems = Object.entries(subItem);
-          for (const [schemaKey, schemaKeyValue] of schemaItems) {
-            if (schemaKey === "namespace") {
-              const camelizedKey = camelize(key.replace(/\.json$/, ""));
-              const camelizedSchemaKey = camelize(schemaKeyValue);
-              if (camelizedKey === camelizedSchemaKey ||
-                  camelizedSchemaKey.startsWith(camelizedKey) ||
-                  camelizedKey.startsWith(camelizedSchemaKey)) {
-                arr.push(subItem);
-              }
-            }
-          }
-        }
-      }
-      schema = [];
-      for (const item of arr) {
-        const {events, functions, namespace, types} = item;
-        if (functions || events) {
-          if (namespace === "menus") {
-            if (types) {
-              const [{functions: menusChildFunctions}] = menusChild;
-              const contextMenus = Object.assign({}, item);
-              contextMenus.namespace = "contextMenus";
-              contextMenus.permissions = "contextMenus";
-              for (const func of menusChildFunctions) {
-                functions.push(func);
-              }
-              schema.push(contextMenus);
-              schema.push(item);
-            }
-          } else {
-            schema.push(item);
-          }
-        }
-      }
-    }
-    return schema || null;
   }
 }
 
