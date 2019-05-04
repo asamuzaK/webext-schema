@@ -39,19 +39,9 @@ const schema = new Schema();
 schema.channel = "beta";
 ```
 
-### schema.list()
-
-Async function to get the list of schema files.
-Returns an array.
-
-```
-const schema = new Schema();
-schema.list().then(res => {
-  console.log(res); // ["alarms.json", "bookmarks.json", ...]
-});
-```
-
 ### schema.get(<var>file</var>)
+
+* @param {string} file - file name
 
 Async function to get the schema for a specific API.
 Argument can be either a file name or an API name.
@@ -71,28 +61,42 @@ schema.get("browserAction").then(res => {
 });
 ```
 
-### schema.getAll(<var>opt</opt>)
-
-* @param {Object} [opt] - options
-* @param {string} [opt.module] - module name
+### schema.getAll()
 
 Async function to get all schemas as a single object.
-
-If option with module name is given, returns formatted schema for that module.
-
-```
-const schema = new Schema();
-schema.getAll({module: "sinon-chrome"}).then(res => {
-  console.log(res); // [{namespace: "alarms", functions: [{...}], ...}];
-});
-```
-
-If no arguments given, returns an object containing all schemas.
+Returns an object containing all schemas.
 Note that the key of the object is the file name and the value is the schema.
 
 ```
 const schema = new Schema();
 schema.getAll().then(res => {
   console.log(res); // {"alarms.json": [{...}], "bookmarks.json": [{...}], ...}
+});
+```
+
+### schema.list()
+
+Async function to get the list of schema files.
+Returns an array.
+
+```
+const schema = new Schema();
+schema.list().then(res => {
+  console.log(res); // ["alarms.json", "bookmarks.json", ...]
+});
+```
+
+### modulate(<var>opt</var>)
+
+Async function to get the modulated schema for the specific application.
+Returns Object, Array or any.
+
+* @param {Object} opt - options
+* @param {string} opt.name - application name
+
+```
+const schema = new Schema();
+schema.getAll({name: "sinon-chrome"}).then(res => {
+  console.log(res); // [{namespace: "alarms", functions: [{...}], ...}];
 });
 ```

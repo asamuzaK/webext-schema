@@ -65,7 +65,7 @@ describe("Schema", () => {
 
   it("should get object", async () => {
     const schema = new Schema();
-    const res = await schema._getSchema();
+    const res = await schema._parseContent();
     assert.isObject(res, "result");
     const keys = Object.keys(res);
     for (const key of keys) {
@@ -75,7 +75,7 @@ describe("Schema", () => {
 
   it("should get object", async () => {
     const schema = new Schema("release");
-    const res = await schema._getSchema();
+    const res = await schema._parseContent();
     assert.isObject(res, "result");
     const keys = Object.keys(res);
     for (const key of keys) {
@@ -85,7 +85,7 @@ describe("Schema", () => {
 
   it("should get object", async () => {
     const schema = new Schema("beta");
-    const res = await schema._getSchema();
+    const res = await schema._parseContent();
     assert.isObject(res, "result");
     const keys = Object.keys(res);
     for (const key of keys) {
@@ -95,7 +95,7 @@ describe("Schema", () => {
 
   it("should get object", async () => {
     const schema = new Schema("central");
-    const res = await schema._getSchema();
+    const res = await schema._parseContent();
     assert.isObject(res, "result");
     const keys = Object.keys(res);
     for (const key of keys) {
@@ -181,21 +181,28 @@ describe("Schema", () => {
     }
   });
 
+  it("should get null", async () => {
+    const schema = new Schema();
+    const res = await schema.modulate();
+    assert.isNull(res, "result");
+  });
+
   it("should get array", async () => {
     const schema = new Schema();
-    const res = await schema.getAll({module: "sinon-chrome"});
+    const res = await schema.modulate({name: "sinon-chrome"});
     assert.isArray(res, "result");
   });
 });
 
-describe("modules support", () => {
+describe("application support", () => {
   describe("sinon-chrome", () => {
     it("should get stubbed functions", async () => {
       const schema = new Schema();
-      const res = await schema.getAll({module: "sinon-chrome"});
+      const res = await schema.modulate({name: "sinon-chrome"});
       const browser = new Api(res).create();
       const {
         browserAction, contextMenus, menus, devtools: {inspectedWindow},
+        storage,
       } = browser;
       assert.isObject(browserAction, "browserAction");
       assert.isFunction(browserAction.setTitle, "browserAction.setTitle");
@@ -206,6 +213,11 @@ describe("modules support", () => {
       assert.isFunction(menus.getTargetElement, "menus.getTargetElement");
       assert.isObject(inspectedWindow, "inspectedWindow");
       assert.isFunction(inspectedWindow.reload, "inspectedWindow.reload");
+      assert.isObject(storage, "storage");
+      assert.isObject(storage.local, "storage.local");
+      assert.isFunction(storage.local.get, "storage.local.get");
+      assert.isObject(storage.onChanged, "storage.onChanged");
+      assert.isFunction(storage.onChanged.addListener, "addListener");
       assert.isArray(res, "result");
     });
   });

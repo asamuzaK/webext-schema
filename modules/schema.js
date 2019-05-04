@@ -34,10 +34,10 @@ class Schema {
   }
 
   /**
-   * get schema
+   * parse content
    * @returns {Object} - schema
    */
-  async _getSchema() {
+  async _parseContent() {
     const file = path.resolve(
       path.join(__dirname, "../", "schemas", this._channel, "all.json")
     );
@@ -50,20 +50,6 @@ class Schema {
   }
 
   /**
-   * list schemas
-   * @returns {Array} - file list
-   */
-  async list() {
-    const schema = await this._getSchema();
-    const items = Object.keys(schema);
-    const arr = [];
-    for (const item of items) {
-      arr.push(item);
-    }
-    return arr.sort();
-  }
-
-  /**
    * get schema
    * @param {string} file - file name
    * @returns {Object} - schema
@@ -72,31 +58,54 @@ class Schema {
     if (!isString(file)) {
       throw new TypeError(`Expected String but got ${getType(file)}.`);
     }
-    const schema = await this._getSchema();
-    const items = Object.entries(schema);
+    const schemas = await this._parseContent();
+    const items = Object.entries(schemas);
     const label = decamelize(file.replace(/\.json$/, ""));
-    let res;
+    let schema;
     for (const [key, value] of items) {
       if (decamelize(key.replace(/.json$/, "")) === label) {
-        res = value;
+        schema = value;
         break;
       }
     }
-    return res || null;
+    return schema || null;
   }
 
   /**
    * get all schemas
-   * @param {Object} [opt] - options
-   * @param {string} [opt.module] - formats schema to fit the specified module
    * @returns {Object} - schemas
    */
-  async getAll(opt = {}) {
-    const {module} = opt;
-    const schema = await this._getSchema();
-    let allSchema;
-    if (module === "sinon-chrome") {
-      const items = Object.entries(schema);
+  async getAll() {
+    const schemas = await this._parseContent();
+    return schemas;
+  }
+
+  /**
+   * list schemas
+   * @returns {Array} - file list
+   */
+  async list() {
+    const schemas = await this._parseContent();
+    const items = Object.keys(schemas);
+    const arr = [];
+    for (const item of items) {
+      arr.push(item);
+    }
+    return arr.sort();
+  }
+
+  /**
+   * modulate schema to fit specific application
+   * @param {Object} opt - options
+   * @param {string} opt.name - app name
+   * @returns {*} - modulated schema
+   */
+  async modulate(opt = {}) {
+    const {name} = opt;
+    const schemas = await this._parseContent();
+    let schema;
+    if (name === "sinon-chrome") {
+      const items = Object.entries(schemas);
       const menusChild = await this.get("menus_child.json");
       const arr = [];
       for (const [key, item] of items) {
@@ -116,31 +125,29 @@ class Schema {
           }
         }
       }
-      allSchema = [];
+      schema = [];
       for (const item of arr) {
-        const {functions, namespace, types} = item;
-        if (functions) {
+        const {events, functions, namespace, types} = item;
+        if (functions || events) {
           if (namespace === "menus") {
             if (types) {
               const [{functions: menusChildFunctions}] = menusChild;
               const contextMenus = Object.assign({}, item);
               contextMenus.namespace = "contextMenus";
               contextMenus.permissions = "contextMenus";
-              allSchema.push(contextMenus);
               for (const func of menusChildFunctions) {
                 functions.push(func);
               }
-              allSchema.push(item);
+              schema.push(contextMenus);
+              schema.push(item);
             }
           } else {
-            allSchema.push(item);
+            schema.push(item);
           }
         }
       }
-    } else {
-      allSchema = schema;
     }
-    return allSchema;
+    return schema || null;
   }
 }
 
