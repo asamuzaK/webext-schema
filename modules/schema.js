@@ -57,6 +57,9 @@ class Schema {
    */
   async arrange(opt = {}) {
     const {name} = opt;
+    if (!isString(name)) {
+      throw new TypeError(`Expected String but got ${getType(name)}.`);
+    }
     const schemas = await this._parseContent();
     let schema;
     if (name === "sinon-chrome") {

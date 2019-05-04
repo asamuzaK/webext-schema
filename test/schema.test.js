@@ -181,9 +181,17 @@ describe("Schema", () => {
     }
   });
 
+  it("should throw", async () => {
+    const schema = new Schema();
+    await schema.arrange().catch(e => {
+      assert.instanceOf(e, TypeError, "error");
+      assert.strictEqual(e.message, "Expected String but got Undefined.");
+    });
+  });
+
   it("should get null", async () => {
     const schema = new Schema();
-    const res = await schema.arrange();
+    const res = await schema.arrange({name: "foo"});
     assert.isNull(res, "result");
   });
 
