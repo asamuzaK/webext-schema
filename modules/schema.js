@@ -97,7 +97,8 @@ class Schema {
     let allSchema;
     if (module === "sinon-chrome") {
       const items = Object.entries(schema);
-      allSchema = [];
+      const menusChild = await this.get("menus_child.json");
+      const arr = [];
       for (const [key, item] of items) {
         const subItems = Object.values(item);
         for (const subItem of subItems) {
@@ -108,12 +109,31 @@ class Schema {
               const camelizedSchemaKey = camelize(schemaKeyValue);
               if (camelizedKey === camelizedSchemaKey ||
                   camelizedSchemaKey.startsWith(camelizedKey) ||
-                  camelizedKey.startsWith(camelizedSchemaKey) ||
-                  camelizedSchemaKey === "contextMenus") {
-                allSchema.push(subItem);
+                  camelizedKey.startsWith(camelizedSchemaKey)) {
+                arr.push(subItem);
               }
-              break;
             }
+          }
+        }
+      }
+      allSchema = [];
+      for (const item of arr) {
+        const {functions, namespace, types} = item;
+        if (functions) {
+          if (namespace === "menus") {
+            if (types) {
+              const [{functions: menusChildFunctions}] = menusChild;
+              const contextMenus = Object.assign({}, item);
+              contextMenus.namespace = "contextMenus";
+              contextMenus.permissions = "contextMenus";
+              allSchema.push(contextMenus);
+              for (const func of menusChildFunctions) {
+                functions.push(func);
+              }
+              allSchema.push(item);
+            }
+          } else {
+            allSchema.push(item);
           }
         }
       }

@@ -3,6 +3,7 @@
 const {
   Schema,
 } = require("../modules/schema");
+const Api = require("sinon-chrome/api");
 const {assert} = require("chai");
 const {describe, it} = require("mocha");
 
@@ -184,5 +185,28 @@ describe("Schema", () => {
     const schema = new Schema();
     const res = await schema.getAll({module: "sinon-chrome"});
     assert.isArray(res, "result");
+  });
+});
+
+describe("modules support", () => {
+  describe("sinon-chrome", () => {
+    it("should get stubbed functions", async () => {
+      const schema = new Schema();
+      const res = await schema.getAll({module: "sinon-chrome"});
+      const browser = new Api(res).create();
+      const {
+        browserAction, contextMenus, menus, devtools: {inspectedWindow},
+      } = browser;
+      assert.isObject(browserAction, "browserAction");
+      assert.isFunction(browserAction.setTitle, "browserAction.setTitle");
+      assert.isObject(contextMenus, "contextMenus");
+      assert.isFunction(contextMenus.create, "contextMenus.create");
+      assert.isObject(menus, "menus");
+      assert.isFunction(menus.create, "menus.create");
+      assert.isFunction(menus.getTargetElement, "menus.getTargetElement");
+      assert.isObject(inspectedWindow, "inspectedWindow");
+      assert.isFunction(inspectedWindow.reload, "inspectedWindow.reload");
+      assert.isArray(res, "result");
+    });
   });
 });
