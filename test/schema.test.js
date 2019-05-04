@@ -201,25 +201,51 @@ describe("application support", () => {
       const res = await schema.arrange({name: "sinon-chrome"});
       const browser = new Api(res).create();
       const {
-        browserAction, contextMenus, menus, devtools: {inspectedWindow},
-        storage, runtime,
+        bookmarks, browserAction, commands, contextMenus, contextualIdentities,
+        devtools: {inspectedWindow}, i18n, management, menus, notifications,
+        permissions, runtime, sessions, storage, tabs, theme, windows,
       } = browser;
+      assert.isObject(bookmarks, "bookmarks");
+      assert.isFunction(bookmarks.create, "bookmarks.create");
       assert.isObject(browserAction, "browserAction");
       assert.isFunction(browserAction.setTitle, "browserAction.setTitle");
+      assert.isObject(commands, "commands");
+      assert.isFunction(commands.update, "commands.update");
       assert.isObject(contextMenus, "contextMenus");
       assert.isFunction(contextMenus.create, "contextMenus.create");
+      assert.isObject(contextualIdentities, "contextualIdentities");
+      assert.isFunction(contextualIdentities.get, "contextualIdentities.get");
+      assert.isObject(inspectedWindow, "inspectedWindow");
+      assert.isFunction(inspectedWindow.reload, "inspectedWindow.reload");
+      assert.isObject(i18n, "i18n");
+      assert.isFunction(i18n.getMessage, "i18n.getMessage");
+      assert.isObject(management, "management");
+      assert.isFunction(management.get, "management.get");
       assert.isObject(menus, "menus");
       assert.isFunction(menus.create, "menus.create");
       assert.isFunction(menus.getTargetElement, "menus.getTargetElement");
-      assert.isObject(inspectedWindow, "inspectedWindow");
-      assert.isFunction(inspectedWindow.reload, "inspectedWindow.reload");
+      assert.isObject(notifications, "notifications");
+      assert.isFunction(notifications.create, "notifications.create");
+      assert.isObject(notifications.onClosed, "notifications.onClosed");
+      assert.isFunction(notifications.onClosed.addListener,
+                        "notifications.onClosed.addListener");
+      assert.isObject(permissions, "permissions");
+      assert.isFunction(permissions.request, "permissions.request");
+      assert.isObject(runtime, "runtime");
+      assert.isFunction(runtime.connect, "runtime.connect");
+      assert.isObject(sessions, "sessions");
+      assert.isFunction(sessions.getRecentlyClosed,
+                        "sessions.getRecentlyClosed");
       assert.isObject(storage, "storage");
       assert.isObject(storage.local, "storage.local");
       assert.isFunction(storage.local.get, "storage.local.get");
       assert.isObject(storage.onChanged, "storage.onChanged");
-      assert.isFunction(storage.onChanged.addListener, "addListener");
-      assert.isObject(runtime, "runtime");
-      assert.isFunction(runtime.connect, "runtime.connect");
+      assert.isFunction(storage.onChanged.addListener,
+                        "storage.onChanged.addListener");
+      assert.isObject(tabs, "tabs");
+      assert.isFunction(tabs.get, "tabs.get");
+      assert.isObject(windows, "windows");
+      assert.isFunction(windows.get, "windows.get");
       assert.isArray(res, "result");
     });
   });
