@@ -84,6 +84,7 @@ If option with module name is given, returns formatted schema for that module.
 const schema = new Schema();
 schema.getAll({module: "sinon-chrome"}).then(res => {
   console.log(res); // [{namespace: "alarms", functions: [{...}], ...}];
+});
 ```
 
 If no arguments given, returns an object containing all schemas.
