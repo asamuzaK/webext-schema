@@ -26,7 +26,7 @@ const schema = new Schema();
 Schemas for "release", "beta", "central" are available.
 Release channel defaults to "release".
 
-If you want to specify a particular channel, pass it as an argument when creating the instance.
+If you want to specify a particular channel, pass one of the three channels as an argument when creating the instance.
 
 ```
 const schema = new Schema("beta");
@@ -41,10 +41,10 @@ schema.channel = "beta";
 
 ### schema.arrange(<var>opt</var>)
 
-Async function to get the arranged schema for the specific application.
-
 * @param {Object} opt - options
 * @param {string} opt.name - application name
+
+Async function to get the arranged schema for the specific application.
 
 ```
 const schema = new Schema();
