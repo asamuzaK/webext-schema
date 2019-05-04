@@ -24,13 +24,13 @@
     "commander": "^2.20.0",
     "decamelize": "^3.2.0",
     "json5": "^2.1.0",
-    "node-fetch": "^2.4.1"
+    "node-fetch": "^2.5.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
     "mocha": "^6.1.4",
-    "nyc": "^14.0.0",
+    "nyc": "^14.1.0",
     "sinon": "^7.3.2",
     "sinon-chrome": "^3.0.1"
   },
