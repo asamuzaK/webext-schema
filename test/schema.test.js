@@ -179,4 +179,10 @@ describe("Schema", () => {
       assert.isTrue(key.endsWith(".json"), "key");
     }
   });
+
+  it("should get array", async () => {
+    const schema = new Schema();
+    const res = await schema.getAll({module: "sinon-chrome"});
+    assert.isArray(res, "result");
+  });
 });

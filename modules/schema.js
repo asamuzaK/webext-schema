@@ -5,6 +5,7 @@
 /* api */
 const {getType, isString} = require("./common");
 const {readFile} = require("./file-util");
+const camelize = require("camelize");
 const decamelize = require("decamelize");
 const path = require("path");
 
@@ -86,11 +87,40 @@ class Schema {
 
   /**
    * get all schemas
+   * @param {Object} [opt] - options
+   * @param {string} [opt.module] - formats schema to fit the specified module
    * @returns {Object} - schemas
    */
-  async getAll() {
+  async getAll(opt = {}) {
+    const {module} = opt;
     const schema = await this._getSchema();
-    return schema;
+    let allSchema;
+    if (module === "sinon-chrome") {
+      const items = Object.entries(schema);
+      allSchema = [];
+      for (const [key, item] of items) {
+        const subItems = Object.values(item);
+        for (const subItem of subItems) {
+          const schemaItems = Object.entries(subItem);
+          for (const [schemaKey, schemaKeyValue] of schemaItems) {
+            if (schemaKey === "namespace") {
+              const camelizedKey = camelize(key.replace(/\.json$/, ""));
+              const camelizedSchemaKey = camelize(schemaKeyValue);
+              if (camelizedKey === camelizedSchemaKey ||
+                  camelizedSchemaKey.startsWith(camelizedKey) ||
+                  camelizedKey.startsWith(camelizedSchemaKey) ||
+                  camelizedSchemaKey === "contextMenus") {
+                allSchema.push(subItem);
+              }
+              break;
+            }
+          }
+        }
+      }
+    } else {
+      allSchema = schema;
+    }
+    return allSchema;
   }
 }
 
