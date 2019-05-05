@@ -88,6 +88,6 @@ Get the list of schema files.
 Returns an array.
 
 ```
-const schema = (new Schema()).list();
+const list = (new Schema()).list();
 // ["alarms.json", "bookmarks.json", ...]
 ```
