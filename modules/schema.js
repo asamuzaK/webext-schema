@@ -111,7 +111,7 @@ class Schema {
   /**
    * get schema
    * @param {string} name - API name or file name
-   * @returns {Object} - schema
+   * @returns {Array} - schema
    */
   get(name) {
     if (!isString(name)) {
