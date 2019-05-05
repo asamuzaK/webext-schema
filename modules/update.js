@@ -167,15 +167,15 @@ const saveSchemaFile = async (channel, info) => {
  * @returns {Promise.<Array>} - Promise chain
  */
 const updateSchemas = async (cmdOpts = {}) => {
-  const {channel} = cmdOpts;
+  const {channel, info} = cmdOpts;
   const func = [];
   if (channel) {
-    func.push(saveSchemaFile(channel));
+    func.push(saveSchemaFile(channel, info));
   } else {
     func.push(
-      saveSchemaFile("release"),
-      saveSchemaFile("beta"),
-      saveSchemaFile("central"),
+      saveSchemaFile("release", info),
+      saveSchemaFile("beta", info),
+      saveSchemaFile("central", info),
     );
   }
   return Promise.all(func).catch(throwErr);

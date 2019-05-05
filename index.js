@@ -13,6 +13,7 @@ const commander = require("commander");
 commander.version(version, "-v, --version");
 commander.command("update").alias("u").description("update schemas")
   .option("-c, --channel <name>", "specify the release channel")
+  .option("-i, --info", "console info")
   .action(updateSchemas);
 commander.parse(process.argv);
 

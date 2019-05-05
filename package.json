@@ -14,7 +14,10 @@
     "lint": "eslint .",
     "start": "node ./index.js",
     "test": "nyc --reporter=text mocha test/*.test.js --exit",
-    "update": "node index update"
+    "update": "node index update -i",
+    "update:release": "node index update -c release -i",
+    "update:beta": "node index update -c beta -i",
+    "update:central": "node index update -c central -i"
   },
   "dependencies": {
     "camelize": "^1.0.0",
