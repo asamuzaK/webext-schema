@@ -71,9 +71,10 @@ describe("Schema", () => {
       const schema = new Schema();
       const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
-      const keys = Object.keys(res);
-      for (const key of keys) {
-        assert.isTrue(key.endsWith(".json"), "key");
+      const items = Object.entries(res);
+      for (const [key, value] of items) {
+        assert.isTrue(key.endsWith(".json"), `${key}`);
+        assert.isArray(value, `${key} value`);
       }
     });
 
@@ -81,9 +82,10 @@ describe("Schema", () => {
       const schema = new Schema("release");
       const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
-      const keys = Object.keys(res);
-      for (const key of keys) {
-        assert.isTrue(key.endsWith(".json"), "key");
+      const items = Object.entries(res);
+      for (const [key, value] of items) {
+        assert.isTrue(key.endsWith(".json"), `${key}`);
+        assert.isArray(value, `${key} value`);
       }
     });
 
@@ -91,9 +93,10 @@ describe("Schema", () => {
       const schema = new Schema("beta");
       const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
-      const keys = Object.keys(res);
-      for (const key of keys) {
-        assert.isTrue(key.endsWith(".json"), "key");
+      const items = Object.entries(res);
+      for (const [key, value] of items) {
+        assert.isTrue(key.endsWith(".json"), `${key}`);
+        assert.isArray(value, `${key} value`);
       }
     });
 
@@ -101,9 +104,10 @@ describe("Schema", () => {
       const schema = new Schema("central");
       const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
-      const keys = Object.keys(res);
-      for (const key of keys) {
-        assert.isTrue(key.endsWith(".json"), "key");
+      const items = Object.entries(res);
+      for (const [key, value] of items) {
+        assert.isTrue(key.endsWith(".json"), `${key}`);
+        assert.isArray(value, `${key} value`);
       }
     });
   });
