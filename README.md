@@ -49,10 +49,8 @@ schema.channel = "beta";
 Get the arranged schema for the specific application.
 
 ```
-const schema = new Schema();
-schema.getAll({name: "sinon-chrome"}).then(res => {
-  console.log(res); // [{namespace: "alarms", functions: [{...}], ...}];
-});
+const schema = (new Schema()).arrange({name: "sinon-chrome"});
+// [{namespace: "alarms", functions: [{...}], ...}];
 ```
 
 ### schema.get(<var>name</var>)
@@ -64,17 +62,13 @@ Argument can be either an API name or a file name.
 Returns an array.
 
 ```
-const schema = new Schema();
-schema.get("browserAction").then(res => {
-  console.log(res); // [{namespace: "browserAction", events: [...], ...}]
-});
+const schema = (new Schema()).get("browserAction");
+// [{namespace: "browserAction", events: [...], ...}]
 ```
 
 ```
-const schema = new Schema();
-schema.get("browser_action.json").then(res => {
-  console.log(res); // [{namespace: "browserAction", events: [...], ...}]
-});
+const schema = (new Schema()).get("browser_action.json");
+// [{namespace: "browserAction", events: [...], ...}]
 ```
 
 ### schema.getAll()
@@ -84,10 +78,8 @@ Returns an object containing all schemas.
 Note that the key of the object is the file name and the value is the schema.
 
 ```
-const schema = new Schema();
-schema.getAll().then(res => {
-  console.log(res); // {"alarms.json": [{...}], "bookmarks.json": [{...}], ...}
-});
+const schema = (new Schema()).getAll();
+// {"alarms.json": [{...}], "bookmarks.json": [{...}], ...}
 ```
 
 ### schema.list()
@@ -96,8 +88,6 @@ Get the list of schema files.
 Returns an array.
 
 ```
-const schema = new Schema();
-schema.list().then(res => {
-  console.log(res); // ["alarms.json", "bookmarks.json", ...]
-});
+const schema = (new Schema()).list();
+// ["alarms.json", "bookmarks.json", ...]
 ```
