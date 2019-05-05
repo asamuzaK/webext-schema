@@ -46,7 +46,7 @@ schema.channel = "beta";
 * @param {Object} opt - options
 * @param {string} opt.name - application name
 
-Async function to get the arranged schema for the specific application.
+Get the arranged schema for the specific application.
 
 ```
 const schema = new Schema();
@@ -59,7 +59,7 @@ schema.getAll({name: "sinon-chrome"}).then(res => {
 
 * @param {string} name - API name or file name
 
-Async function to get the schema for a specific API.
+Get the schema for a specific API.
 Argument can be either an API name or a file name.
 Returns an array.
 
@@ -79,7 +79,7 @@ schema.get("browser_action.json").then(res => {
 
 ### schema.getAll()
 
-Async function to get all schemas as a single object.
+Get all schemas as a single object.
 Returns an object containing all schemas.
 Note that the key of the object is the file name and the value is the schema.
 
@@ -92,7 +92,7 @@ schema.getAll().then(res => {
 
 ### schema.list()
 
-Async function to get the list of schema files.
+Get the list of schema files.
 Returns an array.
 
 ```

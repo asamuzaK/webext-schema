@@ -9,9 +9,6 @@
     "url": "https://github.com/asamuzaK/webext-schema.git"
   },
   "license": "MPL-2.0",
-  "engines": {
-    "node": ">=10.0.0"
-  },
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",

@@ -67,9 +67,9 @@ describe("Schema", () => {
   });
 
   describe("parse content", () => {
-    it("should get object", async () => {
+    it("should get object", () => {
       const schema = new Schema();
-      const res = await schema._parseContent();
+      const res = schema._parseContent();
       assert.isObject(res, "result");
       const keys = Object.keys(res);
       for (const key of keys) {
@@ -77,9 +77,9 @@ describe("Schema", () => {
       }
     });
 
-    it("should get object", async () => {
+    it("should get object", () => {
       const schema = new Schema("release");
-      const res = await schema._parseContent();
+      const res = schema._parseContent();
       assert.isObject(res, "result");
       const keys = Object.keys(res);
       for (const key of keys) {
@@ -87,9 +87,9 @@ describe("Schema", () => {
       }
     });
 
-    it("should get object", async () => {
+    it("should get object", () => {
       const schema = new Schema("beta");
-      const res = await schema._parseContent();
+      const res = schema._parseContent();
       assert.isObject(res, "result");
       const keys = Object.keys(res);
       for (const key of keys) {
@@ -97,9 +97,9 @@ describe("Schema", () => {
       }
     });
 
-    it("should get object", async () => {
+    it("should get object", () => {
       const schema = new Schema("central");
-      const res = await schema._parseContent();
+      const res = schema._parseContent();
       assert.isObject(res, "result");
       const keys = Object.keys(res);
       for (const key of keys) {
@@ -109,65 +109,61 @@ describe("Schema", () => {
   });
 
   describe("arrange schema to fit specific application", () => {
-    it("should throw", async () => {
+    it("should throw", () => {
       const schema = new Schema();
-      await schema.arrange().catch(e => {
-        assert.instanceOf(e, TypeError, "error");
-        assert.strictEqual(e.message, "Expected String but got Undefined.");
-      });
+      assert.throws(() => schema.arrange(),
+                    "Expected String but got Undefined.");
     });
 
-    it("should get null", async () => {
+    it("should get null", () => {
       const schema = new Schema();
-      const res = await schema.arrange({name: "foo"});
+      const res = schema.arrange({name: "foo"});
       assert.isNull(res, "result");
     });
 
-    it("should get array", async () => {
+    it("should get array", () => {
       const schema = new Schema();
-      const res = await schema.arrange({name: "sinon-chrome"});
+      const res = schema.arrange({name: "sinon-chrome"});
       assert.isArray(res, "result");
     });
   });
 
   describe("get schema", () => {
-    it("should throw", async () => {
+    it("should throw", () => {
       const schema = new Schema();
-      await schema.get().catch(e => {
-        assert.instanceOf(e, TypeError, "error");
-        assert.strictEqual(e.message, "Expected String but got Undefined.");
-      });
+      assert.throws(() => schema.get(),
+                    "Expected String but got Undefined.");
     });
 
-    it("should get null", async () => {
+    it("should get null", () => {
       const schema = new Schema();
-      const res = await schema.get("foo");
+      const res = schema.get("foo");
       assert.isNull(res, "result");
     });
 
-    it("should get array", async () => {
+    it("should get array", () => {
       const schema = new Schema();
-      const res = await schema.get("browser_action.json");
+      const res = schema.get("browser_action.json");
       assert.isArray(res, "result");
     });
 
-    it("should get array", async () => {
+    it("should get array", () => {
       const schema = new Schema();
-      const res = await schema.get("browser_action");
+      const res = schema.get("browser_action");
       assert.isArray(res, "result");
     });
 
-    it("should get array", async () => {
+    it("should get array", () => {
       const schema = new Schema();
-      const res = await schema.get("browserAction");
+      const res = schema.get("browserAction");
       assert.isArray(res, "result");
     });
   });
 
   describe("get all schemas", () => {
-    it("should get object", async () => {
+    it("should get object", () => {
       const schema = new Schema();
-      const res = await schema.getAll();
+      const res = schema.getAll();
       assert.isObject(res, "result");
       const keys = Object.keys(res);
       for (const key of keys) {
@@ -177,36 +173,36 @@ describe("Schema", () => {
   });
 
   describe("list schemas", () => {
-    it("should get array", async () => {
+    it("should get array", () => {
       const schema = new Schema();
-      const res = await schema.list();
+      const res = schema.list();
       assert.isArray(res, "result");
       for (const key of res) {
         assert.isTrue(key.endsWith(".json"), "key");
       }
     });
 
-    it("should get array", async () => {
+    it("should get array", () => {
       const schema = new Schema("release");
-      const res = await schema.list();
+      const res = schema.list();
       assert.isArray(res, "result");
       for (const key of res) {
         assert.isTrue(key.endsWith(".json"), "key");
       }
     });
 
-    it("should get array", async () => {
+    it("should get array", () => {
       const schema = new Schema("beta");
-      const res = await schema.list();
+      const res = schema.list();
       assert.isArray(res, "result");
       for (const key of res) {
         assert.isTrue(key.endsWith(".json"), "key");
       }
     });
 
-    it("should get array", async () => {
+    it("should get array", () => {
       const schema = new Schema("central");
-      const res = await schema.list();
+      const res = schema.list();
       assert.isArray(res, "result");
       for (const key of res) {
         assert.isTrue(key.endsWith(".json"), "key");
@@ -217,10 +213,10 @@ describe("Schema", () => {
 
 describe("application support", () => {
   describe("sinon-chrome", () => {
-    it("should get stubbed functions", async () => {
-      const schema = new Schema();
-      const res = await schema.arrange({name: "sinon-chrome"});
-      const browser = new Api(res).create();
+    it("should get stubbed functions", () => {
+      const schema = new Schema().arrange({name: "sinon-chrome"});
+      const browser = new Api(schema).create();
+      assert.isObject(browser, "browser");
       const {
         bookmarks, browserAction, commands, contextMenus, contextualIdentities,
         devtools: {inspectedWindow}, i18n, management, menus, notifications,
@@ -269,7 +265,6 @@ describe("application support", () => {
       assert.isFunction(theme.getCurrent, "theme.getCurrent");
       assert.isObject(windows, "windows");
       assert.isFunction(windows.get, "windows.get");
-      assert.isArray(res, "result");
     });
   });
 });

@@ -4,9 +4,9 @@
 "use strict";
 /* api */
 const {getType, isString} = require("./common");
-const {readFile} = require("./file-util");
 const camelize = require("camelize");
 const decamelize = require("decamelize");
+const fs = require("fs");
 const path = require("path");
 
 /* constants */
@@ -37,11 +37,11 @@ class Schema {
    * parse content
    * @returns {Object} - schema
    */
-  async _parseContent() {
+  _parseContent() {
     const file = path.resolve(
       path.join(__dirname, "../", "schemas", this._channel, "all.json")
     );
-    const content = await readFile(file, {
+    const content = fs.readFileSync(file, {
       encoding: CHAR,
       flag: "r",
     });
@@ -55,16 +55,16 @@ class Schema {
    * @param {string} opt.name - app name
    * @returns {*} - arranged schema
    */
-  async arrange(opt = {}) {
+  arrange(opt = {}) {
     const {name} = opt;
     if (!isString(name)) {
       throw new TypeError(`Expected String but got ${getType(name)}.`);
     }
-    const schemas = await this._parseContent();
+    const schemas = this._parseContent();
     let schema;
     if (name === "sinon-chrome") {
       const items = Object.entries(schemas);
-      const menusChild = await this.get("menus_child.json");
+      const menusChild = this.get("menus_child.json");
       const arr = [];
       for (const [key, item] of items) {
         const subItems = Object.values(item);
@@ -113,11 +113,11 @@ class Schema {
    * @param {string} name - API name or file name
    * @returns {Object} - schema
    */
-  async get(name) {
+  get(name) {
     if (!isString(name)) {
       throw new TypeError(`Expected String but got ${getType(name)}.`);
     }
-    const schemas = await this._parseContent();
+    const schemas = this._parseContent();
     const items = Object.entries(schemas);
     const label = decamelize(name.replace(/\.json$/, ""));
     let schema;
@@ -134,8 +134,8 @@ class Schema {
    * get all schemas
    * @returns {Object} - schemas
    */
-  async getAll() {
-    const schemas = await this._parseContent();
+  getAll() {
+    const schemas = this._parseContent();
     return schemas;
   }
 
@@ -143,8 +143,8 @@ class Schema {
    * list schemas
    * @returns {Array} - file list
    */
-  async list() {
-    const schemas = await this._parseContent();
+  list() {
+    const schemas = this._parseContent();
     const items = Object.keys(schemas);
     const arr = [];
     for (const item of items) {
