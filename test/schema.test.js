@@ -66,7 +66,7 @@ describe("Schema", () => {
     });
   });
 
-  describe("parse content", () => {
+  describe("parse schema content", () => {
     it("should get object", () => {
       const schema = new Schema();
       const res = schema._parseSchemaContent();
