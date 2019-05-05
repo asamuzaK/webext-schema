@@ -69,7 +69,7 @@ describe("Schema", () => {
   describe("parse content", () => {
     it("should get object", () => {
       const schema = new Schema();
-      const res = schema._parseContent();
+      const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
       const keys = Object.keys(res);
       for (const key of keys) {
@@ -79,7 +79,7 @@ describe("Schema", () => {
 
     it("should get object", () => {
       const schema = new Schema("release");
-      const res = schema._parseContent();
+      const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
       const keys = Object.keys(res);
       for (const key of keys) {
@@ -89,7 +89,7 @@ describe("Schema", () => {
 
     it("should get object", () => {
       const schema = new Schema("beta");
-      const res = schema._parseContent();
+      const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
       const keys = Object.keys(res);
       for (const key of keys) {
@@ -99,7 +99,7 @@ describe("Schema", () => {
 
     it("should get object", () => {
       const schema = new Schema("central");
-      const res = schema._parseContent();
+      const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
       const keys = Object.keys(res);
       for (const key of keys) {

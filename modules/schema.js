@@ -34,10 +34,10 @@ class Schema {
   }
 
   /**
-   * parse content
+   * parse schema content
    * @returns {Object} - schema
    */
-  _parseContent() {
+  _parseSchemaContent() {
     const file = path.resolve(
       path.join(__dirname, "../", "schemas", this._channel, "all.json")
     );
@@ -60,7 +60,7 @@ class Schema {
     if (!isString(name)) {
       throw new TypeError(`Expected String but got ${getType(name)}.`);
     }
-    const schemas = this._parseContent();
+    const schemas = this._parseSchemaContent();
     let schema;
     if (name === "sinon-chrome") {
       const items = Object.entries(schemas);
@@ -117,7 +117,7 @@ class Schema {
     if (!isString(name)) {
       throw new TypeError(`Expected String but got ${getType(name)}.`);
     }
-    const schemas = this._parseContent();
+    const schemas = this._parseSchemaContent();
     const items = Object.entries(schemas);
     const label = decamelize(name.replace(/\.json$/, ""));
     let schema;
@@ -135,7 +135,7 @@ class Schema {
    * @returns {Object} - schemas
    */
   getAll() {
-    const schemas = this._parseContent();
+    const schemas = this._parseSchemaContent();
     return schemas;
   }
 
@@ -144,7 +144,7 @@ class Schema {
    * @returns {Array} - file list
    */
   list() {
-    const schemas = this._parseContent();
+    const schemas = this._parseSchemaContent();
     const items = Object.keys(schemas);
     const arr = [];
     for (const item of items) {
