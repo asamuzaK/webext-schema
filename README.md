@@ -26,19 +26,19 @@ const schema = new Schema();
 ### schema.channel
 
 Schemas for "release", "beta", "central" are available.
-Release channel defaults to "release".
+Release channel defaults to "beta".
 
 If you want to specify a particular channel, pass one of the three channels as an argument when creating the instance.
 
 ```
-const schema = new Schema("beta");
+const schema = new Schema("central");
 ```
 
 Or you can set it afterwards.
 
 ```
 const schema = new Schema();
-schema.channel = "beta";
+schema.channel = "central";
 ```
 
 ### schema.arrange(<var>opt</var>)

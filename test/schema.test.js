@@ -15,12 +15,12 @@ describe("Schema", () => {
   describe("getter", () => {
     it("should get value", () => {
       const schema = new Schema();
-      assert.strictEqual(schema.channel, "release");
+      assert.strictEqual(schema.channel, "beta");
     });
 
     it("should get value", () => {
       const schema = new Schema("foo");
-      assert.strictEqual(schema.channel, "release");
+      assert.strictEqual(schema.channel, "beta");
     });
 
     it("should get value", () => {
@@ -32,24 +32,23 @@ describe("Schema", () => {
       const schema = new Schema("central");
       assert.strictEqual(schema.channel, "central");
     });
+
+    it("should get value", () => {
+      const schema = new Schema("release");
+      assert.strictEqual(schema.channel, "release");
+    });
   });
 
   describe("setter", () => {
     it("should set value", () => {
       const schema = new Schema();
-      schema.channel = true;
-      assert.strictEqual(schema.channel, "release");
+      schema.channel = 1;
+      assert.strictEqual(schema.channel, "beta");
     });
 
     it("should set value", () => {
       const schema = new Schema();
       schema.channel = "foo";
-      assert.strictEqual(schema.channel, "release");
-    });
-
-    it("should set value", () => {
-      const schema = new Schema();
-      schema.channel = "beta";
       assert.strictEqual(schema.channel, "beta");
     });
 
@@ -60,7 +59,19 @@ describe("Schema", () => {
     });
 
     it("should set value", () => {
-      const schema = new Schema("beta");
+      const schema = new Schema();
+      schema.channel = "release";
+      assert.strictEqual(schema.channel, "release");
+    });
+
+    it("should set value", () => {
+      const schema = new Schema("central");
+      schema.channel = "beta";
+      assert.strictEqual(schema.channel, "beta");
+    });
+
+    it("should set value", () => {
+      const schema = new Schema("central");
       schema.channel = "release";
       assert.strictEqual(schema.channel, "release");
     });
@@ -79,7 +90,7 @@ describe("Schema", () => {
     });
 
     it("should get object", () => {
-      const schema = new Schema("release");
+      const schema = new Schema();
       const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
       const items = Object.entries(res);
@@ -102,6 +113,17 @@ describe("Schema", () => {
 
     it("should get object", () => {
       const schema = new Schema("central");
+      const res = schema._parseSchemaContent();
+      assert.isObject(res, "result");
+      const items = Object.entries(res);
+      for (const [key, value] of items) {
+        assert.isTrue(key.endsWith(".json"), `${key}`);
+        assert.isArray(value, `${key} value`);
+      }
+    });
+
+    it("should get object", () => {
+      const schema = new Schema("release");
       const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
       const items = Object.entries(res);
@@ -187,15 +209,6 @@ describe("Schema", () => {
     });
 
     it("should get array", () => {
-      const schema = new Schema("release");
-      const res = schema.list();
-      assert.isArray(res, "result");
-      for (const key of res) {
-        assert.isTrue(key.endsWith(".json"), "key");
-      }
-    });
-
-    it("should get array", () => {
       const schema = new Schema("beta");
       const res = schema.list();
       assert.isArray(res, "result");
@@ -206,6 +219,15 @@ describe("Schema", () => {
 
     it("should get array", () => {
       const schema = new Schema("central");
+      const res = schema.list();
+      assert.isArray(res, "result");
+      for (const key of res) {
+        assert.isTrue(key.endsWith(".json"), "key");
+      }
+    });
+
+    it("should get array", () => {
+      const schema = new Schema("release");
       const res = schema.list();
       assert.isArray(res, "result");
       for (const key of res) {
