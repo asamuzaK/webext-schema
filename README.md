@@ -6,8 +6,7 @@
 
 WebExtensions schemas fetched from hg.mozilla.org
 
-WIP
-Not published to npm yet.
+NOTE: Still unstable.
 
 ## Install
 
