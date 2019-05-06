@@ -166,7 +166,7 @@ const saveSchemaFile = async (channel, info) => {
  * @param {Object} cmdOpts - command options
  * @returns {Promise.<Array>} - Promise chain
  */
-const updateSchemas = async (cmdOpts = {}) => {
+const updateSchemas = (cmdOpts = {}) => {
   const {channel, info} = cmdOpts;
   const func = [];
   if (channel) {
