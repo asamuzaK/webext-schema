@@ -149,9 +149,8 @@ const saveSchemaFile = async (channel, info) => {
   }
   const schema = await createUnifiedSchema(channel);
   const content = `${JSON.stringify(schema, null, INDENT)}\n`;
-  const filePath = path.resolve(
-    path.join(DIR_CWD, "schemas", channel, "all.json")
-  );
+  const filePath =
+    path.resolve(path.join(DIR_CWD, "schemas", channel, "all.json"));
   const file = await createFile(filePath, content, {
     encoding: CHAR, flag: "w", mode: PERM_FILE,
   });
@@ -173,9 +172,9 @@ const updateSchemas = (cmdOpts = {}) => {
     func.push(saveSchemaFile(channel, info));
   } else {
     func.push(
-      saveSchemaFile("release", info),
       saveSchemaFile("beta", info),
       saveSchemaFile("central", info),
+      saveSchemaFile("release", info),
     );
   }
   return Promise.all(func).catch(throwErr);
