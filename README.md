@@ -6,8 +6,6 @@
 
 WebExtensions schemas fetched from hg.mozilla.org
 
-NOTE: Still unstable.
-
 ## Install
 
 ```
@@ -44,8 +42,13 @@ schema.channel = "central";
 
 * @param {Object} opt - options
 * @param {string} opt.name - application name
+* @returns {*} - arranged schema
 
 Get the arranged schema for the specific application.
+
+Supported applications:
+
+* sinon-chrome
 
 ```
 const schema = (new Schema()).arrange({name: "sinon-chrome"});
@@ -55,10 +58,10 @@ const schema = (new Schema()).arrange({name: "sinon-chrome"});
 ### schema.get(<var>name</var>)
 
 * @param {string} name - API name or file name
+* @returns {?Array} - schema
 
-Get the schema for a specific API.
+Get the schema for the specific API.
 Argument can be either an API name or a file name.
-Returns an array.
 
 ```
 const schema = (new Schema()).get("browserAction");
@@ -72,8 +75,9 @@ const schema = (new Schema()).get("browser_action.json");
 
 ### schema.getAll()
 
+* @returns {Object} - all schemas
+
 Get all schemas as a single object.
-Returns an object containing all schemas.
 Note that the key of the object is the file name and the value is the schema.
 
 ```
@@ -83,8 +87,9 @@ const schema = (new Schema()).getAll();
 
 ### schema.list()
 
+* @returns {Array} - file names
+
 Get the list of schema files.
-Returns an array.
 
 ```
 const list = (new Schema()).list();
