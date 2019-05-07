@@ -339,18 +339,18 @@ describe("update schemas files", () => {
     });
     const stubWrite = sinon.stub(fs.promises, "writeFile");
     const writeCount = stubWrite.callCount;
-    const releasePath =
-      path.join(process.cwd(), "schemas", "release", "all.json");
     const betaPath =
       path.join(process.cwd(), "schemas", "beta", "all.json");
     const centralPath =
       path.join(process.cwd(), "schemas", "central", "all.json");
+    const releasePath =
+      path.join(process.cwd(), "schemas", "release", "all.json");
     const res = await updateSchemas();
     const {callCount: writeCallCount} = stubWrite;
     stubWrite.restore();
     stubAll.restore();
     assert.strictEqual(writeCallCount, writeCount + 3, "write");
-    assert.deepEqual(res, [releasePath, betaPath, centralPath], "result");
+    assert.deepEqual(res, [betaPath, centralPath, releasePath], "result");
   });
 
   it("should get result", async () => {
