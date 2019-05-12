@@ -42,14 +42,14 @@ const fetchText = async url => {
 const getChannelUrl = channel => {
   let dir;
   switch (channel) {
-    case "beta":
-      dir = "releases/mozilla-beta/";
-      break;
     case "central":
       dir = "mozilla-central/";
       break;
-    default:
+    case "release":
       dir = "releases/mozilla-release/";
+      break;
+    default:
+      dir = "releases/mozilla-beta/";
   }
   return `https://hg.mozilla.org/${dir}raw-file/tip/`;
 };
