@@ -15,8 +15,9 @@ const process = require("process");
 
 /* constants */
 const {IS_WIN} = require("../modules/constant");
-const PERM_EXEC = 0o755;
-const PERM_FILE = 0o644;
+const DIR_CWD = process.cwd();
+const PERM_EXEC = 0o700;
+const PERM_FILE = 0o600;
 const TMPDIR = process.env.TMP || process.env.TMPDIR || process.env.TEMP ||
                os.tmpdir();
 
@@ -82,11 +83,11 @@ describe("convertUriToFilePath", () => {
 
 describe("createDirectory", () => {
   it("should get string", async () => {
-    const dirString = path.join(TMPDIR, "webext-schema", "1");
+    const dirString = path.join(TMPDIR, "webextnativemsg", "1");
     const dir = await createDirectory(dirString);
     assert.strictEqual(dir, dirString);
     fs.rmdirSync(dirString);
-    fs.rmdirSync(path.join(TMPDIR, "webext-schema"));
+    fs.rmdirSync(path.join(TMPDIR, "webextnativemsg"));
   });
 
   it("should throw if given argument is not a string", async () => {
@@ -108,7 +109,7 @@ describe("createDirectory", () => {
 
 describe("createFile", () => {
   it("should get string", async () => {
-    const dirPath = path.join(TMPDIR, "webext-schema");
+    const dirPath = path.join(TMPDIR, "webextnativemsg");
     fs.mkdirSync(dirPath);
     const filePath = path.join(dirPath, "test.txt");
     const value = "test file.\n";
@@ -129,7 +130,7 @@ describe("createFile", () => {
   it(
     "should throw if second argument is not string, buffer, uint8array",
     () => {
-      const file = path.join(TMPDIR, "webext-schema", "test.txt");
+      const file = path.join(TMPDIR, "webextnativemsg", "test.txt");
       createFile(file).catch(e => {
         assert.strictEqual(
           e.message,
@@ -142,7 +143,7 @@ describe("createFile", () => {
 
 describe("removeDir", () => {
   it("should remove dir and it's files", async () => {
-    const dirPath = path.join(TMPDIR, "webext-schema");
+    const dirPath = path.join(TMPDIR, "webextnativemsg");
     fs.mkdirSync(dirPath);
     const subDirPath = path.join(dirPath, "foo");
     fs.mkdirSync(subDirPath);
@@ -173,7 +174,7 @@ describe("removeDir", () => {
   });
 
   it("should throw if dir is not subdirectory of base dir", async () => {
-    const dirPath = path.join(TMPDIR, "webext-schema");
+    const dirPath = path.join(TMPDIR, "webextnativemsg");
     const foo = path.join(TMPDIR, "foo");
     await fs.mkdirSync(dirPath);
     await fs.mkdirSync(foo);
@@ -186,7 +187,7 @@ describe("removeDir", () => {
 
 describe("removeDirectory", () => {
   it("should remove dir and it's files", async () => {
-    const dirPath = path.join(TMPDIR, "webext-schema");
+    const dirPath = path.join(TMPDIR, "webextnativemsg");
     fs.mkdirSync(dirPath);
     const subDirPath = path.join(dirPath, "foo");
     fs.mkdirSync(subDirPath);
@@ -219,7 +220,7 @@ describe("removeDirectory", () => {
   });
 
   it("should throw if dir is not subdirectory of base dir", async () => {
-    const dirPath = path.join(TMPDIR, "webext-schema");
+    const dirPath = path.join(TMPDIR, "webextnativemsg");
     const foo = path.join(TMPDIR, "foo");
     await fs.mkdirSync(dirPath);
     await fs.mkdirSync(foo);
@@ -236,12 +237,25 @@ describe("removeDirectory", () => {
 describe("getAbsPath", () => {
   it("should get string", () => {
     const p = "test.txt";
-    const n = path.resolve(p);
+    const n = path.resolve(DIR_CWD, p);
     assert.strictEqual(getAbsPath(p), n);
   });
 
-  it("should get null if string is not given", () => {
-    assert.isNull(getAbsPath());
+  it("should get string", () => {
+    const p = "~/test.txt";
+    const n = path.resolve(DIR_CWD, "~/test.txt");
+    assert.strictEqual(getAbsPath(p), n);
+  });
+
+  it("should get string", () => {
+    const p = "bar/../foo/test.txt";
+    const n = path.resolve(DIR_CWD, "foo/test.txt");
+    assert.strictEqual(getAbsPath(p), n);
+  });
+
+  it("should throw", () => {
+    assert.throws(() => getAbsPath(),
+                  "Expected String but got Undefined");
   });
 });
 
