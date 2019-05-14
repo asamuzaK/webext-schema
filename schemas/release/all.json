@@ -12005,13 +12005,14 @@
               "optional": true,
               "patternProperties": {
                 "^[1-9]\\d*$": {
-                  "type": "string"
+                  "$ref": "ExtensionFileUrl"
                 }
               }
             },
             "incognito": {
               "type": "string",
               "enum": [
+                "not_allowed",
                 "spanning"
               ],
               "default": "spanning",
@@ -13951,6 +13952,7 @@
             {
               "type": "string",
               "name": "url",
+              "optional": true,
               "maxLength": 255,
               "description": "URL to be opened after the extension is uninstalled. This URL must have an http: or https: scheme. Set an empty string to not open a new tab upon uninstallation."
             },
@@ -14926,7 +14928,7 @@
             },
             {
               "name": "value",
-              "type": "integer",
+              "type": "string",
               "optional": true,
               "description": "An optional string value to record."
             },
@@ -15567,6 +15569,14 @@
                   "optional": true
                 },
                 "sidebar_highlight_text": {
+                  "$ref": "ThemeColor",
+                  "optional": true
+                },
+                "toolbar_field_highlight": {
+                  "$ref": "ThemeColor",
+                  "optional": true
+                },
+                "toolbar_field_highlight_text": {
                   "$ref": "ThemeColor",
                   "optional": true
                 }
