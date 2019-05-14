@@ -83,11 +83,11 @@ describe("convertUriToFilePath", () => {
 
 describe("createDirectory", () => {
   it("should get string", async () => {
-    const dirString = path.join(TMPDIR, "webextnativemsg", "1");
+    const dirString = path.join(TMPDIR, "webext-schema", "1");
     const dir = await createDirectory(dirString);
     assert.strictEqual(dir, dirString);
     fs.rmdirSync(dirString);
-    fs.rmdirSync(path.join(TMPDIR, "webextnativemsg"));
+    fs.rmdirSync(path.join(TMPDIR, "webext-schema"));
   });
 
   it("should throw if given argument is not a string", async () => {
@@ -109,7 +109,7 @@ describe("createDirectory", () => {
 
 describe("createFile", () => {
   it("should get string", async () => {
-    const dirPath = path.join(TMPDIR, "webextnativemsg");
+    const dirPath = path.join(TMPDIR, "webext-schema");
     fs.mkdirSync(dirPath);
     const filePath = path.join(dirPath, "test.txt");
     const value = "test file.\n";
@@ -130,7 +130,7 @@ describe("createFile", () => {
   it(
     "should throw if second argument is not string, buffer, uint8array",
     () => {
-      const file = path.join(TMPDIR, "webextnativemsg", "test.txt");
+      const file = path.join(TMPDIR, "webext-schema", "test.txt");
       createFile(file).catch(e => {
         assert.strictEqual(
           e.message,
@@ -143,7 +143,7 @@ describe("createFile", () => {
 
 describe("removeDir", () => {
   it("should remove dir and it's files", async () => {
-    const dirPath = path.join(TMPDIR, "webextnativemsg");
+    const dirPath = path.join(TMPDIR, "webext-schema");
     fs.mkdirSync(dirPath);
     const subDirPath = path.join(dirPath, "foo");
     fs.mkdirSync(subDirPath);
@@ -174,7 +174,7 @@ describe("removeDir", () => {
   });
 
   it("should throw if dir is not subdirectory of base dir", async () => {
-    const dirPath = path.join(TMPDIR, "webextnativemsg");
+    const dirPath = path.join(TMPDIR, "webext-schema");
     const foo = path.join(TMPDIR, "foo");
     await fs.mkdirSync(dirPath);
     await fs.mkdirSync(foo);
@@ -187,7 +187,7 @@ describe("removeDir", () => {
 
 describe("removeDirectory", () => {
   it("should remove dir and it's files", async () => {
-    const dirPath = path.join(TMPDIR, "webextnativemsg");
+    const dirPath = path.join(TMPDIR, "webext-schema");
     fs.mkdirSync(dirPath);
     const subDirPath = path.join(dirPath, "foo");
     fs.mkdirSync(subDirPath);
@@ -220,7 +220,7 @@ describe("removeDirectory", () => {
   });
 
   it("should throw if dir is not subdirectory of base dir", async () => {
-    const dirPath = path.join(TMPDIR, "webextnativemsg");
+    const dirPath = path.join(TMPDIR, "webext-schema");
     const foo = path.join(TMPDIR, "foo");
     await fs.mkdirSync(dirPath);
     await fs.mkdirSync(foo);
