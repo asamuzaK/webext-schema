@@ -49,7 +49,7 @@ Get the arranged schema for the specific application.
 
 Supported applications:
 
-* sinon-chrome
+* [sinon-chrome](https://www.npmjs.com/package/sinon-chrome)
 
 ```
 const schema = new Schema().arrange({name: "sinon-chrome"});
