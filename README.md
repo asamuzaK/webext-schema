@@ -52,7 +52,7 @@ Supported applications:
 * sinon-chrome
 
 ```
-const schema = (new Schema()).arrange({name: "sinon-chrome"});
+const schema = new Schema().arrange({name: "sinon-chrome"});
 // [{namespace: "alarms", functions: [{...}], ...}];
 ```
 
@@ -65,12 +65,12 @@ Get the schema for the specific API.
 Argument can be either an API name or a file name.
 
 ```
-const schema = (new Schema()).get("browserAction");
+const schema = new Schema().get("browserAction");
 // [{namespace: "browserAction", events: [...], ...}]
 ```
 
 ```
-const schema = (new Schema()).get("browser_action.json");
+const schema = new Schema().get("browser_action.json");
 // [{namespace: "browserAction", events: [...], ...}]
 ```
 
@@ -82,7 +82,7 @@ Get all schemas as a single object.
 Note that the key of the object is the file name and the value is the schema.
 
 ```
-const schema = (new Schema()).getAll();
+const schema = new Schema().getAll();
 // {"alarms.json": [{...}], "bookmarks.json": [{...}], ...}
 ```
 
@@ -93,6 +93,6 @@ const schema = (new Schema()).getAll();
 Get the list of schema files.
 
 ```
-const list = (new Schema()).list();
+const list = new Schema().list();
 // ["alarms.json", "bookmarks.json", ...]
 ```
