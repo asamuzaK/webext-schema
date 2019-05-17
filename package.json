@@ -24,7 +24,7 @@
     "commander": "^2.20.0",
     "decamelize": "^3.2.0",
     "json5": "^2.1.0",
-    "node-fetch": "^2.5.0"
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
