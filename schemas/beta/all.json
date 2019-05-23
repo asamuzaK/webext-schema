@@ -14887,8 +14887,7 @@
         }
       ],
       "permissions": [
-        "telemetry",
-        "mozillaAddons"
+        "telemetry"
       ],
       "functions": [
         {
