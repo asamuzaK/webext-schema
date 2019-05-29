@@ -5,6 +5,7 @@
 /* api */
 const {URL} = require("url");
 const {getType, isString} = require("./common");
+const {fileURLToPath} = require("url");
 const fs = require("fs");
 const path = require("path");
 const {promises: fsPromise} = fs;
@@ -25,11 +26,10 @@ const convertUriToFilePath = uri => {
   if (!isString(uri)) {
     throw new TypeError(`Expected String but got ${getType(uri)}.`);
   }
-  const {protocol, pathname} = new URL(uri);
+  const {protocol} = new URL(uri);
   let file;
-  if (protocol === "file:" && pathname) {
-    file = IS_WIN && path.normalize(decodeURIComponent(pathname).slice(1)) ||
-           decodeURIComponent(pathname);
+  if (protocol === "file:") {
+    file = fileURLToPath(uri);
   }
   return file || null;
 };
