@@ -12147,7 +12147,17 @@
                 "gecko": {
                   "$ref": "FirefoxSpecificProperties",
                   "optional": true
+                },
+                "edge": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "any"
+                  },
+                  "optional": true
                 }
+              },
+              "additionalProperties": {
+                "$ref": "UnrecognizedProperty"
               }
             },
             "name": {
