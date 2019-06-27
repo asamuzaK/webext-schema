@@ -13,12 +13,12 @@ describe("Schema", () => {
   });
 
   describe("getter", () => {
-    it("should get value", () => {
+    it("should get default value", () => {
       const schema = new Schema();
       assert.strictEqual(schema.channel, "beta");
     });
 
-    it("should get value", () => {
+    it("should get default value", () => {
       const schema = new Schema("foo");
       assert.strictEqual(schema.channel, "beta");
     });
@@ -40,13 +40,13 @@ describe("Schema", () => {
   });
 
   describe("setter", () => {
-    it("should set value", () => {
+    it("should set default value", () => {
       const schema = new Schema();
       schema.channel = 1;
       assert.strictEqual(schema.channel, "beta");
     });
 
-    it("should set value", () => {
+    it("should set default value", () => {
       const schema = new Schema();
       schema.channel = "foo";
       assert.strictEqual(schema.channel, "beta");
