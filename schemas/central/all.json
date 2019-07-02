@@ -11373,7 +11373,8 @@
             "tasktracer",
             "threads",
             "trackopts",
-            "jstracer"
+            "jstracer",
+            "jsallocations"
           ]
         },
         {
