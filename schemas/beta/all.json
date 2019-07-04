@@ -11373,7 +11373,8 @@
             "tasktracer",
             "threads",
             "trackopts",
-            "jstracer"
+            "jstracer",
+            "jsallocations"
           ]
         },
         {
@@ -11448,6 +11449,19 @@
           "description": "Resumes the profiler with the settings that were initially used to start it.",
           "async": true,
           "parameters": []
+        },
+        {
+          "name": "dumpProfileToFile",
+          "type": "function",
+          "description": "Gathers the profile data from the current profiling session, and writes it to disk. The returned promise resolves to a path that locates the created file.",
+          "async": true,
+          "parameters": [
+            {
+              "type": "string",
+              "name": "fileName",
+              "description": "The name of the file inside the profile/profiler directory"
+            }
+          ]
         },
         {
           "name": "getProfile",
@@ -16271,6 +16285,16 @@
               "type": "string",
               "optional": true,
               "description": "Data URL for the favicon, if available."
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "url",
+                "search"
+              ],
+              "optional": true,
+              "default": "url",
+              "description": "The entry type, either <code>url</code> for a normal page link, or <code>search</code> for a search shortcut."
             }
           }
         }
@@ -16320,6 +16344,18 @@
                   "default": false,
                   "optional": true,
                   "description": "Include sites favicon if available."
+                },
+                "includePinned": {
+                  "type": "boolean",
+                  "default": false,
+                  "optional": true,
+                  "description": "Include sites that the user has pinned on the Firefox new tab."
+                },
+                "includeSearchShortcuts": {
+                  "type": "boolean",
+                  "default": false,
+                  "optional": true,
+                  "description": "Include search shortcuts appearing on the Firefox new tab."
                 }
               },
               "default": {},
