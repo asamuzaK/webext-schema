@@ -39,7 +39,7 @@ class Schema {
    */
   _parseSchemaContent() {
     const file = path.resolve(
-      path.join(__dirname, "../", "schemas", this._channel, "all.json")
+      path.join(__dirname, "../", "schemas", this._channel, "webext.json")
     );
     const content = fs.readFileSync(file, {
       encoding: CHAR,

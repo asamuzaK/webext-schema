@@ -254,7 +254,8 @@ describe("save schema file", () => {
     const stubInfo = sinon.stub(console, "info");
     const i = stubWrite.callCount;
     const j = stubInfo.callCount;
-    const filePath = path.join(process.cwd(), "schemas", "release", "all.json");
+    const filePath =
+      path.join(process.cwd(), "schemas", "release", "webext.json");
     const res = await saveSchemaFile("release");
     const {callCount: writeCallCount} = stubWrite;
     const {callCount: infoCallCount} = stubInfo;
@@ -289,7 +290,8 @@ describe("save schema file", () => {
     const stubInfo = sinon.stub(console, "info");
     const i = stubWrite.callCount;
     const j = stubInfo.callCount;
-    const filePath = path.join(process.cwd(), "schemas", "release", "all.json");
+    const filePath =
+      path.join(process.cwd(), "schemas", "release", "webext.json");
     const res = await saveSchemaFile("release", true);
     const {callCount: writeCallCount} = stubWrite;
     const {callCount: infoCallCount} = stubInfo;
@@ -340,11 +342,11 @@ describe("update schemas files", () => {
     const stubWrite = sinon.stub(fs.promises, "writeFile");
     const writeCount = stubWrite.callCount;
     const betaPath =
-      path.join(process.cwd(), "schemas", "beta", "all.json");
+      path.join(process.cwd(), "schemas", "beta", "webext.json");
     const centralPath =
-      path.join(process.cwd(), "schemas", "central", "all.json");
+      path.join(process.cwd(), "schemas", "central", "webext.json");
     const releasePath =
-      path.join(process.cwd(), "schemas", "release", "all.json");
+      path.join(process.cwd(), "schemas", "release", "webext.json");
     const res = await updateSchemas();
     const {callCount: writeCallCount} = stubWrite;
     stubWrite.restore();
@@ -390,7 +392,7 @@ describe("update schemas files", () => {
     const stubWrite = sinon.stub(fs.promises, "writeFile");
     const writeCount = stubWrite.callCount;
     const releasePath =
-      path.join(process.cwd(), "schemas", "release", "all.json");
+      path.join(process.cwd(), "schemas", "release", "webext.json");
     const res = await updateSchemas({channel: "release"});
     const {callCount: writeCallCount} = stubWrite;
     stubWrite.restore();

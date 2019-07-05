@@ -150,7 +150,7 @@ const saveSchemaFile = async (channel, info) => {
   const schema = await createUnifiedSchema(channel);
   const content = `${JSON.stringify(schema, null, INDENT)}\n`;
   const filePath =
-    path.resolve(path.join(DIR_CWD, "schemas", channel, "all.json"));
+    path.resolve(path.join(DIR_CWD, "schemas", channel, "webext.json"));
   const file = await createFile(filePath, content, {
     encoding: CHAR, flag: "w", mode: PERM_FILE,
   });
