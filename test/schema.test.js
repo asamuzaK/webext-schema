@@ -37,6 +37,11 @@ describe("Schema", () => {
       const schema = new Schema("release");
       assert.strictEqual(schema.channel, "release");
     });
+
+    it("should get value", () => {
+      const schema = new Schema("mail");
+      assert.strictEqual(schema.channel, "mail");
+    });
   });
 
   describe("setter", () => {
@@ -65,6 +70,12 @@ describe("Schema", () => {
     });
 
     it("should set value", () => {
+      const schema = new Schema();
+      schema.channel = "mail";
+      assert.strictEqual(schema.channel, "mail");
+    });
+
+    it("should set value", () => {
       const schema = new Schema("central");
       schema.channel = "beta";
       assert.strictEqual(schema.channel, "beta");
@@ -75,20 +86,15 @@ describe("Schema", () => {
       schema.channel = "release";
       assert.strictEqual(schema.channel, "release");
     });
+
+    it("should set value", () => {
+      const schema = new Schema("mail");
+      schema.channel = "release";
+      assert.strictEqual(schema.channel, "release");
+    });
   });
 
   describe("parse schema content", () => {
-    it("should get object", () => {
-      const schema = new Schema();
-      const res = schema._parseSchemaContent();
-      assert.isObject(res, "result");
-      const items = Object.entries(res);
-      for (const [key, value] of items) {
-        assert.isTrue(key.endsWith(".json"), `${key}`);
-        assert.isArray(value, `${key} value`);
-      }
-    });
-
     it("should get object", () => {
       const schema = new Schema();
       const res = schema._parseSchemaContent();
@@ -124,6 +130,17 @@ describe("Schema", () => {
 
     it("should get object", () => {
       const schema = new Schema("release");
+      const res = schema._parseSchemaContent();
+      assert.isObject(res, "result");
+      const items = Object.entries(res);
+      for (const [key, value] of items) {
+        assert.isTrue(key.endsWith(".json"), `${key}`);
+        assert.isArray(value, `${key} value`);
+      }
+    });
+
+    it("should get object", () => {
+      const schema = new Schema("mail");
       const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
       const items = Object.entries(res);
