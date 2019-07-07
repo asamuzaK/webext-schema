@@ -89,7 +89,8 @@ const getFileList = async baseUrl => {
   }
   const {href} = new URL("jar.mn", baseUrl);
   const text = await fetchText(href);
-  const reg = /content\/(?:browser|extensions|messenger)\/schemas\/([\da-zA-Z_]+\.json)/;
+  const reg =
+    /content\/(?:browser|extensions|messenger)\/schemas\/([\da-zA-Z_]+\.json)/;
   const items = text.split("\n");
   const arr = [];
   for (const item of items) {
