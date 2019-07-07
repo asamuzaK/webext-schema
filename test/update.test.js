@@ -199,7 +199,7 @@ describe("get all schema data", () => {
   });
 });
 
-describe("get specified schema data", () => {
+describe("get listed schema data", () => {
   it("should throw", async () => {
     await getListedSchemaData().catch(e => {
       assert.instanceOf(e, TypeError, "error");
