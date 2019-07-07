@@ -23,16 +23,14 @@ const schema = new Schema();
 
 ### schema.channel
 
-Schemas for "release", "beta", "central" are available.
-Release channel defaults to "beta".
-
-If you want to specify a particular channel, pass one of the three channels as an argument when creating the instance.
+Channel defaults to "beta".
+"central", "beta", "release" for WebExtensions, and "mail" for MailExtensions are available.
 
 ```
 const schema = new Schema("central");
 ```
 
-Or you can set it afterwards.
+Also, you can set it afterwards.
 
 ```
 const schema = new Schema();
