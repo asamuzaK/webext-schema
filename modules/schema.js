@@ -19,7 +19,7 @@ class Schema {
    */
   constructor(ch) {
     this._channel =
-      isString(ch) && /(?:beta|central|release)/.test(ch) && ch || "beta";
+      isString(ch) && /(?:beta|central|mail|release)/.test(ch) && ch || "beta";
   }
 
   /* getter / setter */
@@ -28,7 +28,7 @@ class Schema {
   }
 
   set channel(ch) {
-    if (isString(ch) && /(?:beta|central|release)/.test(ch)) {
+    if (isString(ch) && /(?:beta|central|mail|release)/.test(ch)) {
       this._channel = ch;
     }
   }
@@ -38,8 +38,10 @@ class Schema {
    * @returns {Object} - schema
    */
   _parseSchemaContent() {
+    const fileName =
+      this._channel === "mail" && "mailext.json" || "webext.json";
     const file = path.resolve(
-      path.join(__dirname, "../", "schemas", this._channel, "all.json")
+      path.join(__dirname, "../", "schemas", this._channel, fileName)
     );
     const content = fs.readFileSync(file, {
       encoding: CHAR,

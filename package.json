@@ -17,6 +17,7 @@
     "update": "node index update -i",
     "update:beta": "node index update -c beta -i",
     "update:central": "node index update -c central -i",
+    "update:mail": "node index update -c mail -i",
     "update:release": "node index update -c release -i"
   },
   "dependencies": {

@@ -45,6 +45,9 @@ const getChannelUrl = channel => {
     case "central":
       dir = "mozilla-central/";
       break;
+    case "mail":
+      dir = "comm-central/";
+      break;
     case "release":
       dir = "releases/mozilla-release/";
       break;
@@ -52,30 +55,6 @@ const getChannelUrl = channel => {
       dir = "releases/mozilla-beta/";
   }
   return `https://hg.mozilla.org/${dir}raw-file/tip/`;
-};
-
-/**
- * get schema file list from jar manifest
- * @param {string} baseUrl - base URL
- * @returns {Array} - schema file list
- */
-const getFileList = async baseUrl => {
-  if (!isString(baseUrl)) {
-    throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
-  }
-  const {href} = new URL("jar.mn", baseUrl);
-  const text = await fetchText(href);
-  const reg = /content\/(?:browser|extensions)\/schemas\/([\da-zA-Z_]+\.json)/;
-  const items = text.split("\n");
-  const arr = [];
-  for (const item of items) {
-    const res = reg.exec(item);
-    if (res) {
-      const [, file] = res;
-      arr.push(file);
-    }
-  }
-  return arr;
 };
 
 /**
@@ -100,6 +79,30 @@ const getSchemaData = async (file, baseUrl) => {
 };
 
 /**
+ * get schema file list from jar manifest
+ * @param {string} baseUrl - base URL
+ * @returns {Array} - schema file list
+ */
+const getFileList = async baseUrl => {
+  if (!isString(baseUrl)) {
+    throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
+  }
+  const {href} = new URL("jar.mn", baseUrl);
+  const text = await fetchText(href);
+  const reg = /content\/(?:browser|extensions|messenger)\/schemas\/([\da-zA-Z_]+\.json)/;
+  const items = text.split("\n");
+  const arr = [];
+  for (const item of items) {
+    const res = reg.exec(item);
+    if (res) {
+      const [, file] = res;
+      arr.push(file);
+    }
+  }
+  return arr;
+};
+
+/**
  * get all schema data
  * @param {string} baseUrl - base URL
  * @returns {Array} - schemas data in array
@@ -117,17 +120,82 @@ const getAllSchemaData = async baseUrl => {
 };
 
 /**
+ * get listed schema data
+ * @param {string} baseUrl - base URL
+ * @param {Array} arr - array of schema file names
+ * @returns {Array} - schema data in array
+ */
+const getListedSchemaData = async (baseUrl, arr) => {
+  if (!isString(baseUrl)) {
+    throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
+  }
+  if (!Array.isArray(arr)) {
+    throw new TypeError(`Expected Array but got ${getType(arr)}.`);
+  }
+  const func = [];
+  for (const item of arr) {
+    func.push(getSchemaData(item, baseUrl));
+  }
+  return Promise.all(func);
+};
+
+/**
+ * get MailExtensions schema data
+ * @param {string} baseUrl - base URL
+ * @returns {Promise.<Array>} - results of each handler
+ */
+const getMailExtSchemaData = async baseUrl => {
+  if (!isString(baseUrl)) {
+    throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
+  }
+  const items = await getFileList(baseUrl);
+  const schemaUrl = `${baseUrl}schemas/`;
+  const excludeFile = [
+    "commands.json",
+    "pkcs11.json",
+  ];
+  const func = [];
+  for (const item of items) {
+    if (!excludeFile.includes(item)) {
+      func.push(getSchemaData(item, schemaUrl));
+    }
+  }
+  return Promise.all(func);
+};
+
+/**
  * create unified schema
  * @param {string} channel - release channel
  * @returns {Object} - schema
  */
 const createUnifiedSchema = async channel => {
   const channelUrl = getChannelUrl(channel);
-  const arr = await Promise.all([
-    getAllSchemaData(`${channelUrl}browser/components/extensions/schemas/`),
-    getAllSchemaData(`${channelUrl}toolkit/components/extensions/schemas/`),
-  ]);
   const schema = {};
+  let arr;
+  if (channel === "mail") {
+    const browserItems = [
+      "commands.json",
+      "pkcs11.json",
+    ];
+    const toolkitItems = [
+      "content_scripts.json", "experiments.json", "extension.json", "i18n.json",
+      "management.json", "permissions.json", "runtime.json", "theme.json",
+    ];
+    const browserBaseUrl =
+      `${getChannelUrl("central")}browser/components/extensions/schemas/`;
+    const toolkitBaseUrl =
+      `${getChannelUrl("central")}toolkit/components/extensions/schemas/`;
+    arr = await Promise.all([
+      getListedSchemaData(browserBaseUrl, browserItems),
+      getListedSchemaData(toolkitBaseUrl, toolkitItems),
+      getMailExtSchemaData(`${channelUrl}mail/components/extensions/`),
+    ]);
+  } else {
+    arr = await Promise.all([
+      getAllSchemaData(`${channelUrl}browser/components/extensions/schemas/`),
+      getAllSchemaData(`${channelUrl}toolkit/components/extensions/schemas/`),
+    ]);
+  }
   for (const items of arr) {
     for (const item of items) {
       const {file, schema: itemSchema} = item;
@@ -149,8 +217,9 @@ const saveSchemaFile = async (channel, info) => {
   }
   const schema = await createUnifiedSchema(channel);
   const content = `${JSON.stringify(schema, null, INDENT)}\n`;
+  const fileName = channel === "mail" && "mailext" || "webext";
   const filePath =
-    path.resolve(path.join(DIR_CWD, "schemas", channel, "all.json"));
+    path.resolve(path.join(DIR_CWD, "schemas", channel, `${fileName}.json`));
   const file = await createFile(filePath, content, {
     encoding: CHAR, flag: "w", mode: PERM_FILE,
   });
@@ -175,6 +244,7 @@ const updateSchemas = (cmdOpts = {}) => {
       saveSchemaFile("beta", info),
       saveSchemaFile("central", info),
       saveSchemaFile("release", info),
+      saveSchemaFile("mail", info),
     );
   }
   return Promise.all(func).catch(throwErr);
@@ -186,6 +256,8 @@ module.exports = {
   getAllSchemaData,
   getChannelUrl,
   getFileList,
+  getListedSchemaData,
+  getMailExtSchemaData,
   getSchemaData,
   saveSchemaFile,
   updateSchemas,
