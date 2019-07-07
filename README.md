@@ -5,7 +5,7 @@
 
 # webext-schema
 
-WebExtensions schemas fetched from hg.mozilla.org
+WebExtensions schemas and MailExtension schemas fetched from hg.mozilla.org
 
 ## Install
 
