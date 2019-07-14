@@ -225,9 +225,9 @@ const saveSchemaFile = async (channel, info) => {
     encoding: CHAR, flag: "w", mode: PERM_FILE,
   });
   if (file && info) {
-    console.info(`Created: ${filePath}`);
+    console.info(`Created: ${file}`);
   }
-  return filePath;
+  return file;
 };
 
 /**
