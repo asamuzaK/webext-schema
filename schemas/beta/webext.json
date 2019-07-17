@@ -3965,146 +3965,6 @@
       ]
     }
   ],
-  "normandyAddonStudy.json": [
-    {
-      "namespace": "manifest",
-      "types": [
-        {
-          "$extend": "Permission",
-          "choices": [
-            {
-              "type": "string",
-              "enum": [
-                "normandyAddonStudy"
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "namespace": "normandyAddonStudy",
-      "description": "Normandy Study API",
-      "allowedContexts": [
-        "content",
-        "devtools"
-      ],
-      "defaultContexts": [
-        "content",
-        "devtools"
-      ],
-      "permissions": [
-        "normandyAddonStudy"
-      ],
-      "types": [
-        {
-          "id": "Study",
-          "type": "object",
-          "properties": {
-            "recipeId": {
-              "type": "integer",
-              "description": "The ID of the recipe for the study."
-            },
-            "slug": {
-              "type": "string",
-              "description": "A slug to identify the study."
-            },
-            "userFacingName": {
-              "type": "string",
-              "description": "The name presented on about:studies."
-            },
-            "userFacingDescription": {
-              "type": "string",
-              "description": "The description presented on about:studies."
-            },
-            "branch": {
-              "type": "string",
-              "description": "The study branch in which the user is enrolled."
-            },
-            "active": {
-              "type": "boolean",
-              "description": "The state of the study."
-            },
-            "addonId": {
-              "type": "string",
-              "description": "The ID of the extension installed by the study."
-            },
-            "addonUrl": {
-              "type": "string",
-              "description": "The URL of the XPI that was downloaded and installed by the study."
-            },
-            "addonVersion": {
-              "type": "string",
-              "description": "The version of the extension installed by the study."
-            },
-            "studyStartDate": {
-              "$ref": "extensionTypes.Date",
-              "description": "The start date for the study."
-            },
-            "studyEndDate": {
-              "$ref": "extensionTypes.Date",
-              "description": "The end date for the study."
-            },
-            "extensionApiId": {
-              "type": "integer",
-              "description": "The record ID for the extension in Normandy server's database."
-            },
-            "extensionHash": {
-              "type": "string",
-              "description": "A hash of the extension XPI file."
-            },
-            "extensionHashAlgorithm": {
-              "type": "string",
-              "description": "The algorithm used to hash the extension XPI file."
-            }
-          }
-        }
-      ],
-      "functions": [
-        {
-          "name": "getStudy",
-          "type": "function",
-          "description": "Returns a study object for the current study.",
-          "async": true,
-          "parameters": []
-        },
-        {
-          "name": "endStudy",
-          "type": "function",
-          "description": "Marks the study as ended and then uninstalls the addon.",
-          "async": true,
-          "parameters": [
-            {
-              "type": "string",
-              "name": "reason",
-              "description": "The reason why the study is ending."
-            }
-          ]
-        },
-        {
-          "name": "getClientMetadata",
-          "type": "function",
-          "description": "Returns an object with metadata about the client which may be required for constructing survey URLs.",
-          "async": true,
-          "parameters": []
-        }
-      ],
-      "events": [
-        {
-          "name": "onUnenroll",
-          "type": "function",
-          "description": "Fired when a user unenrolls from a study but before the addon is uninstalled.",
-          "parameters": [
-            {
-              "type": "string",
-              "name": "reason",
-              "description": "The reason why the study is ending."
-            }
-          ]
-        }
-      ]
-    }
-  ],
   "omnibox.json": [
     {
       "namespace": "manifest",
@@ -7590,186 +7450,6 @@
                 }
               }
             }
-          }
-        }
-      ]
-    }
-  ],
-  "urlbar.json": [
-    {
-      "namespace": "manifest",
-      "types": [
-        {
-          "$extend": "Permission",
-          "choices": [
-            {
-              "type": "string",
-              "enum": [
-                "urlbar"
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "namespace": "urlbar",
-      "description": "Use the <code>browser.urlbar</code> API to experiment with new features in the URLBar. Restricted to Mozilla privileged WebExtensions.",
-      "permissions": [
-        "urlbar"
-      ],
-      "types": [
-        {
-          "id": "Query",
-          "type": "object",
-          "description": "A query performed in the urlbar.",
-          "properties": {
-            "isPrivate": {
-              "type": "boolean",
-              "description": "Whether the query's browser context is private."
-            },
-            "maxResults": {
-              "type": "integer",
-              "description": "The maximum number of results shown to the user."
-            },
-            "searchString": {
-              "type": "string",
-              "description": "The query's search string."
-            },
-            "acceptableSources": {
-              "type": "array",
-              "description": "List of acceptable source types to return.",
-              "items": {
-                "$ref": "SourceType"
-              }
-            }
-          }
-        },
-        {
-          "id": "Result",
-          "type": "object",
-          "description": "A result of a query. Queries can have many results. Each result is created by a provider.",
-          "properties": {
-            "payload": {
-              "type": "object",
-              "description": "An object with arbitrary properties depending on the result's type."
-            },
-            "source": {
-              "$ref": "SourceType",
-              "description": "The result's source."
-            },
-            "type": {
-              "$ref": "ResultType",
-              "description": "The result's type."
-            }
-          }
-        },
-        {
-          "id": "ResultType",
-          "type": "string",
-          "enum": [
-            "remote_tab",
-            "search",
-            "tab",
-            "url"
-          ],
-          "description": "Possible types of results. <code>remote_tab</code>: A synced tab from another device. <code>search</code>: A search suggestion from a search engine. <code>tab</code>: An open tab in the browser. <code>url</code>: A URL that's not one of the other types."
-        },
-        {
-          "id": "SourceType",
-          "type": "string",
-          "enum": [
-            "bookmarks",
-            "history",
-            "search",
-            "tabs",
-            "local",
-            "network"
-          ],
-          "description": "Possible sources of results. <code>bookmarks</code>: The result comes from the user's bookmarks. <code>history</code>: The result comes from the user's history. <code>search</code>: The result comes from a search engine. <code>tabs</code>: The result is an open tab in the browser or a synced tab from another device. "
-        }
-      ],
-      "properties": {
-        "openViewOnFocus": {
-          "$ref": "types.Setting",
-          "description": "Enables or disables the open-view-on-focus mode."
-        }
-      },
-      "events": [
-        {
-          "name": "onBehaviorRequested",
-          "type": "function",
-          "description": "Before a query starts, this event is fired for the given provider. Its purpose is to request the provider's behavior for the query. The listener should return a behavior in response. By default, providers are inactive, so if your provider should always be inactive, you don't need to listen for this event.",
-          "parameters": [
-            {
-              "name": "query",
-              "$ref": "Query",
-              "description": "The query for which the behavior is requested."
-            }
-          ],
-          "extraParameters": [
-            {
-              "name": "providerName",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9_-]+$",
-              "description": "The name of the provider whose behavior the listener returns."
-            }
-          ],
-          "returns": {
-            "type": "string",
-            "enum": [
-              "active",
-              "inactive",
-              "restricting"
-            ],
-            "description": "The behavior of the provider for the query."
-          }
-        },
-        {
-          "name": "onQueryCanceled",
-          "type": "function",
-          "description": "This event is fired for the given provider when a query is canceled. The listener should stop any ongoing fetch or creation of results and clean up its resources.",
-          "parameters": [
-            {
-              "name": "query",
-              "$ref": "Query",
-              "description": "The query that was canceled."
-            }
-          ],
-          "extraParameters": [
-            {
-              "name": "providerName",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9_-]+$",
-              "description": "The name of the provider that is creating results for the query."
-            }
-          ]
-        },
-        {
-          "name": "onResultsRequested",
-          "type": "function",
-          "description": "When a query starts, this event is fired for the given provider if the provider is active for the query and there are no other providers that are restricting. Its purpose is to request the provider's results for the query. The listener should return a list of results in response.",
-          "parameters": [
-            {
-              "name": "query",
-              "$ref": "Query",
-              "description": "The query for which results are requested."
-            }
-          ],
-          "extraParameters": [
-            {
-              "name": "providerName",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9_-]+$",
-              "description": "The name of the provider whose results the listener returns."
-            }
-          ],
-          "returns": {
-            "type": "array",
-            "items": {
-              "$ref": "Result"
-            },
-            "description": "The results that the provider fetched for the query."
           }
         }
       ]
@@ -11373,8 +11053,7 @@
             "tasktracer",
             "threads",
             "trackopts",
-            "jstracer",
-            "jsallocations"
+            "jstracer"
           ]
         },
         {
@@ -11451,19 +11130,6 @@
           "parameters": []
         },
         {
-          "name": "dumpProfileToFile",
-          "type": "function",
-          "description": "Gathers the profile data from the current profiling session, and writes it to disk. The returned promise resolves to a path that locates the created file.",
-          "async": true,
-          "parameters": [
-            {
-              "type": "string",
-              "name": "fileName",
-              "description": "The name of the file inside the profile/profiler directory"
-            }
-          ]
-        },
-        {
           "name": "getProfile",
           "type": "function",
           "description": "Gathers the profile data from the current profiling session.",
@@ -11474,13 +11140,6 @@
           "name": "getProfileAsArrayBuffer",
           "type": "function",
           "description": "Gathers the profile data from the current profiling session. The returned promise resolves to an array buffer that contains a JSON string.",
-          "async": true,
-          "parameters": []
-        },
-        {
-          "name": "getProfileAsGzippedArrayBuffer",
-          "type": "function",
-          "description": "Gathers the profile data from the current profiling session. The returned promise resolves to an array buffer that contains a gzipped JSON string.",
           "async": true,
           "parameters": []
         },
@@ -12392,17 +12051,7 @@
                 "gecko": {
                   "$ref": "FirefoxSpecificProperties",
                   "optional": true
-                },
-                "edge": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "any"
-                  },
-                  "optional": true
                 }
-              },
-              "additionalProperties": {
-                "$ref": "UnrecognizedProperty"
               }
             },
             "name": {
@@ -16285,16 +15934,6 @@
               "type": "string",
               "optional": true,
               "description": "Data URL for the favicon, if available."
-            },
-            "type": {
-              "type": "string",
-              "enum": [
-                "url",
-                "search"
-              ],
-              "optional": true,
-              "default": "url",
-              "description": "The entry type, either <code>url</code> for a normal page link, or <code>search</code> for a search shortcut."
             }
           }
         }
@@ -16344,18 +15983,6 @@
                   "default": false,
                   "optional": true,
                   "description": "Include sites favicon if available."
-                },
-                "includePinned": {
-                  "type": "boolean",
-                  "default": false,
-                  "optional": true,
-                  "description": "Include sites that the user has pinned on the Firefox new tab."
-                },
-                "includeSearchShortcuts": {
-                  "type": "boolean",
-                  "default": false,
-                  "optional": true,
-                  "description": "Include search shortcuts appearing on the Firefox new tab."
                 }
               },
               "default": {},
