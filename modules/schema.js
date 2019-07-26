@@ -28,7 +28,7 @@ class Schema {
   }
 
   set channel(ch) {
-    if (isString(ch) && /(?:beta|central|mail|release)/.test(ch)) {
+    if (isString(ch) && /(?:(?:centra|mai)l|beta|release)/.test(ch)) {
       this._channel = ch;
     }
   }
@@ -124,7 +124,7 @@ class Schema {
     const label = decamelize(name.replace(/\.json$/, ""));
     let schema;
     for (const [key, value] of items) {
-      if (decamelize(key.replace(/.json$/, "")) === label) {
+      if (decamelize(key.replace(/\.json$/, "")) === label) {
         schema = value;
         break;
       }
