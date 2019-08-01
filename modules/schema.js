@@ -19,7 +19,8 @@ class Schema {
    */
   constructor(ch) {
     this._channel =
-      isString(ch) && /(?:beta|central|mail|release)/.test(ch) && ch || "beta";
+      isString(ch) && /(?:(?:centra|mai)l|beta|release)/.test(ch) && ch ||
+      "beta";
   }
 
   /* getter / setter */
