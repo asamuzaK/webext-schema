@@ -17956,6 +17956,47 @@
             }
           },
           "description": "Contains data uploaded in a URL request."
+        },
+        {
+          "id": "UrlClassificationFlags",
+          "type": "string",
+          "enum": [
+            "fingerprinting",
+            "fingerprinting_content",
+            "cryptomining",
+            "cryptomining_content",
+            "tracking",
+            "tracking_ad",
+            "tracking_analytics",
+            "tracking_social",
+            "tracking_content",
+            "any_basic_tracking",
+            "any_strict_tracking",
+            "any_social_tracking"
+          ],
+          "description": "Tracking flags that match our internal tracking classification"
+        },
+        {
+          "id": "UrlClassificationParty",
+          "type": "array",
+          "items": {
+            "$ref": "UrlClassificationFlags"
+          },
+          "description": "If the request has been classified this is an array of $(ref:UrlClassificationFlags)."
+        },
+        {
+          "id": "UrlClassification",
+          "type": "object",
+          "properties": {
+            "firstParty": {
+              "$ref": "UrlClassificationParty",
+              "description": "First party classification flags if the request has been classified."
+            },
+            "thirdParty": {
+              "$ref": "UrlClassificationParty",
+              "description": "Third party classification flags if the request has been classified."
+            }
+          }
         }
       ],
       "functions": [
@@ -18116,6 +18157,11 @@
                 "timeStamp": {
                   "type": "number",
                   "description": "The time when this signal is triggered, in milliseconds since the epoch."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
                 }
               }
             }
@@ -18206,6 +18252,11 @@
                   "$ref": "HttpHeaders",
                   "optional": true,
                   "description": "The HTTP request headers that are going to be sent out with this request."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
                 }
               }
             }
@@ -18296,6 +18347,11 @@
                   "$ref": "HttpHeaders",
                   "optional": true,
                   "description": "The HTTP request headers that have been sent out with this request."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
                 }
               }
             }
@@ -18389,6 +18445,11 @@
                 "statusCode": {
                   "type": "integer",
                   "description": "Standard HTTP status code returned by the server."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
                 }
               }
             }
@@ -18512,6 +18573,11 @@
                 "statusCode": {
                   "type": "integer",
                   "description": "Standard HTTP status code returned by the server."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
                 }
               }
             },
@@ -18630,6 +18696,11 @@
                 "statusLine": {
                   "type": "string",
                   "description": "HTTP status line of the response or the 'HTTP/0.9 200 OK' string for HTTP/0.9 responses (i.e., responses that lack a status line) or an empty string if there are no headers."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
                 }
               }
             }
@@ -18736,6 +18807,11 @@
                 "statusLine": {
                   "type": "string",
                   "description": "HTTP status line of the response or the 'HTTP/0.9 200 OK' string for HTTP/0.9 responses (i.e., responses that lack a status line) or an empty string if there are no headers."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
                 }
               }
             }
@@ -18838,6 +18914,10 @@
                 "statusLine": {
                   "type": "string",
                   "description": "HTTP status line of the response or the 'HTTP/0.9 200 OK' string for HTTP/0.9 responses (i.e., responses that lack a status line) or an empty string if there are no headers."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "description": "Tracking classification if the request has been classified."
                 }
               }
             }
@@ -18931,6 +19011,11 @@
                 "error": {
                   "type": "string",
                   "description": "The error description. This string is <em>not</em> guaranteed to remain backwards compatible between releases. You must not parse and act based upon its content."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
                 }
               }
             }
