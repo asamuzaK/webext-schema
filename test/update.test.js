@@ -1,4 +1,4 @@
-/* eslint-disable no-magic-numbers, no-await-in-loop */
+/* eslint-disable no-await-in-loop, no-magic-numbers */
 "use strict";
 const {
   createUnifiedSchema, fetchText, getAllSchemaData, getChannelUrl, getFileList,
