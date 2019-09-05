@@ -3,9 +3,8 @@
  */
 "use strict";
 /* api */
-const {URL} = require("url");
+const {URL, fileURLToPath} = require("url");
 const {getType, isString} = require("./common");
-const {fileURLToPath} = require("url");
 const fs = require("fs");
 const path = require("path");
 const {promises: fsPromise} = fs;
