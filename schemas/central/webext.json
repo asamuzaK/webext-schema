@@ -14322,6 +14322,10 @@
                   "$ref": "webRequest.HttpHeaders",
                   "optional": true,
                   "description": "The HTTP request headers that are going to be sent out with this request."
+                },
+                "urlClassification": {
+                  "$ref": "webRequest.UrlClassification",
+                  "description": "Url classification if the request has been classified."
                 }
               }
             }
