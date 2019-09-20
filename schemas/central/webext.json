@@ -11735,6 +11735,7 @@
             "trackopts",
             "jstracer",
             "jsallocations",
+            "nativeallocations",
             "preferencereads"
           ]
         },
