@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "camelize": "^1.0.0",
-    "commander": "^3.0.1",
+    "commander": "^3.0.2",
     "decamelize": "^3.2.0",
     "json5": "^2.1.0",
     "node-fetch": "^2.6.0"
