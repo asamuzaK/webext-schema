@@ -27,9 +27,9 @@ describe("convertUriToFilePath", () => {
     let u;
     if (IS_WIN) {
       const reg = new RegExp(`\\${path.sep}`, "g");
-      u = (new URL(`file:///${p.replace(reg, "/")}`)).href;
+      u = new URL(`file:///${p.replace(reg, "/")}`).href;
     } else {
-      u = (new URL(`file://${p}`)).href;
+      u = new URL(`file://${p}`).href;
     }
     assert.strictEqual(convertUriToFilePath(u), p);
   });
@@ -39,9 +39,9 @@ describe("convertUriToFilePath", () => {
     let u;
     if (IS_WIN) {
       const reg = new RegExp(`\\${path.sep}`, "g");
-      u = (new URL(`file:///${p.replace(reg, "/")}`)).href;
+      u = new URL(`file:///${p.replace(reg, "/")}`).href;
     } else {
-      u = (new URL(`file://${p}`)).href;
+      u = new URL(`file://${p}`).href;
     }
     assert.strictEqual(convertUriToFilePath(u), p);
   });
@@ -51,9 +51,9 @@ describe("convertUriToFilePath", () => {
     let u;
     if (IS_WIN) {
       const reg = new RegExp(`\\${path.sep}`, "g");
-      u = (new URL(`file:///${p.replace(reg, "/")}`)).href;
+      u = new URL(`file:///${p.replace(reg, "/")}`).href;
     } else {
-      u = (new URL(`file://${p}`)).href;
+      u = new URL(`file://${p}`).href;
     }
     assert.strictEqual(convertUriToFilePath(u), p);
   });
@@ -63,9 +63,9 @@ describe("convertUriToFilePath", () => {
     let u;
     if (IS_WIN) {
       const reg = new RegExp(`\\${path.sep}`, "g");
-      u = (new URL(`file://localhost/${p.replace(reg, "/")}`)).href;
+      u = new URL(`file://localhost/${p.replace(reg, "/")}`).href;
     } else {
-      u = (new URL(`file://localhost${p}`)).href;
+      u = new URL(`file://localhost${p}`).href;
     }
     assert.strictEqual(convertUriToFilePath(u), p);
   });
