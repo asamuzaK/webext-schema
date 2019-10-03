@@ -24,7 +24,7 @@
     "camelize": "^1.0.0",
     "commander": "^3.0.2",
     "decamelize": "^3.2.0",
-    "json5": "^2.1.0",
+    "json5": "^2.1.1",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
