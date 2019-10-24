@@ -3983,7 +3983,7 @@
                           "pref": {
                             "type": "string",
                             "optional": true,
-                            "description": "The preference to retreive the value from."
+                            "description": "The preference to retrieve the value from."
                           },
                           "purpose": {
                             "type": "string",
@@ -4005,7 +4005,7 @@
                           }
                         }
                       },
-                      "description": "A list of optional search url parameters. This allows the additon of search url parameters based on how the search is performed in Thunderbird."
+                      "description": "A list of optional search url parameters. This allows the addition of search url parameters based on how the search is performed in Thunderbird."
                     }
                   }
                 }
@@ -4044,14 +4044,6 @@
                   "optional": true,
                   "deprecated": true,
                   "description": "This property was never used."
-                },
-                "settings_url": {
-                  "type": "string",
-                  "format": "relativeUrl",
-                  "preprocess": "localize",
-                  "optional": true,
-                  "deprecated": true,
-                  "description": "A page for configuring accounts, this is obsolete after Thunderbird 60."
                 },
                 "management_url": {
                   "type": "string",
@@ -4217,13 +4209,6 @@
               "type": "string",
               "format": "relativeUrl",
               "description": "A page for configuring accounts, to be displayed in the preferences UI."
-            },
-            "settingsUrl": {
-              "type": "string",
-              "format": "relativeUrl",
-              "optional": true,
-              "deprecated": true,
-              "description": "A page for configuring accounts, this is obsolete after Thunderbird 60."
             }
           }
         },
@@ -4333,13 +4318,6 @@
                   "format": "relativeUrl",
                   "optional": true,
                   "description": "A page for configuring accounts, to be displayed in the preferences UI."
-                },
-                "settingsUrl": {
-                  "type": "string",
-                  "format": "relativeUrl",
-                  "optional": true,
-                  "deprecated": true,
-                  "description": "A page for configuring accounts, this is obsolete after Thunderbird 60."
                 }
               }
             }
@@ -5131,12 +5109,6 @@
               "description": "Shows messages where <var>text</var> matches the recipients.",
               "optional": true
             },
-            "sender": {
-              "type": "boolean",
-              "description": "Use <var>author</var> instead.",
-              "optional": true,
-              "deprecated": true
-            },
             "author": {
               "type": "boolean",
               "description": "Shows messages where <var>text</var> matches the author.",
@@ -5315,12 +5287,6 @@
                   "type": "boolean",
                   "description": "Shows only unread messages.",
                   "optional": true
-                },
-                "starred": {
-                  "type": "boolean",
-                  "description": "Use <var>flagged</var> instead.",
-                  "optional": true,
-                  "deprecated": true
                 },
                 "flagged": {
                   "type": "boolean",
