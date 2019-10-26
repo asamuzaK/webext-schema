@@ -42,7 +42,7 @@ class Schema {
     const fileName =
       this._channel === "mail" && "mailext.json" || "webext.json";
     const file = path.resolve(
-      path.join(__dirname, "../", "schemas", this._channel, fileName)
+      path.join(__dirname, "../", "schemas", this._channel, fileName),
     );
     const content = fs.readFileSync(file, {
       encoding: CHAR,
