@@ -8980,6 +8980,10 @@
           "$ref": "types.Setting",
           "description": "Controls after which mouse event context menus popup. This setting's value is of type ContextMenuMouseEvent, which has possible values of <code>mouseup</code> and <code>mousedown</code>."
         },
+        "ftpProtocolEnabled": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether the FTP protocol is enabled."
+        },
         "homepageOverride": {
           "$ref": "types.Setting",
           "description": "Returns the value of the overridden home page. Read-only."
@@ -14380,6 +14384,10 @@
                 "urlClassification": {
                   "$ref": "webRequest.UrlClassification",
                   "description": "Url classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18154,11 +18162,11 @@
           "properties": {
             "firstParty": {
               "$ref": "UrlClassificationParty",
-              "description": "First party classification flags if the request has been classified."
+              "description": "Classification flags if the request has been classified and it is first party."
             },
             "thirdParty": {
               "$ref": "UrlClassificationParty",
-              "description": "Third party classification flags if the request has been classified."
+              "description": "Classification flags if the request has been classified and it or its window hierarchy is third party."
             }
           }
         }
@@ -18326,6 +18334,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18421,6 +18433,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18516,6 +18532,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18614,6 +18634,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18742,6 +18766,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             },
@@ -18865,6 +18893,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18976,6 +19008,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -19082,6 +19118,18 @@
                 "urlClassification": {
                   "$ref": "UrlClassification",
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
+                },
+                "requestSize": {
+                  "type": "integer",
+                  "description": "For http requests, the bytes transferred in the request. Only available in onCompleted."
+                },
+                "responseSize": {
+                  "type": "integer",
+                  "description": "For http requests, the bytes received in the request. Only available in onCompleted."
                 }
               }
             }
@@ -19180,6 +19228,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
