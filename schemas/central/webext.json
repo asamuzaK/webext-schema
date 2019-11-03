@@ -9050,6 +9050,12 @@
       "permissions": [
         "captivePortal"
       ],
+      "properties": {
+        "canonicalURL": {
+          "$ref": "types.Setting",
+          "description": "Return the canonical captive-portal detection URL. Read-only."
+        }
+      },
       "functions": [
         {
           "name": "getState",
