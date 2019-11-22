@@ -19,7 +19,7 @@ const PERM_FILE = 0o644;
 /**
  * fetch text
  * @param {string} url - URL
- * @param {string} - content text
+ * @returns {string} - content text
  */
 const fetchText = async url => {
   if (!isString(url)) {
