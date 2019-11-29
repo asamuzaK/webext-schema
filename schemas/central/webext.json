@@ -6931,6 +6931,17 @@
       ],
       "types": [
         {
+          "id": "EngagementState",
+          "type": "string",
+          "enum": [
+            "start",
+            "engagement",
+            "abandonment",
+            "discard"
+          ],
+          "description": "The state of an engagement made with the urlbar by the user. <code>start</code>: The user has started an engagement. <code>engagement</code>: The user has completed an engagement by picking a result. <code>abandonment</code>: The user has abandoned their engagement, for example by blurring the urlbar. <code>discard</code>: The engagement ended in a way that should be ignored by listeners."
+        },
+        {
           "id": "Query",
           "type": "object",
           "description": "A query performed in the urlbar.",
@@ -7103,6 +7114,26 @@
             ],
             "description": "The behavior of the provider for the query."
           }
+        },
+        {
+          "name": "onEngagement",
+          "type": "function",
+          "description": "This event is fired when the user starts and ends an engagement with the urlbar.",
+          "parameters": [
+            {
+              "name": "state",
+              "$ref": "EngagementState",
+              "description": "The state of the engagement."
+            }
+          ],
+          "extraParameters": [
+            {
+              "name": "providerName",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "description": "The name of the provider that will listen for engagement events."
+            }
+          ]
         },
         {
           "name": "onQueryCanceled",
@@ -14563,6 +14594,37 @@
             "proxy_only"
           ],
           "description": "The IP handling policy of WebRTC."
+        },
+        {
+          "id": "tlsVersionRestrictionConfig",
+          "type": "object",
+          "description": "An object which describes TLS minimum and maximum versions.",
+          "properties": {
+            "minimum": {
+              "type": "string",
+              "enum": [
+                "TLSv1",
+                "TLSv1.1",
+                "TLSv1.2",
+                "TLSv1.3",
+                "unknown"
+              ],
+              "optional": true,
+              "description": "The minimum TLS version supported."
+            },
+            "maximum": {
+              "type": "string",
+              "enum": [
+                "TLSv1",
+                "TLSv1.1",
+                "TLSv1.2",
+                "TLSv1.3",
+                "unknown"
+              ],
+              "optional": true,
+              "description": "The maximum TLS version supported."
+            }
+          }
         }
       ],
       "properties": {
@@ -14577,6 +14639,10 @@
         "webRTCIPHandlingPolicy": {
           "$ref": "types.Setting",
           "description": "Allow users to specify the media performance/privacy tradeoffs which impacts how WebRTC traffic will be routed and how much local address information is exposed. This preference's value is of type IPHandlingPolicy, defaulting to <code>default</code>."
+        },
+        "tlsVersionRestriction": {
+          "$ref": "types.Setting",
+          "description": "This property controls the minimum and maximum TLS versions. This setting's value is an object of $(ref:tlsVersionRestrictionConfig)."
         }
       }
     },

@@ -5894,7 +5894,6 @@
             "discarded",
             "favIconUrl",
             "hidden",
-            "isarticle",
             "isArticle",
             "mutedInfo",
             "pinned",
@@ -7803,6 +7802,12 @@
             "type": {
               "$ref": "ResultType",
               "description": "The result's type."
+            },
+            "suggestedIndex": {
+              "type": "integer",
+              "description": "Suggest a preferred position for this result within the result set.",
+              "optional": true,
+              "default": -1
             }
           }
         },
@@ -7813,9 +7818,10 @@
             "remote_tab",
             "search",
             "tab",
+            "tip",
             "url"
           ],
-          "description": "Possible types of results. <code>remote_tab</code>: A synced tab from another device. <code>search</code>: A search suggestion from a search engine. <code>tab</code>: An open tab in the browser. <code>url</code>: A URL that's not one of the other types."
+          "description": "Possible types of results. <code>remote_tab</code>: A synced tab from another device. <code>search</code>: A search suggestion from a search engine. <code>tab</code>: An open tab in the browser. <code>tip</code>: An actionable message to help the user with their query. <code>url</code>: A URL that's not one of the other types."
         },
         {
           "id": "SourceType",
@@ -7823,12 +7829,12 @@
           "enum": [
             "bookmarks",
             "history",
-            "search",
-            "tabs",
             "local",
-            "network"
+            "network",
+            "search",
+            "tabs"
           ],
-          "description": "Possible sources of results. <code>bookmarks</code>: The result comes from the user's bookmarks. <code>history</code>: The result comes from the user's history. <code>search</code>: The result comes from a search engine. <code>tabs</code>: The result is an open tab in the browser or a synced tab from another device. "
+          "description": "Possible sources of results. <code>bookmarks</code>: The result comes from the user's bookmarks. <code>history</code>: The result comes from the user's history. <code>local</code>: The result comes from some local source not covered by another source type. <code>network</code>: The result comes from some network source not covered by another source type. <code>search</code>: The result comes from a search engine. <code>tabs</code>: The result is an open tab in the browser or a synced tab from another device."
         }
       ],
       "properties": {
@@ -7841,6 +7847,21 @@
           "description": "Enables or disables the engagement telemetry."
         }
       },
+      "functions": [
+        {
+          "name": "search",
+          "type": "function",
+          "async": true,
+          "description": "Starts a search in the urlbar in the current window.",
+          "parameters": [
+            {
+              "name": "searchString",
+              "type": "string",
+              "description": "The search string."
+            }
+          ]
+        }
+      ],
       "events": [
         {
           "name": "onBehaviorRequested",
@@ -7917,6 +7938,26 @@
             },
             "description": "The results that the provider fetched for the query."
           }
+        },
+        {
+          "name": "onResultPicked",
+          "type": "function",
+          "description": "Typically, a provider includes a <code>url</code> property in its results' payloads. When the user picks a result with a URL, Firefox automatically loads the URL. URLs don't make sense for every result type, however. When the user picks a result without a URL, this event is fired. The provider should take an appropriate action in response. Currently the only applicable <code>ResultType</code> is <code>tip</code>.",
+          "parameters": [
+            {
+              "name": "payload",
+              "type": "object",
+              "description": "The payload of the result that was picked."
+            }
+          ],
+          "extraParameters": [
+            {
+              "name": "providerName",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "description": "The listener will be called for the results of the provider with this name."
+            }
+          ]
         }
       ]
     },
@@ -10338,6 +10379,12 @@
                   "description": "Post body.",
                   "optional": true,
                   "type": "string"
+                },
+                "allowHttpErrors": {
+                  "description": "When this flag is set to <code>true</code>, then the browser will allow downloads to proceed after encountering HTTP errors such as <code>404 Not Found</code>.",
+                  "optional": true,
+                  "default": false,
+                  "type": "boolean"
                 }
               }
             },
@@ -11729,6 +11776,8 @@
             "trackopts",
             "jstracer",
             "jsallocations",
+            "nostacksampling",
+            "nativeallocations",
             "preferencereads"
           ]
         },
@@ -14127,7 +14176,7 @@
     },
     {
       "namespace": "proxy",
-      "description": "Use the browser.proxy API to register proxy scripts in Firefox. Proxy scripts in Firefox are proxy auto-config files with extra contextual information and support for additional return types.",
+      "description": "Provides access to global proxy settings for Firefox and proxy event listeners to handle dynamic proxy implementations.",
       "permissions": [
         "proxy"
       ],
@@ -14210,44 +14259,6 @@
           "description": "Configures proxy settings. This setting's value is an object of type ProxyConfig."
         }
       },
-      "functions": [
-        {
-          "name": "register",
-          "type": "function",
-          "deprecated": "proxy.register has been deprecated and will be removed in Firefox 71.",
-          "description": "Registers the proxy script for the extension.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "url",
-              "type": "string",
-              "format": "strictRelativeUrl"
-            }
-          ]
-        },
-        {
-          "name": "unregister",
-          "type": "function",
-          "deprecated": "proxy.unregister has been deprecated and will be removed in Firefox 71.",
-          "description": "Unregisters the proxy script for the extension.",
-          "async": true,
-          "parameters": []
-        },
-        {
-          "name": "registerProxyScript",
-          "type": "function",
-          "deprecated": "proxy.registerProxyScript has been deprecated and will be removed in Firefox 71.",
-          "description": "Registers the proxy script for the extension. This is an alias for proxy.register.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "url",
-              "type": "string",
-              "format": "strictRelativeUrl"
-            }
-          ]
-        }
-      ],
       "events": [
         {
           "name": "onRequest",
@@ -14309,11 +14320,6 @@
                   "type": "number",
                   "description": "The time when this signal is triggered, in milliseconds since the epoch."
                 },
-                "ip": {
-                  "type": "string",
-                  "optional": true,
-                  "description": "The server IP address that the request was actually sent to. Note that it may be a literal IPv6 address."
-                },
                 "fromCache": {
                   "type": "boolean",
                   "description": "Indicates if this response was fetched from disk cache."
@@ -14322,6 +14328,10 @@
                   "$ref": "webRequest.HttpHeaders",
                   "optional": true,
                   "description": "The HTTP request headers that are going to be sent out with this request."
+                },
+                "urlClassification": {
+                  "$ref": "webRequest.UrlClassification",
+                  "description": "Url classification if the request has been classified."
                 }
               }
             }
@@ -14545,8 +14555,7 @@
       "namespace": "runtime",
       "allowedContexts": [
         "content",
-        "devtools",
-        "proxy"
+        "devtools"
       ],
       "description": "Use the <code>browser.runtime</code> API to retrieve the background page, return details about the manifest, and listen for and respond to events in the app or extension lifecycle. You can also use this API to convert the relative path of URLs to fully-qualified URLs.",
       "types": [
@@ -14982,8 +14991,7 @@
           "allowAmbiguousOptionalArguments": true,
           "allowedContexts": [
             "content",
-            "devtools",
-            "proxy"
+            "devtools"
           ],
           "description": "Sends a single message to event listeners within your extension/app or a different extension/app. Similar to $(ref:runtime.connect) but only sends a single message, with an optional response. If sending to your extension, the $(ref:runtime.onMessage) event will be fired in each page, or $(ref:runtime.onMessageExternal), if a different extension. Note that extensions cannot send messages to content scripts using this method. To send messages to content scripts, use $(ref:tabs.sendMessage).",
           "async": "responseCallback",
@@ -15007,11 +15015,6 @@
                   "optional": true,
                   "unsupported": true,
                   "description": "Whether the TLS channel ID will be passed into onMessageExternal for processes that are listening for the connection event."
-                },
-                "toProxyScript": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "If true, the message will be directed to the extension's proxy sandbox."
                 }
               },
               "optional": true
@@ -15239,8 +15242,7 @@
           "type": "function",
           "allowedContexts": [
             "content",
-            "devtools",
-            "proxy"
+            "devtools"
           ],
           "description": "Fired when a message is sent from either an extension process or a content script.",
           "parameters": [
