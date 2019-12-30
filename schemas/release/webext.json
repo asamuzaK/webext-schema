@@ -275,11 +275,11 @@
           "parameters": [
             {
               "name": "query",
-              "description": "Either a string of words and quoted phrases that are matched against bookmark URLs and titles, or an object. If an object, the properties <code>query</code>, <code>url</code>, and <code>title</code> may be specified and bookmarks matching all specified properties will be produced.",
+              "description": "Either a string of words that are matched against bookmark URLs and titles, or an object. If an object, the properties <code>query</code>, <code>url</code>, and <code>title</code> may be specified and bookmarks matching all specified properties will be produced.",
               "choices": [
                 {
                   "type": "string",
-                  "description": "A string of words and quoted phrases that are matched against bookmark URLs and titles."
+                  "description": "A string of words that are matched against bookmark URLs and titles."
                 },
                 {
                   "type": "object",
@@ -288,7 +288,7 @@
                     "query": {
                       "type": "string",
                       "optional": true,
-                      "description": "A string of words and quoted phrases that are matched against bookmark URLs and titles."
+                      "description": "A string of words that are matched against bookmark URLs and titles."
                     },
                     "url": {
                       "type": "string",
@@ -617,501 +617,6 @@
           "type": "function",
           "description": "Fired when a bookmark import session is ended.",
           "parameters": []
-        }
-      ]
-    }
-  ],
-  "browser_action.json": [
-    {
-      "namespace": "manifest",
-      "types": [
-        {
-          "$extend": "WebExtensionManifest",
-          "properties": {
-            "browser_action": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "UnrecognizedProperty"
-              },
-              "properties": {
-                "default_title": {
-                  "type": "string",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "default_icon": {
-                  "$ref": "IconPath",
-                  "optional": true
-                },
-                "theme_icons": {
-                  "type": "array",
-                  "optional": true,
-                  "minItems": 1,
-                  "items": {
-                    "$ref": "ThemeIcons"
-                  },
-                  "description": "Specifies icons to use for dark and light themes"
-                },
-                "default_popup": {
-                  "type": "string",
-                  "format": "relativeUrl",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "browser_style": {
-                  "type": "boolean",
-                  "optional": true,
-                  "default": false
-                },
-                "default_area": {
-                  "description": "Defines the location the browserAction will appear by default.  The default location is navbar.",
-                  "type": "string",
-                  "enum": [
-                    "navbar",
-                    "menupanel",
-                    "tabstrip",
-                    "personaltoolbar"
-                  ],
-                  "optional": true
-                }
-              },
-              "optional": true
-            }
-          }
-        }
-      ]
-    },
-    {
-      "namespace": "browserAction",
-      "description": "Use browser actions to put icons in the main browser toolbar, to the right of the address bar. In addition to its icon, a browser action can also have a tooltip, a badge, and a popup.",
-      "permissions": [
-        "manifest:browser_action"
-      ],
-      "types": [
-        {
-          "id": "Details",
-          "type": "object",
-          "description": "Specifies to which tab or window the value should be set, or from which one it should be retrieved. If no tab nor window is specified, the global value is set or retrieved.",
-          "properties": {
-            "tabId": {
-              "type": "integer",
-              "optional": true,
-              "minimum": 0,
-              "description": "When setting a value, it will be specific to the specified tab, and will automatically reset when the tab navigates. When getting, specifies the tab to get the value from; if there is no tab-specific value, the window one will be inherited."
-            },
-            "windowId": {
-              "type": "integer",
-              "optional": true,
-              "minimum": -2,
-              "description": "When setting a value, it will be specific to the specified window. When getting, specifies the window to get the value from; if there is no window-specific value, the global one will be inherited."
-            }
-          }
-        },
-        {
-          "id": "ColorArray",
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 255
-          },
-          "minItems": 4,
-          "maxItems": 4
-        },
-        {
-          "id": "ImageDataType",
-          "type": "object",
-          "isInstanceOf": "ImageData",
-          "additionalProperties": {
-            "type": "any"
-          },
-          "postprocess": "convertImageDataToURL",
-          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
-        },
-        {
-          "id": "ColorValue",
-          "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>.",
-          "choices": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "ColorArray"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        }
-      ],
-      "functions": [
-        {
-          "name": "setTitle",
-          "type": "function",
-          "description": "Sets the title of the browser action. This shows up in the tooltip.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "title": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "description": "The string the browser action should display when moused over."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "getTitle",
-          "type": "function",
-          "description": "Gets the title of the browser action.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "setIcon",
-          "type": "function",
-          "description": "Sets the icon for the browser action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "imageData": {
-                  "choices": [
-                    {
-                      "$ref": "ImageDataType"
-                    },
-                    {
-                      "type": "object",
-                      "patternProperties": {
-                        "^[1-9]\\d*$": {
-                          "$ref": "ImageDataType"
-                        }
-                      }
-                    }
-                  ],
-                  "optional": true,
-                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
-                },
-                "path": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "object",
-                      "patternProperties": {
-                        "^[1-9]\\d*$": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  ],
-                  "optional": true,
-                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "setPopup",
-          "type": "function",
-          "description": "Sets the html document to be opened as a popup when the user clicks on the browser action's icon.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "popup": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "getPopup",
-          "type": "function",
-          "description": "Gets the html document set as the popup for this browser action.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "setBadgeText",
-          "type": "function",
-          "description": "Sets the badge text for the browser action. The badge is displayed on top of the icon.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "text": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "description": "Any number of characters can be passed, but only about four can fit in the space."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "getBadgeText",
-          "type": "function",
-          "description": "Gets the badge text of the browser action. If no tab nor window is specified is specified, the global badge text is returned.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "setBadgeBackgroundColor",
-          "type": "function",
-          "description": "Sets the background color for the badge.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "color": {
-                  "$ref": "ColorValue"
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "getBadgeBackgroundColor",
-          "type": "function",
-          "description": "Gets the background color of the browser action badge.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "$ref": "ColorArray"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "setBadgeTextColor",
-          "type": "function",
-          "description": "Sets the text color for the badge.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "color": {
-                  "$ref": "ColorValue"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "getBadgeTextColor",
-          "type": "function",
-          "description": "Gets the text color of the browser action badge.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            }
-          ]
-        },
-        {
-          "name": "enable",
-          "type": "function",
-          "description": "Enables the browser action for a tab. By default, browser actions are enabled.",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "integer",
-              "optional": true,
-              "name": "tabId",
-              "minimum": 0,
-              "description": "The id of the tab for which you want to modify the browser action."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "disable",
-          "type": "function",
-          "description": "Disables the browser action for a tab.",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "integer",
-              "optional": true,
-              "name": "tabId",
-              "minimum": 0,
-              "description": "The id of the tab for which you want to modify the browser action."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "isEnabled",
-          "type": "function",
-          "description": "Checks whether the browser action is enabled.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            }
-          ]
-        },
-        {
-          "name": "openPopup",
-          "type": "function",
-          "requireUserInput": true,
-          "description": "Opens the extension popup window in the active window.",
-          "async": true,
-          "parameters": []
-        }
-      ],
-      "events": [
-        {
-          "name": "onClicked",
-          "type": "function",
-          "description": "Fired when a browser action icon is clicked.  This event will not fire if the browser action has a popup.",
-          "parameters": [
-            {
-              "name": "tab",
-              "$ref": "tabs.Tab"
-            }
-          ]
         }
       ]
     }
@@ -1582,7 +1087,7 @@
                     "favicon_url": {
                       "type": "string",
                       "optional": true,
-                      "format": "url",
+                      "format": "relativeUrl",
                       "preprocess": "localize"
                     },
                     "suggest_url": {
@@ -1695,7 +1200,8 @@
                           "pref": {
                             "type": "string",
                             "optional": true,
-                            "description": "The preference to retreive the value from."
+                            "description": "The preference to retrieve the value from.",
+                            "preprocess": "localize"
                           },
                           "purpose": {
                             "type": "string",
@@ -4335,342 +3841,6 @@
           "type": "function",
           "description": "User has ended the keyword input session without accepting the input.",
           "parameters": []
-        }
-      ]
-    }
-  ],
-  "page_action.json": [
-    {
-      "namespace": "manifest",
-      "types": [
-        {
-          "$extend": "WebExtensionManifest",
-          "properties": {
-            "page_action": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "UnrecognizedProperty"
-              },
-              "properties": {
-                "default_title": {
-                  "type": "string",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "default_icon": {
-                  "$ref": "IconPath",
-                  "optional": true
-                },
-                "default_popup": {
-                  "type": "string",
-                  "format": "relativeUrl",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "browser_style": {
-                  "type": "boolean",
-                  "optional": true,
-                  "default": false
-                },
-                "show_matches": {
-                  "type": "array",
-                  "optional": true,
-                  "minItems": 1,
-                  "items": {
-                    "$ref": "MatchPattern"
-                  }
-                },
-                "hide_matches": {
-                  "type": "array",
-                  "optional": true,
-                  "minItems": 1,
-                  "items": {
-                    "$ref": "MatchPatternRestricted"
-                  }
-                },
-                "pinned": {
-                  "type": "boolean",
-                  "optional": true,
-                  "default": true
-                }
-              },
-              "optional": true
-            }
-          }
-        }
-      ]
-    },
-    {
-      "namespace": "pageAction",
-      "description": "Use the <code>browser.pageAction</code> API to put icons inside the address bar. Page actions represent actions that can be taken on the current page, but that aren't applicable to all pages.",
-      "permissions": [
-        "manifest:page_action"
-      ],
-      "types": [
-        {
-          "id": "ImageDataType",
-          "type": "object",
-          "isInstanceOf": "ImageData",
-          "additionalProperties": {
-            "type": "any"
-          },
-          "postprocess": "convertImageDataToURL",
-          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
-        }
-      ],
-      "functions": [
-        {
-          "name": "show",
-          "type": "function",
-          "async": "callback",
-          "description": "Shows the page action. The page action is shown whenever the tab is selected.",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "tabId",
-              "minimum": 0,
-              "description": "The id of the tab for which you want to modify the page action."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "hide",
-          "type": "function",
-          "async": "callback",
-          "description": "Hides the page action.",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "tabId",
-              "minimum": 0,
-              "description": "The id of the tab for which you want to modify the page action."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "isShown",
-          "type": "function",
-          "description": "Checks whether the page action is shown.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "description": "Specify the tab to get the shownness from."
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "setTitle",
-          "type": "function",
-          "description": "Sets the title of the page action. This is displayed in a tooltip over the page action.",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "description": "The id of the tab for which you want to modify the page action."
-                },
-                "title": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "description": "The tooltip string."
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "getTitle",
-          "type": "function",
-          "description": "Gets the title of the page action.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "description": "Specify the tab to get the title from."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "setIcon",
-          "type": "function",
-          "description": "Sets the icon for the page action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "description": "The id of the tab for which you want to modify the page action."
-                },
-                "imageData": {
-                  "choices": [
-                    {
-                      "$ref": "ImageDataType"
-                    },
-                    {
-                      "type": "object",
-                      "patternProperties": {
-                        "^[1-9]\\d*$": {
-                          "$ref": "ImageDataType"
-                        }
-                      }
-                    }
-                  ],
-                  "optional": true,
-                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
-                },
-                "path": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "object",
-                      "patternProperties": {
-                        "^[1-9]\\d*$": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  ],
-                  "optional": true,
-                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "setPopup",
-          "type": "function",
-          "async": true,
-          "description": "Sets the html document to be opened as a popup when the user clicks on the page action's icon.",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "description": "The id of the tab for which you want to modify the page action."
-                },
-                "popup": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "getPopup",
-          "type": "function",
-          "description": "Gets the html document set as the popup for this page action.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "description": "Specify the tab to get the popup from."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "openPopup",
-          "type": "function",
-          "requireUserInput": true,
-          "description": "Opens the extension page action in the active window.",
-          "async": true,
-          "parameters": []
-        }
-      ],
-      "events": [
-        {
-          "name": "onClicked",
-          "type": "function",
-          "description": "Fired when a page action icon is clicked.  This event will not fire if the page action has a popup.",
-          "parameters": [
-            {
-              "name": "tab",
-              "$ref": "tabs.Tab"
-            }
-          ]
         }
       ]
     }
@@ -7761,6 +6931,17 @@
       ],
       "types": [
         {
+          "id": "EngagementState",
+          "type": "string",
+          "enum": [
+            "start",
+            "engagement",
+            "abandonment",
+            "discard"
+          ],
+          "description": "The state of an engagement made with the urlbar by the user. <code>start</code>: The user has started an engagement. <code>engagement</code>: The user has completed an engagement by picking a result. <code>abandonment</code>: The user has abandoned their engagement, for example by blurring the urlbar. <code>discard</code>: The engagement ended in a way that should be ignored by listeners."
+        },
+        {
           "id": "Query",
           "type": "object",
           "description": "A query performed in the urlbar.",
@@ -7824,6 +7005,19 @@
           "description": "Possible types of results. <code>remote_tab</code>: A synced tab from another device. <code>search</code>: A search suggestion from a search engine. <code>tab</code>: An open tab in the browser. <code>tip</code>: An actionable message to help the user with their query. <code>url</code>: A URL that's not one of the other types."
         },
         {
+          "id": "SearchOptions",
+          "type": "object",
+          "description": "Options to the <code>search</code> function.",
+          "properties": {
+            "focus": {
+              "type": "boolean",
+              "optional": true,
+              "default": true,
+              "description": "Whether to focus the input field and select its contents."
+            }
+          }
+        },
+        {
           "id": "SourceType",
           "type": "string",
           "enum": [
@@ -7849,6 +7043,28 @@
       },
       "functions": [
         {
+          "name": "closeView",
+          "type": "function",
+          "async": true,
+          "description": "Closes the urlbar view in the current window.",
+          "parameters": []
+        },
+        {
+          "name": "focus",
+          "type": "function",
+          "async": true,
+          "description": "Focuses the urlbar in the current window.",
+          "parameters": [
+            {
+              "name": "select",
+              "type": "boolean",
+              "optional": true,
+              "default": false,
+              "description": "If true, the text in the urlbar will also be selected."
+            }
+          ]
+        },
+        {
           "name": "search",
           "type": "function",
           "async": true,
@@ -7858,6 +7074,13 @@
               "name": "searchString",
               "type": "string",
               "description": "The search string."
+            },
+            {
+              "name": "options",
+              "$ref": "SearchOptions",
+              "optional": true,
+              "default": {},
+              "description": "Options for the search."
             }
           ]
         }
@@ -7891,6 +7114,26 @@
             ],
             "description": "The behavior of the provider for the query."
           }
+        },
+        {
+          "name": "onEngagement",
+          "type": "function",
+          "description": "This event is fired when the user starts and ends an engagement with the urlbar.",
+          "parameters": [
+            {
+              "name": "state",
+              "$ref": "EngagementState",
+              "description": "The state of the engagement."
+            }
+          ],
+          "extraParameters": [
+            {
+              "name": "providerName",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "description": "The name of the provider that will listen for engagement events."
+            }
+          ]
         },
         {
           "name": "onQueryCanceled",
@@ -8872,6 +8115,532 @@
       ]
     }
   ],
+  "browser_action.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "browser_action": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "UnrecognizedProperty"
+              },
+              "properties": {
+                "default_title": {
+                  "type": "string",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "default_icon": {
+                  "$ref": "IconPath",
+                  "optional": true
+                },
+                "theme_icons": {
+                  "type": "array",
+                  "optional": true,
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "ThemeIcons"
+                  },
+                  "description": "Specifies icons to use for dark and light themes"
+                },
+                "default_popup": {
+                  "type": "string",
+                  "format": "relativeUrl",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "browser_style": {
+                  "type": "boolean",
+                  "optional": true,
+                  "default": false
+                },
+                "default_area": {
+                  "description": "Defines the location the browserAction will appear by default.  The default location is navbar.",
+                  "type": "string",
+                  "enum": [
+                    "navbar",
+                    "menupanel",
+                    "tabstrip",
+                    "personaltoolbar"
+                  ],
+                  "optional": true
+                }
+              },
+              "optional": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "namespace": "browserAction",
+      "description": "Use browser actions to put icons in the main browser toolbar, to the right of the address bar. In addition to its icon, a browser action can also have a tooltip, a badge, and a popup.",
+      "permissions": [
+        "manifest:browser_action"
+      ],
+      "types": [
+        {
+          "id": "Details",
+          "type": "object",
+          "description": "Specifies to which tab or window the value should be set, or from which one it should be retrieved. If no tab nor window is specified, the global value is set or retrieved.",
+          "properties": {
+            "tabId": {
+              "type": "integer",
+              "optional": true,
+              "minimum": 0,
+              "description": "When setting a value, it will be specific to the specified tab, and will automatically reset when the tab navigates. When getting, specifies the tab to get the value from; if there is no tab-specific value, the window one will be inherited."
+            },
+            "windowId": {
+              "type": "integer",
+              "optional": true,
+              "minimum": -2,
+              "description": "When setting a value, it will be specific to the specified window. When getting, specifies the window to get the value from; if there is no window-specific value, the global one will be inherited."
+            }
+          }
+        },
+        {
+          "id": "ColorArray",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        {
+          "id": "ImageDataType",
+          "type": "object",
+          "isInstanceOf": "ImageData",
+          "additionalProperties": {
+            "type": "any"
+          },
+          "postprocess": "convertImageDataToURL",
+          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
+        },
+        {
+          "id": "ColorValue",
+          "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>.",
+          "choices": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "ColorArray"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "id": "OnClickData",
+          "type": "object",
+          "description": "Information sent when a browser action is clicked.",
+          "properties": {
+            "modifiers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Shift",
+                  "Alt",
+                  "Command",
+                  "Ctrl",
+                  "MacCtrl"
+                ]
+              },
+              "description": "An array of keyboard modifiers that were held while the menu item was clicked."
+            },
+            "button": {
+              "type": "integer",
+              "optional": true,
+              "description": "An integer value of button by which menu item was clicked."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "setTitle",
+          "type": "function",
+          "description": "Sets the title of the browser action. This shows up in the tooltip.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "title": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The string the browser action should display when moused over."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getTitle",
+          "type": "function",
+          "description": "Gets the title of the browser action.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setIcon",
+          "type": "function",
+          "description": "Sets the icon for the browser action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "imageData": {
+                  "choices": [
+                    {
+                      "$ref": "ImageDataType"
+                    },
+                    {
+                      "type": "object",
+                      "patternProperties": {
+                        "^[1-9]\\d*$": {
+                          "$ref": "ImageDataType"
+                        }
+                      }
+                    }
+                  ],
+                  "optional": true,
+                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                },
+                "path": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "patternProperties": {
+                        "^[1-9]\\d*$": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ],
+                  "optional": true,
+                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "setPopup",
+          "type": "function",
+          "description": "Sets the html document to be opened as a popup when the user clicks on the browser action's icon.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "popup": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getPopup",
+          "type": "function",
+          "description": "Gets the html document set as the popup for this browser action.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setBadgeText",
+          "type": "function",
+          "description": "Sets the badge text for the browser action. The badge is displayed on top of the icon.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "text": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "Any number of characters can be passed, but only about four can fit in the space."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getBadgeText",
+          "type": "function",
+          "description": "Gets the badge text of the browser action. If no tab nor window is specified is specified, the global badge text is returned.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setBadgeBackgroundColor",
+          "type": "function",
+          "description": "Sets the background color for the badge.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "color": {
+                  "$ref": "ColorValue"
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getBadgeBackgroundColor",
+          "type": "function",
+          "description": "Gets the background color of the browser action badge.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "$ref": "ColorArray"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setBadgeTextColor",
+          "type": "function",
+          "description": "Sets the text color for the badge.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "color": {
+                  "$ref": "ColorValue"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "getBadgeTextColor",
+          "type": "function",
+          "description": "Gets the text color of the browser action badge.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            }
+          ]
+        },
+        {
+          "name": "enable",
+          "type": "function",
+          "description": "Enables the browser action for a tab. By default, browser actions are enabled.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "optional": true,
+              "name": "tabId",
+              "minimum": 0,
+              "description": "The id of the tab for which you want to modify the browser action."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "disable",
+          "type": "function",
+          "description": "Disables the browser action for a tab.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "optional": true,
+              "name": "tabId",
+              "minimum": 0,
+              "description": "The id of the tab for which you want to modify the browser action."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "isEnabled",
+          "type": "function",
+          "description": "Checks whether the browser action is enabled.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            }
+          ]
+        },
+        {
+          "name": "openPopup",
+          "type": "function",
+          "requireUserInput": true,
+          "description": "Opens the extension popup window in the active window.",
+          "async": true,
+          "parameters": []
+        }
+      ],
+      "events": [
+        {
+          "name": "onClicked",
+          "type": "function",
+          "description": "Fired when a browser action icon is clicked.  This event will not fire if the browser action has a popup.",
+          "parameters": [
+            {
+              "name": "tab",
+              "$ref": "tabs.Tab"
+            },
+            {
+              "name": "info",
+              "$ref": "OnClickData",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "browser_settings.json": [
     {
       "namespace": "manifest",
@@ -8932,6 +8701,10 @@
         "contextMenuShowEvent": {
           "$ref": "types.Setting",
           "description": "Controls after which mouse event context menus popup. This setting's value is of type ContextMenuMouseEvent, which has possible values of <code>mouseup</code> and <code>mousedown</code>."
+        },
+        "ftpProtocolEnabled": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether the FTP protocol is enabled."
         },
         "homepageOverride": {
           "$ref": "types.Setting",
@@ -8999,6 +8772,12 @@
       "permissions": [
         "captivePortal"
       ],
+      "properties": {
+        "canonicalURL": {
+          "$ref": "types.Setting",
+          "description": "Return the canonical captive-portal detection URL. Read-only."
+        }
+      },
       "functions": [
         {
           "name": "getState",
@@ -11778,7 +11557,8 @@
             "jsallocations",
             "nostacksampling",
             "nativeallocations",
-            "preferencereads"
+            "preferencereads",
+            "ipcmessages"
           ]
         },
         {
@@ -11933,6 +11713,13 @@
             "default_locale": {
               "type": "string",
               "optional": "true"
+            },
+            "l10n_resources": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "optional": true
             }
           }
         }
@@ -12946,10 +12733,29 @@
               }
             },
             "content_security_policy": {
-              "type": "string",
               "optional": true,
-              "format": "contentSecurityPolicy",
-              "onError": "warn"
+              "onError": "warn",
+              "choices": [
+                {
+                  "type": "string",
+                  "format": "contentSecurityPolicy"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "extension_pages": {
+                      "type": "string",
+                      "optional": true,
+                      "format": "contentSecurityPolicy"
+                    },
+                    "content_scripts": {
+                      "type": "string",
+                      "optional": true,
+                      "format": "contentSecurityPolicy"
+                    }
+                  }
+                }
+              ]
             },
             "permissions": {
               "type": "array",
@@ -13992,6 +13798,373 @@
       ]
     }
   ],
+  "page_action.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "page_action": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "UnrecognizedProperty"
+              },
+              "properties": {
+                "default_title": {
+                  "type": "string",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "default_icon": {
+                  "$ref": "IconPath",
+                  "optional": true
+                },
+                "default_popup": {
+                  "type": "string",
+                  "format": "relativeUrl",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "browser_style": {
+                  "type": "boolean",
+                  "optional": true,
+                  "default": false
+                },
+                "show_matches": {
+                  "type": "array",
+                  "optional": true,
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "MatchPattern"
+                  }
+                },
+                "hide_matches": {
+                  "type": "array",
+                  "optional": true,
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "MatchPatternRestricted"
+                  }
+                },
+                "pinned": {
+                  "type": "boolean",
+                  "optional": true,
+                  "default": true
+                }
+              },
+              "optional": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "namespace": "pageAction",
+      "description": "Use the <code>browser.pageAction</code> API to put icons inside the address bar. Page actions represent actions that can be taken on the current page, but that aren't applicable to all pages.",
+      "permissions": [
+        "manifest:page_action"
+      ],
+      "types": [
+        {
+          "id": "ImageDataType",
+          "type": "object",
+          "isInstanceOf": "ImageData",
+          "additionalProperties": {
+            "type": "any"
+          },
+          "postprocess": "convertImageDataToURL",
+          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
+        },
+        {
+          "id": "OnClickData",
+          "type": "object",
+          "description": "Information sent when a page action is clicked.",
+          "properties": {
+            "modifiers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Shift",
+                  "Alt",
+                  "Command",
+                  "Ctrl",
+                  "MacCtrl"
+                ]
+              },
+              "description": "An array of keyboard modifiers that were held while the menu item was clicked."
+            },
+            "button": {
+              "type": "integer",
+              "optional": true,
+              "description": "An integer value of button by which menu item was clicked."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "show",
+          "type": "function",
+          "async": "callback",
+          "description": "Shows the page action. The page action is shown whenever the tab is selected.",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "tabId",
+              "minimum": 0,
+              "description": "The id of the tab for which you want to modify the page action."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "hide",
+          "type": "function",
+          "async": "callback",
+          "description": "Hides the page action.",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "tabId",
+              "minimum": 0,
+              "description": "The id of the tab for which you want to modify the page action."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "isShown",
+          "type": "function",
+          "description": "Checks whether the page action is shown.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "description": "Specify the tab to get the shownness from."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "setTitle",
+          "type": "function",
+          "description": "Sets the title of the page action. This is displayed in a tooltip over the page action.",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "The id of the tab for which you want to modify the page action."
+                },
+                "title": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The tooltip string."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "getTitle",
+          "type": "function",
+          "description": "Gets the title of the page action.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "description": "Specify the tab to get the title from."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setIcon",
+          "type": "function",
+          "description": "Sets the icon for the page action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "The id of the tab for which you want to modify the page action."
+                },
+                "imageData": {
+                  "choices": [
+                    {
+                      "$ref": "ImageDataType"
+                    },
+                    {
+                      "type": "object",
+                      "patternProperties": {
+                        "^[1-9]\\d*$": {
+                          "$ref": "ImageDataType"
+                        }
+                      }
+                    }
+                  ],
+                  "optional": true,
+                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                },
+                "path": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "patternProperties": {
+                        "^[1-9]\\d*$": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ],
+                  "optional": true,
+                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "setPopup",
+          "type": "function",
+          "async": true,
+          "description": "Sets the html document to be opened as a popup when the user clicks on the page action's icon.",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "The id of the tab for which you want to modify the page action."
+                },
+                "popup": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "getPopup",
+          "type": "function",
+          "description": "Gets the html document set as the popup for this page action.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "description": "Specify the tab to get the popup from."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "openPopup",
+          "type": "function",
+          "requireUserInput": true,
+          "description": "Opens the extension page action in the active window.",
+          "async": true,
+          "parameters": []
+        }
+      ],
+      "events": [
+        {
+          "name": "onClicked",
+          "type": "function",
+          "description": "Fired when a page action icon is clicked.  This event will not fire if the page action has a popup.",
+          "parameters": [
+            {
+              "name": "tab",
+              "$ref": "tabs.Tab"
+            },
+            {
+              "name": "info",
+              "$ref": "OnClickData",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "permissions.json": [
     {
       "namespace": "permissions",
@@ -14249,6 +14422,12 @@
               "type": "boolean",
               "optional": true,
               "description": "Proxy DNS when using SOCKS v5."
+            },
+            "respectBeConservative": {
+              "type": "boolean",
+              "optional": true,
+              "default": true,
+              "description": " If true (the default value), do not use newer TLS protocol features that might have interoperability problems on the Internet. This is intended only for use with critical infrastructure like the updates, and is only available to privileged addons."
             }
           }
         }
@@ -14332,6 +14511,10 @@
                 "urlClassification": {
                   "$ref": "webRequest.UrlClassification",
                   "description": "Url classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -14360,18 +14543,6 @@
           "name": "onError",
           "type": "function",
           "description": "Notifies about errors caused by the invalid use of the proxy API.",
-          "parameters": [
-            {
-              "name": "error",
-              "type": "object"
-            }
-          ]
-        },
-        {
-          "name": "onProxyError",
-          "type": "function",
-          "deprecated": "proxy.onProxyError has been deprecated and will be removed in Firefox 71. Use proxy.onError instead.",
-          "description": "Please use $(ref:proxy.onError).",
           "parameters": [
             {
               "name": "error",
@@ -14423,6 +14594,37 @@
             "proxy_only"
           ],
           "description": "The IP handling policy of WebRTC."
+        },
+        {
+          "id": "tlsVersionRestrictionConfig",
+          "type": "object",
+          "description": "An object which describes TLS minimum and maximum versions.",
+          "properties": {
+            "minimum": {
+              "type": "string",
+              "enum": [
+                "TLSv1",
+                "TLSv1.1",
+                "TLSv1.2",
+                "TLSv1.3",
+                "unknown"
+              ],
+              "optional": true,
+              "description": "The minimum TLS version supported."
+            },
+            "maximum": {
+              "type": "string",
+              "enum": [
+                "TLSv1",
+                "TLSv1.1",
+                "TLSv1.2",
+                "TLSv1.3",
+                "unknown"
+              ],
+              "optional": true,
+              "description": "The maximum TLS version supported."
+            }
+          }
         }
       ],
       "properties": {
@@ -14437,6 +14639,10 @@
         "webRTCIPHandlingPolicy": {
           "$ref": "types.Setting",
           "description": "Allow users to specify the media performance/privacy tradeoffs which impacts how WebRTC traffic will be routed and how much local address information is exposed. This preference's value is of type IPHandlingPolicy, defaulting to <code>default</code>."
+        },
+        "tlsVersionRestriction": {
+          "$ref": "types.Setting",
+          "description": "This property controls the minimum and maximum TLS versions. This setting's value is an object of $(ref:tlsVersionRestrictionConfig)."
         }
       }
     },
@@ -15818,6 +16024,93 @@
           ]
         },
         {
+          "name": "keyedScalarAdd",
+          "type": "function",
+          "description": "Adds the value to the given keyed scalar.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "description": "The scalar name"
+            },
+            {
+              "name": "key",
+              "type": "string",
+              "description": "The key name"
+            },
+            {
+              "name": "value",
+              "type": "integer",
+              "minimum": 1,
+              "description": "The numeric value to add to the scalar. Only unsigned integers supported."
+            }
+          ]
+        },
+        {
+          "name": "keyedScalarSet",
+          "type": "function",
+          "description": "Sets the keyed scalar to the given value. Throws if the value type doesn't match the scalar type.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "description": "The scalar name."
+            },
+            {
+              "name": "key",
+              "type": "string",
+              "description": "The key name."
+            },
+            {
+              "name": "value",
+              "description": "The value to set the scalar to.",
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "any"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "keyedScalarSetMaximum",
+          "type": "function",
+          "description": "Sets the keyed scalar to the maximum of the current and the passed value",
+          "async": true,
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "description": "The scalar name."
+            },
+            {
+              "name": "key",
+              "type": "string",
+              "description": "The key name."
+            },
+            {
+              "name": "value",
+              "type": "integer",
+              "minimum": 0,
+              "description": "The numeric value to set the scalar to. Only unsigned integers supported."
+            }
+          ]
+        },
+        {
           "name": "recordEvent",
           "type": "function",
           "description": "Record an event in Telemetry. Throws when trying to record an unknown event.",
@@ -15931,6 +16224,17 @@
       ],
       "description": "none",
       "functions": [
+        {
+          "name": "withHandlingUserInput",
+          "type": "function",
+          "description": "Calls the callback function wrapped with user input set.  This is only used for internal unit testing.",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback"
+            }
+          ]
+        },
         {
           "name": "notifyFail",
           "type": "function",
@@ -16825,7 +17129,6 @@
               "name": "onChange",
               "type": "function",
               "description": "Fired after the setting changes.",
-              "unsupported": true,
               "parameters": [
                 {
                   "type": "object",
@@ -18106,11 +18409,11 @@
           "properties": {
             "firstParty": {
               "$ref": "UrlClassificationParty",
-              "description": "First party classification flags if the request has been classified."
+              "description": "Classification flags if the request has been classified and it is first party."
             },
             "thirdParty": {
               "$ref": "UrlClassificationParty",
-              "description": "Third party classification flags if the request has been classified."
+              "description": "Classification flags if the request has been classified and it or its window hierarchy is third party."
             }
           }
         }
@@ -18278,6 +18581,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18373,6 +18680,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18468,6 +18779,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18566,6 +18881,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18694,6 +19013,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             },
@@ -18817,6 +19140,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18928,6 +19255,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -19034,6 +19365,18 @@
                 "urlClassification": {
                   "$ref": "UrlClassification",
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
+                },
+                "requestSize": {
+                  "type": "integer",
+                  "description": "For http requests, the bytes transferred in the request. Only available in onCompleted."
+                },
+                "responseSize": {
+                  "type": "integer",
+                  "description": "For http requests, the bytes received in the request. Only available in onCompleted."
                 }
               }
             }
@@ -19132,6 +19475,10 @@
                   "$ref": "UrlClassification",
                   "optional": true,
                   "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
