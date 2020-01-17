@@ -67,7 +67,6 @@ class Schema {
     let schema;
     if (name === "sinon-chrome") {
       const items = Object.entries(schemas);
-      const menusChild = this.get("menus_child.json");
       const arr = [];
       for (const [key, item] of items) {
         const subItems = Object.values(item);
@@ -92,6 +91,7 @@ class Schema {
         if (events || functions) {
           if (namespace === "menus") {
             if (types) {
+              const menusChild = this.get("menus_child.json");
               const [{functions: menusChildFunctions}] = menusChild;
               const contextMenus = Object.assign({}, item);
               contextMenus.namespace = "contextMenus";
