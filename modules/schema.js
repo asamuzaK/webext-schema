@@ -47,12 +47,12 @@ class Schema {
     if (this._importMap.size) {
       const items = Array.from(this._importMap);
       for (const [key, value] of items) {
-        const [itemNs, itemKey] = key;
-        let target;
-        if (itemKey) {
-          target = this._browser[itemNs] && this._browser[itemNs][itemKey];
-        } else {
-          target = this._browser[itemNs];
+        const [...itemKeys] = key.split(".");
+        const l = itemKeys.length;
+        let i = 0, target = this._browser;
+        while (i < l) {
+          target = target[itemKeys[i]];
+          i++;
         }
         if (target) {
           const {$import, namespace} = value;
@@ -82,12 +82,12 @@ class Schema {
     if (this._refMap.size) {
       const items = Array.from(this._refMap);
       for (const [key, value] of items) {
-        const [itemNs, itemKey] = key;
-        let target;
-        if (itemKey) {
-          target = this._browser[itemNs] && this._browser[itemNs][itemKey];
-        } else {
-          target = this._browser[itemNs];
+        const [...itemKeys] = key.split(".");
+        const l = itemKeys.length;
+        let i = 0, target = this._browser;
+        while (i < l) {
+          target = target[itemKeys[i]];
+          i++;
         }
         if (target) {
           const {$ref, namespace} = value;
@@ -178,17 +178,19 @@ class Schema {
     for (const [key, item] of items) {
       const {$ref, properties, type, unsupported} = item;
       if (!unsupported) {
-        $ref && this._refMap.set([namespace, key], {$ref, namespace});
+        $ref && this._refMap.set(`${namespace}.${key}`, {$ref, namespace});
         if (item.hasOwnProperty("value")) {
           target[key] = item.value;
         } else if (type === "function") {
           target[key] = this._sandbox.stub();
-        } else if (type === "object" || item.hasOwnProperty("properties")) {
+        } else if (type === "object" || $ref ||
+                   item.hasOwnProperty("properties")) {
           if (!target[key]) {
             target[key] = {};
           }
-          properties &&
-            this._mockProperties(target[key], properties, namespace);
+          properties && this._mockProperties(
+            target[key], properties, `${namespace}.${key}`,
+          );
         } else {
           target[key] = null;
         }
@@ -218,15 +220,17 @@ class Schema {
     for (const item of items) {
       const {$import, events, functions, id, properties, type} = item;
       if (id) {
-        $import && this._importMap.set([namespace, id], {$import, namespace});
-        if (type === "object" || events || functions || properties) {
+        $import &&
+          this._importMap.set(`${namespace}.${id}`, {$import, namespace});
+        if (type === "object" || $import || events || functions || properties) {
           if (!target[id]) {
             target[id] = {};
           }
           events && this._mockEvents(target[id], events);
           functions && this._mockFunctions(target[id], functions);
-          properties && this._mockProperties(target[id], properties, namespace);
-        } else if (!target.hasOwnProperty(id)) {
+          properties &&
+            this._mockProperties(target[id], properties, `${namespace}.${id}`);
+        } else {
           target[id] = null;
         }
       }
@@ -393,7 +397,8 @@ class Schema {
             mapKey.push(namespace);
             ns = this._browser[namespace];
           }
-          $import && this._importMap.set(mapKey, {$import, namespace});
+          $import &&
+            this._importMap.set(mapKey.join("."), {$import, namespace});
           events && this._mockEvents(ns, events);
           functions && this._mockFunctions(ns, functions);
           properties && this._mockProperties(ns, properties, namespace);

@@ -111,7 +111,7 @@ describe("Schema", () => {
         },
         bar: {},
       };
-      schema._importMap.set(["qux"], {
+      schema._importMap.set("qux", {
         $import: "baz",
         namespace: "foo",
       });
@@ -134,7 +134,7 @@ describe("Schema", () => {
         },
         bar: {},
       };
-      schema._importMap.set(["bar"], {
+      schema._importMap.set("bar", {
         $import: "foo",
         namespace: "bar",
       });
@@ -160,7 +160,7 @@ describe("Schema", () => {
         },
         bar: {},
       };
-      schema._importMap.set(["bar"], {
+      schema._importMap.set("bar", {
         $import: "foo.baz",
         namespace: "bar",
       });
@@ -190,7 +190,7 @@ describe("Schema", () => {
           quux: {},
         },
       };
-      schema._importMap.set(["bar", "quux"], {
+      schema._importMap.set("bar.quux", {
         $import: "foo.baz",
         namespace: "bar",
       });
@@ -220,7 +220,7 @@ describe("Schema", () => {
           },
         },
       };
-      schema._importMap.set(["foo", "bar"], {
+      schema._importMap.set("foo.bar", {
         $import: "baz",
         namespace: "foo",
       });
@@ -256,7 +256,7 @@ describe("Schema", () => {
         },
         bar: {},
       };
-      schema._refMap.set(["qux"], {
+      schema._refMap.set("qux", {
         $ref: "baz",
         namespace: "foo",
       });
@@ -279,7 +279,7 @@ describe("Schema", () => {
         },
         bar: {},
       };
-      schema._refMap.set(["bar"], {
+      schema._refMap.set("bar", {
         $ref: "foo",
         namespace: "bar",
       });
@@ -305,7 +305,7 @@ describe("Schema", () => {
         },
         bar: {},
       };
-      schema._refMap.set(["bar"], {
+      schema._refMap.set("bar", {
         $ref: "foo.baz",
         namespace: "bar",
       });
@@ -335,7 +335,7 @@ describe("Schema", () => {
           quux: {},
         },
       };
-      schema._refMap.set(["bar", "quux"], {
+      schema._refMap.set("bar.quux", {
         $ref: "foo.baz",
         namespace: "bar",
       });
@@ -365,7 +365,7 @@ describe("Schema", () => {
           },
         },
       };
-      schema._refMap.set(["foo", "bar"], {
+      schema._refMap.set("foo.bar", {
         $ref: "baz",
         namespace: "foo",
       });
@@ -567,11 +567,11 @@ describe("Schema", () => {
         },
       }, "foo");
       assert.deepEqual(res, {
-        bar: null,
+        bar: {},
       }, "result");
       assert.deepEqual(Array.from(schema._refMap), [
         [
-          ["foo", "bar"],
+          "foo.bar",
           {
             $ref: "baz",
             namespace: "foo",
@@ -684,11 +684,11 @@ describe("Schema", () => {
         },
       ], "foo");
       assert.deepEqual(res, {
-        baz: null,
+        baz: {},
       }, "result");
       assert.deepEqual(Array.from(schema._importMap), [
         [
-          ["foo", "baz"],
+          "foo.baz",
           {
             $import: "bar",
             namespace: "foo",
@@ -913,8 +913,8 @@ describe("Schema", () => {
       assert.isNumber(browserAction.onClicked.addListener.callCount,
                       "stub browserAction.onClicked.addListener.callCount");
       assert.isObject(browserSettings, "browserSettings");
-      assert.isNull(browserSettings.closeTabsByDoubleClick,
-                    "browserSettings.closeTabsByDoubleClick");
+      assert.isObject(browserSettings.closeTabsByDoubleClick,
+                      "browserSettings.closeTabsByDoubleClick");
       assert.isObject(commands, "commands");
       assert.isFunction(commands.update, "commands.update");
       assert.isNumber(commands.update.callCount,
@@ -959,6 +959,12 @@ describe("Schema", () => {
       assert.isObject(runtime, "runtime");
       assert.isFunction(runtime.connect, "runtime.connect");
       assert.isNumber(runtime.connect.callCount, "stub runtime.connect");
+      assert.isObject(runtime.Port, "runtime.Port");
+      assert.isFunction(runtime.Port.disconnect, "runtime.Port.disconnect");
+      assert.isFunction(runtime.Port.onDisconnect.addListener,
+                        "runtime.Port.disconnect");
+      assert.isFunction(runtime.Port.onDisconnect.addListener,
+                        "runtime.Port.onDisconnect.addListener");
       assert.isObject(sessions, "sessions");
       assert.isFunction(sessions.getRecentlyClosed,
                         "sessions.getRecentlyClosed");
