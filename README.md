@@ -94,3 +94,14 @@ Get the list of schema files.
 const list = new Schema().list();
 // ["alarms.json", "bookmarks.json", ...]
 ```
+
+### schema.mock()
+
+* @returns {Object} - stubbed browser api
+
+Creates stubbed browser api.
+Functions are stubbed by sinon.sandbox.stub() ([Sinon.JS](https://sinonjs.org/)).
+
+```
+const browser = new Schema().mock();
+```
