@@ -7,9 +7,46 @@ const {assert} = require("chai");
 const {describe, it} = require("mocha");
 
 describe("Schema", () => {
-  it("should be instance of Schema", () => {
-    const schema = new Schema();
-    assert.instanceOf(schema, Schema);
+  describe("construct", () => {
+    it("should be instance of Schema", () => {
+      const schema = new Schema();
+      assert.instanceOf(schema, Schema, "instance");
+      assert.strictEqual(schema.channel, "beta", "channel");
+      assert.isObject(schema._sandbox, "sandbox");
+    });
+
+    it("should be instance of Schema", () => {
+      const schema = new Schema("central");
+      assert.instanceOf(schema, Schema, "instance");
+      assert.strictEqual(schema.channel, "central", "channel");
+      assert.isObject(schema._sandbox, "sandbox");
+    });
+
+    it("should be instance of Schema", () => {
+      const config = {
+        injectInto: null,
+        properties: ["spy", "stub", "mock"],
+        useFakeTimers: true,
+        useFakeServer: true,
+      };
+      const schema = new Schema(config);
+      assert.instanceOf(schema, Schema, "instance");
+      assert.strictEqual(schema.channel, "beta", "channel");
+      assert.isObject(schema._sandbox, "sandbox");
+    });
+
+    it("should be instance of Schema", () => {
+      const config = {
+        injectInto: null,
+        properties: ["spy", "stub", "mock"],
+        useFakeTimers: true,
+        useFakeServer: true,
+      };
+      const schema = new Schema("central", config);
+      assert.instanceOf(schema, Schema, "instance");
+      assert.strictEqual(schema.channel, "central", "channel");
+      assert.isObject(schema._sandbox, "sandbox");
+    });
   });
 
   describe("getter", () => {

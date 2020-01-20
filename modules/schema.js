@@ -3,7 +3,7 @@
  */
 "use strict";
 /* api */
-const {getType, isString} = require("./common");
+const {getType, isObjectNotEmpty, isString} = require("./common");
 const camelize = require("camelize");
 const decamelize = require("decamelize");
 const fs = require("fs");
@@ -16,15 +16,21 @@ const {CHAR} = require("./constant");
 class Schema {
   /**
    * construct
-   * @param {string} [ch] - release channel
+   * @param {...(string|Object)} [args] - optional arguments
+   * @param {string} [args.<string>] - release channel
+   * @param {Object} [args.<Object>] - sinon sandbox config
    */
-  constructor(ch) {
+  constructor(...args) {
+    const [arg1, arg2] = args;
     this._channel =
-      isString(ch) && /(?:(?:centra|mai)l|beta|release)/.test(ch) && ch ||
-      "beta";
+      isString(arg1) && /(?:(?:centra|mai)l|beta|release)/.test(arg1) &&
+      arg1 || "beta";
+    this._sandbox =
+      isObjectNotEmpty(arg1) && sinon.createSandbox(arg1) ||
+      isObjectNotEmpty(arg2) && sinon.createSandbox(arg2) ||
+      sinon.createSandbox();
     this._importMap = new Map();
     this._refMap = new Map();
-    this._sandbox = sinon.createSandbox();
     this._browser;
   }
 
