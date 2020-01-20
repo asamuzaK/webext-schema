@@ -117,13 +117,28 @@ const list = new Schema().list();
 
 Creates stubbed browser api.
 Functions are stubbed by `sinon.sandbox.stub()` and you can pass sinon config on construct.
-See [Sinon.JS](https://sinonjs.org/) for details.
 You can access sandbox via `browser._sandbox`.
+To initialize all stubbed functions, call `browser._sandbox.reset()`.
+
+See [Sinon.JS](https://sinonjs.org/) for details.
 
 ```
-const schema = new Schema(channel, config);
-const browser = schema.mock();
+const browser = new Schema(channel, config).mock();
 
-// reset sandbox
+// example of mocking runtime.connect()
+const mockConnect = browser.runtime.connect.callsFake(({name}) => {
+  const port = Object.assign({}, browser.runtime.Port);
+  port.name = name;
+  return port;
+});
+
+const port1 = mockConnect({name: "foo"});
+const port2 = mockConnect({name: "bar"});
+assert.strictEqual(port1.name, "foo", "name");
+assert.isFunction(port1.onDisconnect.addListener, "function");
+assert.strictEqual(port2.name, "bar", "name");
+assert.isFunction(port2.onDisconnect.addListener, "function");
+
+// reset
 browser._sandbox.reset();
 ```

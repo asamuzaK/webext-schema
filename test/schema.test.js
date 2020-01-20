@@ -1026,6 +1026,36 @@ describe("Schema", () => {
       assert.isFunction(windows.get, "windows.get");
       assert.isNumber(windows.get.callCount, "stub windows.get");
     });
+
+    it("should access sandbox", () => {
+      const browser = new Schema().mock();
+      assert.isObject(browser._sandbox, "sandbox");
+      assert.isFunction(browser._sandbox.stub, "stub");
+      const i = browser.runtime.connect.callCount;
+      browser.runtime.connect();
+      assert.strictEqual(browser.runtime.connect.callCount, i + 1, "called");
+      browser._sandbox.reset();
+      assert.strictEqual(browser.runtime.connect.callCount, 0, "reset");
+    });
+
+    it("mock runtime.connect", () => {
+      const browser = new Schema().mock();
+      const mockConnect = browser.runtime.connect.callsFake(({name}) => {
+        const port = Object.assign({}, browser.runtime.Port);
+        port.name = name;
+        return port;
+      });
+
+      const port1 = mockConnect({name: "foo"});
+      const port2 = mockConnect({name: "bar"});
+      assert.strictEqual(port1.name, "foo", "name");
+      assert.strictEqual(port2.name, "bar", "name");
+      assert.isFunction(port1.onDisconnect.addListener, "function");
+      assert.isFunction(port2.onDisconnect.addListener, "function");
+
+      // reset
+      mockConnect.reset();
+    });
   });
 });
 
