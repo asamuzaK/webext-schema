@@ -5,7 +5,8 @@
 
 # webext-schema
 
-WebExtensions schemas and MailExtensions schemas fetched from hg.mozilla.org
+WebExtensions schemas and MailExtensions schemas fetched from [hg.mozilla.org](https://hg.mozilla.org/).
+Stubbed browser API is also available.
 
 ## Install
 
@@ -116,11 +117,13 @@ const list = new Schema().list();
 * @returns {Object} - stubbed browser api
 
 Creates stubbed browser api.
-Functions are stubbed by `sinon.sandbox.stub()` and you can pass sinon config on construct.
-You can access sandbox via `browser._sandbox`.
-To initialize all stubbed functions, call `browser._sandbox.reset()`.
 
-See [Sinon.JS](https://sinonjs.org/) for details.
+* Functions are stubbed by `sinon.sandbox.stub()`.
+* You can access sandbox object via `browser._sandbox`.
+  As an example of usage, call `browser._sandbox.reset()` before and/or after each test to initialize all the stubbed functions.
+* Optionally, you can pass sinon config as an argument when creating an instance.
+
+See [Sinon.JS](https://sinonjs.org/) for details of sandbox.
 
 ```
 const browser = new Schema(channel, config).mock();
@@ -134,10 +137,10 @@ const mockConnect = browser.runtime.connect.callsFake(({name}) => {
 
 const port1 = mockConnect({name: "foo"});
 const port2 = mockConnect({name: "bar"});
-assert.strictEqual(port1.name, "foo", "name");
-assert.isFunction(port1.onDisconnect.addListener, "function");
-assert.strictEqual(port2.name, "bar", "name");
-assert.isFunction(port2.onDisconnect.addListener, "function");
+assert.strictEqual(port1.name, "foo");
+assert.isFunction(port1.onDisconnect.addListener);
+assert.strictEqual(port2.name, "bar");
+assert.isFunction(port2.onDisconnect.addListener);
 
 // reset
 browser._sandbox.reset();
