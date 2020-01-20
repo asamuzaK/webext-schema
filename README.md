@@ -100,8 +100,14 @@ const list = new Schema().list();
 * @returns {Object} - stubbed browser api
 
 Creates stubbed browser api.
-Functions are stubbed by sinon.sandbox.stub() ([Sinon.JS](https://sinonjs.org/)).
+Functions are stubbed by `sinon.sandbox.stub()` and you can pass sinon config on construct.
+See [Sinon.JS](https://sinonjs.org/) for details.
+You can access sandbox via `browser._sandbox`.
 
 ```
-const browser = new Schema().mock();
+const schema = new Schema(channel, config);
+const browser = schema.mock();
+
+// reset sandbox
+browser._sandbox.reset();
 ```
