@@ -17,8 +17,8 @@ class Schema {
   /**
    * construct
    * @param {...(string|Object)} [args] - optional arguments
-   * @param {string} [args.<string>] - release channel
-   * @param {Object} [args.<Object>] - sinon sandbox config
+   *                                      {string} - release channel
+   *                                      {Object} - sinon config
    */
   constructor(...args) {
     const [arg1, arg2] = args;

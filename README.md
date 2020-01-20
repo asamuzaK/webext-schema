@@ -18,7 +18,23 @@ npm i webext-schema
 ```
 const {Schema} = require("webext-schema");
 
-const schema = new Schema();
+const schema = new Schema(<var>channel</var>, <var>sinonConfig</var>);
+```
+
+### Construct options
+
+* @param {string} [channel] - release channel
+* @param {Object} [sinonConfig] - sinon config
+
+Both arguments are optional.
+
+```
+const schema = new Schema("central", {
+  injectInto: null,
+  properties: ["spy", "stub", "mock", "clock", "server", "requests"],
+  useFakeTimers: true,
+  useFakeServer: true,
+});
 ```
 
 ### schema.channel
