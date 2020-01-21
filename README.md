@@ -19,13 +19,13 @@ npm i webext-schema
 ```
 const {Schema} = require("webext-schema");
 
-const schema = new Schema(<var>channel</var>, <var>sinonConfig</var>);
+const schema = new Schema();
 ```
 
-### Construct options
+### new Schema(<var>channel</var>, <var>sinonConfig</var>)
 
 * @param {string} [channel] - release channel
-* @param {Object} [sinonConfig] - sinon config
+* @param {Object} [sinonConfig] - config for `sinon.createSandbox()`, see [Sinon.JS](https://sinonjs.org/) for details.
 
 Both arguments are optional.
 
