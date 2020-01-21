@@ -25,14 +25,12 @@ const schema = new Schema();
 ### new Schema(<var>channel</var>, <var>sinonConfig</var>)
 
 * @param {string} [channel] - release channel
-* @param {Object} [sinonConfig] - config for `sinon.createSandbox()`, see [Sinon.JS](https://sinonjs.org/) for details.
+* @param {Object} [sinonConfig] - optional configuration for `sinon.createSandbox()`, see [Sinon.JS](https://sinonjs.org/) for details.
 
 Both arguments are optional.
 
 ```
 const schema = new Schema("central", {
-  injectInto: null,
-  properties: ["spy", "stub", "mock", "clock", "server", "requests"],
   useFakeTimers: true,
   useFakeServer: true,
 });
@@ -116,17 +114,17 @@ const list = new Schema().list();
 
 * @returns {Object} - stubbed browser api
 
-Creates stubbed browser api.
+Creates stubbed browser API.
 
 * Functions are stubbed by `sinon.sandbox.stub()`.
 * You can access sandbox object via `browser._sandbox`.
   As an example of usage, call `browser._sandbox.reset()` before and/or after each test to initialize all the stubbed functions.
-* Optionally, you can pass sinon config as an argument when creating an instance.
+* Optionally, you can pass sinon configuration object as an argument when creating a schema instance.
 
-See [Sinon.JS](https://sinonjs.org/) for details of sandbox.
+See [Sinon.JS](https://sinonjs.org/) for details of sinon.sandbox.
 
 ```
-const browser = new Schema(channel, config).mock();
+const browser = new Schema().mock();
 
 // example of mocking runtime.connect()
 const mockConnect = browser.runtime.connect.callsFake(({name}) => {
