@@ -48,7 +48,7 @@ class Schema {
   /**
    * get target from namespace key
    * @param {string} key - namespace key
-   * @returns {Object} - browser target namespace
+   * @returns {Object} - target object
    */
   _getTargetFromNamespace(key) {
     let target;
