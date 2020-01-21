@@ -131,6 +131,73 @@ describe("Schema", () => {
     });
   });
 
+  describe("get target from namespace", () => {
+    it("should get null", () => {
+      const schema = new Schema();
+      schema._browser = {};
+      const res = schema._getTargetFromNamespace();
+      assert.isNull(res, "result");
+    });
+
+    it("should get null", () => {
+      const schema = new Schema();
+      schema._browser = {};
+      const res = schema._getTargetFromNamespace("");
+      assert.isNull(res, "result");
+    });
+
+    it("should get null", () => {
+      const schema = new Schema();
+      schema._browser = {};
+      const res = schema._getTargetFromNamespace("foo");
+      assert.isNull(res, "result");
+    });
+
+    it("should get target object", () => {
+      const schema = new Schema();
+      schema._browser = {
+        foo: {},
+      };
+      const res = schema._getTargetFromNamespace("foo");
+      assert.deepEqual(res, schema._browser.foo, "result");
+    });
+
+    it("should get null", () => {
+      const schema = new Schema();
+      schema._browser = {
+        foo: {
+          bar: {},
+        },
+      };
+      const res = schema._getTargetFromNamespace("foo.baz");
+      assert.isNull(res, "result");
+    });
+
+    it("should get target object", () => {
+      const schema = new Schema();
+      schema._browser = {
+        foo: {
+          bar: {},
+        },
+      };
+      const res = schema._getTargetFromNamespace("foo.bar");
+      assert.deepEqual(res, schema._browser.foo.bar, "result");
+    });
+
+    it("should get target object", () => {
+      const schema = new Schema();
+      schema._browser = {
+        foo: {
+          bar: {
+            baz: {},
+          },
+        },
+      };
+      const res = schema._getTargetFromNamespace("foo.bar.baz");
+      assert.deepEqual(res, schema._browser.foo.bar.baz, "result");
+    });
+  });
+
   describe("assign import map", () => {
     it("should not assign", () => {
       const schema = new Schema();

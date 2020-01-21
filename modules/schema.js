@@ -46,27 +46,45 @@ class Schema {
   }
 
   /**
-   * assign imported value
+   * get target from namespace key
+   * @param {string} key - namespace key
+   * @returns {Object} - browser target namespace
+   */
+  _getTargetFromNamespace(key) {
+    let target;
+    if (isString(key)) {
+      const [...itemKeys] = key.split(".");
+      let i = 0;
+      const l = itemKeys.length;
+      target = this._browser;
+      while (i < l) {
+        const itemKey = itemKeys[i];
+        if (target[itemKey]) {
+          target = target[itemKey];
+        } else {
+          target = null;
+          break;
+        }
+        i++;
+      }
+    }
+    return target || null;
+  }
+
+  /**
+   * assign imported values
    * @returns {void}
    */
   _assignImportMap() {
     if (this._importMap.size) {
       const items = Array.from(this._importMap);
       for (const [key, value] of items) {
-        const [...itemKeys] = key.split(".");
-        const l = itemKeys.length;
-        let i = 0, target = this._browser;
-        while (i < l) {
-          target = target[itemKeys[i]];
-          i++;
-        }
+        const target = this._getTargetFromNamespace(key);
         if (target) {
           const {$import, namespace} = value;
           let importValue;
           if ($import.includes(".")) {
-            const [importNs, propKey] = $import.split(".");
-            importValue =
-              this._browser[importNs] && this._browser[importNs][propKey];
+            importValue = this._getTargetFromNamespace($import);
           } else if (this._browser[$import]) {
             importValue = this._browser[$import];
           } else {
@@ -81,26 +99,19 @@ class Schema {
   }
 
   /**
-   * assign referred value
+   * assign referred values
    * @returns {void}
    */
   _assignRefMap() {
     if (this._refMap.size) {
       const items = Array.from(this._refMap);
       for (const [key, value] of items) {
-        const [...itemKeys] = key.split(".");
-        const l = itemKeys.length;
-        let i = 0, target = this._browser;
-        while (i < l) {
-          target = target[itemKeys[i]];
-          i++;
-        }
+        const target = this._getTargetFromNamespace(key);
         if (target) {
           const {$ref, namespace} = value;
           let refValue;
           if ($ref.includes(".")) {
-            const [refNs, propKey] = $ref.split(".");
-            refValue = this._browser[refNs] && this._browser[refNs][propKey];
+            refValue = this._getTargetFromNamespace($ref);
           } else if (this._browser[$ref]) {
             refValue = this._browser[$ref];
           } else {
