@@ -1047,6 +1047,8 @@ describe("Schema", () => {
       assert.isFunction(menus.getTargetElement, "menus.getTargetElement");
       assert.isNumber(menus.getTargetElement.callCount,
                       "stub menus.getTargetElement");
+      assert.isFunction(menus.removeAll, "menus.removeAll");
+      assert.isNumber(menus.removeAll.callCount, "stub menus.removeAll");
       assert.isObject(notifications, "notifications");
       assert.isFunction(notifications.create, "notifications.create");
       assert.isNumber(notifications.create.callCount,
