@@ -1001,8 +1001,8 @@ describe("Schema", () => {
       const {
         bookmarks, browserAction, browserSettings, commands, contextMenus,
         contextualIdentities, devtools: {inspectedWindow}, i18n, management,
-        menus, notifications, permissions, runtime, sessions, storage, tabs,
-        theme, windows,
+        menus, notifications, permissions, privacy, runtime, sessions, storage,
+        tabs, theme, windows,
       } = browser;
       assert.isObject(bookmarks, "bookmarks");
       assert.isFunction(bookmarks.create, "bookmarks.create");
@@ -1062,6 +1062,8 @@ describe("Schema", () => {
       assert.isFunction(permissions.request, "permissions.request");
       assert.isNumber(permissions.request.callCount,
                       "stub permissions.request");
+      assert.isObject(privacy.network.tlsVersionRestrictionConfig,
+                      "privacy.network.tlsVersionRestrictionConfig");
       assert.isObject(runtime, "runtime");
       assert.isFunction(runtime.connect, "runtime.connect");
       assert.isNumber(runtime.connect.callCount, "stub runtime.connect");

@@ -397,7 +397,8 @@ class Schema {
         } = item;
         const fileKey = camelize(key.replace(/\.json$/, "")).toLowerCase();
         const itemKey = namespace.replace(/\./g, "").toLowerCase();
-        if (fileKey === itemKey || fileKey.startsWith(itemKey) || $import) {
+        if (fileKey === itemKey || fileKey.startsWith(itemKey) ||
+            itemKey.startsWith(fileKey) || $import) {
           const mapKey = [];
           let ns;
           if (namespace.includes(".")) {
