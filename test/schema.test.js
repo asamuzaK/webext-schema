@@ -2,7 +2,6 @@
 "use strict";
 /* api */
 const {Schema} = require("../modules/schema");
-const Api = require("sinon-chrome/api");
 const {assert} = require("chai");
 const {describe, it} = require("mocha");
 
