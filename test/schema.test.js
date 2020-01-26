@@ -891,26 +891,6 @@ describe("Schema", () => {
     });
   });
 
-  describe("arrange schema to fit specific application", () => {
-    it("should throw", () => {
-      const schema = new Schema();
-      assert.throws(() => schema.arrange(),
-                    "Expected String but got Undefined.");
-    });
-
-    it("should get null", () => {
-      const schema = new Schema();
-      const res = schema.arrange({name: "foo"});
-      assert.isNull(res, "result");
-    });
-
-    it("should get array", () => {
-      const schema = new Schema();
-      const res = schema.arrange({name: "sinon-chrome"});
-      assert.isArray(res, "result");
-    });
-  });
-
   describe("get schema", () => {
     it("should throw", () => {
       const schema = new Schema();
@@ -1126,95 +1106,6 @@ describe("Schema", () => {
 
       // reset
       mockConnect.reset();
-    });
-  });
-});
-
-describe("application support", () => {
-  describe("sinon-chrome", () => {
-    it("should get stubbed functions", () => {
-      const schema = new Schema().arrange({name: "sinon-chrome"});
-      const browser = new Api(schema).create();
-      assert.isObject(browser, "browser");
-      const {
-        bookmarks, browserAction, commands, contextMenus, contextualIdentities,
-        devtools: {inspectedWindow}, i18n, management, menus, notifications,
-        permissions, runtime, sessions, storage, tabs, theme, windows,
-      } = browser;
-      assert.isObject(bookmarks, "bookmarks");
-      assert.isFunction(bookmarks.create, "bookmarks.create");
-      assert.isNumber(bookmarks.create.callCount, "stub bookmarks.create");
-      assert.isObject(browserAction, "browserAction");
-      assert.isFunction(browserAction.setTitle, "browserAction.setTitle");
-      assert.isNumber(browserAction.setTitle.callCount,
-                      "stub browserAction.setTitle");
-      assert.isObject(commands, "commands");
-      assert.isFunction(commands.update, "commands.update");
-      assert.isNumber(commands.update.callCount,
-                      "stub commands.update.setTitle");
-      assert.isObject(contextMenus, "contextMenus");
-      assert.isFunction(contextMenus.create, "contextMenus.create");
-      assert.isNumber(contextMenus.create.callCount,
-                      "stub contextMenus.create.setTitle");
-      assert.isObject(contextualIdentities, "contextualIdentities");
-      assert.isFunction(contextualIdentities.get, "contextualIdentities.get");
-      assert.isNumber(contextualIdentities.get.callCount,
-                      "stub contextualIdentities.get.setTitle");
-      assert.isObject(inspectedWindow, "inspectedWindow");
-      assert.isFunction(inspectedWindow.reload, "inspectedWindow.reload");
-      assert.isNumber(inspectedWindow.reload.callCount,
-                      "stub inspectedWindow.reload.setTitle");
-      assert.isObject(i18n, "i18n");
-      assert.isFunction(i18n.getMessage, "i18n.getMessage");
-      assert.isNumber(i18n.getMessage.callCount, "stub i18n.getMessage");
-      assert.isObject(management, "management");
-      assert.isFunction(management.get, "management.get");
-      assert.isNumber(management.get.callCount, "stub management.get");
-      assert.isObject(menus, "menus");
-      assert.isFunction(menus.create, "menus.create");
-      assert.isNumber(menus.create.callCount, "stub menus.create");
-      assert.isFunction(menus.getTargetElement, "menus.getTargetElement");
-      assert.isNumber(menus.getTargetElement.callCount,
-                      "stub menus.getTargetElement");
-      assert.isObject(notifications, "notifications");
-      assert.isFunction(notifications.create, "notifications.create");
-      assert.isNumber(notifications.create.callCount,
-                      "stub notifications.create");
-      assert.isObject(notifications.onClosed, "notifications.onClosed");
-      assert.isFunction(notifications.onClosed.addListener,
-                        "notifications.onClosed.addListener");
-      assert.isNumber(notifications.onClosed.addListener.callCount,
-                      "stub notifications.onClosed.addListener");
-      assert.isObject(permissions, "permissions");
-      assert.isFunction(permissions.request, "permissions.request");
-      assert.isNumber(permissions.request.callCount,
-                      "stub permissions.request");
-      assert.isObject(runtime, "runtime");
-      assert.isFunction(runtime.connect, "runtime.connect");
-      assert.isNumber(runtime.connect.callCount, "stub runtime.connect");
-      assert.isObject(sessions, "sessions");
-      assert.isFunction(sessions.getRecentlyClosed,
-                        "sessions.getRecentlyClosed");
-      assert.isNumber(sessions.getRecentlyClosed.callCount,
-                      "stub sessions.getRecentlyClosed");
-      assert.isObject(storage, "storage");
-      assert.isObject(storage.local, "storage.local");
-      assert.isFunction(storage.local.get, "storage.local.get");
-      assert.isNumber(storage.local.get.callCount, "stub storage.local.get");
-      assert.isObject(storage.onChanged, "storage.onChanged");
-      assert.isFunction(storage.onChanged.addListener,
-                        "storage.onChanged.addListener");
-      assert.isNumber(storage.onChanged.addListener.callCount,
-                      "stub storage.onChanged.addListener");
-      assert.isObject(tabs, "tabs");
-      assert.isFunction(tabs.get, "tabs.get");
-      assert.isNumber(tabs.get.callCount, "stub tabs.get");
-      assert.isObject(theme, "theme");
-      assert.isFunction(theme.getCurrent, "theme.getCurrent");
-      assert.isNumber(theme.getCurrent.callCount, "stub theme.getCurrent");
-      assert.isObject(windows, "windows");
-      assert.isFunction(windows.get, "windows.get");
-      assert.isNumber(windows.get.callCount, "stub windows.get");
     });
   });
 });

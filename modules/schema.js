@@ -274,65 +274,6 @@ class Schema {
   }
 
   /**
-   * arrange schema to fit specific application
-   * @param {Object} opt - options
-   * @param {string} opt.name - app name
-   * @returns {*} - arranged schema
-   */
-  arrange(opt = {}) {
-    const {name} = opt;
-    if (!isString(name)) {
-      throw new TypeError(`Expected String but got ${getType(name)}.`);
-    }
-    const schemas = this._parseSchemaContent();
-    let schema;
-    if (name === "sinon-chrome") {
-      const items = Object.entries(schemas);
-      const arr = [];
-      for (const [key, item] of items) {
-        const subItems = Object.values(item);
-        for (const subItem of subItems) {
-          const schemaItems = Object.entries(subItem);
-          for (const [schemaKey, schemaKeyValue] of schemaItems) {
-            if (schemaKey === "namespace") {
-              const camelizedKey = camelize(key.replace(/\.json$/, ""));
-              const camelizedSchemaKey = camelize(schemaKeyValue);
-              if (camelizedKey === camelizedSchemaKey ||
-                  camelizedSchemaKey.startsWith(camelizedKey) ||
-                  camelizedKey.startsWith(camelizedSchemaKey)) {
-                arr.push(subItem);
-              }
-            }
-          }
-        }
-      }
-      schema = [];
-      for (const item of arr) {
-        const {events, functions, namespace, types} = item;
-        if (events || functions) {
-          if (namespace === "menus") {
-            if (types) {
-              const menusChild = this.get("menus_child.json");
-              const [{functions: menusChildFunctions}] = menusChild;
-              const contextMenus = Object.assign({}, item);
-              contextMenus.namespace = "contextMenus";
-              contextMenus.permissions = "contextMenus";
-              for (const func of menusChildFunctions) {
-                functions.push(func);
-              }
-              schema.push(contextMenus);
-              schema.push(item);
-            }
-          } else {
-            schema.push(item);
-          }
-        }
-      }
-    }
-    return schema || null;
-  }
-
-  /**
    * get schema
    * @param {string} name - API name or file name
    * @returns {Array} - schema

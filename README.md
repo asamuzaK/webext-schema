@@ -52,23 +52,6 @@ const schema = new Schema();
 schema.channel = "central";
 ```
 
-### schema.arrange(<var>opt</var>)
-
-* @param {Object} opt - options
-* @param {string} opt.name - application name
-* @returns {*} - arranged schema
-
-Get the arranged schema for the specific application.
-
-Supported applications:
-
-* [sinon-chrome](https://www.npmjs.com/package/sinon-chrome)
-
-```
-const schema = new Schema().arrange({name: "sinon-chrome"});
-// [{namespace: "alarms", functions: [{...}], ...}];
-```
-
 ### schema.get(<var>name</var>)
 
 * @param {string} name - API name or file name
