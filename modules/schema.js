@@ -17,7 +17,9 @@ class Schema {
   /**
    * construct
    * @param {...(string|Object)} [args] - optional arguments
-   *                                      {string} - release channel
+   *                                      {string} - release channel.
+   *                                                 one of "beta", "central",
+   *                                                 "release", "esr", "mail".
    *                                      {Object} - sinon config
    */
   constructor(...args) {
