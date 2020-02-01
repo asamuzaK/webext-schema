@@ -24,7 +24,7 @@ const schema = new Schema();
 
 ### new Schema(<var>channel</var>, <var>sinonConfig</var>)
 
-* @param {string} [channel] - release channel
+* @param {string} [channel] - release channel. one of "beta", "central", "release", "esr", "mail".
 * @param {Object} [sinonConfig] - optional configuration for `sinon.createSandbox()`, see [Sinon.JS](https://sinonjs.org/) for details.
 
 Both arguments are optional.
@@ -38,8 +38,8 @@ const schema = new Schema("central", {
 
 ### schema.channel
 
+"central", "beta", "release", "esr" for WebExtensions, and "mail" for MailExtensions are available.
 Channel defaults to "beta".
-"central", "beta", "release" for WebExtensions, and "mail" for MailExtensions are available.
 
 ```
 const schema = new Schema("central");
