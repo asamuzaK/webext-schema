@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop, no-magic-numbers */
 "use strict";
 const {
+  ESR_VER,
   createUnifiedSchema, fetchText, getAllSchemaData, getChannelUrl, getFileList,
   getListedSchemaData, getMailExtSchemaData, getSchemaData, saveSchemaFile,
   updateSchemas,
@@ -69,6 +70,15 @@ describe("get channel url", () => {
     const res = getChannelUrl("beta");
     assert.strictEqual(
       res, "https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/",
+      "result",
+    );
+  });
+
+  it("should get result", () => {
+    const res = getChannelUrl("esr");
+    assert.strictEqual(
+      res,
+      `https://hg.mozilla.org/releases/mozilla-esr${ESR_VER}/raw-file/tip/`,
       "result",
     );
   });
@@ -528,6 +538,8 @@ describe("update schemas files", () => {
       path.join(process.cwd(), "schemas", "beta", "webext.json");
     const centralPath =
       path.join(process.cwd(), "schemas", "central", "webext.json");
+    const esrPath =
+      path.join(process.cwd(), "schemas", "esr", "webext.json");
     const releasePath =
       path.join(process.cwd(), "schemas", "release", "webext.json");
     const mailPath =
@@ -536,9 +548,14 @@ describe("update schemas files", () => {
     const {callCount: writeCallCount} = stubWrite;
     stubWrite.restore();
     stubAll.restore();
-    assert.strictEqual(writeCallCount, writeCount + 4, "write");
-    assert.deepEqual(res, [betaPath, centralPath, releasePath, mailPath],
-                     "result");
+    assert.strictEqual(writeCallCount, writeCount + 5, "write");
+    assert.deepEqual(res, [
+      betaPath,
+      centralPath,
+      esrPath,
+      releasePath,
+      mailPath,
+    ], "result");
   });
 
   it("should get result", async () => {

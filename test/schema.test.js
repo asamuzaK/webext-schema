@@ -70,6 +70,11 @@ describe("Schema", () => {
     });
 
     it("should get value", () => {
+      const schema = new Schema("esr");
+      assert.strictEqual(schema.channel, "esr");
+    });
+
+    it("should get value", () => {
       const schema = new Schema("release");
       assert.strictEqual(schema.channel, "release");
     });
@@ -101,6 +106,12 @@ describe("Schema", () => {
 
     it("should set value", () => {
       const schema = new Schema();
+      schema.channel = "esr";
+      assert.strictEqual(schema.channel, "esr");
+    });
+
+    it("should set value", () => {
+      const schema = new Schema();
       schema.channel = "release";
       assert.strictEqual(schema.channel, "release");
     });
@@ -121,6 +132,12 @@ describe("Schema", () => {
       const schema = new Schema("central");
       schema.channel = "release";
       assert.strictEqual(schema.channel, "release");
+    });
+
+    it("should set value", () => {
+      const schema = new Schema("central");
+      schema.channel = "esr";
+      assert.strictEqual(schema.channel, "esr");
     });
 
     it("should set value", () => {
@@ -868,6 +885,17 @@ describe("Schema", () => {
     });
 
     it("should get object", () => {
+      const schema = new Schema("esr");
+      const res = schema._parseSchemaContent();
+      assert.isObject(res, "result");
+      const items = Object.entries(res);
+      for (const [key, value] of items) {
+        assert.isTrue(key.endsWith(".json"), `${key}`);
+        assert.isArray(value, `${key} value`);
+      }
+    });
+
+    it("should get object", () => {
       const schema = new Schema("release");
       const res = schema._parseSchemaContent();
       assert.isObject(res, "result");
@@ -955,6 +983,15 @@ describe("Schema", () => {
 
     it("should get array", () => {
       const schema = new Schema("central");
+      const res = schema.list();
+      assert.isArray(res, "result");
+      for (const key of res) {
+        assert.isTrue(key.endsWith(".json"), "key");
+      }
+    });
+
+    it("should get array", () => {
+      const schema = new Schema("esr");
       const res = schema.list();
       assert.isArray(res, "result");
       for (const key of res) {

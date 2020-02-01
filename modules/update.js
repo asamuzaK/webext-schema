@@ -15,6 +15,7 @@ const process = require("process");
 const {CHAR, INDENT} = require("./constant");
 const DIR_CWD = process.cwd();
 const PERM_FILE = 0o644;
+const ESR_VER = 68;
 
 /**
  * fetch text
@@ -44,6 +45,9 @@ const getChannelUrl = channel => {
   switch (channel) {
     case "central":
       dir = "mozilla-central/";
+      break;
+    case "esr":
+      dir = `releases/mozilla-esr${ESR_VER}/`;
       break;
     case "mail":
       dir = "comm-central/";
@@ -244,6 +248,7 @@ const updateSchemas = (cmdOpts = {}) => {
     func.push(
       saveSchemaFile("beta", info),
       saveSchemaFile("central", info),
+      saveSchemaFile("esr", info),
       saveSchemaFile("release", info),
       saveSchemaFile("mail", info),
     );
@@ -252,6 +257,7 @@ const updateSchemas = (cmdOpts = {}) => {
 };
 
 module.exports = {
+  ESR_VER,
   createUnifiedSchema,
   fetchText,
   getAllSchemaData,

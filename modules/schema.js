@@ -23,7 +23,7 @@ class Schema {
   constructor(...args) {
     const [arg1, arg2] = args;
     this._channel =
-      isString(arg1) && /(?:(?:centra|mai)l|beta|release)/.test(arg1) &&
+      isString(arg1) && /(?:(?:centra|mai)l|beta|esr|release)/.test(arg1) &&
       arg1 || "beta";
     this._sandbox =
       isObjectNotEmpty(arg1) && sinon.createSandbox(arg1) ||
@@ -40,7 +40,7 @@ class Schema {
   }
 
   set channel(ch) {
-    if (isString(ch) && /(?:(?:centra|mai)l|beta|release)/.test(ch)) {
+    if (isString(ch) && /(?:(?:centra|mai)l|beta|esr|release)/.test(ch)) {
       this._channel = ch;
     }
   }
