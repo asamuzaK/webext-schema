@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "camelize": "^1.0.0",
-    "commander": "^4.1.0",
+    "commander": "^4.1.1",
     "decamelize": "^4.0.0",
     "json5": "^2.1.1",
     "node-fetch": "^2.6.0",
@@ -35,5 +35,5 @@
     "mocha": "^7.0.1",
     "nyc": "^15.0.0"
   },
-  "version": "1.2.0"
+  "version": "1.2.1"
 }
