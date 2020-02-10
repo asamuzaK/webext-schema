@@ -143,9 +143,7 @@ class Schema {
     for (const item of events) {
       const {name, type, unsupported} = item;
       if (!unsupported && name && type === "function") {
-        if (!target[name]) {
-          target[name] = {};
-        }
+        target[name] = target[name] || {};
         target[name].addListener = this._sandbox.stub();
         target[name].hasListener = this._sandbox.stub();
         target[name].removeListener = this._sandbox.stub();
@@ -204,9 +202,7 @@ class Schema {
           target[key] = this._sandbox.stub();
         } else if (type === "object" || $ref ||
                    item.hasOwnProperty("properties")) {
-          if (!target[key]) {
-            target[key] = {};
-          }
+          target[key] = target[key] || {};
           properties && this._mockProperties(
             target[key], properties, `${namespace}.${key}`,
           );
@@ -242,9 +238,7 @@ class Schema {
         $import &&
           this._importMap.set(`${namespace}.${id}`, {$import, namespace});
         if (type === "object" || $import || events || functions || properties) {
-          if (!target[id]) {
-            target[id] = {};
-          }
+          target[id] = target[id] || {};
           events && this._mockEvents(target[id], events);
           functions && this._mockFunctions(target[id], functions);
           properties &&
@@ -346,15 +340,13 @@ class Schema {
           let ns;
           if (namespace.includes(".")) {
             const [itemNamespace, itemSubNamespace] = namespace.split(".");
-            if (!this._browser[itemNamespace][itemSubNamespace]) {
-              this._browser[itemNamespace][itemSubNamespace] = {};
-            }
+            this._browser[itemNamespace] = this._browser[itemNamespace] || {};
+            this._browser[itemNamespace][itemSubNamespace] =
+              this._browser[itemNamespace][itemSubNamespace] || {};
             mapKey.push(itemNamespace, itemSubNamespace);
             ns = this._browser[itemNamespace][itemSubNamespace];
           } else {
-            if (!this._browser[namespace]) {
-              this._browser[namespace] = {};
-            }
+            this._browser[namespace] = this._browser[namespace] || {};
             mapKey.push(namespace);
             ns = this._browser[namespace];
           }

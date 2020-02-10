@@ -1016,10 +1016,10 @@ describe("Schema", () => {
       assert.isObject(browser, "browser");
       const {
         bookmarks, browserAction, browserSettings, commands, contextMenus,
-        contextualIdentities, devtools: {inspectedWindow}, i18n, management,
-        menus, notifications, permissions, privacy, runtime, sessions, storage,
-        tabs, theme, windows,
+        contextualIdentities, devtools, i18n, management, menus, notifications,
+        permissions, privacy, runtime, sessions, storage, tabs, theme, windows,
       } = browser;
+      const {inspectedWindow} = devtools;
       assert.isObject(bookmarks, "bookmarks");
       assert.isFunction(bookmarks.create, "bookmarks.create");
       assert.isNumber(bookmarks.create.callCount, "stub bookmarks.create");
@@ -1047,6 +1047,7 @@ describe("Schema", () => {
       assert.isFunction(contextualIdentities.get, "contextualIdentities.get");
       assert.isNumber(contextualIdentities.get.callCount,
                       "stub contextualIdentities.get.setTitle");
+      assert.isObject(devtools, "devtools");
       assert.isObject(inspectedWindow, "inspectedWindow");
       assert.isFunction(inspectedWindow.reload, "inspectedWindow.reload");
       assert.isNumber(inspectedWindow.reload.callCount,
