@@ -5149,79 +5149,10 @@
       ]
     }
   ],
-  "legacy.json": [
-    {
-      "namespace": "manifest",
-      "types": [
-        {
-          "$extend": "WebExtensionManifest",
-          "properties": {
-            "legacy": {
-              "optional": true,
-              "choices": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "xul",
-                        "bootstrap"
-                      ],
-                      "optional": true
-                    },
-                    "options": {
-                      "type": "object",
-                      "properties": {
-                        "page": {
-                          "type": "string"
-                        },
-                        "open_in_tab": {
-                          "type": "boolean",
-                          "optional": true
-                        }
-                      },
-                      "optional": true
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      ]
-    }
-  ],
   "mailTabs.json": [
     {
       "namespace": "mailTabs",
       "types": [
-        {
-          "id": "QuickFilterTagsDetail",
-          "type": "object",
-          "properties": {
-            "tags": {
-              "type": "object",
-              "description": "Object keys are tags to filter on, values are <code>true</code> if the message must have the tag, or <code>false</code> if it must not have the tag. For a list of available tags, call the :ref:`messages.listTags` method.",
-              "patternProperties": {
-                ".*": {
-                  "type": "boolean"
-                }
-              }
-            },
-            "mode": {
-              "type": "string",
-              "description": "Whether all of the tag filters must apply, or any of them.",
-              "enum": [
-                "all",
-                "any"
-              ]
-            }
-          }
-        },
         {
           "id": "QuickFilterTextDetail",
           "type": "object",
@@ -5431,7 +5362,7 @@
                       "type": "boolean"
                     },
                     {
-                      "$ref": "QuickFilterTagsDetail"
+                      "$ref": "messages.TagsDetail"
                     }
                   ],
                   "description": "Shows only messages with tags on them."
@@ -6681,6 +6612,32 @@
       "permissions": [
         "messagesRead"
       ],
+      "types": [
+        {
+          "id": "TagsDetail",
+          "type": "object",
+          "description": "Used for filtering messages by tag in various methods. Note that functions using this type may have a partial implementation.",
+          "properties": {
+            "tags": {
+              "type": "object",
+              "description": "Object keys are tags to filter on, values are <code>true</code> if the message must have the tag, or <code>false</code> if it must not have the tag. For a list of available tags, call the :ref:`messages.listTags` method.",
+              "patternProperties": {
+                ".*": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "mode": {
+              "type": "string",
+              "description": "Whether all of the tag filters must apply, or any of them.",
+              "enum": [
+                "all",
+                "any"
+              ]
+            }
+          }
+        }
+      ],
       "functions": [
         {
           "name": "list",
@@ -6796,6 +6753,14 @@
                   "type": "boolean",
                   "optional": true,
                   "description": "Returns only flagged (or unflagged if false) messages."
+                },
+                "tags": {
+                  "$ref": "TagsDetail",
+                  "optional": true,
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Returns only messages with the specified tags. For a list of available tags, call the listTags method. Querying for messages that must *not* have a tag does not work."
                 },
                 "folder": {
                   "$ref": "folders.MailFolder",
