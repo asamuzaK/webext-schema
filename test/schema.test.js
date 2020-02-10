@@ -1037,21 +1037,20 @@ describe("Schema", () => {
                       "browserSettings.closeTabsByDoubleClick");
       assert.isObject(commands, "commands");
       assert.isFunction(commands.update, "commands.update");
-      assert.isNumber(commands.update.callCount,
-                      "stub commands.update.setTitle");
+      assert.isNumber(commands.update.callCount, "stub commands.update");
       assert.isObject(contextMenus, "contextMenus");
       assert.isFunction(contextMenus.create, "contextMenus.create");
       assert.isNumber(contextMenus.create.callCount,
-                      "stub contextMenus.create.setTitle");
+                      "stub contextMenus.create");
       assert.isObject(contextualIdentities, "contextualIdentities");
       assert.isFunction(contextualIdentities.get, "contextualIdentities.get");
       assert.isNumber(contextualIdentities.get.callCount,
-                      "stub contextualIdentities.get.setTitle");
+                      "stub contextualIdentities.get");
       assert.isObject(devtools, "devtools");
       assert.isObject(inspectedWindow, "inspectedWindow");
       assert.isFunction(inspectedWindow.reload, "inspectedWindow.reload");
       assert.isNumber(inspectedWindow.reload.callCount,
-                      "stub inspectedWindow.reload.setTitle");
+                      "stub inspectedWindow.reload");
       assert.isObject(i18n, "i18n");
       assert.isFunction(i18n.getMessage, "i18n.getMessage");
       assert.isNumber(i18n.getMessage.callCount, "stub i18n.getMessage");
