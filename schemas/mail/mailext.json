@@ -4457,6 +4457,11 @@
           ],
           "parameters": [
             {
+              "type": "integer",
+              "name": "tabId",
+              "minimum": 0
+            },
+            {
               "name": "details",
               "$ref": "ComposeDetails",
               "description": "The current state of the compose window. This is functionally the same as the :ref:`compose.getComposeDetails` function."
@@ -5030,7 +5035,13 @@
           "name": "onClicked",
           "type": "function",
           "description": "Fired when a toolbar action icon is clicked.  This event will not fire if the toolbar action has a popup.",
-          "parameters": []
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "minimum": 1
+            }
+          ]
         }
       ]
     }
