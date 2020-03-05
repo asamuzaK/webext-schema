@@ -1370,7 +1370,8 @@
                   "description": "The new description for the command."
                 },
                 "shortcut": {
-                  "$ref": "manifest.KeyName",
+                  "type": "string",
+                  "format": "manifestShortcutKeyOrEmpty",
                   "optional": true
                 }
               }
@@ -12642,16 +12643,27 @@
                 },
                 {
                   "type": "object",
+                  "additionalProperties": {
+                    "$ref": "UnrecognizedProperty"
+                  },
                   "properties": {
                     "extension_pages": {
                       "type": "string",
                       "optional": true,
-                      "format": "contentSecurityPolicy"
+                      "format": "contentSecurityPolicy",
+                      "description": "The Content Security Policy used for extension pages."
                     },
                     "content_scripts": {
                       "type": "string",
                       "optional": true,
-                      "format": "contentSecurityPolicy"
+                      "format": "contentSecurityPolicy",
+                      "description": "The Content Security Policy used for content scripts."
+                    },
+                    "isolated_world": {
+                      "type": "string",
+                      "optional": true,
+                      "format": "contentSecurityPolicy",
+                      "description": "An alias for content_scripts to support Chrome compatibility.  Content Security Policy implementations may differ between Firefox and Chrome.  If both isolated_world and content_scripts exist, the value from content_scripts will be used."
                     }
                   }
                 }
