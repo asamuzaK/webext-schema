@@ -5391,6 +5391,9 @@
           "name": "getSelectedMessages",
           "type": "function",
           "description": "Lists the selected messages in the current folder. A messages permission is required to do this.",
+          "permissions": [
+            "messagesRead"
+          ],
           "async": true,
           "parameters": [
             {
@@ -5471,12 +5474,18 @@
           "name": "onDisplayedFolderChanged",
           "type": "function",
           "description": "Fired when the displayed folder changes in any mail tab.",
+          "permissions": [
+            "accountsRead"
+          ],
           "parameters": []
         },
         {
           "name": "onSelectedMessagesChanged",
           "type": "function",
           "description": "Fired when the selected messages change in any mail tab.",
+          "permissions": [
+            "messagesRead"
+          ],
           "parameters": []
         }
       ]
