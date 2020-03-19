@@ -8,6 +8,7 @@ const {logErr, throwErr} = require("./modules/common");
 const {updateSchemas} = require("./modules/update");
 const {version} = require("./package.json");
 const commander = require("commander");
+const process = require("process");
 
 /* commands */
 commander.version(version, "-v, --version");
