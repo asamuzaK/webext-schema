@@ -11,12 +11,17 @@ const commander = require("commander");
 const process = require("process");
 
 /* commands */
+commander.exitOverride();
 commander.version(version, "-v, --version");
 commander.command("update").alias("u").description("update schemas")
   .option("-c, --channel <name>", "specify the release channel")
   .option("-i, --info", "console info")
   .action(updateSchemas);
-commander.parse(process.argv);
+try {
+  commander.parse(process.argv);
+} catch (e) {
+  // fail through
+}
 
 /* process */
 process.on("uncaughtException", throwErr);
