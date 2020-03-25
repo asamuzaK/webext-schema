@@ -7,6 +7,8 @@ const {URL} = require("url");
 const JSON5 = require("json5");
 const {getType, isString, throwErr} = require("./common");
 const {createFile} = require("./file-util");
+const {version} = require("../package.json");
+const commander = require("commander");
 const fetch = require("node-fetch");
 const path = require("path");
 const process = require("process");
@@ -256,8 +258,32 @@ const updateSchemas = (cmdOpts = {}) => {
   return Promise.all(func).catch(throwErr);
 };
 
+/**
+ * parse command
+ * @param {Array} args - process.argv
+ * @returns {void}
+ */
+const parseCommand = args => {
+  if (Array.isArray(args) &&
+      (args.includes("-v") || args.includes("--version") ||
+        args.includes("u") || args.includes("update"))) {
+    commander.exitOverride();
+    commander.version(version, "-v, --version");
+    commander.command("update").alias("u").description("update schemas")
+      .option("-c, --channel <name>", "specify the release channel")
+      .option("-i, --info", "console info")
+      .action(updateSchemas);
+    try {
+      commander.parse(args);
+    } catch (e) {
+      // fail through
+    }
+  }
+};
+
 module.exports = {
   ESR_VER,
+  commander,
   createUnifiedSchema,
   fetchText,
   getAllSchemaData,
@@ -266,6 +292,7 @@ module.exports = {
   getListedSchemaData,
   getMailExtSchemaData,
   getSchemaData,
+  parseCommand,
   saveSchemaFile,
   updateSchemas,
 };
