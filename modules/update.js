@@ -265,8 +265,7 @@ const updateSchemas = (cmdOpts = {}) => {
  */
 const parseCommand = args => {
   if (Array.isArray(args) &&
-      (args.includes("-v") || args.includes("--version") ||
-       args.includes("u") || args.includes("update"))) {
+      args.some(arg => /^(?:-v|--version|u(?:pdate)?)$/.test(arg))) {
     commander.exitOverride();
     commander.version(version, "-v, --version");
     commander.command("update").alias("u").description("update schemas")
