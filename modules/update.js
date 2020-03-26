@@ -264,7 +264,7 @@ const updateSchemas = (cmdOpts = {}) => {
  * @returns {void}
  */
 const parseCommand = args => {
-  const reg = /^(?:-[h|v]|--(?:help|version)|u(?:pdate)?)$/;
+  const reg = /^(?:(?:--)?help|-[h|v]|--version|u(?:pdate)?)$/;
   if (Array.isArray(args) && args.some(arg => reg.test(arg))) {
     commander.exitOverride();
     commander.version(version, "-v, --version");
