@@ -4454,7 +4454,7 @@
           "properties": {
             "identityId": {
               "type": "string",
-              "description": "The ID of an identity from the :doc:`accounts` API. The settings from the identity will be used in the composed message. If ``from`` is also specified, the ``name`` and ``email`` properties of the identity are overridden. If ``replyTo`` is also specified, the ``replyTo`` property of the identity is overridden.",
+              "description": "The ID of an identity from the :doc:`accounts` API. The settings from the identity will be used in the composed message. If ``replyTo`` is also specified, the ``replyTo`` property of the identity is overridden.",
               "optional": true
             },
             "to": {
@@ -5503,7 +5503,16 @@
           "permissions": [
             "accountsRead"
           ],
-          "parameters": []
+          "parameters": [
+            {
+              "name": "tab",
+              "$ref": "tabs.Tab"
+            },
+            {
+              "name": "displayedFolder",
+              "$ref": "folders.MailFolder"
+            }
+          ]
         },
         {
           "name": "onSelectedMessagesChanged",
@@ -5512,7 +5521,16 @@
           "permissions": [
             "messagesRead"
           ],
-          "parameters": []
+          "parameters": [
+            {
+              "name": "tab",
+              "$ref": "tabs.Tab"
+            },
+            {
+              "name": "selectedMessages",
+              "$ref": "messages.MessageList"
+            }
+          ]
         }
       ]
     }
@@ -6225,8 +6243,8 @@
           "description": "Fired when a message is displayed, whether in a 3-pane tab, a message tab, or a message window.",
           "parameters": [
             {
-              "name": "tabId",
-              "type": "integer"
+              "name": "tab",
+              "$ref": "tabs.Tab"
             },
             {
               "name": "message",
