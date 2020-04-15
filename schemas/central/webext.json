@@ -2751,7 +2751,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -2763,7 +2763,7 @@
           ]
         },
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -3477,7 +3477,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -3931,7 +3931,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -4641,12 +4641,22 @@
       "namespace": "manifest",
       "types": [
         {
+          "$extend": "OptionalPermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "activeTab"
+              ]
+            }
+          ]
+        },
+        {
           "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
               "enum": [
-                "activeTab",
                 "tabs",
                 "tabHide"
               ]
@@ -6925,7 +6935,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -7751,7 +7761,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -8668,7 +8678,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -8893,7 +8903,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -9117,7 +9127,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -9556,7 +9566,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -11432,7 +11442,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -11768,7 +11778,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -12852,15 +12862,28 @@
           }
         },
         {
+          "id": "OptionalPermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "idle"
+              ]
+            }
+          ]
+        },
+        {
           "id": "OptionalPermission",
           "choices": [
+            {
+              "$ref": "OptionalPermissionNoPrompt"
+            },
             {
               "type": "string",
               "enum": [
                 "clipboardRead",
                 "clipboardWrite",
                 "geolocation",
-                "idle",
                 "notifications"
               ]
             }
@@ -12878,7 +12901,7 @@
           ]
         },
         {
-          "id": "Permission",
+          "id": "PermissionNoPrompt",
           "choices": [
             {
               "$ref": "OptionalPermission"
@@ -12888,7 +12911,23 @@
               "enum": [
                 "alarms",
                 "mozillaAddons",
-                "storage",
+                "storage"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "Permission",
+          "choices": [
+            {
+              "$ref": "PermissionNoPrompt"
+            },
+            {
+              "$ref": "OptionalPermission"
+            },
+            {
+              "type": "string",
+              "enum": [
                 "unlimitedStorage"
               ]
             }
@@ -13213,7 +13252,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -15714,7 +15753,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -16453,7 +16492,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -17887,7 +17926,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",

@@ -2223,7 +2223,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -5540,7 +5540,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -5551,7 +5551,7 @@
           ]
         },
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -7123,12 +7123,22 @@
       "namespace": "manifest",
       "types": [
         {
+          "$extend": "OptionalPermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "activeTab"
+              ]
+            }
+          ]
+        },
+        {
           "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
               "enum": [
-                "activeTab",
                 "tabs",
                 "tabHide"
               ]
