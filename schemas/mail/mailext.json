@@ -187,7 +187,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -1417,7 +1417,6 @@
         {
           "name": "onAdded",
           "type": "function",
-          "unsupported": true,
           "description": "Fired when the extension acquires new permissions.",
           "parameters": [
             {
@@ -1429,7 +1428,6 @@
         {
           "name": "onRemoved",
           "type": "function",
-          "unsupported": true,
           "description": "Fired when permissions are removed from the extension.",
           "parameters": [
             {
@@ -5139,6 +5137,67 @@
               "name": "info",
               "$ref": "OnClickData",
               "optional": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "composeScripts.json": [
+    {
+      "namespace": "composeScripts",
+      "permissions": [
+        "compose"
+      ],
+      "types": [
+        {
+          "id": "RegisteredComposeScriptOptions",
+          "type": "object",
+          "description": "Details of a compose script registered programmatically",
+          "properties": {
+            "css": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of CSS files to inject",
+              "items": {
+                "$ref": "extensionTypes.ExtensionFileOrCode"
+              }
+            },
+            "js": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of JavaScript files to inject",
+              "items": {
+                "$ref": "extensionTypes.ExtensionFileOrCode"
+              }
+            }
+          }
+        },
+        {
+          "id": "RegisteredComposeScript",
+          "type": "object",
+          "description": "An object that represents a compose script registered programmatically",
+          "functions": [
+            {
+              "name": "unregister",
+              "type": "function",
+              "description": "Unregister a compose script registered programmatically",
+              "async": true,
+              "parameters": []
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "name": "register",
+          "type": "function",
+          "description": "Register a compose script programmatically",
+          "async": true,
+          "parameters": [
+            {
+              "name": "composeScriptOptions",
+              "$ref": "RegisteredComposeScriptOptions"
             }
           ]
         }
