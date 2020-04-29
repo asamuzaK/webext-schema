@@ -12953,7 +12953,8 @@
               "enum": [
                 "alarms",
                 "mozillaAddons",
-                "storage"
+                "storage",
+                "unlimitedStorage"
               ]
             }
           ]
@@ -12966,12 +12967,6 @@
             },
             {
               "$ref": "OptionalPermission"
-            },
-            {
-              "type": "string",
-              "enum": [
-                "unlimitedStorage"
-              ]
             }
           ]
         },
