@@ -1431,7 +1431,7 @@
           }
         },
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
