@@ -626,7 +626,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -1431,7 +1431,7 @@
           }
         },
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -2751,7 +2751,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -2763,7 +2763,7 @@
           ]
         },
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -3477,7 +3477,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -3851,7 +3851,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -3931,7 +3931,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -4017,7 +4017,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -4641,12 +4641,22 @@
       "namespace": "manifest",
       "types": [
         {
+          "$extend": "OptionalPermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "activeTab"
+              ]
+            }
+          ]
+        },
+        {
           "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
               "enum": [
-                "activeTab",
                 "tabs",
                 "tabHide"
               ]
@@ -5431,6 +5441,23 @@
               "name": "tabId",
               "minimum": 0,
               "description": "The ID of the tab which is to be duplicated."
+            },
+            {
+              "type": "object",
+              "name": "duplicateProperties",
+              "optional": true,
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "optional": true,
+                  "description": "The position the new tab should take in the window. The provided value will be clamped to between zero and the number of tabs in the window."
+                },
+                "active": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the tab should become the active tab in the window. Does not affect whether the window is focused (see $(ref:windows.update)). Defaults to <var>true</var>."
+                }
+              }
             },
             {
               "type": "function",
@@ -6337,6 +6364,48 @@
               }
             }
           ]
+        },
+        {
+          "name": "goForward",
+          "type": "function",
+          "description": "Navigate to next page in tab's history, if available",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "tabId",
+              "minimum": 0,
+              "optional": true,
+              "description": "The ID of the tab to navigate forward."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "goBack",
+          "type": "function",
+          "description": "Navigate to previous page in tab's history, if available.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "tabId",
+              "minimum": 0,
+              "optional": true,
+              "description": "The ID of the tab to navigate backward."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
         }
       ],
       "events": [
@@ -6925,7 +6994,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -7751,7 +7820,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -8668,7 +8737,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -8893,7 +8962,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -9117,7 +9186,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -9556,7 +9625,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -11432,7 +11501,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -11768,7 +11837,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -12077,7 +12146,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -12852,15 +12921,28 @@
           }
         },
         {
+          "id": "OptionalPermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "idle"
+              ]
+            }
+          ]
+        },
+        {
           "id": "OptionalPermission",
           "choices": [
+            {
+              "$ref": "OptionalPermissionNoPrompt"
+            },
             {
               "type": "string",
               "enum": [
                 "clipboardRead",
                 "clipboardWrite",
                 "geolocation",
-                "idle",
                 "notifications"
               ]
             }
@@ -12878,7 +12960,7 @@
           ]
         },
         {
-          "id": "Permission",
+          "id": "PermissionNoPrompt",
           "choices": [
             {
               "$ref": "OptionalPermission"
@@ -12891,6 +12973,17 @@
                 "storage",
                 "unlimitedStorage"
               ]
+            }
+          ]
+        },
+        {
+          "id": "Permission",
+          "choices": [
+            {
+              "$ref": "PermissionNoPrompt"
+            },
+            {
+              "$ref": "OptionalPermission"
             }
           ]
         },
@@ -13213,7 +13306,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -14231,7 +14324,6 @@
         {
           "name": "onAdded",
           "type": "function",
-          "unsupported": true,
           "description": "Fired when the extension acquires new permissions.",
           "parameters": [
             {
@@ -14243,7 +14335,6 @@
         {
           "name": "onRemoved",
           "type": "function",
-          "unsupported": true,
           "description": "Fired when permissions are removed from the extension.",
           "parameters": [
             {
@@ -14260,7 +14351,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -15714,7 +15805,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -16453,7 +16544,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -17887,7 +17978,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
