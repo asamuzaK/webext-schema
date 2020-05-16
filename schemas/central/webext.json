@@ -15818,14 +15818,8 @@
                 "ping_type": {
                   "type": "string"
                 },
-                "schemaName": {
-                  "type": "string"
-                },
                 "schemaNamespace": {
                   "type": "string"
-                },
-                "schemaVersion": {
-                  "type": "integer"
                 },
                 "public_key": {
                   "type": "object",
@@ -16037,6 +16031,23 @@
                 "type": "any"
               },
               "description": "The data payload for the ping, which will be encrypted."
+            },
+            {
+              "description": "Options object.",
+              "name": "options",
+              "type": "object",
+              "properties": {
+                "schemaName": {
+                  "type": "string",
+                  "optional": false,
+                  "description": "Schema name used for payload."
+                },
+                "schemaVersion": {
+                  "type": "integer",
+                  "optional": false,
+                  "description": "Schema version used for payload."
+                }
+              }
             }
           ],
           "async": true
