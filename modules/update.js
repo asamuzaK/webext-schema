@@ -21,6 +21,7 @@ const ESR_VER = 68;
 
 /**
  * fetch text
+ *
  * @param {string} url - URL
  * @returns {string} - content text
  */
@@ -39,6 +40,7 @@ const fetchText = async url => {
 
 /**
  * get channel url
+ *
  * @param {string} channel - release channel
  * @returns {string} - channel URL
  */
@@ -65,9 +67,10 @@ const getChannelUrl = channel => {
 
 /**
  * get schema data
+ *
  * @param {string} file - file name
  * @param {string} baseUrl - base URL
- * @returns {Object} - schema data
+ * @returns {object} - schema data
  */
 const getSchemaData = async (file, baseUrl) => {
   if (!isString(file)) {
@@ -86,6 +89,7 @@ const getSchemaData = async (file, baseUrl) => {
 
 /**
  * get schema file list from jar manifest
+ *
  * @param {string} baseUrl - base URL
  * @returns {Array} - schema file list
  */
@@ -111,6 +115,7 @@ const getFileList = async baseUrl => {
 
 /**
  * get all schema data
+ *
  * @param {string} baseUrl - base URL
  * @returns {Array} - schemas data in array
  */
@@ -128,6 +133,7 @@ const getAllSchemaData = async baseUrl => {
 
 /**
  * get listed schema data
+ *
  * @param {string} baseUrl - base URL
  * @param {Array} arr - array of schema file names
  * @returns {Array} - schema data in array
@@ -148,6 +154,7 @@ const getListedSchemaData = async (baseUrl, arr) => {
 
 /**
  * get MailExtensions schema data
+ *
  * @param {string} baseUrl - base URL
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -172,8 +179,9 @@ const getMailExtSchemaData = async baseUrl => {
 
 /**
  * create unified schema
+ *
  * @param {string} channel - release channel
- * @returns {Object} - schema
+ * @returns {object} - schema
  */
 const createUnifiedSchema = async channel => {
   const channelUrl = getChannelUrl(channel);
@@ -214,6 +222,7 @@ const createUnifiedSchema = async channel => {
 
 /**
  * save schema file
+ *
  * @param {string} channel - release channel
  * @param {boolean} info - console info
  * @returns {string} - file path
@@ -238,7 +247,8 @@ const saveSchemaFile = async (channel, info) => {
 
 /**
  * update schemas files
- * @param {Object} cmdOpts - command options
+ *
+ * @param {object} cmdOpts - command options
  * @returns {Promise.<Array>} - Promise chain
  */
 const updateSchemas = (cmdOpts = {}) => {
@@ -260,6 +270,7 @@ const updateSchemas = (cmdOpts = {}) => {
 
 /**
  * parse command
+ *
  * @param {Array} args - process.argv
  * @returns {void}
  */

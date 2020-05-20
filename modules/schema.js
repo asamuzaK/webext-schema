@@ -16,11 +16,12 @@ const {CHAR} = require("./constant");
 class Schema {
   /**
    * construct
-   * @param {...(string|Object)} [args] - optional arguments
+   *
+   * @param {...(string|object)} [args] - optional arguments
    *                                      {string} - release channel.
    *                                                 one of "beta", "central",
    *                                                 "release", "esr", "mail".
-   *                                      {Object} - sinon config
+   *                                      {object} - sinon config
    */
   constructor(...args) {
     const [arg1, arg2] = args;
@@ -49,8 +50,9 @@ class Schema {
 
   /**
    * get target from namespace key
+   *
    * @param {string} key - namespace key
-   * @returns {Object} - target object
+   * @returns {object} - target object
    */
   _getTargetFromNamespace(key) {
     let target;
@@ -75,6 +77,7 @@ class Schema {
 
   /**
    * assign imported values
+   *
    * @returns {void}
    */
   _assignImportMap() {
@@ -102,6 +105,7 @@ class Schema {
 
   /**
    * assign referred values
+   *
    * @returns {void}
    */
   _assignRefMap() {
@@ -129,9 +133,10 @@ class Schema {
 
   /**
    * mock events
-   * @param {Object} target - target object
+   *
+   * @param {object} target - target object
    * @param {Array} events - events
-   * @returns {Object} - target object
+   * @returns {object} - target object
    */
   _mockEvents(target, events) {
     if (!target) {
@@ -154,9 +159,10 @@ class Schema {
 
   /**
    * mock functions
-   * @param {Object} target - target object
+   *
+   * @param {object} target - target object
    * @param {Array} funcs - functions
-   * @returns {Object} - target object
+   * @returns {object} - target object
    */
   _mockFunctions(target, funcs) {
     if (!target) {
@@ -176,10 +182,11 @@ class Schema {
 
   /**
    * mock properties
-   * @param {Object} target - target object
-   * @param {Object} props - properties
+   *
+   * @param {object} target - target object
+   * @param {object} props - properties
    * @param {string} namespace - namespace
-   * @returns {Object} - target object
+   * @returns {object} - target object
    */
   _mockProperties(target, props, namespace) {
     if (!target) {
@@ -216,10 +223,11 @@ class Schema {
 
   /**
    * mock types
-   * @param {Object} target - target object
+   *
+   * @param {object} target - target object
    * @param {Array} types - types
    * @param {string} namespace - namespace
-   * @returns {Object} - target object
+   * @returns {object} - target object
    */
   _mockTypes(target, types, namespace) {
     if (!target) {
@@ -253,7 +261,8 @@ class Schema {
 
   /**
    * parse schema content
-   * @returns {Object} - schema
+   *
+   * @returns {object} - schema
    */
   _parseSchemaContent() {
     const fileName =
@@ -271,6 +280,7 @@ class Schema {
 
   /**
    * get schema
+   *
    * @param {string} name - API name or file name
    * @returns {Array} - schema
    */
@@ -293,7 +303,8 @@ class Schema {
 
   /**
    * get all schemas
-   * @returns {Object} - schemas
+   *
+   * @returns {object} - schemas
    */
   getAll() {
     const schemas = this._parseSchemaContent();
@@ -302,6 +313,7 @@ class Schema {
 
   /**
    * list schemas
+   *
    * @returns {Array} - file list
    */
   list() {
@@ -316,7 +328,8 @@ class Schema {
 
   /**
    * mock browser api
-   * @returns {Object} - stubbed browser api
+   *
+   * @returns {object} - stubbed browser api
    */
   mock() {
     const schemas = this._parseSchemaContent();
