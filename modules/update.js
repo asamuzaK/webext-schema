@@ -117,7 +117,7 @@ const getFileList = async baseUrl => {
  * get all schema data
  *
  * @param {string} baseUrl - base URL
- * @returns {Array} - schemas data in array
+ * @returns {Promise.<Array>} - schemas data in array
  */
 const getAllSchemaData = async baseUrl => {
   if (!isString(baseUrl)) {
@@ -136,7 +136,7 @@ const getAllSchemaData = async baseUrl => {
  *
  * @param {string} baseUrl - base URL
  * @param {Array} arr - array of schema file names
- * @returns {Array} - schema data in array
+ * @returns {Promise.<Array>} - schema data in array
  */
 const getListedSchemaData = async (baseUrl, arr) => {
   if (!isString(baseUrl)) {
@@ -249,7 +249,7 @@ const saveSchemaFile = async (channel, info) => {
  * update schemas files
  *
  * @param {object} cmdOpts - command options
- * @returns {Promise.<Array>} - Promise chain
+ * @returns {Promise.<Array|Error>} - promise chain
  */
 const updateSchemas = (cmdOpts = {}) => {
   const {channel, info} = cmdOpts;
