@@ -259,7 +259,13 @@
             }
           ]
         }
-      ]
+      ],
+      "properties": {
+        "autoload": {
+          "$ref": "types.Setting",
+          "description": "Controls whether or not the built-in PKCS#11 module (osclientcerts) is loaded."
+        }
+      }
     }
   ],
   "content_scripts.json": [
