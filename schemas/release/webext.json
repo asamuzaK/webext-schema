@@ -6930,7 +6930,7 @@
                   "type": "boolean",
                   "default": false,
                   "optional": true,
-                  "description": "Return the sites that exactly appear on the user's new-tab page. When true, all other options are ignored except limit and includeFavicon."
+                  "description": "Return the sites that exactly appear on the user's new-tab page. When true, all other options are ignored except limit and includeFavicon. If the user disabled newtab Top Sites, the newtab parameter will be ignored."
                 }
               },
               "default": {},
@@ -11528,20 +11528,21 @@
             "js",
             "leaf",
             "mainthreadio",
-            "privacy",
             "responsiveness",
             "screenshots",
             "seqstyle",
             "stackwalk",
             "tasktracer",
             "threads",
-            "trackopts",
             "jstracer",
             "jsallocations",
             "nostacksampling",
             "nativeallocations",
             "preferencereads",
-            "ipcmessages"
+            "ipcmessages",
+            "fileio",
+            "fileioall",
+            "noiostacks"
           ]
         },
         {
@@ -14705,7 +14706,8 @@
                 "reject_all",
                 "reject_third_party",
                 "allow_visited",
-                "reject_trackers"
+                "reject_trackers",
+                "reject_trackers_and_partition_foreign"
               ],
               "description": "The type of cookies to allow."
             },
@@ -15721,6 +15723,162 @@
               ]
             }
           ]
+        },
+        {
+          "id": "StorageAreaSync",
+          "type": "object",
+          "functions": [
+            {
+              "name": "get",
+              "type": "function",
+              "description": "Gets one or more items from storage.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "keys",
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "description": "Storage items to return in the callback, where the values are replaced with those from storage if they exist.",
+                      "additionalProperties": {
+                        "type": "any"
+                      }
+                    }
+                  ],
+                  "description": "A single key to get, list of keys to get, or a dictionary specifying default values (see description of the object).  An empty list or object will return an empty result object.  Pass in <code>null</code> to get the entire contents of storage.",
+                  "optional": true
+                },
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback with storage items, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [
+                    {
+                      "name": "items",
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "any"
+                      },
+                      "description": "Object with items in their key-value mappings."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "getBytesInUse",
+              "type": "function",
+              "description": "Gets the amount of space (in bytes) being used by one or more items.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "keys",
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  ],
+                  "description": "A single key or list of keys to get the total usage for. An empty list will return 0. Pass in <code>null</code> to get the total usage of all of storage.",
+                  "optional": true
+                },
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback with the amount of space being used by storage, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [
+                    {
+                      "name": "bytesInUse",
+                      "type": "integer",
+                      "description": "Amount of space being used in storage, in bytes."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "set",
+              "type": "function",
+              "description": "Sets multiple items.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "items",
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "any"
+                  },
+                  "description": "<p>An object which gives each key/value pair to update storage with. Any other key/value pairs in storage will not be affected.</p><p>Primitive values such as numbers will serialize as expected. Values with a <code>typeof</code> <code>\"object\"</code> and <code>\"function\"</code> will typically serialize to <code>{}</code>, with the exception of <code>Array</code> (serializes as expected), <code>Date</code>, and <code>Regex</code> (serialize using their <code>String</code> representation).</p>"
+                },
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback on success, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [],
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "name": "remove",
+              "type": "function",
+              "description": "Removes one or more items from storage.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "keys",
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  ],
+                  "description": "A single key or a list of keys for items to remove."
+                },
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback on success, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [],
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "name": "clear",
+              "type": "function",
+              "description": "Removes all items from storage.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback on success, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [],
+                  "optional": true
+                }
+              ]
+            }
+          ]
         }
       ],
       "events": [
@@ -15747,7 +15905,7 @@
       ],
       "properties": {
         "sync": {
-          "$ref": "StorageArea",
+          "$ref": "StorageAreaSync",
           "description": "Items in the <code>sync</code> storage area are synced by the browser.",
           "properties": {
             "QUOTA_BYTES": {
@@ -15804,6 +15962,64 @@
     {
       "namespace": "manifest",
       "types": [
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "telemetry": {
+              "type": "object",
+              "optional": true,
+              "additionalProperties": {
+                "$ref": "UnrecognizedProperty"
+              },
+              "properties": {
+                "ping_type": {
+                  "type": "string"
+                },
+                "schemaNamespace": {
+                  "type": "string"
+                },
+                "public_key": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "key": {
+                      "type": "object",
+                      "properties": {
+                        "crv": {
+                          "type": "string",
+                          "optional": "false"
+                        },
+                        "kty": {
+                          "type": "string",
+                          "optional": "false"
+                        },
+                        "x": {
+                          "type": "string",
+                          "optional": "false"
+                        },
+                        "y": {
+                          "type": "string",
+                          "optional": "false"
+                        }
+                      }
+                    }
+                  }
+                },
+                "study_name": {
+                  "type": "string",
+                  "optional": true
+                },
+                "pioneer_id": {
+                  "type": "boolean",
+                  "optional": true,
+                  "default": false
+                }
+              }
+            }
+          }
+        },
         {
           "$extend": "PermissionNoPrompt",
           "choices": [
@@ -15959,6 +16175,39 @@
               }
             }
           ]
+        },
+        {
+          "name": "submitEncryptedPing",
+          "type": "function",
+          "description": "Submits a custom ping to the Telemetry back-end, with an encrypted payload. Requires a telemetry entry in the manifest to be used.",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "object",
+              "additionalProperties": {
+                "type": "any"
+              },
+              "description": "The data payload for the ping, which will be encrypted."
+            },
+            {
+              "description": "Options object.",
+              "name": "options",
+              "type": "object",
+              "properties": {
+                "schemaName": {
+                  "type": "string",
+                  "optional": false,
+                  "description": "Schema name used for payload."
+                },
+                "schemaVersion": {
+                  "type": "integer",
+                  "optional": false,
+                  "description": "Schema version used for payload."
+                }
+              }
+            }
+          ],
+          "async": true
         },
         {
           "name": "canUpload",
@@ -18016,7 +18265,6 @@
             "object",
             "object_subrequest",
             "xmlhttprequest",
-            "xbl",
             "xslt",
             "ping",
             "beacon",
@@ -18114,7 +18362,8 @@
               "optional": true,
               "description": "A list of request types. Requests that cannot match any of the types will be filtered out.",
               "items": {
-                "$ref": "ResourceType"
+                "$ref": "ResourceType",
+                "onError": "warn"
               },
               "minItems": 1
             },
