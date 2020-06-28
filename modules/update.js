@@ -17,7 +17,7 @@ const process = require("process");
 const {CHAR, INDENT} = require("./constant");
 const DIR_CWD = process.cwd();
 const PERM_FILE = 0o644;
-const ESR_VER = 68;
+const ESR_VER = 78;
 
 /**
  * fetch text

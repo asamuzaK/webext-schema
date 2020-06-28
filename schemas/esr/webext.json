@@ -275,11 +275,11 @@
           "parameters": [
             {
               "name": "query",
-              "description": "Either a string of words and quoted phrases that are matched against bookmark URLs and titles, or an object. If an object, the properties <code>query</code>, <code>url</code>, and <code>title</code> may be specified and bookmarks matching all specified properties will be produced.",
+              "description": "Either a string of words that are matched against bookmark URLs and titles, or an object. If an object, the properties <code>query</code>, <code>url</code>, and <code>title</code> may be specified and bookmarks matching all specified properties will be produced.",
               "choices": [
                 {
                   "type": "string",
-                  "description": "A string of words and quoted phrases that are matched against bookmark URLs and titles."
+                  "description": "A string of words that are matched against bookmark URLs and titles."
                 },
                 {
                   "type": "object",
@@ -288,7 +288,7 @@
                     "query": {
                       "type": "string",
                       "optional": true,
-                      "description": "A string of words and quoted phrases that are matched against bookmark URLs and titles."
+                      "description": "A string of words that are matched against bookmark URLs and titles."
                     },
                     "url": {
                       "type": "string",
@@ -621,507 +621,12 @@
       ]
     }
   ],
-  "browser_action.json": [
-    {
-      "namespace": "manifest",
-      "types": [
-        {
-          "$extend": "WebExtensionManifest",
-          "properties": {
-            "browser_action": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "UnrecognizedProperty"
-              },
-              "properties": {
-                "default_title": {
-                  "type": "string",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "default_icon": {
-                  "$ref": "IconPath",
-                  "optional": true
-                },
-                "theme_icons": {
-                  "type": "array",
-                  "optional": true,
-                  "minItems": 1,
-                  "items": {
-                    "$ref": "ThemeIcons"
-                  },
-                  "description": "Specifies icons to use for dark and light themes"
-                },
-                "default_popup": {
-                  "type": "string",
-                  "format": "relativeUrl",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "browser_style": {
-                  "type": "boolean",
-                  "optional": true,
-                  "default": false
-                },
-                "default_area": {
-                  "description": "Defines the location the browserAction will appear by default.  The default location is navbar.",
-                  "type": "string",
-                  "enum": [
-                    "navbar",
-                    "menupanel",
-                    "tabstrip",
-                    "personaltoolbar"
-                  ],
-                  "optional": true
-                }
-              },
-              "optional": true
-            }
-          }
-        }
-      ]
-    },
-    {
-      "namespace": "browserAction",
-      "description": "Use browser actions to put icons in the main browser toolbar, to the right of the address bar. In addition to its icon, a browser action can also have a tooltip, a badge, and a popup.",
-      "permissions": [
-        "manifest:browser_action"
-      ],
-      "types": [
-        {
-          "id": "Details",
-          "type": "object",
-          "description": "Specifies to which tab or window the value should be set, or from which one it should be retrieved. If no tab nor window is specified, the global value is set or retrieved.",
-          "properties": {
-            "tabId": {
-              "type": "integer",
-              "optional": true,
-              "minimum": 0,
-              "description": "When setting a value, it will be specific to the specified tab, and will automatically reset when the tab navigates. When getting, specifies the tab to get the value from; if there is no tab-specific value, the window one will be inherited."
-            },
-            "windowId": {
-              "type": "integer",
-              "optional": true,
-              "minimum": -2,
-              "description": "When setting a value, it will be specific to the specified window. When getting, specifies the window to get the value from; if there is no window-specific value, the global one will be inherited."
-            }
-          }
-        },
-        {
-          "id": "ColorArray",
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 255
-          },
-          "minItems": 4,
-          "maxItems": 4
-        },
-        {
-          "id": "ImageDataType",
-          "type": "object",
-          "isInstanceOf": "ImageData",
-          "additionalProperties": {
-            "type": "any"
-          },
-          "postprocess": "convertImageDataToURL",
-          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
-        },
-        {
-          "id": "ColorValue",
-          "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>.",
-          "choices": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "ColorArray"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        }
-      ],
-      "functions": [
-        {
-          "name": "setTitle",
-          "type": "function",
-          "description": "Sets the title of the browser action. This shows up in the tooltip.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "title": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "description": "The string the browser action should display when moused over."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "getTitle",
-          "type": "function",
-          "description": "Gets the title of the browser action.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "setIcon",
-          "type": "function",
-          "description": "Sets the icon for the browser action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "imageData": {
-                  "choices": [
-                    {
-                      "$ref": "ImageDataType"
-                    },
-                    {
-                      "type": "object",
-                      "patternProperties": {
-                        "^[1-9]\\d*$": {
-                          "$ref": "ImageDataType"
-                        }
-                      }
-                    }
-                  ],
-                  "optional": true,
-                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
-                },
-                "path": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "object",
-                      "patternProperties": {
-                        "^[1-9]\\d*$": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  ],
-                  "optional": true,
-                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "setPopup",
-          "type": "function",
-          "description": "Sets the html document to be opened as a popup when the user clicks on the browser action's icon.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "popup": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "getPopup",
-          "type": "function",
-          "description": "Gets the html document set as the popup for this browser action.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "setBadgeText",
-          "type": "function",
-          "description": "Sets the badge text for the browser action. The badge is displayed on top of the icon.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "text": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "description": "Any number of characters can be passed, but only about four can fit in the space."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "getBadgeText",
-          "type": "function",
-          "description": "Gets the badge text of the browser action. If no tab nor window is specified is specified, the global badge text is returned.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "setBadgeBackgroundColor",
-          "type": "function",
-          "description": "Sets the background color for the badge.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "color": {
-                  "$ref": "ColorValue"
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "getBadgeBackgroundColor",
-          "type": "function",
-          "description": "Gets the background color of the browser action badge.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "$ref": "ColorArray"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "setBadgeTextColor",
-          "type": "function",
-          "description": "Sets the text color for the badge.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "$import": "Details",
-              "properties": {
-                "color": {
-                  "$ref": "ColorValue"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "getBadgeTextColor",
-          "type": "function",
-          "description": "Gets the text color of the browser action badge.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            }
-          ]
-        },
-        {
-          "name": "enable",
-          "type": "function",
-          "description": "Enables the browser action for a tab. By default, browser actions are enabled.",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "integer",
-              "optional": true,
-              "name": "tabId",
-              "minimum": 0,
-              "description": "The id of the tab for which you want to modify the browser action."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "disable",
-          "type": "function",
-          "description": "Disables the browser action for a tab.",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "integer",
-              "optional": true,
-              "name": "tabId",
-              "minimum": 0,
-              "description": "The id of the tab for which you want to modify the browser action."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "isEnabled",
-          "type": "function",
-          "description": "Checks whether the browser action is enabled.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "details",
-              "$ref": "Details"
-            }
-          ]
-        },
-        {
-          "name": "openPopup",
-          "type": "function",
-          "requireUserInput": true,
-          "description": "Opens the extension popup window in the active window.",
-          "async": true,
-          "parameters": []
-        }
-      ],
-      "events": [
-        {
-          "name": "onClicked",
-          "type": "function",
-          "description": "Fired when a browser action icon is clicked.  This event will not fire if the browser action has a popup.",
-          "parameters": [
-            {
-              "name": "tab",
-              "$ref": "tabs.Tab"
-            }
-          ]
-        }
-      ]
-    }
-  ],
   "browsing_data.json": [
     {
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -1582,7 +1087,7 @@
                     "favicon_url": {
                       "type": "string",
                       "optional": true,
-                      "format": "url",
+                      "format": "relativeUrl",
                       "preprocess": "localize"
                     },
                     "suggest_url": {
@@ -1695,7 +1200,8 @@
                           "pref": {
                             "type": "string",
                             "optional": true,
-                            "description": "The preference to retreive the value from."
+                            "description": "The preference to retrieve the value from.",
+                            "preprocess": "localize"
                           },
                           "purpose": {
                             "type": "string",
@@ -1864,7 +1370,8 @@
                   "description": "The new description for the command."
                 },
                 "shortcut": {
-                  "$ref": "manifest.KeyName",
+                  "type": "string",
+                  "format": "manifestShortcutKeyOrEmpty",
                   "optional": true
                 }
               }
@@ -1924,7 +1431,7 @@
           }
         },
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -3244,7 +2751,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -3256,7 +2763,7 @@
           ]
         },
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -3965,6 +3472,146 @@
       ]
     }
   ],
+  "normandyAddonStudy.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "PermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "normandyAddonStudy"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "normandyAddonStudy",
+      "description": "Normandy Study API",
+      "allowedContexts": [
+        "content",
+        "devtools"
+      ],
+      "defaultContexts": [
+        "content",
+        "devtools"
+      ],
+      "permissions": [
+        "normandyAddonStudy"
+      ],
+      "types": [
+        {
+          "id": "Study",
+          "type": "object",
+          "properties": {
+            "recipeId": {
+              "type": "integer",
+              "description": "The ID of the recipe for the study."
+            },
+            "slug": {
+              "type": "string",
+              "description": "A slug to identify the study."
+            },
+            "userFacingName": {
+              "type": "string",
+              "description": "The name presented on about:studies."
+            },
+            "userFacingDescription": {
+              "type": "string",
+              "description": "The description presented on about:studies."
+            },
+            "branch": {
+              "type": "string",
+              "description": "The study branch in which the user is enrolled."
+            },
+            "active": {
+              "type": "boolean",
+              "description": "The state of the study."
+            },
+            "addonId": {
+              "type": "string",
+              "description": "The ID of the extension installed by the study."
+            },
+            "addonUrl": {
+              "type": "string",
+              "description": "The URL of the XPI that was downloaded and installed by the study."
+            },
+            "addonVersion": {
+              "type": "string",
+              "description": "The version of the extension installed by the study."
+            },
+            "studyStartDate": {
+              "$ref": "extensionTypes.Date",
+              "description": "The start date for the study."
+            },
+            "studyEndDate": {
+              "$ref": "extensionTypes.Date",
+              "description": "The end date for the study."
+            },
+            "extensionApiId": {
+              "type": "integer",
+              "description": "The record ID for the extension in Normandy server's database."
+            },
+            "extensionHash": {
+              "type": "string",
+              "description": "A hash of the extension XPI file."
+            },
+            "extensionHashAlgorithm": {
+              "type": "string",
+              "description": "The algorithm used to hash the extension XPI file."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "getStudy",
+          "type": "function",
+          "description": "Returns a study object for the current study.",
+          "async": true,
+          "parameters": []
+        },
+        {
+          "name": "endStudy",
+          "type": "function",
+          "description": "Marks the study as ended and then uninstalls the addon.",
+          "async": true,
+          "parameters": [
+            {
+              "type": "string",
+              "name": "reason",
+              "description": "The reason why the study is ending."
+            }
+          ]
+        },
+        {
+          "name": "getClientMetadata",
+          "type": "function",
+          "description": "Returns an object with metadata about the client which may be required for constructing survey URLs.",
+          "async": true,
+          "parameters": []
+        }
+      ],
+      "events": [
+        {
+          "name": "onUnenroll",
+          "type": "function",
+          "description": "Fired when a user unenrolls from a study but before the addon is uninstalled.",
+          "parameters": [
+            {
+              "type": "string",
+              "name": "reason",
+              "description": "The reason why the study is ending."
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "omnibox.json": [
     {
       "namespace": "manifest",
@@ -4199,348 +3846,12 @@
       ]
     }
   ],
-  "page_action.json": [
-    {
-      "namespace": "manifest",
-      "types": [
-        {
-          "$extend": "WebExtensionManifest",
-          "properties": {
-            "page_action": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "UnrecognizedProperty"
-              },
-              "properties": {
-                "default_title": {
-                  "type": "string",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "default_icon": {
-                  "$ref": "IconPath",
-                  "optional": true
-                },
-                "default_popup": {
-                  "type": "string",
-                  "format": "relativeUrl",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "browser_style": {
-                  "type": "boolean",
-                  "optional": true,
-                  "default": false
-                },
-                "show_matches": {
-                  "type": "array",
-                  "optional": true,
-                  "minItems": 1,
-                  "items": {
-                    "$ref": "MatchPattern"
-                  }
-                },
-                "hide_matches": {
-                  "type": "array",
-                  "optional": true,
-                  "minItems": 1,
-                  "items": {
-                    "$ref": "MatchPatternRestricted"
-                  }
-                },
-                "pinned": {
-                  "type": "boolean",
-                  "optional": true,
-                  "default": true
-                }
-              },
-              "optional": true
-            }
-          }
-        }
-      ]
-    },
-    {
-      "namespace": "pageAction",
-      "description": "Use the <code>browser.pageAction</code> API to put icons inside the address bar. Page actions represent actions that can be taken on the current page, but that aren't applicable to all pages.",
-      "permissions": [
-        "manifest:page_action"
-      ],
-      "types": [
-        {
-          "id": "ImageDataType",
-          "type": "object",
-          "isInstanceOf": "ImageData",
-          "additionalProperties": {
-            "type": "any"
-          },
-          "postprocess": "convertImageDataToURL",
-          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
-        }
-      ],
-      "functions": [
-        {
-          "name": "show",
-          "type": "function",
-          "async": "callback",
-          "description": "Shows the page action. The page action is shown whenever the tab is selected.",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "tabId",
-              "minimum": 0,
-              "description": "The id of the tab for which you want to modify the page action."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "hide",
-          "type": "function",
-          "async": "callback",
-          "description": "Hides the page action.",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "tabId",
-              "minimum": 0,
-              "description": "The id of the tab for which you want to modify the page action."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "isShown",
-          "type": "function",
-          "description": "Checks whether the page action is shown.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "description": "Specify the tab to get the shownness from."
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "setTitle",
-          "type": "function",
-          "description": "Sets the title of the page action. This is displayed in a tooltip over the page action.",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "description": "The id of the tab for which you want to modify the page action."
-                },
-                "title": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "description": "The tooltip string."
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "getTitle",
-          "type": "function",
-          "description": "Gets the title of the page action.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "description": "Specify the tab to get the title from."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "setIcon",
-          "type": "function",
-          "description": "Sets the icon for the page action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "description": "The id of the tab for which you want to modify the page action."
-                },
-                "imageData": {
-                  "choices": [
-                    {
-                      "$ref": "ImageDataType"
-                    },
-                    {
-                      "type": "object",
-                      "patternProperties": {
-                        "^[1-9]\\d*$": {
-                          "$ref": "ImageDataType"
-                        }
-                      }
-                    }
-                  ],
-                  "optional": true,
-                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
-                },
-                "path": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "object",
-                      "patternProperties": {
-                        "^[1-9]\\d*$": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  ],
-                  "optional": true,
-                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "setPopup",
-          "type": "function",
-          "async": true,
-          "description": "Sets the html document to be opened as a popup when the user clicks on the page action's icon.",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "description": "The id of the tab for which you want to modify the page action."
-                },
-                "popup": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "getPopup",
-          "type": "function",
-          "description": "Gets the html document set as the popup for this page action.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "details",
-              "type": "object",
-              "properties": {
-                "tabId": {
-                  "type": "integer",
-                  "description": "Specify the tab to get the popup from."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "openPopup",
-          "type": "function",
-          "requireUserInput": true,
-          "description": "Opens the extension page action in the active window.",
-          "async": true,
-          "parameters": []
-        }
-      ],
-      "events": [
-        {
-          "name": "onClicked",
-          "type": "function",
-          "description": "Fired when a page action icon is clicked.  This event will not fire if the page action has a popup.",
-          "parameters": [
-            {
-              "name": "tab",
-              "$ref": "tabs.Tab"
-            }
-          ]
-        }
-      ]
-    }
-  ],
   "pkcs11.json": [
     {
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -4620,7 +3931,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -4706,7 +4017,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -5295,6 +4606,14 @@
           "parameters": []
         },
         {
+          "name": "toggle",
+          "type": "function",
+          "requireUserInput": true,
+          "description": "Toggles the extension sidebar in the active window.",
+          "async": true,
+          "parameters": []
+        },
+        {
           "name": "isOpen",
           "type": "function",
           "description": "Checks whether the sidebar action is open.",
@@ -5322,12 +4641,22 @@
       "namespace": "manifest",
       "types": [
         {
+          "$extend": "OptionalPermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "activeTab"
+              ]
+            }
+          ]
+        },
+        {
           "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
               "enum": [
-                "activeTab",
                 "tabs",
                 "tabHide"
               ]
@@ -5610,8 +4939,13 @@
         {
           "id": "PageSettings",
           "type": "object",
-          "description": "The page settings including: orientation, scale, background, margins, headers, footers.",
+          "description": "Defines the page settings to be used when saving a page as a pdf file.",
           "properties": {
+            "toFileName": {
+              "type": "string",
+              "optional": true,
+              "description": "The name of the file. May include optional .pdf extension."
+            },
             "paperSizeUnit": {
               "type": "integer",
               "optional": true,
@@ -5754,7 +5088,6 @@
             "discarded",
             "favIconUrl",
             "hidden",
-            "isarticle",
             "isArticle",
             "mutedInfo",
             "pinned",
@@ -6108,6 +5441,23 @@
               "name": "tabId",
               "minimum": 0,
               "description": "The ID of the tab which is to be duplicated."
+            },
+            {
+              "type": "object",
+              "name": "duplicateProperties",
+              "optional": true,
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "optional": true,
+                  "description": "The position the new tab should take in the window. The provided value will be clamped to between zero and the number of tabs in the window."
+                },
+                "active": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the tab should become the active tab in the window. Does not affect whether the window is focused (see $(ref:windows.update)). Defaults to <var>true</var>."
+                }
+              }
             },
             {
               "type": "function",
@@ -7014,6 +6364,48 @@
               }
             }
           ]
+        },
+        {
+          "name": "goForward",
+          "type": "function",
+          "description": "Navigate to next page in tab's history, if available",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "tabId",
+              "minimum": 0,
+              "optional": true,
+              "description": "The ID of the tab to navigate forward."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "goBack",
+          "type": "function",
+          "description": "Navigate to previous page in tab's history, if available.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "tabId",
+              "minimum": 0,
+              "optional": true,
+              "description": "The ID of the tab to navigate backward."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
         }
       ],
       "events": [
@@ -7420,6 +6812,148 @@
       ]
     }
   ],
+  "top_sites.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "OptionalPermission",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "topSites"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "topSites",
+      "description": "Use the chrome.topSites API to access the top sites that are displayed on the new tab page. ",
+      "permissions": [
+        "topSites"
+      ],
+      "types": [
+        {
+          "id": "MostVisitedURL",
+          "type": "object",
+          "description": "An object encapsulating a most visited URL, such as the URLs on the new tab page.",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The most visited URL."
+            },
+            "title": {
+              "type": "string",
+              "optional": true,
+              "description": "The title of the page."
+            },
+            "favicon": {
+              "type": "string",
+              "optional": true,
+              "description": "Data URL for the favicon, if available."
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "url",
+                "search"
+              ],
+              "optional": true,
+              "default": "url",
+              "description": "The entry type, either <code>url</code> for a normal page link, or <code>search</code> for a search shortcut."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "get",
+          "type": "function",
+          "description": "Gets a list of top sites.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "object",
+              "name": "options",
+              "properties": {
+                "providers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "deprecated": "Please use the other options to tune the results received from topSites.",
+                  "default": [],
+                  "optional": true
+                },
+                "limit": {
+                  "type": "integer",
+                  "default": 12,
+                  "maximum": 100,
+                  "minimum": 1,
+                  "optional": true,
+                  "description": "The number of top sites to return, defaults to the value used by Firefox"
+                },
+                "onePerDomain": {
+                  "type": "boolean",
+                  "default": true,
+                  "optional": true,
+                  "description": "Limit the result to a single top site link per domain"
+                },
+                "includeBlocked": {
+                  "type": "boolean",
+                  "default": false,
+                  "optional": true,
+                  "description": "Include sites that the user has blocked from appearing on the Firefox new tab."
+                },
+                "includeFavicon": {
+                  "type": "boolean",
+                  "default": false,
+                  "optional": true,
+                  "description": "Include sites favicon if available."
+                },
+                "includePinned": {
+                  "type": "boolean",
+                  "default": false,
+                  "optional": true,
+                  "description": "Include sites that the user has pinned on the Firefox new tab."
+                },
+                "includeSearchShortcuts": {
+                  "type": "boolean",
+                  "default": false,
+                  "optional": true,
+                  "description": "Include search shortcuts appearing on the Firefox new tab."
+                },
+                "newtab": {
+                  "type": "boolean",
+                  "default": false,
+                  "optional": true,
+                  "description": "Return the sites that exactly appear on the user's new-tab page. When true, all other options are ignored except limit and includeFavicon. If the user disabled newtab Top Sites, the newtab parameter will be ignored."
+                }
+              },
+              "default": {},
+              "optional": true
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "parameters": [
+                {
+                  "name": "results",
+                  "type": "array",
+                  "items": {
+                    "$ref": "MostVisitedURL"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "url_overrides.json": [
     {
       "namespace": "manifest",
@@ -7451,6 +6985,301 @@
               }
             }
           }
+        }
+      ]
+    }
+  ],
+  "urlbar.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "PermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "urlbar"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "urlbar",
+      "description": "Use the <code>browser.urlbar</code> API to experiment with new features in the URLBar. Restricted to Mozilla privileged WebExtensions.",
+      "permissions": [
+        "urlbar"
+      ],
+      "types": [
+        {
+          "id": "EngagementState",
+          "type": "string",
+          "enum": [
+            "start",
+            "engagement",
+            "abandonment",
+            "discard"
+          ],
+          "description": "The state of an engagement made with the urlbar by the user. <code>start</code>: The user has started an engagement. <code>engagement</code>: The user has completed an engagement by picking a result. <code>abandonment</code>: The user has abandoned their engagement, for example by blurring the urlbar. <code>discard</code>: The engagement ended in a way that should be ignored by listeners."
+        },
+        {
+          "id": "Query",
+          "type": "object",
+          "description": "A query performed in the urlbar.",
+          "properties": {
+            "isPrivate": {
+              "type": "boolean",
+              "description": "Whether the query's browser context is private."
+            },
+            "maxResults": {
+              "type": "integer",
+              "description": "The maximum number of results shown to the user."
+            },
+            "searchString": {
+              "type": "string",
+              "description": "The query's search string."
+            },
+            "sources": {
+              "type": "array",
+              "description": "List of acceptable source types to return.",
+              "items": {
+                "$ref": "SourceType"
+              }
+            }
+          }
+        },
+        {
+          "id": "Result",
+          "type": "object",
+          "description": "A result of a query. Queries can have many results. Each result is created by a provider.",
+          "properties": {
+            "payload": {
+              "type": "object",
+              "description": "An object with arbitrary properties depending on the result's type."
+            },
+            "source": {
+              "$ref": "SourceType",
+              "description": "The result's source."
+            },
+            "type": {
+              "$ref": "ResultType",
+              "description": "The result's type."
+            },
+            "suggestedIndex": {
+              "type": "integer",
+              "description": "Suggest a preferred position for this result within the result set.",
+              "optional": true,
+              "default": -1
+            }
+          }
+        },
+        {
+          "id": "ResultType",
+          "type": "string",
+          "enum": [
+            "remote_tab",
+            "search",
+            "tab",
+            "tip",
+            "url"
+          ],
+          "description": "Possible types of results. <code>remote_tab</code>: A synced tab from another device. <code>search</code>: A search suggestion from a search engine. <code>tab</code>: An open tab in the browser. <code>tip</code>: An actionable message to help the user with their query. <code>url</code>: A URL that's not one of the other types."
+        },
+        {
+          "id": "SearchOptions",
+          "type": "object",
+          "description": "Options to the <code>search</code> function.",
+          "properties": {
+            "focus": {
+              "type": "boolean",
+              "optional": true,
+              "default": true,
+              "description": "Whether to focus the input field and select its contents."
+            }
+          }
+        },
+        {
+          "id": "SourceType",
+          "type": "string",
+          "enum": [
+            "bookmarks",
+            "history",
+            "local",
+            "network",
+            "search",
+            "tabs"
+          ],
+          "description": "Possible sources of results. <code>bookmarks</code>: The result comes from the user's bookmarks. <code>history</code>: The result comes from the user's history. <code>local</code>: The result comes from some local source not covered by another source type. <code>network</code>: The result comes from some network source not covered by another source type. <code>search</code>: The result comes from a search engine. <code>tabs</code>: The result is an open tab in the browser or a synced tab from another device."
+        }
+      ],
+      "properties": {
+        "engagementTelemetry": {
+          "$ref": "types.Setting",
+          "description": "Enables or disables the engagement telemetry."
+        }
+      },
+      "functions": [
+        {
+          "name": "closeView",
+          "type": "function",
+          "async": true,
+          "description": "Closes the urlbar view in the current window.",
+          "parameters": []
+        },
+        {
+          "name": "focus",
+          "type": "function",
+          "async": true,
+          "description": "Focuses the urlbar in the current window.",
+          "parameters": [
+            {
+              "name": "select",
+              "type": "boolean",
+              "optional": true,
+              "default": false,
+              "description": "If true, the text in the urlbar will also be selected."
+            }
+          ]
+        },
+        {
+          "name": "search",
+          "type": "function",
+          "async": true,
+          "description": "Starts a search in the urlbar in the current window.",
+          "parameters": [
+            {
+              "name": "searchString",
+              "type": "string",
+              "description": "The search string."
+            },
+            {
+              "name": "options",
+              "$ref": "SearchOptions",
+              "optional": true,
+              "default": {},
+              "description": "Options for the search."
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "onBehaviorRequested",
+          "type": "function",
+          "description": "Before a query starts, this event is fired for the given provider. Its purpose is to request the provider's behavior for the query. The listener should return a behavior in response. By default, providers are inactive, so if your provider should always be inactive, you don't need to listen for this event.",
+          "parameters": [
+            {
+              "name": "query",
+              "$ref": "Query",
+              "description": "The query for which the behavior is requested."
+            }
+          ],
+          "extraParameters": [
+            {
+              "name": "providerName",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "description": "The name of the provider whose behavior the listener returns."
+            }
+          ],
+          "returns": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "restricting"
+            ],
+            "description": "The behavior of the provider for the query."
+          }
+        },
+        {
+          "name": "onEngagement",
+          "type": "function",
+          "description": "This event is fired when the user starts and ends an engagement with the urlbar.",
+          "parameters": [
+            {
+              "name": "state",
+              "$ref": "EngagementState",
+              "description": "The state of the engagement."
+            }
+          ],
+          "extraParameters": [
+            {
+              "name": "providerName",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "description": "The name of the provider that will listen for engagement events."
+            }
+          ]
+        },
+        {
+          "name": "onQueryCanceled",
+          "type": "function",
+          "description": "This event is fired for the given provider when a query is canceled. The listener should stop any ongoing fetch or creation of results and clean up its resources.",
+          "parameters": [
+            {
+              "name": "query",
+              "$ref": "Query",
+              "description": "The query that was canceled."
+            }
+          ],
+          "extraParameters": [
+            {
+              "name": "providerName",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "description": "The name of the provider that is creating results for the query."
+            }
+          ]
+        },
+        {
+          "name": "onResultsRequested",
+          "type": "function",
+          "description": "When a query starts, this event is fired for the given provider if the provider is active for the query and there are no other providers that are restricting. Its purpose is to request the provider's results for the query. The listener should return a list of results in response.",
+          "parameters": [
+            {
+              "name": "query",
+              "$ref": "Query",
+              "description": "The query for which results are requested."
+            }
+          ],
+          "extraParameters": [
+            {
+              "name": "providerName",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "description": "The name of the provider whose results the listener returns."
+            }
+          ],
+          "returns": {
+            "type": "array",
+            "items": {
+              "$ref": "Result"
+            },
+            "description": "The results that the provider fetched for the query."
+          }
+        },
+        {
+          "name": "onResultPicked",
+          "type": "function",
+          "description": "Typically, a provider includes a <code>url</code> property in its results' payloads. When the user picks a result with a URL, Firefox automatically loads the URL. URLs don't make sense for every result type, however. When the user picks a result without a URL, this event is fired. The provider should take an appropriate action in response. Currently the only applicable <code>ResultType</code> is <code>tip</code>.",
+          "parameters": [
+            {
+              "name": "payload",
+              "type": "object",
+              "description": "The payload of the result that was picked."
+            }
+          ],
+          "extraParameters": [
+            {
+              "name": "providerName",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "description": "The listener will be called for the results of the provider with this name."
+            }
+          ]
         }
       ]
     }
@@ -7986,6 +7815,111 @@
       ]
     }
   ],
+  "activity_log.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "PermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "activityLog"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "activityLog",
+      "description": "Monitor extension activity",
+      "permissions": [
+        "activityLog"
+      ],
+      "events": [
+        {
+          "name": "onExtensionActivity",
+          "description": "Receives an activityItem for each logging event.",
+          "type": "function",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "timeStamp": {
+                  "$ref": "extensionTypes.Date",
+                  "description": "The date string when this call is triggered."
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "api_call",
+                    "api_event",
+                    "content_script",
+                    "user_script"
+                  ],
+                  "description": "The type of log entry.  api_call is a function call made by the extension and api_event is an event callback to the extension.  content_script is logged when a content script is injected."
+                },
+                "viewType": {
+                  "type": "string",
+                  "optional": true,
+                  "enum": [
+                    "background",
+                    "popup",
+                    "sidebar",
+                    "tab",
+                    "devtools_page",
+                    "devtools_panel"
+                  ],
+                  "description": "The type of view where the activity occurred.  Content scripts will not have a viewType."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The name of the api call or event, or the script url if this is a content or user script event."
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "args": {
+                      "type": "array",
+                      "optional": true,
+                      "items": {
+                        "type": "any"
+                      },
+                      "description": "A list of arguments passed to the call."
+                    },
+                    "result": {
+                      "type": "object",
+                      "optional": true,
+                      "description": "The result of the call."
+                    },
+                    "tabId": {
+                      "type": "integer",
+                      "optional": true,
+                      "description": "The tab associated with this event if it is a tab or content script."
+                    },
+                    "url": {
+                      "type": "string",
+                      "optional": true,
+                      "description": "If the type is content_script, this is the url of the script that was injected."
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "extraParameters": [
+            {
+              "name": "id",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "alarms.json": [
     {
       "namespace": "alarms",
@@ -8156,6 +8090,532 @@
       ]
     }
   ],
+  "browser_action.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "browser_action": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "UnrecognizedProperty"
+              },
+              "properties": {
+                "default_title": {
+                  "type": "string",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "default_icon": {
+                  "$ref": "IconPath",
+                  "optional": true
+                },
+                "theme_icons": {
+                  "type": "array",
+                  "optional": true,
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "ThemeIcons"
+                  },
+                  "description": "Specifies icons to use for dark and light themes"
+                },
+                "default_popup": {
+                  "type": "string",
+                  "format": "relativeUrl",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "browser_style": {
+                  "type": "boolean",
+                  "optional": true,
+                  "default": false
+                },
+                "default_area": {
+                  "description": "Defines the location the browserAction will appear by default.  The default location is navbar.",
+                  "type": "string",
+                  "enum": [
+                    "navbar",
+                    "menupanel",
+                    "tabstrip",
+                    "personaltoolbar"
+                  ],
+                  "optional": true
+                }
+              },
+              "optional": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "namespace": "browserAction",
+      "description": "Use browser actions to put icons in the main browser toolbar, to the right of the address bar. In addition to its icon, a browser action can also have a tooltip, a badge, and a popup.",
+      "permissions": [
+        "manifest:browser_action"
+      ],
+      "types": [
+        {
+          "id": "Details",
+          "type": "object",
+          "description": "Specifies to which tab or window the value should be set, or from which one it should be retrieved. If no tab nor window is specified, the global value is set or retrieved.",
+          "properties": {
+            "tabId": {
+              "type": "integer",
+              "optional": true,
+              "minimum": 0,
+              "description": "When setting a value, it will be specific to the specified tab, and will automatically reset when the tab navigates. When getting, specifies the tab to get the value from; if there is no tab-specific value, the window one will be inherited."
+            },
+            "windowId": {
+              "type": "integer",
+              "optional": true,
+              "minimum": -2,
+              "description": "When setting a value, it will be specific to the specified window. When getting, specifies the window to get the value from; if there is no window-specific value, the global one will be inherited."
+            }
+          }
+        },
+        {
+          "id": "ColorArray",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        {
+          "id": "ImageDataType",
+          "type": "object",
+          "isInstanceOf": "ImageData",
+          "additionalProperties": {
+            "type": "any"
+          },
+          "postprocess": "convertImageDataToURL",
+          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
+        },
+        {
+          "id": "ColorValue",
+          "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>.",
+          "choices": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "ColorArray"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "id": "OnClickData",
+          "type": "object",
+          "description": "Information sent when a browser action is clicked.",
+          "properties": {
+            "modifiers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Shift",
+                  "Alt",
+                  "Command",
+                  "Ctrl",
+                  "MacCtrl"
+                ]
+              },
+              "description": "An array of keyboard modifiers that were held while the menu item was clicked."
+            },
+            "button": {
+              "type": "integer",
+              "optional": true,
+              "description": "An integer value of button by which menu item was clicked."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "setTitle",
+          "type": "function",
+          "description": "Sets the title of the browser action. This shows up in the tooltip.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "title": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The string the browser action should display when moused over."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getTitle",
+          "type": "function",
+          "description": "Gets the title of the browser action.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setIcon",
+          "type": "function",
+          "description": "Sets the icon for the browser action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "imageData": {
+                  "choices": [
+                    {
+                      "$ref": "ImageDataType"
+                    },
+                    {
+                      "type": "object",
+                      "patternProperties": {
+                        "^[1-9]\\d*$": {
+                          "$ref": "ImageDataType"
+                        }
+                      }
+                    }
+                  ],
+                  "optional": true,
+                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                },
+                "path": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "patternProperties": {
+                        "^[1-9]\\d*$": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ],
+                  "optional": true,
+                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "setPopup",
+          "type": "function",
+          "description": "Sets the html document to be opened as a popup when the user clicks on the browser action's icon.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "popup": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getPopup",
+          "type": "function",
+          "description": "Gets the html document set as the popup for this browser action.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setBadgeText",
+          "type": "function",
+          "description": "Sets the badge text for the browser action. The badge is displayed on top of the icon.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "text": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "Any number of characters can be passed, but only about four can fit in the space."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getBadgeText",
+          "type": "function",
+          "description": "Gets the badge text of the browser action. If no tab nor window is specified is specified, the global badge text is returned.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setBadgeBackgroundColor",
+          "type": "function",
+          "description": "Sets the background color for the badge.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "color": {
+                  "$ref": "ColorValue"
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getBadgeBackgroundColor",
+          "type": "function",
+          "description": "Gets the background color of the browser action badge.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "$ref": "ColorArray"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setBadgeTextColor",
+          "type": "function",
+          "description": "Sets the text color for the badge.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "$import": "Details",
+              "properties": {
+                "color": {
+                  "$ref": "ColorValue"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "getBadgeTextColor",
+          "type": "function",
+          "description": "Gets the text color of the browser action badge.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            }
+          ]
+        },
+        {
+          "name": "enable",
+          "type": "function",
+          "description": "Enables the browser action for a tab. By default, browser actions are enabled.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "optional": true,
+              "name": "tabId",
+              "minimum": 0,
+              "description": "The id of the tab for which you want to modify the browser action."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "disable",
+          "type": "function",
+          "description": "Disables the browser action for a tab.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "optional": true,
+              "name": "tabId",
+              "minimum": 0,
+              "description": "The id of the tab for which you want to modify the browser action."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "isEnabled",
+          "type": "function",
+          "description": "Checks whether the browser action is enabled.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "Details"
+            }
+          ]
+        },
+        {
+          "name": "openPopup",
+          "type": "function",
+          "requireUserInput": true,
+          "description": "Opens the extension popup window in the active window.",
+          "async": true,
+          "parameters": []
+        }
+      ],
+      "events": [
+        {
+          "name": "onClicked",
+          "type": "function",
+          "description": "Fired when a browser action icon is clicked.  This event will not fire if the browser action has a popup.",
+          "parameters": [
+            {
+              "name": "tab",
+              "$ref": "tabs.Tab"
+            },
+            {
+              "name": "info",
+              "$ref": "OnClickData",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "browser_settings.json": [
     {
       "namespace": "manifest",
@@ -8217,6 +8677,10 @@
           "$ref": "types.Setting",
           "description": "Controls after which mouse event context menus popup. This setting's value is of type ContextMenuMouseEvent, which has possible values of <code>mouseup</code> and <code>mousedown</code>."
         },
+        "ftpProtocolEnabled": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether the FTP protocol is enabled."
+        },
         "homepageOverride": {
           "$ref": "types.Setting",
           "description": "Returns the value of the overridden home page. Read-only."
@@ -8256,6 +8720,14 @@
         "useDocumentFonts": {
           "$ref": "types.Setting",
           "description": "This setting controls whether the document's fonts are used."
+        },
+        "zoomFullPage": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether zoom is applied to the full page or to text only."
+        },
+        "zoomSiteSpecific": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether zoom is applied on a per-site basis or to the current tab only. If privacy.resistFingerprinting is true, this setting has no effect and zoom is applied to the current tab only."
         }
       }
     }
@@ -8265,7 +8737,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -8283,6 +8755,12 @@
       "permissions": [
         "captivePortal"
       ],
+      "properties": {
+        "canonicalURL": {
+          "$ref": "types.Setting",
+          "description": "Return the canonical captive-portal detection URL. Read-only."
+        }
+      },
       "functions": [
         {
           "name": "getState",
@@ -8484,7 +8962,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -8708,7 +9186,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -9147,7 +9625,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -9663,6 +10141,12 @@
                   "description": "Post body.",
                   "optional": true,
                   "type": "string"
+                },
+                "allowHttpErrors": {
+                  "description": "When this flag is set to <code>true</code>, then the browser will allow downloads to proceed after encountering HTTP errors such as <code>404 Not Found</code>.",
+                  "optional": true,
+                  "default": false,
+                  "type": "boolean"
                 }
               }
             },
@@ -11017,7 +11501,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -11044,16 +11528,21 @@
             "js",
             "leaf",
             "mainthreadio",
-            "memory",
-            "privacy",
             "responsiveness",
             "screenshots",
             "seqstyle",
             "stackwalk",
             "tasktracer",
             "threads",
-            "trackopts",
-            "jstracer"
+            "jstracer",
+            "jsallocations",
+            "nostacksampling",
+            "nativeallocations",
+            "preferencereads",
+            "ipcmessages",
+            "fileio",
+            "fileioall",
+            "noiostacks"
           ]
         },
         {
@@ -11130,6 +11619,19 @@
           "parameters": []
         },
         {
+          "name": "dumpProfileToFile",
+          "type": "function",
+          "description": "Gathers the profile data from the current profiling session, and writes it to disk. The returned promise resolves to a path that locates the created file.",
+          "async": true,
+          "parameters": [
+            {
+              "type": "string",
+              "name": "fileName",
+              "description": "The name of the file inside the profile/profiler directory"
+            }
+          ]
+        },
+        {
           "name": "getProfile",
           "type": "function",
           "description": "Gathers the profile data from the current profiling session.",
@@ -11140,6 +11642,13 @@
           "name": "getProfileAsArrayBuffer",
           "type": "function",
           "description": "Gathers the profile data from the current profiling session. The returned promise resolves to an array buffer that contains a JSON string.",
+          "async": true,
+          "parameters": []
+        },
+        {
+          "name": "getProfileAsGzippedArrayBuffer",
+          "type": "function",
+          "description": "Gathers the profile data from the current profiling session. The returned promise resolves to an array buffer that contains a gzipped JSON string.",
           "async": true,
           "parameters": []
         },
@@ -11188,6 +11697,13 @@
             "default_locale": {
               "type": "string",
               "optional": "true"
+            },
+            "l10n_resources": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "optional": true
             }
           }
         }
@@ -11322,7 +11838,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -11631,7 +12147,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -12201,10 +12717,40 @@
               }
             },
             "content_security_policy": {
-              "type": "string",
               "optional": true,
-              "format": "contentSecurityPolicy",
-              "onError": "warn"
+              "onError": "warn",
+              "choices": [
+                {
+                  "type": "string",
+                  "format": "contentSecurityPolicy"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "UnrecognizedProperty"
+                  },
+                  "properties": {
+                    "extension_pages": {
+                      "type": "string",
+                      "optional": true,
+                      "format": "contentSecurityPolicy",
+                      "description": "The Content Security Policy used for extension pages."
+                    },
+                    "content_scripts": {
+                      "type": "string",
+                      "optional": true,
+                      "format": "contentSecurityPolicy",
+                      "description": "The Content Security Policy used for content scripts."
+                    },
+                    "isolated_world": {
+                      "type": "string",
+                      "optional": true,
+                      "format": "contentSecurityPolicy",
+                      "description": "An alias for content_scripts to support Chrome compatibility.  Content Security Policy implementations may differ between Firefox and Chrome.  If both isolated_world and content_scripts exist, the value from content_scripts will be used."
+                    }
+                  }
+                }
+              ]
             },
             "permissions": {
               "type": "array",
@@ -12376,15 +12922,28 @@
           }
         },
         {
+          "id": "OptionalPermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "idle"
+              ]
+            }
+          ]
+        },
+        {
           "id": "OptionalPermission",
           "choices": [
+            {
+              "$ref": "OptionalPermissionNoPrompt"
+            },
             {
               "type": "string",
               "enum": [
                 "clipboardRead",
                 "clipboardWrite",
                 "geolocation",
-                "idle",
                 "notifications"
               ]
             }
@@ -12402,7 +12961,7 @@
           ]
         },
         {
-          "id": "Permission",
+          "id": "PermissionNoPrompt",
           "choices": [
             {
               "$ref": "OptionalPermission"
@@ -12415,6 +12974,17 @@
                 "storage",
                 "unlimitedStorage"
               ]
+            }
+          ]
+        },
+        {
+          "id": "Permission",
+          "choices": [
+            {
+              "$ref": "PermissionNoPrompt"
+            },
+            {
+              "$ref": "OptionalPermission"
             }
           ]
         },
@@ -12726,6 +13296,89 @@
                   ]
                 }
               }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "network_status.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "PermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "networkStatus"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "networkStatus",
+      "description": "This API provides the ability to determine the status of and detect changes in the network connection. This API can only be used in privileged extensions.",
+      "permissions": [
+        "networkStatus"
+      ],
+      "types": [
+        {
+          "id": "NetworkLinkInfo",
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "unknown",
+                "up",
+                "down"
+              ],
+              "description": "Status of the network link, if \"unknown\" then link is usually assumed to be \"up\""
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "unknown",
+                "ethernet",
+                "usb",
+                "wifi",
+                "wimax",
+                "2g",
+                "3g",
+                "4g"
+              ],
+              "description": "If known, the type of network connection that is avialable."
+            },
+            "id": {
+              "type": "string",
+              "optional": true,
+              "description": "If known, the network id or name."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "getLinkInfo",
+          "type": "function",
+          "description": "Returns the $(ref:NetworkLinkInfo} of the current network connection.",
+          "async": true,
+          "parameters": []
+        }
+      ],
+      "events": [
+        {
+          "name": "onConnectionChanged",
+          "type": "function",
+          "description": "Fired when the network connection state changes.",
+          "parameters": [
+            {
+              "name": "details",
+              "$ref": "NetworkLinkInfo"
             }
           ]
         }
@@ -13164,6 +13817,373 @@
       ]
     }
   ],
+  "page_action.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "page_action": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "UnrecognizedProperty"
+              },
+              "properties": {
+                "default_title": {
+                  "type": "string",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "default_icon": {
+                  "$ref": "IconPath",
+                  "optional": true
+                },
+                "default_popup": {
+                  "type": "string",
+                  "format": "relativeUrl",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "browser_style": {
+                  "type": "boolean",
+                  "optional": true,
+                  "default": false
+                },
+                "show_matches": {
+                  "type": "array",
+                  "optional": true,
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "MatchPattern"
+                  }
+                },
+                "hide_matches": {
+                  "type": "array",
+                  "optional": true,
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "MatchPatternRestricted"
+                  }
+                },
+                "pinned": {
+                  "type": "boolean",
+                  "optional": true,
+                  "default": true
+                }
+              },
+              "optional": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "namespace": "pageAction",
+      "description": "Use the <code>browser.pageAction</code> API to put icons inside the address bar. Page actions represent actions that can be taken on the current page, but that aren't applicable to all pages.",
+      "permissions": [
+        "manifest:page_action"
+      ],
+      "types": [
+        {
+          "id": "ImageDataType",
+          "type": "object",
+          "isInstanceOf": "ImageData",
+          "additionalProperties": {
+            "type": "any"
+          },
+          "postprocess": "convertImageDataToURL",
+          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
+        },
+        {
+          "id": "OnClickData",
+          "type": "object",
+          "description": "Information sent when a page action is clicked.",
+          "properties": {
+            "modifiers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Shift",
+                  "Alt",
+                  "Command",
+                  "Ctrl",
+                  "MacCtrl"
+                ]
+              },
+              "description": "An array of keyboard modifiers that were held while the menu item was clicked."
+            },
+            "button": {
+              "type": "integer",
+              "optional": true,
+              "description": "An integer value of button by which menu item was clicked."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "show",
+          "type": "function",
+          "async": "callback",
+          "description": "Shows the page action. The page action is shown whenever the tab is selected.",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "tabId",
+              "minimum": 0,
+              "description": "The id of the tab for which you want to modify the page action."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "hide",
+          "type": "function",
+          "async": "callback",
+          "description": "Hides the page action.",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "tabId",
+              "minimum": 0,
+              "description": "The id of the tab for which you want to modify the page action."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "isShown",
+          "type": "function",
+          "description": "Checks whether the page action is shown.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "description": "Specify the tab to get the shownness from."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "setTitle",
+          "type": "function",
+          "description": "Sets the title of the page action. This is displayed in a tooltip over the page action.",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "The id of the tab for which you want to modify the page action."
+                },
+                "title": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The tooltip string."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "getTitle",
+          "type": "function",
+          "description": "Gets the title of the page action.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "description": "Specify the tab to get the title from."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setIcon",
+          "type": "function",
+          "description": "Sets the icon for the page action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "The id of the tab for which you want to modify the page action."
+                },
+                "imageData": {
+                  "choices": [
+                    {
+                      "$ref": "ImageDataType"
+                    },
+                    {
+                      "type": "object",
+                      "patternProperties": {
+                        "^[1-9]\\d*$": {
+                          "$ref": "ImageDataType"
+                        }
+                      }
+                    }
+                  ],
+                  "optional": true,
+                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                },
+                "path": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "patternProperties": {
+                        "^[1-9]\\d*$": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ],
+                  "optional": true,
+                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "setPopup",
+          "type": "function",
+          "async": true,
+          "description": "Sets the html document to be opened as a popup when the user clicks on the page action's icon.",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "The id of the tab for which you want to modify the page action."
+                },
+                "popup": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "getPopup",
+          "type": "function",
+          "description": "Gets the html document set as the popup for this page action.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "description": "Specify the tab to get the popup from."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "openPopup",
+          "type": "function",
+          "requireUserInput": true,
+          "description": "Opens the extension page action in the active window.",
+          "async": true,
+          "parameters": []
+        }
+      ],
+      "events": [
+        {
+          "name": "onClicked",
+          "type": "function",
+          "description": "Fired when a page action icon is clicked.  This event will not fire if the page action has a popup.",
+          "parameters": [
+            {
+              "name": "tab",
+              "$ref": "tabs.Tab"
+            },
+            {
+              "name": "info",
+              "$ref": "OnClickData",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "permissions.json": [
     {
       "namespace": "permissions",
@@ -13305,7 +14325,6 @@
         {
           "name": "onAdded",
           "type": "function",
-          "unsupported": true,
           "description": "Fired when the extension acquires new permissions.",
           "parameters": [
             {
@@ -13317,7 +14336,6 @@
         {
           "name": "onRemoved",
           "type": "function",
-          "unsupported": true,
           "description": "Fired when permissions are removed from the extension.",
           "parameters": [
             {
@@ -13334,7 +14352,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -13348,7 +14366,7 @@
     },
     {
       "namespace": "proxy",
-      "description": "Use the browser.proxy API to register proxy scripts in Firefox. Proxy scripts in Firefox are proxy auto-config files with extra contextual information and support for additional return types.",
+      "description": "Provides access to global proxy settings for Firefox and proxy event listeners to handle dynamic proxy implementations.",
       "permissions": [
         "proxy"
       ],
@@ -13421,6 +14439,12 @@
               "type": "boolean",
               "optional": true,
               "description": "Proxy DNS when using SOCKS v5."
+            },
+            "respectBeConservative": {
+              "type": "boolean",
+              "optional": true,
+              "default": true,
+              "description": " If true (the default value), do not use newer TLS protocol features that might have interoperability problems on the Internet. This is intended only for use with critical infrastructure like the updates, and is only available to privileged addons."
             }
           }
         }
@@ -13431,44 +14455,6 @@
           "description": "Configures proxy settings. This setting's value is an object of type ProxyConfig."
         }
       },
-      "functions": [
-        {
-          "name": "register",
-          "type": "function",
-          "deprecated": "proxy.register has been deprecated and will be removed in Firefox 71.",
-          "description": "Registers the proxy script for the extension.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "url",
-              "type": "string",
-              "format": "strictRelativeUrl"
-            }
-          ]
-        },
-        {
-          "name": "unregister",
-          "type": "function",
-          "deprecated": "proxy.unregister has been deprecated and will be removed in Firefox 71.",
-          "description": "Unregisters the proxy script for the extension.",
-          "async": true,
-          "parameters": []
-        },
-        {
-          "name": "registerProxyScript",
-          "type": "function",
-          "deprecated": "proxy.registerProxyScript has been deprecated and will be removed in Firefox 71.",
-          "description": "Registers the proxy script for the extension. This is an alias for proxy.register.",
-          "async": true,
-          "parameters": [
-            {
-              "name": "url",
-              "type": "string",
-              "format": "strictRelativeUrl"
-            }
-          ]
-        }
-      ],
       "events": [
         {
           "name": "onRequest",
@@ -13530,11 +14516,6 @@
                   "type": "number",
                   "description": "The time when this signal is triggered, in milliseconds since the epoch."
                 },
-                "ip": {
-                  "type": "string",
-                  "optional": true,
-                  "description": "The server IP address that the request was actually sent to. Note that it may be a literal IPv6 address."
-                },
                 "fromCache": {
                   "type": "boolean",
                   "description": "Indicates if this response was fetched from disk cache."
@@ -13543,6 +14524,14 @@
                   "$ref": "webRequest.HttpHeaders",
                   "optional": true,
                   "description": "The HTTP request headers that are going to be sent out with this request."
+                },
+                "urlClassification": {
+                  "$ref": "webRequest.UrlClassification",
+                  "description": "Url classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -13577,18 +14566,6 @@
               "type": "object"
             }
           ]
-        },
-        {
-          "name": "onProxyError",
-          "type": "function",
-          "deprecated": "proxy.onProxyError has been deprecated and will be removed in Firefox 71. Use proxy.onError instead.",
-          "description": "Please use $(ref:proxy.onError).",
-          "parameters": [
-            {
-              "name": "error",
-              "type": "object"
-            }
-          ]
         }
       ]
     }
@@ -13598,7 +14575,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -13630,9 +14607,41 @@
             "default",
             "default_public_and_private_interfaces",
             "default_public_interface_only",
-            "disable_non_proxied_udp"
+            "disable_non_proxied_udp",
+            "proxy_only"
           ],
           "description": "The IP handling policy of WebRTC."
+        },
+        {
+          "id": "tlsVersionRestrictionConfig",
+          "type": "object",
+          "description": "An object which describes TLS minimum and maximum versions.",
+          "properties": {
+            "minimum": {
+              "type": "string",
+              "enum": [
+                "TLSv1",
+                "TLSv1.1",
+                "TLSv1.2",
+                "TLSv1.3",
+                "unknown"
+              ],
+              "optional": true,
+              "description": "The minimum TLS version supported."
+            },
+            "maximum": {
+              "type": "string",
+              "enum": [
+                "TLSv1",
+                "TLSv1.1",
+                "TLSv1.2",
+                "TLSv1.3",
+                "unknown"
+              ],
+              "optional": true,
+              "description": "The maximum TLS version supported."
+            }
+          }
         }
       ],
       "properties": {
@@ -13647,6 +14656,10 @@
         "webRTCIPHandlingPolicy": {
           "$ref": "types.Setting",
           "description": "Allow users to specify the media performance/privacy tradeoffs which impacts how WebRTC traffic will be routed and how much local address information is exposed. This preference's value is of type IPHandlingPolicy, defaulting to <code>default</code>."
+        },
+        "tlsVersionRestriction": {
+          "$ref": "types.Setting",
+          "description": "This property controls the minimum and maximum TLS versions. This setting's value is an object of $(ref:tlsVersionRestrictionConfig)."
         }
       }
     },
@@ -13693,7 +14706,8 @@
                 "reject_all",
                 "reject_third_party",
                 "allow_visited",
-                "reject_trackers"
+                "reject_trackers",
+                "reject_trackers_and_partition_foreign"
               ],
               "description": "The type of cookies to allow."
             },
@@ -13765,8 +14779,7 @@
       "namespace": "runtime",
       "allowedContexts": [
         "content",
-        "devtools",
-        "proxy"
+        "devtools"
       ],
       "description": "Use the <code>browser.runtime</code> API to retrieve the background page, return details about the manifest, and listen for and respond to events in the app or extension lifecycle. You can also use this API to convert the relative path of URLs to fully-qualified URLs.",
       "types": [
@@ -14202,8 +15215,7 @@
           "allowAmbiguousOptionalArguments": true,
           "allowedContexts": [
             "content",
-            "devtools",
-            "proxy"
+            "devtools"
           ],
           "description": "Sends a single message to event listeners within your extension/app or a different extension/app. Similar to $(ref:runtime.connect) but only sends a single message, with an optional response. If sending to your extension, the $(ref:runtime.onMessage) event will be fired in each page, or $(ref:runtime.onMessageExternal), if a different extension. Note that extensions cannot send messages to content scripts using this method. To send messages to content scripts, use $(ref:tabs.sendMessage).",
           "async": "responseCallback",
@@ -14227,11 +15239,6 @@
                   "optional": true,
                   "unsupported": true,
                   "description": "Whether the TLS channel ID will be passed into onMessageExternal for processes that are listening for the connection event."
-                },
-                "toProxyScript": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "If true, the message will be directed to the extension's proxy sandbox."
                 }
               },
               "optional": true
@@ -14459,8 +15466,7 @@
           "type": "function",
           "allowedContexts": [
             "content",
-            "devtools",
-            "proxy"
+            "devtools"
           ],
           "description": "Fired when a message is sent from either an extension process or a content script.",
           "parameters": [
@@ -14717,6 +15723,162 @@
               ]
             }
           ]
+        },
+        {
+          "id": "StorageAreaSync",
+          "type": "object",
+          "functions": [
+            {
+              "name": "get",
+              "type": "function",
+              "description": "Gets one or more items from storage.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "keys",
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "description": "Storage items to return in the callback, where the values are replaced with those from storage if they exist.",
+                      "additionalProperties": {
+                        "type": "any"
+                      }
+                    }
+                  ],
+                  "description": "A single key to get, list of keys to get, or a dictionary specifying default values (see description of the object).  An empty list or object will return an empty result object.  Pass in <code>null</code> to get the entire contents of storage.",
+                  "optional": true
+                },
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback with storage items, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [
+                    {
+                      "name": "items",
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "any"
+                      },
+                      "description": "Object with items in their key-value mappings."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "getBytesInUse",
+              "type": "function",
+              "description": "Gets the amount of space (in bytes) being used by one or more items.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "keys",
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  ],
+                  "description": "A single key or list of keys to get the total usage for. An empty list will return 0. Pass in <code>null</code> to get the total usage of all of storage.",
+                  "optional": true
+                },
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback with the amount of space being used by storage, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [
+                    {
+                      "name": "bytesInUse",
+                      "type": "integer",
+                      "description": "Amount of space being used in storage, in bytes."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "set",
+              "type": "function",
+              "description": "Sets multiple items.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "items",
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "any"
+                  },
+                  "description": "<p>An object which gives each key/value pair to update storage with. Any other key/value pairs in storage will not be affected.</p><p>Primitive values such as numbers will serialize as expected. Values with a <code>typeof</code> <code>\"object\"</code> and <code>\"function\"</code> will typically serialize to <code>{}</code>, with the exception of <code>Array</code> (serializes as expected), <code>Date</code>, and <code>Regex</code> (serialize using their <code>String</code> representation).</p>"
+                },
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback on success, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [],
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "name": "remove",
+              "type": "function",
+              "description": "Removes one or more items from storage.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "keys",
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  ],
+                  "description": "A single key or a list of keys for items to remove."
+                },
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback on success, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [],
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "name": "clear",
+              "type": "function",
+              "description": "Removes all items from storage.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback on success, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [],
+                  "optional": true
+                }
+              ]
+            }
+          ]
         }
       ],
       "events": [
@@ -14743,7 +15905,7 @@
       ],
       "properties": {
         "sync": {
-          "$ref": "StorageArea",
+          "$ref": "StorageAreaSync",
           "description": "Items in the <code>sync</code> storage area are synced by the browser.",
           "properties": {
             "QUOTA_BYTES": {
@@ -14801,7 +15963,65 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "telemetry": {
+              "type": "object",
+              "optional": true,
+              "additionalProperties": {
+                "$ref": "UnrecognizedProperty"
+              },
+              "properties": {
+                "ping_type": {
+                  "type": "string"
+                },
+                "schemaNamespace": {
+                  "type": "string"
+                },
+                "public_key": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "key": {
+                      "type": "object",
+                      "properties": {
+                        "crv": {
+                          "type": "string",
+                          "optional": "false"
+                        },
+                        "kty": {
+                          "type": "string",
+                          "optional": "false"
+                        },
+                        "x": {
+                          "type": "string",
+                          "optional": "false"
+                        },
+                        "y": {
+                          "type": "string",
+                          "optional": "false"
+                        }
+                      }
+                    }
+                  }
+                },
+                "study_name": {
+                  "type": "string",
+                  "optional": true
+                },
+                "pioneer_id": {
+                  "type": "boolean",
+                  "optional": true,
+                  "default": false
+                }
+              }
+            }
+          }
+        },
+        {
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -14957,6 +16177,39 @@
           ]
         },
         {
+          "name": "submitEncryptedPing",
+          "type": "function",
+          "description": "Submits a custom ping to the Telemetry back-end, with an encrypted payload. Requires a telemetry entry in the manifest to be used.",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "object",
+              "additionalProperties": {
+                "type": "any"
+              },
+              "description": "The data payload for the ping, which will be encrypted."
+            },
+            {
+              "description": "Options object.",
+              "name": "options",
+              "type": "object",
+              "properties": {
+                "schemaName": {
+                  "type": "string",
+                  "optional": false,
+                  "description": "Schema name used for payload."
+                },
+                "schemaVersion": {
+                  "type": "integer",
+                  "optional": false,
+                  "description": "Schema version used for payload."
+                }
+              }
+            }
+          ],
+          "async": true
+        },
+        {
           "name": "canUpload",
           "type": "function",
           "description": "Checks if Telemetry upload is enabled.",
@@ -15026,6 +16279,93 @@
               "name": "name",
               "type": "string",
               "description": "The scalar name."
+            },
+            {
+              "name": "value",
+              "type": "integer",
+              "minimum": 0,
+              "description": "The numeric value to set the scalar to. Only unsigned integers supported."
+            }
+          ]
+        },
+        {
+          "name": "keyedScalarAdd",
+          "type": "function",
+          "description": "Adds the value to the given keyed scalar.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "description": "The scalar name"
+            },
+            {
+              "name": "key",
+              "type": "string",
+              "description": "The key name"
+            },
+            {
+              "name": "value",
+              "type": "integer",
+              "minimum": 1,
+              "description": "The numeric value to add to the scalar. Only unsigned integers supported."
+            }
+          ]
+        },
+        {
+          "name": "keyedScalarSet",
+          "type": "function",
+          "description": "Sets the keyed scalar to the given value. Throws if the value type doesn't match the scalar type.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "description": "The scalar name."
+            },
+            {
+              "name": "key",
+              "type": "string",
+              "description": "The key name."
+            },
+            {
+              "name": "value",
+              "description": "The value to set the scalar to.",
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "any"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "keyedScalarSetMaximum",
+          "type": "function",
+          "description": "Sets the keyed scalar to the maximum of the current and the passed value",
+          "async": true,
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "description": "The scalar name."
+            },
+            {
+              "name": "key",
+              "type": "string",
+              "description": "The key name."
             },
             {
               "name": "value",
@@ -15149,6 +16489,17 @@
       ],
       "description": "none",
       "functions": [
+        {
+          "name": "withHandlingUserInput",
+          "type": "function",
+          "description": "Calls the callback function wrapped with user input set.  This is only used for internal unit testing.",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback"
+            }
+          ]
+        },
         {
           "name": "notifyFail",
           "type": "function",
@@ -15442,7 +16793,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "PermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -15528,7 +16879,7 @@
                 "headerURL": {
                   "$ref": "ImageDataOrExtensionURL",
                   "optional": true,
-                  "deprecated": "Please use <em>theme.images.theme_frame</em>, this alias will be removed in Firefox 69."
+                  "deprecated": "Unsupported images property, use 'theme.images.theme_frame', this alias is ignored in Firefox >= 70."
                 },
                 "theme_frame": {
                   "$ref": "ImageDataOrExtensionURL",
@@ -15550,7 +16901,7 @@
                 "accentcolor": {
                   "$ref": "ThemeColor",
                   "optional": true,
-                  "deprecated": "Please use <em>theme.colors.frame</em>, this alias will be removed in Firefox 69."
+                  "deprecated": "Unsupported colors property, use 'theme.colors.frame', this alias is ignored in Firefox >= 70."
                 },
                 "frame": {
                   "$ref": "ThemeColor",
@@ -15563,7 +16914,7 @@
                 "textcolor": {
                   "$ref": "ThemeColor",
                   "optional": true,
-                  "deprecated": "Please use <em>theme.colors.tab_background_text</em>, this alias will be removed in Firefox 69."
+                  "deprecated": "Unsupported color property, use 'theme.colors.tab_background_text', this alias is ignored in Firefox >= 70."
                 },
                 "tab_background_text": {
                   "$ref": "ThemeColor",
@@ -15592,7 +16943,7 @@
                 "toolbar_text": {
                   "$ref": "ThemeColor",
                   "optional": true,
-                  "deprecated": "Please use <em>theme.colors.bookmark_text</em>, this alias will be removed in Firefox 69."
+                  "description": "This color property is an alias of 'bookmark_text'."
                 },
                 "bookmark_text": {
                   "$ref": "ThemeColor",
@@ -15902,120 +17253,6 @@
       ]
     }
   ],
-  "top_sites.json": [
-    {
-      "namespace": "manifest",
-      "types": [
-        {
-          "$extend": "OptionalPermission",
-          "choices": [
-            {
-              "type": "string",
-              "enum": [
-                "topSites"
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "namespace": "topSites",
-      "description": "Use the chrome.topSites API to access the top sites that are displayed on the new tab page. ",
-      "permissions": [
-        "topSites"
-      ],
-      "types": [
-        {
-          "id": "MostVisitedURL",
-          "type": "object",
-          "description": "An object encapsulating a most visited URL, such as the URLs on the new tab page.",
-          "properties": {
-            "url": {
-              "type": "string",
-              "description": "The most visited URL."
-            },
-            "title": {
-              "type": "string",
-              "optional": true,
-              "description": "The title of the page."
-            },
-            "favicon": {
-              "type": "string",
-              "optional": true,
-              "description": "Data URL for the favicon, if available."
-            }
-          }
-        }
-      ],
-      "functions": [
-        {
-          "name": "get",
-          "type": "function",
-          "description": "Gets a list of top sites.",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "object",
-              "name": "options",
-              "properties": {
-                "providers": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "deprecated": "Please use the other options to tune the results received from topSites.",
-                  "default": [],
-                  "optional": true
-                },
-                "limit": {
-                  "type": "integer",
-                  "default": 12,
-                  "maximum": 100,
-                  "minimum": 1,
-                  "optional": true,
-                  "description": "The number of top sites to return, defaults to the value used by Firefox"
-                },
-                "onePerDomain": {
-                  "type": "boolean",
-                  "default": true,
-                  "optional": true,
-                  "description": "Limit the result to a single top site link per domain"
-                },
-                "includeBlocked": {
-                  "type": "boolean",
-                  "default": false,
-                  "optional": true,
-                  "description": "Include sites that the user has blocked from appearing on the Firefox new tab."
-                },
-                "includeFavicon": {
-                  "type": "boolean",
-                  "default": false,
-                  "optional": true,
-                  "description": "Include sites favicon if available."
-                }
-              },
-              "default": {},
-              "optional": true
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "parameters": [
-                {
-                  "name": "results",
-                  "type": "array",
-                  "items": {
-                    "$ref": "MostVisitedURL"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ],
   "types.json": [
     {
       "namespace": "types",
@@ -16157,7 +17394,6 @@
               "name": "onChange",
               "type": "function",
               "description": "Fired after the setting changes.",
-              "unsupported": true,
               "parameters": [
                 {
                   "type": "object",
@@ -16222,7 +17458,7 @@
           "properties": {
             "js": {
               "type": "array",
-              "optional": true,
+              "optional": false,
               "description": "The list of JS files to inject",
               "minItems": 1,
               "items": {
@@ -16991,7 +18227,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "OptionalPermission",
+          "$extend": "OptionalPermissionNoPrompt",
           "choices": [
             {
               "type": "string",
@@ -17029,7 +18265,6 @@
             "object",
             "object_subrequest",
             "xmlhttprequest",
-            "xbl",
             "xslt",
             "ping",
             "beacon",
@@ -17127,7 +18362,8 @@
               "optional": true,
               "description": "A list of request types. Requests that cannot match any of the types will be filtered out.",
               "items": {
-                "$ref": "ResourceType"
+                "$ref": "ResourceType",
+                "onError": "warn"
               },
               "minItems": 1
             },
@@ -17404,6 +18640,47 @@
             }
           },
           "description": "Contains data uploaded in a URL request."
+        },
+        {
+          "id": "UrlClassificationFlags",
+          "type": "string",
+          "enum": [
+            "fingerprinting",
+            "fingerprinting_content",
+            "cryptomining",
+            "cryptomining_content",
+            "tracking",
+            "tracking_ad",
+            "tracking_analytics",
+            "tracking_social",
+            "tracking_content",
+            "any_basic_tracking",
+            "any_strict_tracking",
+            "any_social_tracking"
+          ],
+          "description": "Tracking flags that match our internal tracking classification"
+        },
+        {
+          "id": "UrlClassificationParty",
+          "type": "array",
+          "items": {
+            "$ref": "UrlClassificationFlags"
+          },
+          "description": "If the request has been classified this is an array of $(ref:UrlClassificationFlags)."
+        },
+        {
+          "id": "UrlClassification",
+          "type": "object",
+          "properties": {
+            "firstParty": {
+              "$ref": "UrlClassificationParty",
+              "description": "Classification flags if the request has been classified and it is first party."
+            },
+            "thirdParty": {
+              "$ref": "UrlClassificationParty",
+              "description": "Classification flags if the request has been classified and it or its window hierarchy is third party."
+            }
+          }
         }
       ],
       "functions": [
@@ -17564,6 +18841,15 @@
                 "timeStamp": {
                   "type": "number",
                   "description": "The time when this signal is triggered, in milliseconds since the epoch."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -17654,6 +18940,15 @@
                   "$ref": "HttpHeaders",
                   "optional": true,
                   "description": "The HTTP request headers that are going to be sent out with this request."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -17744,6 +19039,15 @@
                   "$ref": "HttpHeaders",
                   "optional": true,
                   "description": "The HTTP request headers that have been sent out with this request."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -17837,6 +19141,15 @@
                 "statusCode": {
                   "type": "integer",
                   "description": "Standard HTTP status code returned by the server."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -17960,6 +19273,15 @@
                 "statusCode": {
                   "type": "integer",
                   "description": "Standard HTTP status code returned by the server."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             },
@@ -18078,6 +19400,15 @@
                 "statusLine": {
                   "type": "string",
                   "description": "HTTP status line of the response or the 'HTTP/0.9 200 OK' string for HTTP/0.9 responses (i.e., responses that lack a status line) or an empty string if there are no headers."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18184,6 +19515,15 @@
                 "statusLine": {
                   "type": "string",
                   "description": "HTTP status line of the response or the 'HTTP/0.9 200 OK' string for HTTP/0.9 responses (i.e., responses that lack a status line) or an empty string if there are no headers."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
@@ -18286,6 +19626,22 @@
                 "statusLine": {
                   "type": "string",
                   "description": "HTTP status line of the response or the 'HTTP/0.9 200 OK' string for HTTP/0.9 responses (i.e., responses that lack a status line) or an empty string if there are no headers."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
+                },
+                "requestSize": {
+                  "type": "integer",
+                  "description": "For http requests, the bytes transferred in the request. Only available in onCompleted."
+                },
+                "responseSize": {
+                  "type": "integer",
+                  "description": "For http requests, the bytes received in the request. Only available in onCompleted."
                 }
               }
             }
@@ -18379,6 +19735,15 @@
                 "error": {
                   "type": "string",
                   "description": "The error description. This string is <em>not</em> guaranteed to remain backwards compatible between releases. You must not parse and act based upon its content."
+                },
+                "urlClassification": {
+                  "$ref": "UrlClassification",
+                  "optional": true,
+                  "description": "Tracking classification if the request has been classified."
+                },
+                "thirdParty": {
+                  "type": "boolean",
+                  "description": "Indicates if this request and its content window hierarchy is third party."
                 }
               }
             }
