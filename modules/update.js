@@ -5,8 +5,8 @@
 /* api */
 const {URL} = require("url");
 const JSON5 = require("json5");
-const {getType, isString, throwErr} = require("./common");
 const {createFile} = require("./file-util");
+const {getType, isString, throwErr} = require("./common");
 const {version} = require("../package.json");
 const commander = require("commander");
 const fetch = require("node-fetch");
