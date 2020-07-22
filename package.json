@@ -32,9 +32,9 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "eslint": "^7.5.0",
-    "eslint-plugin-jsdoc": "^30.0.0",
+    "eslint-plugin-jsdoc": "^30.0.3",
     "mocha": "^8.0.1",
     "nyc": "^15.1.0"
   },
-  "version": "1.3.3"
+  "version": "1.3.4"
 }
