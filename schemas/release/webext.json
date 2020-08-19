@@ -11563,7 +11563,8 @@
             "ipcmessages",
             "fileio",
             "fileioall",
-            "noiostacks"
+            "noiostacks",
+            "audiocallbacktracing"
           ]
         },
         {
@@ -12700,6 +12701,15 @@
                   "additionalProperties": {
                     "$ref": "UnrecognizedProperty"
                   }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "service_worker": {
+                      "$ref": "ExtensionURL"
+                    }
+                  },
+                  "postprocess": "requireBackgroundServiceWorkerEnabled"
                 }
               ],
               "optional": true
