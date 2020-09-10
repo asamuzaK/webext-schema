@@ -5336,7 +5336,23 @@
       ]
     }
   ],
-  "composeScripts.json": [
+  "extensionScripts.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "OptionalPermission",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "messagesModify"
+              ]
+            }
+          ]
+        }
+      ]
+    },
     {
       "namespace": "composeScripts",
       "permissions": [
@@ -5391,6 +5407,65 @@
             {
               "name": "composeScriptOptions",
               "$ref": "RegisteredComposeScriptOptions"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "messageDisplayScripts",
+      "permissions": [
+        "messagesModify"
+      ],
+      "types": [
+        {
+          "id": "RegisteredMessageDisplayScriptOptions",
+          "type": "object",
+          "description": "Details of a message display script registered programmatically",
+          "properties": {
+            "css": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of CSS files to inject",
+              "items": {
+                "$ref": "extensionTypes.ExtensionFileOrCode"
+              }
+            },
+            "js": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of JavaScript files to inject",
+              "items": {
+                "$ref": "extensionTypes.ExtensionFileOrCode"
+              }
+            }
+          }
+        },
+        {
+          "id": "RegisteredMessageDisplayScript",
+          "type": "object",
+          "description": "An object that represents a message display script registered programmatically",
+          "functions": [
+            {
+              "name": "unregister",
+              "type": "function",
+              "description": "Unregister a message display script registered programmatically",
+              "async": true,
+              "parameters": []
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "name": "register",
+          "type": "function",
+          "description": "Register a message display script programmatically",
+          "async": true,
+          "parameters": [
+            {
+              "name": "messageDisplayScriptOptions",
+              "$ref": "RegisteredMessageDisplayScriptOptions"
             }
           ]
         }
