@@ -3006,6 +3006,38 @@
               ]
             }
           }
+        },
+        {
+          "id": "PropertyChange",
+          "type": "object",
+          "description": "A dictionary of changed properties. Keys are the property name that changed, values are an object containing ``oldValue`` and ``newValue``. Values can be either a string or null.",
+          "patternProperties": {
+            "^\\w+$": {
+              "type": "object",
+              "properties": {
+                "oldValue": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "newValue": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          }
         }
       ],
       "functions": [
@@ -3127,6 +3159,10 @@
             {
               "name": "node",
               "$ref": "ContactNode"
+            },
+            {
+              "name": "changedProperties",
+              "$ref": "PropertyChange"
             }
           ]
         },
