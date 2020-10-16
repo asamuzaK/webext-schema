@@ -4589,6 +4589,10 @@
             "name": {
               "type": "string",
               "description": "The name, as displayed to the user, of this attachment. This is usually but not always the filename of the attached file."
+            },
+            "size": {
+              "type": "integer",
+              "description": "The size in bytes of this attachment."
             }
           },
           "functions": [
@@ -5956,7 +5960,8 @@
             "browser_action",
             "tab",
             "message_list",
-            "folder_pane"
+            "folder_pane",
+            "compose_attachments"
           ],
           "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'tab'."
         },
@@ -6097,6 +6102,14 @@
               "$ref": "folders.MailFolder",
               "optional": true,
               "description": "The selected folder, if the context menu was opened in the folder pane. The ``accountsRead`` permission is required."
+            },
+            "attachments": {
+              "type": "array",
+              "optional": true,
+              "description": "The selected attachments of a message being composed.",
+              "items": {
+                "$ref": "compose.ComposeAttachment"
+              }
             }
           }
         }
