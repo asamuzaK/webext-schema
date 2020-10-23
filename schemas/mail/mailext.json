@@ -4155,7 +4155,7 @@
                   "type": "string",
                   "format": "relativeUrl",
                   "preprocess": "localize",
-                  "description": "A page for configuring accounts, to be displayed in the preferences UI."
+                  "description": "A page for configuring accounts, to be displayed in the preferences UI. **Note:** Within this UI only a limited subset of the WebExtension APIs is available: cloudFile, extension, i18n, runtime, storage, test."
                 },
                 "data_format": {
                   "type": "string",
@@ -4500,7 +4500,7 @@
           "properties": {
             "identityId": {
               "type": "string",
-              "description": "The ID of an identity from the :doc:`accounts` API. The settings from the identity will be used in the composed message. If ``replyTo`` is also specified, the ``replyTo`` property of the identity is overridden.",
+              "description": "The ID of an identity from the :doc:`accounts` API. The settings from the identity will be used in the composed message. If ``replyTo`` is also specified, the ``replyTo`` property of the identity is overridden. The permission ``accountsRead`` is required to include the ``identityId``.",
               "optional": true
             },
             "to": {
@@ -4696,6 +4696,13 @@
           "type": "function",
           "async": true,
           "parameters": [
+            {
+              "name": "messageId",
+              "description": "If specified, the message or template to edit as a new message.",
+              "type": "integer",
+              "optional": true,
+              "minimum": 1
+            },
             {
               "name": "details",
               "$ref": "ComposeDetails",
@@ -6157,7 +6164,7 @@
                 "title": {
                   "type": "string",
                   "optional": true,
-                  "description": "The text to be displayed in the item; this is <em>required</em> unless <code>type</code> is 'separator'. When the context is 'selection', you can use <code>%s</code> within the string to show the selected text. For example, if this parameter's value is \"Translate '%s' to Pig Latin\" and the user selects the word \"cool\", the context menu item for the selection is \"Translate 'cool' to Pig Latin\"."
+                  "description": "The text to be displayed in the item; this is *required* unless ``type`` is 'separator'. When the context is 'selection', you can use ``%s`` within the string to show the selected text. For example, if this parameter's value is \"Translate '%s' to Pig Latin\" and the user selects the word \"cool\", the context menu item for the selection is \"Translate 'cool' to Pig Latin\". To specify an access key for the new menu entry, include a ``&`` before the desired letter in the title. For example \"&Help\"."
                 },
                 "checked": {
                   "type": "boolean",
@@ -6548,6 +6555,13 @@
                 "targetElementId": {
                   "type": "integer",
                   "optional": true
+                },
+                "attachments": {
+                  "type": "array",
+                  "optional": true,
+                  "items": {
+                    "$ref": "compose.ComposeAttachment"
+                  }
                 }
               }
             },
@@ -8695,6 +8709,11 @@
               "optional": true,
               "description": "Specifies properties used to filter the :ref:`windows.Window` returned and to determine whether they should contain a list of the :ref:`tabs.Tab` objects.",
               "properties": {
+                "populate": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "If true, each :ref:`windows.Window` object will have a ``tabs`` property that contains a list of the :ref:`tabs.Tab` objects for that window. The ``Tab`` objects only contain the ``url``, ``title`` and ``favIconUrl`` properties if the extension's manifest file includes the ``\"tabs\"`` permission."
+                },
                 "windowTypes": {
                   "type": "array",
                   "items": {
