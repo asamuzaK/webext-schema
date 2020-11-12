@@ -1,17 +1,17 @@
 /**
  * schema.js
  */
-"use strict";
+'use strict';
 /* api */
-const {getType, isObjectNotEmpty, isString} = require("./common");
-const camelize = require("camelize");
-const decamelize = require("decamelize");
-const fs = require("fs");
-const path = require("path");
-const sinon = require("sinon");
+const { getType, isObjectNotEmpty, isString } = require('./common');
+const camelize = require('camelize');
+const decamelize = require('decamelize');
+const fs = require('fs');
+const path = require('path');
+const sinon = require('sinon');
 
 /* constants */
-const {CHAR} = require("./constant");
+const { CHAR } = require('./constant');
 
 class Schema {
   /**
@@ -26,15 +26,16 @@ class Schema {
   constructor(...args) {
     const [arg1, arg2] = args;
     this._channel =
-      isString(arg1) && /(?:(?:centra|mai)l|beta|esr|release)/.test(arg1) &&
-      arg1 || "beta";
+      isString(arg1) && /(?:(?:centra|mai)l|beta|esr|release)/.test(arg1)
+        ? arg1
+        : 'beta';
     this._sandbox =
-      isObjectNotEmpty(arg1) && sinon.createSandbox(arg1) ||
-      isObjectNotEmpty(arg2) && sinon.createSandbox(arg2) ||
+      (isObjectNotEmpty(arg1) && sinon.createSandbox(arg1)) ||
+      (isObjectNotEmpty(arg2) && sinon.createSandbox(arg2)) ||
       sinon.createSandbox();
     this._importMap = new Map();
     this._refMap = new Map();
-    this._browser;
+    this._browser = null;
   }
 
   /* getter / setter */
@@ -57,7 +58,7 @@ class Schema {
   _getTargetFromNamespace(key) {
     let target;
     if (isString(key)) {
-      const [...itemKeys] = key.split(".");
+      const [...itemKeys] = key.split('.');
       let i = 0;
       const l = itemKeys.length;
       target = this._browser;
@@ -86,9 +87,9 @@ class Schema {
       for (const [key, value] of items) {
         const target = this._getTargetFromNamespace(key);
         if (target) {
-          const {$import, namespace} = value;
+          const { $import, namespace } = value;
           let importValue;
-          if ($import.includes(".")) {
+          if ($import.includes('.')) {
             importValue = this._getTargetFromNamespace($import);
           } else if (this._browser[$import]) {
             importValue = this._browser[$import];
@@ -114,9 +115,9 @@ class Schema {
       for (const [key, value] of items) {
         const target = this._getTargetFromNamespace(key);
         if (target) {
-          const {$ref, namespace} = value;
+          const { $ref, namespace } = value;
           let refValue;
-          if ($ref.includes(".")) {
+          if ($ref.includes('.')) {
             refValue = this._getTargetFromNamespace($ref);
           } else if (this._browser[$ref]) {
             refValue = this._browser[$ref];
@@ -146,8 +147,8 @@ class Schema {
       throw new TypeError(`Expected Array but got ${getType(events)}.`);
     }
     for (const item of events) {
-      const {name, type, unsupported} = item;
-      if (!unsupported && name && type === "function") {
+      const { name, type, unsupported } = item;
+      if (!unsupported && name && type === 'function') {
         target[name] = target[name] || {};
         target[name].addListener = this._sandbox.stub();
         target[name].hasListener = this._sandbox.stub();
@@ -172,8 +173,8 @@ class Schema {
       throw new TypeError(`Expected Array but got ${getType(funcs)}.`);
     }
     for (const item of funcs) {
-      const {name, type, unsupported} = item;
-      if (!unsupported && name && type === "function") {
+      const { name, type, unsupported } = item;
+      if (!unsupported && name && type === 'function') {
         target[name] = this._sandbox.stub();
       }
     }
@@ -200,18 +201,18 @@ class Schema {
     }
     const items = Object.entries(props);
     for (const [key, item] of items) {
-      const {$ref, properties, type, unsupported} = item;
+      const { $ref, properties, type, unsupported } = item;
       if (!unsupported) {
-        $ref && this._refMap.set(`${namespace}.${key}`, {$ref, namespace});
-        if (item.hasOwnProperty("value")) {
+        $ref && this._refMap.set(`${namespace}.${key}`, { $ref, namespace });
+        if (Object.prototype.hasOwnProperty.call(item, 'value')) {
           target[key] = item.value;
-        } else if (type === "function") {
+        } else if (type === 'function') {
           target[key] = this._sandbox.stub();
-        } else if (type === "object" || $ref ||
-                   item.hasOwnProperty("properties")) {
+        } else if (type === 'object' || $ref ||
+                   Object.prototype.hasOwnProperty.call(item, 'properties')) {
           target[key] = target[key] || {};
           properties && this._mockProperties(
-            target[key], properties, `${namespace}.${key}`,
+            target[key], properties, `${namespace}.${key}`
           );
         } else {
           target[key] = null;
@@ -241,11 +242,11 @@ class Schema {
     }
     const items = Object.values(types);
     for (const item of items) {
-      const {$import, events, functions, id, properties, type} = item;
+      const { $import, events, functions, id, properties, type } = item;
       if (id) {
         $import &&
-          this._importMap.set(`${namespace}.${id}`, {$import, namespace});
-        if (type === "object" || $import || events || functions || properties) {
+          this._importMap.set(`${namespace}.${id}`, { $import, namespace });
+        if (type === 'object' || $import || events || functions || properties) {
           target[id] = target[id] || {};
           events && this._mockEvents(target[id], events);
           functions && this._mockFunctions(target[id], functions);
@@ -265,14 +266,13 @@ class Schema {
    * @returns {object} - schema
    */
   _parseSchemaContent() {
-    const fileName =
-      this._channel === "mail" && "mailext.json" || "webext.json";
+    const fileName = this._channel === 'mail' ? 'mailext.json' : 'webext.json';
     const file = path.resolve(
-      path.join(__dirname, "../", "schemas", this._channel, fileName),
+      path.join(__dirname, '../', 'schemas', this._channel, fileName)
     );
     const content = fs.readFileSync(file, {
       encoding: CHAR,
-      flag: "r",
+      flag: 'r'
     });
     const schema = JSON.parse(content);
     return schema;
@@ -290,10 +290,10 @@ class Schema {
     }
     const schemas = this._parseSchemaContent();
     const items = Object.entries(schemas);
-    const label = decamelize(name.replace(/\.json$/, ""));
+    const label = decamelize(name.replace(/\.json$/, ''));
     let schema;
     for (const [key, value] of items) {
-      if (decamelize(key.replace(/\.json$/, "")) === label) {
+      if (decamelize(key.replace(/\.json$/, '')) === label) {
         schema = value;
         break;
       }
@@ -335,7 +335,7 @@ class Schema {
     const schemas = this._parseSchemaContent();
     const schemaItems = Object.entries(schemas);
     this._browser = {
-      _sandbox: this._sandbox,
+      _sandbox: this._sandbox
     };
     this._importMap.clear();
     this._refMap.clear();
@@ -343,16 +343,16 @@ class Schema {
       const items = Object.values(value);
       for (const item of items) {
         const {
-          $import, events, functions, namespace, properties, types,
+          $import, events, functions, namespace, properties, types
         } = item;
-        const fileKey = camelize(key.replace(/\.json$/, "")).toLowerCase();
-        const itemKey = namespace.replace(/\./g, "").toLowerCase();
+        const fileKey = camelize(key.replace(/\.json$/, '')).toLowerCase();
+        const itemKey = namespace.replace(/\./g, '').toLowerCase();
         if (fileKey === itemKey || fileKey.startsWith(itemKey) ||
             itemKey.startsWith(fileKey) || $import) {
           const mapKey = [];
           let ns;
-          if (namespace.includes(".")) {
-            const [itemNamespace, itemSubNamespace] = namespace.split(".");
+          if (namespace.includes('.')) {
+            const [itemNamespace, itemSubNamespace] = namespace.split('.');
             this._browser[itemNamespace] = this._browser[itemNamespace] || {};
             this._browser[itemNamespace][itemSubNamespace] =
               this._browser[itemNamespace][itemSubNamespace] || {};
@@ -364,7 +364,7 @@ class Schema {
             ns = this._browser[namespace];
           }
           $import &&
-            this._importMap.set(mapKey.join("."), {$import, namespace});
+            this._importMap.set(mapKey.join('.'), { $import, namespace });
           events && this._mockEvents(ns, events);
           functions && this._mockFunctions(ns, functions);
           properties && this._mockProperties(ns, properties, namespace);
@@ -379,5 +379,5 @@ class Schema {
 }
 
 module.exports = {
-  Schema,
+  Schema
 };

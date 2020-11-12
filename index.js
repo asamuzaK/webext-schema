@@ -1,19 +1,19 @@
 /**
  * index.js
  */
-"use strict";
+'use strict';
 /* api */
-const {Schema} = require("./modules/schema");
-const {logErr, throwErr} = require("./modules/common");
-const {parseCommand} = require("./modules/update");
-const process = require("process");
+const { Schema } = require('./modules/schema');
+const { logErr, throwErr } = require('./modules/common');
+const { parseCommand } = require('./modules/update');
+const process = require('process');
 
 /* process */
-process.on("uncaughtException", throwErr);
-process.on("unhandledRejection", logErr);
+process.on('uncaughtException', throwErr);
+process.on('unhandledRejection', logErr);
 
 parseCommand(process.argv);
 
 module.exports = {
-  Schema,
+  Schema
 };
