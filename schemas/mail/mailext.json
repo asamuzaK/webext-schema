@@ -2796,7 +2796,7 @@
             "readOnly": {
               "type": "boolean",
               "optional": true,
-              "description": "Indicates if the object is read-only. Currently this returns false in all cases, as read-only address books are ignored by the API."
+              "description": "Indicates if the object is read-only."
             },
             "name": {
               "type": "string"
@@ -2983,7 +2983,7 @@
             "readOnly": {
               "type": "boolean",
               "optional": true,
-              "description": "Indicates if the object is read-only. Currently this returns false in all cases, as read-only address books are ignored by the API."
+              "description": "Indicates if the object is read-only."
             },
             "properties": {
               "$ref": "ContactProperties"
@@ -3210,7 +3210,7 @@
             "readOnly": {
               "type": "boolean",
               "optional": true,
-              "description": "Indicates if the object is read-only. Currently this returns false in all cases, as read-only address books are ignored by the API."
+              "description": "Indicates if the object is read-only."
             },
             "name": {
               "type": "string"
@@ -7561,6 +7561,11 @@
                   "$ref": "extensionTypes.Date",
                   "optional": true,
                   "description": "Returns only messages with a date before this value."
+                },
+                "headerMessageId": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "Returns only messages with a Message-ID header matching this value."
                 }
               }
             }
