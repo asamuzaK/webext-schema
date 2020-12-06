@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/asamuzaK/webext-schema.svg?branch=master)](https://travis-ci.com/asamuzaK/webext-schema)
+[![build](https://github.com/asamuzaK/webext-schema/workflows/build/badge.svg)](https://github.com/asamuzaK/webext-schema/actions?query=workflow%3Abuild)
 [![dependencies Status](https://david-dm.org/asamuzaK/webext-schema/status.svg)](https://david-dm.org/asamuzaK/webext-schema)
 [![devDependencies Status](https://david-dm.org/asamuzaK/webext-schema/dev-status.svg)](https://david-dm.org/asamuzaK/webext-schema?type=dev)
 [![npm version](https://badge.fury.io/js/webext-schema.svg)](https://badge.fury.io/js/webext-schema)
