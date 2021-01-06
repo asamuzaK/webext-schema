@@ -11618,7 +11618,8 @@
             "fileio",
             "fileioall",
             "noiostacks",
-            "audiocallbacktracing"
+            "audiocallbacktracing",
+            "cpu"
           ]
         },
         {
