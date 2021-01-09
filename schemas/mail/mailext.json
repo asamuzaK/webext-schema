@@ -3545,6 +3545,7 @@
         },
         {
           "id": "ColorArray",
+          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <code>[255, 0, 0, 255]</code>.",
           "type": "array",
           "items": {
             "type": "integer",
@@ -3650,7 +3651,7 @@
           "name": "setLabel",
           "type": "function",
           "description": "Sets the label of the toolbar action, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "details",
@@ -3726,7 +3727,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                  "description": "Either an ImageData object or a dictionary ``{size -> ImageData}`` representing the icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that ``details.imageData = foo`` is equivalent to ``details.imageData = {'19': foo}``"
                 },
                 "path": {
                   "choices": [
@@ -3743,7 +3744,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                  "description": "Either a relative image path or a dictionary ``{size -> relative image path}`` pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that ``details.path = foo`` is equivalent to ``details.path = {'19': foo}``"
                 }
               }
             },
@@ -3844,7 +3845,7 @@
         {
           "name": "getBadgeText",
           "type": "function",
-          "description": "Gets the badge text of the toolbar action. If no tab nor window is specified is specified, the global badge text is returned.",
+          "description": "Gets the badge text of the toolbar action. If no tab nor window is specified, the global badge text is returned.",
           "async": "callback",
           "parameters": [
             {
@@ -4365,7 +4366,7 @@
             },
             "configured": {
               "type": "boolean",
-              "description": "If true, the account is configured and ready to use. This property is currently ignored and all accounts are assumed to be configured."
+              "description": "If true, the account is configured and ready to use. Only configured accounts are offered to the user."
             },
             "name": {
               "type": "string",
@@ -4477,7 +4478,7 @@
                 "configured": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "If true, the account is configured and ready to use. This property is currently ignored and all accounts are assumed to be configured."
+                  "description": "If true, the account is configured and ready to use. Only configured accounts are offered to the user."
                 },
                 "uploadSizeLimit": {
                   "type": "integer",
@@ -4578,7 +4579,7 @@
           "properties": {
             "identityId": {
               "type": "string",
-              "description": "The ID of an identity from the :doc:`accounts` API. The settings from the identity will be used in the composed message. If ``replyTo`` is also specified, the ``replyTo`` property of the identity is overridden. The permission ``accountsRead`` is required to include the ``identityId``.",
+              "description": "The ID of an identity from the :doc:`accounts` API. The settings from the identity will be used in the composed message. If ``replyTo`` is also specified, the ``replyTo`` property of the identity is overridden. The permission <permission>accountsRead</permission> is required to include the ``identityId``.",
               "optional": true
             },
             "to": {
@@ -4772,7 +4773,7 @@
         {
           "name": "beginNew",
           "type": "function",
-          "description": "Open a new message compose window. If the provided ComposeDetails object does not provide 'body', 'plainTextBody' or 'isPlainText', the default compose format of the used/default identity is used.",
+          "description": "Open a new message compose window. If the provided ComposeDetails object does not provide ``body``, ``plainTextBody`` or ``isPlainText``, the default compose format of the used/default identity is used. The :ref:`accounts_api` API can be used to get the used/default identity and its default compose format.",
           "async": true,
           "parameters": [
             {
@@ -4792,7 +4793,7 @@
         {
           "name": "beginReply",
           "type": "function",
-          "description": "Open a new message compose window replying to a given message. If the provided ComposeDetails object does not provide 'body', 'plainTextBody' or 'isPlainText', the default compose format of the used/default identity is used.",
+          "description": "Open a new message compose window replying to a given message. If the provided ComposeDetails object does not provide ``body``, ``plainTextBody`` or ``isPlainText``, the default compose format of the used/default identity is used. The :ref:`accounts_api` API can be used to get the used/default identity and its default compose format.",
           "async": true,
           "parameters": [
             {
@@ -4821,7 +4822,7 @@
         {
           "name": "beginForward",
           "type": "function",
-          "description": "Open a new message compose window forwarding a given message. If the provided ComposeDetails object does not provide 'body', 'plainTextBody' or 'isPlainText', the default compose format of the used/default identity is used.",
+          "description": "Open a new message compose window forwarding a given message. If the provided ComposeDetails object does not provide ``body``, ``plainTextBody`` or ``isPlainText``, the default compose format of the used/default identity is used. The :ref:`accounts_api` API can be used to get the used/default identity and its default compose format.",
           "async": true,
           "parameters": [
             {
@@ -4878,7 +4879,8 @@
             },
             {
               "name": "details",
-              "$ref": "ComposeDetails"
+              "$ref": "ComposeDetails",
+              "description": "The compose format of an already opened compose window cannot be changed. Setting ``details.body``, ``details.plainTextBody`` or ``details.isPlaintext`` will fail if the compose format of the compose window does not match. Use :ref:`compose.getComposeDetails` to get the current compose format."
             }
           ]
         },
@@ -5065,6 +5067,7 @@
         },
         {
           "id": "ColorArray",
+          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <code>[255, 0, 0, 255]</code>.",
           "type": "array",
           "items": {
             "type": "integer",
@@ -5170,7 +5173,7 @@
           "name": "setLabel",
           "type": "function",
           "description": "Sets the label of the toolbar action, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "details",
@@ -5246,7 +5249,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                  "description": "Either an ImageData object or a dictionary ``{size -> ImageData}`` representing the icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that ``details.imageData = foo`` is equivalent to ``details.imageData = {'19': foo}``"
                 },
                 "path": {
                   "choices": [
@@ -5263,7 +5266,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                  "description": "Either a relative image path or a dictionary ``{size -> relative image path}`` pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that ``details.path = foo`` is equivalent to ``details.path = {'19': foo}``"
                 }
               }
             },
@@ -5364,7 +5367,7 @@
         {
           "name": "getBadgeText",
           "type": "function",
-          "description": "Gets the badge text of the toolbar action. If no tab nor window is specified is specified, the global badge text is returned.",
+          "description": "Gets the badge text of the toolbar action. If no tab nor window is specified, the global badge text is returned.",
           "async": "callback",
           "parameters": [
             {
@@ -5863,7 +5866,7 @@
               "properties": {
                 "displayedFolder": {
                   "$ref": "folders.MailFolder",
-                  "description": "Sets the folder displayed in the tab. The extension must have an accounts permission to do this.",
+                  "description": "Sets the folder displayed in the tab. The extension must have the <permission>accountsRead</permission> permission to do this.",
                   "optional": true
                 },
                 "sortType": {
@@ -5930,7 +5933,7 @@
         {
           "name": "getSelectedMessages",
           "type": "function",
-          "description": "Lists the selected messages in the current folder. A messages permission is required to do this.",
+          "description": "Lists the selected messages in the current folder.",
           "permissions": [
             "messagesRead"
           ],
@@ -6110,7 +6113,7 @@
             "folder_pane",
             "compose_attachments"
           ],
-          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'tab'."
+          "description": "The different contexts a menu can appear in. Specifying <code>all</code> is equivalent to the combination of all other contexts except for <code>tab</code>."
         },
         {
           "id": "ItemType",
@@ -6190,7 +6193,7 @@
             "frameUrl": {
               "type": "string",
               "optional": true,
-              "description": " The URL of the frame of the element where the context menu was clicked, if it was in a frame."
+              "description": "The URL of the frame of the element where the context menu was clicked, if it was in a frame."
             },
             "selectionText": {
               "type": "string",
@@ -6238,17 +6241,17 @@
             "selectedMessages": {
               "$ref": "messages.MessageList",
               "optional": true,
-              "description": "The selected messages, if the context menu was opened in the message list. The ``messagesRead`` permission is required."
+              "description": "The selected messages, if the context menu was opened in the message list. The <permission>messagesRead</permission> permission is required."
             },
             "displayedFolder": {
               "$ref": "folders.MailFolder",
               "optional": true,
-              "description": "The displayed folder, if the context menu was opened in the message list. The ``accountsRead`` permission is required."
+              "description": "The displayed folder, if the context menu was opened in the message list. The <permission>accountsRead</permission> permission is required."
             },
             "selectedFolder": {
               "$ref": "folders.MailFolder",
               "optional": true,
-              "description": "The selected folder, if the context menu was opened in the folder pane. The ``accountsRead`` permission is required."
+              "description": "The selected folder, if the context menu was opened in the folder pane. The <permission>accountsRead</permission> permission is required."
             },
             "attachments": {
               "type": "array",
@@ -6304,7 +6307,7 @@
                 "title": {
                   "type": "string",
                   "optional": true,
-                  "description": "The text to be displayed in the item; this is *required* unless ``type`` is 'separator'. When the context is 'selection', you can use ``%s`` within the string to show the selected text. For example, if this parameter's value is \"Translate '%s' to Pig Latin\" and the user selects the word \"cool\", the context menu item for the selection is \"Translate 'cool' to Pig Latin\". To specify an access key for the new menu entry, include a ``&`` before the desired letter in the title. For example \"&Help\"."
+                  "description": "The text to be displayed in the item; this is <em>required</em> unless <code>type</code> is 'separator'. When the context is 'selection', you can use <code>%s</code> within the string to show the selected text. For example, if this parameter's value is \"Translate '%s' to Pig Latin\" and the user selects the word \"cool\", the context menu item for the selection is \"Translate 'cool' to Pig Latin\". To specify an access key for the new menu entry, include a <code>&</code> before the desired letter in the title. For example \"&Help\"."
                 },
                 "checked": {
                   "type": "boolean",
@@ -6593,7 +6596,7 @@
                   "type": "integer",
                   "minimum": 0,
                   "optional": true,
-                  "description": "Required when context is 'tab'. Requires 'tabs' permission."
+                  "description": "Required when context is 'tab'. Requires the <permission>tabs</permission> permission."
                 }
               }
             }
@@ -6919,6 +6922,7 @@
         {
           "id": "ColorArray",
           "type": "array",
+          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <code>[255, 0, 0, 255]</code>.",
           "items": {
             "type": "integer",
             "minimum": 0,
@@ -7023,7 +7027,7 @@
           "name": "setLabel",
           "type": "function",
           "description": "Sets the label of the toolbar action, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "details",
@@ -7099,7 +7103,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either an ImageData object or a dictionary {size -> ImageData} representing icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.imageData = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                  "description": "Either an ImageData object or a dictionary ``{size -> ImageData}`` representing the icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that ``details.imageData = foo`` is equivalent to ``details.imageData = {'19': foo}``"
                 },
                 "path": {
                   "choices": [
@@ -7116,7 +7120,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either a relative image path or a dictionary {size -> relative image path} pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that 'details.path = foo' is equivalent to 'details.imageData = {'19': foo}'"
+                  "description": "Either a relative image path or a dictionary ``{size -> relative image path}`` pointing to icon to be set. If the icon is specified as a dictionary, the actual image to be used is chosen depending on screen's pixel density. If the number of image pixels that fit into one screen space unit equals <code>scale</code>, then image with size <code>scale</code> * 19 will be selected. Initially only scales 1 and 2 will be supported. At least one image must be specified. Note that ``details.path = foo`` is equivalent to ``details.path = {'19': foo}``"
                 }
               }
             },
@@ -7217,7 +7221,7 @@
         {
           "name": "getBadgeText",
           "type": "function",
-          "description": "Gets the badge text of the toolbar action. If no tab nor window is specified is specified, the global badge text is returned.",
+          "description": "Gets the badge text of the toolbar action. If no tab nor window is specified, the global badge text is returned.",
           "async": "callback",
           "parameters": [
             {
@@ -7572,7 +7576,7 @@
                 "folder": {
                   "$ref": "folders.MailFolder",
                   "optional": true,
-                  "description": "Returns only messages from the specified folder. The ``accountsRead`` permission is required."
+                  "description": "Returns only messages from the specified folder. The <permission>accountsRead</permission> permission is required."
                 },
                 "fromDate": {
                   "$ref": "extensionTypes.Date",
@@ -7817,7 +7821,7 @@
               "permissions": [
                 "tabs"
               ],
-              "description": "The URL the tab is displaying. This property is only present if the extension's manifest includes the <code>\"tabs\"</code> permission."
+              "description": "The URL the tab is displaying. This property is only present if the extension's manifest includes the <permission>tabs</permission> permission."
             },
             "title": {
               "type": "string",
@@ -7825,7 +7829,7 @@
               "permissions": [
                 "tabs"
               ],
-              "description": "The title of the tab. This property is only present if the extension's manifest includes the <code>\"tabs\"</code> permission."
+              "description": "The title of the tab. This property is only present if the extension's manifest includes the <permission>tabs</permission> permission."
             },
             "favIconUrl": {
               "type": "string",
@@ -7833,7 +7837,7 @@
               "permissions": [
                 "tabs"
               ],
-              "description": "The URL of the tab's favicon. This property is only present if the extension's manifest includes the <code>\"tabs\"</code> permission. It may also be an empty string if the tab is loading."
+              "description": "The URL of the tab's favicon. This property is only present if the extension's manifest includes the <permission>tabs</permission> permission. It may also be an empty string if the tab is loading."
             },
             "status": {
               "type": "string",
@@ -7895,7 +7899,7 @@
           "properties": {
             "urls": {
               "type": "array",
-              "description": "A list of URLs or URL patterns. Events that cannot match any of the URLs will be filtered out.  Filtering with urls requires the <code>\"tabs\"</code> or  <code>\"activeTab\"</code> permission.",
+              "description": "A list of URLs or URL patterns. Events that cannot match any of the URLs will be filtered out.  Filtering with urls requires the <permission>tabs</permission> or  <permission>activeTab</permission> permission.",
               "optional": true,
               "items": {
                 "type": "string"
@@ -8123,7 +8127,7 @@
                 {
                   "name": "tab",
                   "optional": true,
-                  "description": "Details about the duplicated tab. The :ref:`tabs.Tab` object doesn't contain <code>url</code>, <code>title</code> and <code>favIconUrl</code> if the <code>\"tabs\"</code> permission has not been requested.",
+                  "description": "Details about the duplicated tab. The :ref:`tabs.Tab` object doesn't contain <code>url</code>, <code>title</code> and <code>favIconUrl</code> if the <permission>tabs</permission> permission has not been requested.",
                   "$ref": "Tab"
                 }
               ]
@@ -8262,7 +8266,7 @@
                   "name": "tab",
                   "$ref": "Tab",
                   "optional": true,
-                  "description": "Details about the updated tab. The :ref:`tabs.Tab` object doesn't contain <code>url</code>, <code>title</code> and <code>favIconUrl</code> if the <code>\"tabs\"</code> permission has not been requested."
+                  "description": "Details about the updated tab. The :ref:`tabs.Tab` object doesn't contain <code>url</code>, <code>title</code> and <code>favIconUrl</code> if the <permission>tabs</permission> permission has not been requested."
                 }
               ]
             }
@@ -8271,7 +8275,7 @@
         {
           "name": "move",
           "type": "function",
-          "description": "Moves one or more tabs to a new position within its window, or to a new window. Note that tabs can only be moved to and from normal (window.type === \"normal\") windows.",
+          "description": "Moves one or more tabs to a new position within its window, or to a new window. Note that tabs can only be moved to and from normal windows (<code>window.type === \"normal\"</code>).",
           "async": "callback",
           "parameters": [
             {
@@ -8691,7 +8695,7 @@
         {
           "id": "WindowType",
           "type": "string",
-          "description": "The type of window this is. Under some circumstances a Window may not be assigned type property.",
+          "description": "The type of window this is. Under some circumstances a Window may not be assigned a type property.",
           "enum": [
             "normal",
             "popup",
@@ -8796,12 +8800,12 @@
         {
           "id": "GetInfo",
           "type": "object",
-          "description": "Specifies whether the :ref:`windows.Window` returned should contain a list of the :ref:`tabs.Tab` objects.",
+          "description": "Specifies properties used to filter the :ref:`windows.Window` returned and to determine whether they should contain a list of the :ref:`tabs.Tab` objects.",
           "properties": {
             "populate": {
               "type": "boolean",
               "optional": true,
-              "description": "If true, the :ref:`windows.Window` returned will have a <var>tabs</var> property that contains a list of the :ref:`tabs.Tab` objects. The <code>Tab</code> objects only contain the <code>url</code>, <code>title</code> and <code>favIconUrl</code> properties if the extension's manifest file includes the <code>\"tabs\"</code> permission."
+              "description": "If true, the :ref:`windows.Window` returned will have a <var>tabs</var> property that contains a list of the :ref:`tabs.Tab` objects. The <code>Tab</code> objects only contain the <code>url</code>, <code>title</code> and <code>favIconUrl</code> properties if the extension's manifest file includes the <permission>tabs</permission> permission."
             },
             "windowTypes": {
               "type": "array",
@@ -8809,8 +8813,7 @@
                 "$ref": "WindowType"
               },
               "optional": true,
-              "deprecated": true,
-              "description": "<code>windowTypes</code> is deprecated and ignored on Thunderbird."
+              "description": "If set, the :ref:`windows.Window` returned will be filtered based on its type. Supported by :ref:`windows.getAll` only, ignored in all other functions."
             }
           }
         }
@@ -8907,26 +8910,9 @@
           "async": "callback",
           "parameters": [
             {
-              "type": "object",
-              "$import": "GetInfo",
+              "$ref": "GetInfo",
               "name": "getInfo",
-              "optional": true,
-              "description": "Specifies properties used to filter the :ref:`windows.Window` returned and to determine whether they should contain a list of the :ref:`tabs.Tab` objects.",
-              "properties": {
-                "populate": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "If true, each :ref:`windows.Window` object will have a ``tabs`` property that contains a list of the :ref:`tabs.Tab` objects for that window. The ``Tab`` objects only contain the ``url``, ``title`` and ``favIconUrl`` properties if the extension's manifest file includes the ``\"tabs\"`` permission."
-                },
-                "windowTypes": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "WindowType"
-                  },
-                  "optional": true,
-                  "description": "If set, the :ref:`windows.Window` returned will be filtered based on its type."
-                }
-              }
+              "optional": true
             },
             {
               "type": "function",
