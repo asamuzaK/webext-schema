@@ -684,7 +684,7 @@
                     "suggest_url": {
                       "type": "string",
                       "optional": true,
-                      "pattern": "^(https://|http://(localhost|127\\.0\\.0\\.1|\\[::1\\])(:\\d*)?(/|$)).*$",
+                      "pattern": "^$|^(https://|http://(localhost|127\\.0\\.0\\.1|\\[::1\\])(:\\d*)?(/|$)).*$",
                       "preprocess": "localize"
                     },
                     "instant_url": {
@@ -12625,7 +12625,8 @@
             "manifest_version": {
               "type": "integer",
               "minimum": 2,
-              "maximum": 2
+              "maximum": 3,
+              "postprocess": "manifestVersionCheck"
             },
             "applications": {
               "type": "object",
@@ -12821,18 +12822,6 @@
                       "optional": true,
                       "format": "contentSecurityPolicy",
                       "description": "The Content Security Policy used for extension pages."
-                    },
-                    "content_scripts": {
-                      "type": "string",
-                      "optional": true,
-                      "format": "contentSecurityPolicy",
-                      "description": "The Content Security Policy used for content scripts."
-                    },
-                    "isolated_world": {
-                      "type": "string",
-                      "optional": true,
-                      "format": "contentSecurityPolicy",
-                      "description": "An alias for content_scripts to support Chrome compatibility.  Content Security Policy implementations may differ between Firefox and Chrome.  If both isolated_world and content_scripts exist, the value from content_scripts will be used."
                     }
                   }
                 }
@@ -14975,7 +14964,11 @@
           "id": "PlatformArch",
           "type": "string",
           "enum": [
+            "aarch64",
             "arm",
+            "ppc64",
+            "s390x",
+            "sparc64",
             "x86-32",
             "x86-64"
           ],
