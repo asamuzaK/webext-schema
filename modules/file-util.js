@@ -99,11 +99,13 @@ const isFile = file => {
  * @returns {boolean} - result
  */
 const isExecutable = (file, mask = MASK_BIT) => {
+  let res;
   const stat = getStat(file);
-  return stat
-    ? (!!(stat.mode & mask) ||
-       (IS_WIN && /\.(?:bat|cmd|exe|ps1|wsh)$/i.test(file)))
-    : false;
+  if (stat) {
+    res = !!(stat.mode & mask) ||
+          (IS_WIN && /\.(?:bat|cmd|exe|ps1|wsh)$/i.test(file));
+  }
+  return !!res;
 };
 
 /**
