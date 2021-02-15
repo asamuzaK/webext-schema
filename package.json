@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "camelize": "^1.0.0",
-    "commander": "^7.0.0",
+    "commander": "^7.1.0",
     "decamelize": "^5.0.0",
     "json5": "^2.2.0",
     "node-fetch": "^2.6.1",
@@ -31,14 +31,14 @@
   },
   "devDependencies": {
     "chai": "^4.3.0",
-    "eslint": "^7.19.0",
+    "eslint": "^7.20.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsdoc": "^31.6.0",
+    "eslint-plugin-jsdoc": "^32.0.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "mocha": "^8.2.1",
+    "eslint-plugin-promise": "^4.3.1",
+    "mocha": "^8.3.0",
     "nyc": "^15.1.0"
   },
-  "version": "1.4.6"
+  "version": "1.4.7"
 }
