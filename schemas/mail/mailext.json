@@ -4683,6 +4683,17 @@
               "type": "string",
               "optional": true
             },
+            "type": {
+              "type": "string",
+              "description": "Read-only. The type of the message being composed, depending on how the compose window was opened by the user.",
+              "enum": [
+                "draft",
+                "new",
+                "reply",
+                "forward"
+              ],
+              "optional": true
+            },
             "body": {
               "type": "string",
               "optional": true
@@ -6172,9 +6183,10 @@
             "tab",
             "message_list",
             "folder_pane",
-            "compose_attachments"
+            "compose_attachments",
+            "tools_menu"
           ],
-          "description": "The different contexts a menu can appear in. Specifying <code>all</code> is equivalent to the combination of all other contexts except for <code>tab</code>."
+          "description": "The different contexts a menu can appear in. Specifying <code>all</code> is equivalent to the combination of all other contexts excluding <code>tab</code> and <code>tools_menu</code>."
         },
         {
           "id": "ItemType",
