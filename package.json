@@ -30,8 +30,8 @@
     "sinon": "^9.2.4"
   },
   "devDependencies": {
-    "chai": "^4.3.0",
-    "eslint": "^7.20.0",
+    "chai": "^4.3.3",
+    "eslint": "^7.21.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsdoc": "^32.2.0",
