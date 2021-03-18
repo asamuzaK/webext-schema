@@ -4121,7 +4121,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a toolbar action icon is clicked.  This event will not fire if the toolbar action has a popup.",
+          "description": "Fired when a toolbar action icon is clicked.  This event will not fire if the toolbar action has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -4837,7 +4837,7 @@
         {
           "name": "onBeforeSend",
           "type": "function",
-          "description": "Fired when a message is about to be sent from the compose window.",
+          "description": "Fired when a message is about to be sent from the compose window. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "permissions": [
             "compose"
           ],
@@ -5658,7 +5658,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a toolbar action icon is clicked.  This event will not fire if the toolbar action has a popup.",
+          "description": "Fired when a toolbar action icon is clicked.  This event will not fire if the toolbar action has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -6262,7 +6262,7 @@
             "compose_attachments",
             "tools_menu"
           ],
-          "description": "The different contexts a menu can appear in. Specifying <code>all</code> is equivalent to the combination of all other contexts excluding <code>tab</code> and <code>tools_menu</code>."
+          "description": "The different contexts a menu can appear in. Specifying <code>all</code> is equivalent to the combination of all other contexts excluding <code>tab</code> and <code>tools_menu</code>. More information about each context can be found in the `Supported UI Elements <https://developer.thunderbird.net/add-ons/mailextensions/supported-ui-elements#menu-items>`__ article on developer.thunderbird.net."
         },
         {
           "id": "ItemType",
@@ -6506,7 +6506,7 @@
             "attachments": {
               "type": "array",
               "optional": true,
-              "description": "The selected attachments of a message being composed.",
+              "description": "The selected attachments of a message being composed. The <permission>compose</permission> permission is required.",
               "items": {
                 "$ref": "compose.ComposeAttachment"
               }
@@ -6864,7 +6864,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a context menu item is clicked. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when a context menu item is clicked. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "parameters": [
             {
               "name": "info",
@@ -6989,7 +6989,7 @@
         {
           "name": "getDisplayedMessage",
           "type": "function",
-          "description": "Gets the currently displayed message in the specified tab. It returns null if no messages are selected, or if multiple messages are selected.",
+          "description": "Gets the currently displayed message in the specified tab. It returns null if no messages are displayed, or if multiple messages are displayed.",
           "async": true,
           "parameters": [
             {
@@ -7545,7 +7545,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a toolbar action icon is clicked.  This event will not fire if the toolbar action has a popup.",
+          "description": "Fired when a toolbar action icon is clicked.  This event will not fire if the toolbar action has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -7606,6 +7606,29 @@
                 "all",
                 "any"
               ]
+            }
+          }
+        },
+        {
+          "id": "Attachment",
+          "type": "object",
+          "description": "Represents an attachment in a message.",
+          "properties": {
+            "contentType": {
+              "type": "string",
+              "description": "The content type of the attachment."
+            },
+            "name": {
+              "type": "string",
+              "description": "The name, as displayed to the user, of this attachment. This is usually but not always the filename of the attached file."
+            },
+            "partName": {
+              "type": "string",
+              "description": "Identifies the MIME part of the message associated with this attachment."
+            },
+            "size": {
+              "type": "integer",
+              "description": "The size in bytes of this attachment."
             }
           }
         }
@@ -7685,12 +7708,41 @@
         {
           "name": "getRaw",
           "type": "function",
-          "description": "Returns the unmodified source of a message.",
+          "description": "Returns the unmodified source of a message as a `binary string <https://developer.mozilla.org/en-US/docs/Web/API/DOMString/Binary>`__.",
           "async": true,
           "parameters": [
             {
               "name": "messageId",
               "type": "integer"
+            }
+          ]
+        },
+        {
+          "name": "listAttachments",
+          "type": "function",
+          "description": "Lists all of the attachments of a message.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "messageId",
+              "type": "integer"
+            }
+          ]
+        },
+        {
+          "name": "getAttachmentFile",
+          "type": "function",
+          "description": "Gets the content of an attachment as a DOM <code>File</code> object.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "messageId",
+              "type": "integer"
+            },
+            {
+              "name": "partName",
+              "type": "string",
+              "pattern": "^\\d+(\\.\\d+)*$"
             }
           ]
         },
@@ -8054,14 +8106,17 @@
         {
           "id": "WindowType",
           "type": "string",
+          "description": "The type of a window. Under some circumstances a Window may not be assigned a type property.",
           "enum": [
             "normal",
             "popup",
             "panel",
             "app",
-            "devtools"
-          ],
-          "description": "The type of window."
+            "devtools",
+            "addressBook",
+            "messageCompose",
+            "messageDisplay"
+          ]
         },
         {
           "id": "UpdatePropertyName",
@@ -8876,7 +8931,7 @@
         {
           "id": "WindowType",
           "type": "string",
-          "description": "The type of window this is. Under some circumstances a Window may not be assigned a type property.",
+          "description": "The type of a window. Under some circumstances a Window may not be assigned a type property.",
           "enum": [
             "normal",
             "popup",
@@ -8940,7 +8995,7 @@
                 "$ref": "tabs.Tab"
               },
               "optional": true,
-              "description": "Array of :ref:`tabs.Tab` objects representing the current tabs in the window."
+              "description": "Array of :ref:`tabs.Tab` objects representing the current tabs in the window. Only included if requested by :ref:`windows.get`, :ref:`windows.getCurrent`, :ref:`windows.getAll` or :ref:`windows.getLastFocused` and the optional :ref:`windows.GetInfo` parameter has ``populate`` set to ``true``."
             },
             "incognito": {
               "type": "boolean",
@@ -8981,12 +9036,12 @@
         {
           "id": "GetInfo",
           "type": "object",
-          "description": "Specifies properties used to filter the :ref:`windows.Window` returned and to determine whether they should contain a list of the :ref:`tabs.Tab` objects.",
+          "description": "Specifies additional requirements for the returned windows.",
           "properties": {
             "populate": {
               "type": "boolean",
               "optional": true,
-              "description": "If true, the :ref:`windows.Window` returned will have a <var>tabs</var> property that contains a list of the :ref:`tabs.Tab` objects. The <code>Tab</code> objects only contain the <code>url</code>, <code>title</code> and <code>favIconUrl</code> properties if the extension's manifest file includes the <permission>tabs</permission> permission."
+              "description": "If true, the :ref:`windows.Window` returned will have a <var>tabs</var> property that contains an array of :ref:`tabs.Tab` objects representing the tabs inside the window. The :ref:`tabs.Tab` objects only contain the <code>url</code>, <code>title</code> and <code>favIconUrl</code> properties if the extension's manifest file includes the <permission>tabs</permission> permission."
             },
             "windowTypes": {
               "type": "array",
