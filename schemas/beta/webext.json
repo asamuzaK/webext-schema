@@ -4684,7 +4684,8 @@
             "pinned",
             "sharingState",
             "status",
-            "title"
+            "title",
+            "url"
           ],
           "description": "Event names supported in onUpdated."
         },
@@ -8304,7 +8305,7 @@
         },
         "ftpProtocolEnabled": {
           "$ref": "types.Setting",
-          "description": "This boolean setting controls whether the FTP protocol is enabled."
+          "description": "Returns whether the FTP protocol is enabled. Read-only."
         },
         "homepageOverride": {
           "$ref": "types.Setting",
@@ -11511,6 +11512,7 @@
                     "bitcoin",
                     "dat",
                     "dweb",
+                    "ftp",
                     "geo",
                     "gopher",
                     "im",
@@ -13422,9 +13424,7 @@
                 "usb",
                 "wifi",
                 "wimax",
-                "2g",
-                "3g",
-                "4g"
+                "mobile"
               ],
               "description": "If known, the type of network connection that is avialable."
             },
@@ -14476,7 +14476,8 @@
             "ftp": {
               "type": "string",
               "optional": true,
-              "description": "The address of the ftp proxy, can include a port."
+              "deprecated": true,
+              "description": "The address of the ftp proxy, can include a port.  Deprecated since Firefox 88."
             },
             "ssl": {
               "type": "string",
@@ -16794,8 +16795,7 @@
             },
             {
               "name": "expectedError",
-              "$ref": "ExpectedError",
-              "optional": true
+              "$ref": "ExpectedError"
             },
             {
               "name": "message",
@@ -16814,8 +16814,7 @@
             },
             {
               "name": "expectedError",
-              "$ref": "ExpectedError",
-              "optional": true
+              "$ref": "ExpectedError"
             },
             {
               "name": "message",
