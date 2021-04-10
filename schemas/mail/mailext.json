@@ -2841,18 +2841,43 @@
           "name": "list",
           "type": "function",
           "description": "Returns all mail accounts.",
-          "async": true,
-          "parameters": []
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "accounts.MailAccount"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "get",
           "type": "function",
           "description": "Returns details of the requested account, or null if it doesn't exist.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "accountId",
               "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "accounts.MailAccount",
+                  "optional": true
+                }
+              ]
             }
           ]
         },
@@ -2860,8 +2885,20 @@
           "name": "getDefault",
           "type": "function",
           "description": "Returns the default account, or null if it is not defined.",
-          "async": true,
-          "parameters": []
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "accounts.MailAccount",
+                  "optional": true
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "setDefaultIdentity",
@@ -2883,11 +2920,21 @@
           "name": "getDefaultIdentity",
           "type": "function",
           "description": "Returns the default identity for an account, or null if it is not defined.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "accountId",
               "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "accounts.MailIdentity"
+                }
+              ]
             }
           ]
         }
@@ -2990,7 +3037,7 @@
         {
           "name": "list",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "complete",
@@ -2998,6 +3045,19 @@
               "optional": true,
               "default": false,
               "description": "If set to true, results will include contacts and mailing lists for each address book."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "AddressBookNode"
+                  }
+                }
+              ]
             }
           ],
           "description": "Gets a list of the user's address books, optionally including all contacts and mailing lists."
@@ -3005,7 +3065,7 @@
         {
           "name": "get",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "id",
@@ -3017,6 +3077,16 @@
               "optional": true,
               "default": false,
               "description": "If set to true, results will include contacts and mailing lists for this address book."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "AddressBookNode"
+                }
+              ]
             }
           ],
           "description": "Gets a single address book, optionally including all contacts and mailing lists."
@@ -3024,7 +3094,7 @@
         {
           "name": "create",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "properties",
@@ -3034,6 +3104,17 @@
                   "type": "string"
                 }
               }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string",
+                  "description": "The id of the new address book."
+                }
+              ]
             }
           ],
           "description": "Creates a new, empty address book."
@@ -3214,7 +3295,7 @@
               "name": "parentId",
               "type": "string",
               "optional": true,
-              "description": "The ID of the address book to search. If not specified, all address books are searched."
+              "description": "The id of the address book to search. If not specified, all address books are searched."
             },
             {
               "name": "searchString",
@@ -3652,7 +3733,7 @@
     },
     {
       "namespace": "browserAction",
-      "description": "Use toolbar actions to put icons in the mail window toolbar. In addition to its icon, a toolbar action can also have a tooltip, a badge, and a popup. This namespace is called browserAction for compatibility with browser WebExtensions.",
+      "description": "Use a browserAction to put an icon in the mail window toolbar. In addition to its icon, a browserAction can also have a tooltip, a badge, and a popup. This namespace is called browserAction for compatibility with browser WebExtensions.",
       "permissions": [
         "manifest:browser_action"
       ],
@@ -3729,7 +3810,7 @@
         {
           "name": "setTitle",
           "type": "function",
-          "description": "Sets the title of the toolbar action. This shows up in the tooltip and the label. Defaults to the add-on name.",
+          "description": "Sets the title of the browserAction. This shows up in the tooltip and the label. Defaults to the add-on name.",
           "async": "callback",
           "parameters": [
             {
@@ -3746,7 +3827,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the toolbar action should display as its label and when moused over."
+                  "description": "The string the browserAction should display as its label and when moused over."
                 }
               }
             },
@@ -3761,7 +3842,7 @@
         {
           "name": "getTitle",
           "type": "function",
-          "description": "Gets the title of the toolbar action.",
+          "description": "Gets the title of the browserAction.",
           "async": "callback",
           "parameters": [
             {
@@ -3783,7 +3864,7 @@
         {
           "name": "setLabel",
           "type": "function",
-          "description": "Sets the label of the toolbar action, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+          "description": "Sets the label of the browserAction, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
           "async": "callback",
           "parameters": [
             {
@@ -3800,7 +3881,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the toolbar action should use as label. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback."
+                  "description": "The string the browserAction should use as label. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback."
                 }
               }
             },
@@ -3815,7 +3896,7 @@
         {
           "name": "getLabel",
           "type": "function",
-          "description": "Gets the label of the toolbar action.",
+          "description": "Gets the label of the browserAction.",
           "async": "callback",
           "parameters": [
             {
@@ -3837,7 +3918,7 @@
         {
           "name": "setIcon",
           "type": "function",
-          "description": "Sets the icon for the toolbar action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "description": "Sets the icon for the browserAction. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
           "async": "callback",
           "parameters": [
             {
@@ -3892,7 +3973,7 @@
         {
           "name": "setPopup",
           "type": "function",
-          "description": "Sets the html document to be opened as a popup when the user clicks on the toolbar action's icon.",
+          "description": "Sets the html document to be opened as a popup when the user clicks on the browserAction's icon.",
           "async": "callback",
           "parameters": [
             {
@@ -3924,7 +4005,7 @@
         {
           "name": "getPopup",
           "type": "function",
-          "description": "Gets the html document set as the popup for this toolbar action.",
+          "description": "Gets the html document set as the popup for this browserAction.",
           "async": "callback",
           "parameters": [
             {
@@ -3946,7 +4027,7 @@
         {
           "name": "setBadgeText",
           "type": "function",
-          "description": "Sets the badge text for the toolbar action. The badge is displayed on top of the icon.",
+          "description": "Sets the badge text for the browserAction. The badge is displayed on top of the icon.",
           "async": "callback",
           "parameters": [
             {
@@ -3978,7 +4059,7 @@
         {
           "name": "getBadgeText",
           "type": "function",
-          "description": "Gets the badge text of the toolbar action. If no tab nor window is specified, the global badge text is returned.",
+          "description": "Gets the badge text of the browserAction. If no tab nor window is specified, the global badge text is returned.",
           "async": "callback",
           "parameters": [
             {
@@ -4035,7 +4116,7 @@
         {
           "name": "getBadgeBackgroundColor",
           "type": "function",
-          "description": "Gets the background color of the toolbar action.",
+          "description": "Gets the background color of the browserAction.",
           "async": "callback",
           "parameters": [
             {
@@ -4057,7 +4138,7 @@
         {
           "name": "enable",
           "type": "function",
-          "description": "Enables the toolbar action for a tab. By default, toolbar actions are enabled.",
+          "description": "Enables the browserAction for a tab. By default, a browserAction is enabled.",
           "async": "callback",
           "parameters": [
             {
@@ -4065,7 +4146,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the toolbar action."
+              "description": "The id of the tab for which you want to modify the browserAction."
             },
             {
               "type": "function",
@@ -4078,7 +4159,7 @@
         {
           "name": "disable",
           "type": "function",
-          "description": "Disables the toolbar action for a tab.",
+          "description": "Disables the browserAction for a tab.",
           "async": "callback",
           "parameters": [
             {
@@ -4086,7 +4167,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the toolbar action."
+              "description": "The id of the tab for which you want to modify the browserAction."
             },
             {
               "type": "function",
@@ -4099,12 +4180,22 @@
         {
           "name": "isEnabled",
           "type": "function",
-          "description": "Checks whether the toolbar action is enabled.",
-          "async": true,
+          "description": "Checks whether the browserAction is enabled.",
+          "async": "callback",
           "parameters": [
             {
               "name": "details",
               "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "boolean"
+                }
+              ]
             }
           ]
         },
@@ -4121,7 +4212,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a toolbar action icon is clicked.  This event will not fire if the toolbar action has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when a browserAction icon is clicked.  This event will not fire if the browserAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -4571,12 +4662,22 @@
           "allowedContexts": [
             "content"
           ],
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "accountId",
               "type": "string",
               "description": "Unique identifier of the account"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "CloudFileAccount"
+                }
+              ]
             }
           ]
         },
@@ -4587,8 +4688,22 @@
           "allowedContexts": [
             "content"
           ],
-          "async": true,
-          "parameters": []
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "CloudFileAccount"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "updateAccount",
@@ -4597,7 +4712,7 @@
           "allowedContexts": [
             "content"
           ],
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "accountId",
@@ -4638,6 +4753,16 @@
                   "description": "A page for configuring accounts, to be displayed in the preferences UI."
                 }
               }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "CloudFileAccount"
+                }
+              ]
             }
           ]
         }
@@ -4922,7 +5047,7 @@
           "name": "beginNew",
           "type": "function",
           "description": "Open a new message compose window. If the provided ComposeDetails object does not provide ``body``, ``plainTextBody`` or ``isPlainText``, the default compose format of the used/default identity is used. The :ref:`accounts_api` API can be used to get the used/default identity and its default compose format.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "messageId",
@@ -4935,6 +5060,17 @@
               "name": "details",
               "$ref": "ComposeDetails",
               "optional": true
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "return",
+                  "$ref": "tabs.Tab"
+                }
+              ]
             }
           ]
         },
@@ -4942,7 +5078,7 @@
           "name": "beginReply",
           "type": "function",
           "description": "Open a new message compose window replying to a given message. If the provided ComposeDetails object does not provide ``body``, ``plainTextBody`` or ``isPlainText``, the default compose format of the used/default identity is used. The :ref:`accounts_api` API can be used to get the used/default identity and its default compose format.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "messageId",
@@ -4964,6 +5100,17 @@
               "name": "details",
               "$ref": "ComposeDetails",
               "optional": true
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "return",
+                  "$ref": "tabs.Tab"
+                }
+              ]
             }
           ]
         },
@@ -4971,7 +5118,7 @@
           "name": "beginForward",
           "type": "function",
           "description": "Open a new message compose window forwarding a given message. If the provided ComposeDetails object does not provide ``body``, ``plainTextBody`` or ``isPlainText``, the default compose format of the used/default identity is used. The :ref:`accounts_api` API can be used to get the used/default identity and its default compose format.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "messageId",
@@ -4992,13 +5139,24 @@
               "name": "details",
               "$ref": "ComposeDetails",
               "optional": true
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "return",
+                  "$ref": "tabs.Tab"
+                }
+              ]
             }
           ]
         },
         {
           "name": "getComposeDetails",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "description": "Fetches the current state of a compose window. Currently only a limited amount of information is available, more will be added in later versions.",
           "permissions": [
             "compose"
@@ -5008,6 +5166,16 @@
               "type": "integer",
               "name": "tabId",
               "minimum": 0
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "ComposeDetails"
+                }
+              ]
             }
           ]
         },
@@ -5189,7 +5357,7 @@
     },
     {
       "namespace": "composeAction",
-      "description": "Use toolbar actions to put icons in the message composition toolbars. In addition to its icon, a toolbar action can also have a tooltip, a badge, and a popup.",
+      "description": "Use a composeAction to put an icon in the message composition toolbars. In addition to its icon, a composeAction can also have a tooltip, a badge, and a popup.",
       "permissions": [
         "manifest:compose_action"
       ],
@@ -5266,7 +5434,7 @@
         {
           "name": "setTitle",
           "type": "function",
-          "description": "Sets the title of the toolbar action. This shows up in the tooltip and the label. Defaults to the add-on name.",
+          "description": "Sets the title of the composeAction. This shows up in the tooltip and the label. Defaults to the add-on name.",
           "async": "callback",
           "parameters": [
             {
@@ -5283,7 +5451,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the toolbar action should display as its label and when moused over."
+                  "description": "The string the composeAction should display as its label and when moused over."
                 }
               }
             },
@@ -5298,7 +5466,7 @@
         {
           "name": "getTitle",
           "type": "function",
-          "description": "Gets the title of the toolbar action.",
+          "description": "Gets the title of the composeAction.",
           "async": "callback",
           "parameters": [
             {
@@ -5320,7 +5488,7 @@
         {
           "name": "setLabel",
           "type": "function",
-          "description": "Sets the label of the toolbar action, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+          "description": "Sets the label of the composeAction, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
           "async": "callback",
           "parameters": [
             {
@@ -5337,7 +5505,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the toolbar action should use as label. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback."
+                  "description": "The string the composeAction should use as label. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback."
                 }
               }
             },
@@ -5352,7 +5520,7 @@
         {
           "name": "getLabel",
           "type": "function",
-          "description": "Gets the label of the toolbar action.",
+          "description": "Gets the label of the composeAction.",
           "async": "callback",
           "parameters": [
             {
@@ -5374,7 +5542,7 @@
         {
           "name": "setIcon",
           "type": "function",
-          "description": "Sets the icon for the toolbar action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "description": "Sets the icon for the composeAction. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
           "async": "callback",
           "parameters": [
             {
@@ -5429,7 +5597,7 @@
         {
           "name": "setPopup",
           "type": "function",
-          "description": "Sets the html document to be opened as a popup when the user clicks on the toolbar action's icon.",
+          "description": "Sets the html document to be opened as a popup when the user clicks on the composeAction's icon.",
           "async": "callback",
           "parameters": [
             {
@@ -5461,7 +5629,7 @@
         {
           "name": "getPopup",
           "type": "function",
-          "description": "Gets the html document set as the popup for this toolbar action.",
+          "description": "Gets the html document set as the popup for this composeAction.",
           "async": "callback",
           "parameters": [
             {
@@ -5483,7 +5651,7 @@
         {
           "name": "setBadgeText",
           "type": "function",
-          "description": "Sets the badge text for the toolbar action. The badge is displayed on top of the icon.",
+          "description": "Sets the badge text for the composeAction. The badge is displayed on top of the icon.",
           "async": "callback",
           "parameters": [
             {
@@ -5515,7 +5683,7 @@
         {
           "name": "getBadgeText",
           "type": "function",
-          "description": "Gets the badge text of the toolbar action. If no tab nor window is specified, the global badge text is returned.",
+          "description": "Gets the badge text of the composeAction. If no tab nor window is specified, the global badge text is returned.",
           "async": "callback",
           "parameters": [
             {
@@ -5572,7 +5740,7 @@
         {
           "name": "getBadgeBackgroundColor",
           "type": "function",
-          "description": "Gets the background color of the toolbar action.",
+          "description": "Gets the background color of the composeAction.",
           "async": "callback",
           "parameters": [
             {
@@ -5594,7 +5762,7 @@
         {
           "name": "enable",
           "type": "function",
-          "description": "Enables the toolbar action for a tab. By default, toolbar actions are enabled.",
+          "description": "Enables the composeAction for a tab. By default, a composeAction is enabled.",
           "async": "callback",
           "parameters": [
             {
@@ -5602,7 +5770,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the toolbar action."
+              "description": "The id of the tab for which you want to modify the composeAction."
             },
             {
               "type": "function",
@@ -5615,7 +5783,7 @@
         {
           "name": "disable",
           "type": "function",
-          "description": "Disables the toolbar action for a tab.",
+          "description": "Disables the composeAction for a tab.",
           "async": "callback",
           "parameters": [
             {
@@ -5623,7 +5791,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the toolbar action."
+              "description": "The id of the tab for which you want to modify the composeAction."
             },
             {
               "type": "function",
@@ -5636,7 +5804,7 @@
         {
           "name": "isEnabled",
           "type": "function",
-          "description": "Checks whether the toolbar action is enabled.",
+          "description": "Checks whether the composeAction is enabled.",
           "async": true,
           "parameters": [
             {
@@ -5658,7 +5826,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a toolbar action icon is clicked.  This event will not fire if the toolbar action has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when a composeAction icon is clicked.  This event will not fire if the composeAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -5929,6 +6097,77 @@
       "namespace": "mailTabs",
       "types": [
         {
+          "id": "MailTab",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "windowId": {
+              "type": "integer"
+            },
+            "active": {
+              "type": "boolean"
+            },
+            "sortType": {
+              "type": "string",
+              "optional": true,
+              "enum": [
+                "none",
+                "date",
+                "subject",
+                "author",
+                "id",
+                "thread",
+                "priority",
+                "status",
+                "size",
+                "flagged",
+                "unread",
+                "recipient",
+                "location",
+                "tags",
+                "junkStatus",
+                "attachments",
+                "account",
+                "custom",
+                "received",
+                "correspondent"
+              ]
+            },
+            "sortOrder": {
+              "type": "string",
+              "optional": true,
+              "enum": [
+                "none",
+                "ascending",
+                "descending"
+              ]
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "wide",
+                "vertical"
+              ]
+            },
+            "folderPaneVisible": {
+              "type": "boolean",
+              "optional": true
+            },
+            "messagePaneVisible": {
+              "type": "boolean",
+              "optional": true
+            },
+            "displayedFolder": {
+              "$ref": "folders.MailFolder",
+              "optional": true,
+              "description": "The <permission>accountsRead</permission> permission is required for this property to be included."
+            }
+          }
+        },
+        {
           "id": "QuickFilterTextDetail",
           "type": "object",
           "properties": {
@@ -5964,7 +6203,7 @@
           "name": "query",
           "type": "function",
           "description": "Gets all mail tabs that have the specified properties, or all mail tabs if no properties are specified.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "type": "object",
@@ -5992,6 +6231,61 @@
                   "description": "The ID of the parent window, or :ref:`windows.WINDOW_ID_CURRENT` for the current window."
                 }
               }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "MailTab"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "type": "function",
+          "description": "Get the properties of a mail tab.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "ID of the requested mail tab. Throws if the requested tab is not a mail tab."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "MailTab"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getCurrent",
+          "type": "function",
+          "description": "Get the properties of the active mail tab, if the active tab is a mail tab. Returns undefined otherwise.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "MailTab",
+                  "optional": true
+                }
+              ]
             }
           ]
         },
@@ -6085,7 +6379,7 @@
           "permissions": [
             "messagesRead"
           ],
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "tabId",
@@ -6093,6 +6387,16 @@
               "description": "Defaults to the active tab of the current window.",
               "optional": true,
               "minimum": 1
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "messages.MessageList"
+                }
+              ]
             }
           ]
         },
@@ -7076,7 +7380,7 @@
     },
     {
       "namespace": "messageDisplayAction",
-      "description": "Use toolbar actions to put icons in the message display toolbar. In addition to its icon, a toolbar action can also have a tooltip, a badge, and a popup.",
+      "description": "Use a messageDisplayAction to put an icon in the message display toolbar. In addition to its icon, a messageDisplayAction can also have a tooltip, a badge, and a popup.",
       "permissions": [
         "manifest:message_display_action"
       ],
@@ -7153,7 +7457,7 @@
         {
           "name": "setTitle",
           "type": "function",
-          "description": "Sets the title of the toolbar action. This shows up in the tooltip and the label. Defaults to the add-on name.",
+          "description": "Sets the title of the messageDisplayAction. This shows up in the tooltip and the label. Defaults to the add-on name.",
           "async": "callback",
           "parameters": [
             {
@@ -7170,7 +7474,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the toolbar action should display as its label and when moused over."
+                  "description": "The string the messageDisplayAction should display as its label and when moused over."
                 }
               }
             },
@@ -7185,7 +7489,7 @@
         {
           "name": "getTitle",
           "type": "function",
-          "description": "Gets the title of the toolbar action.",
+          "description": "Gets the title of the messageDisplayAction.",
           "async": "callback",
           "parameters": [
             {
@@ -7207,7 +7511,7 @@
         {
           "name": "setLabel",
           "type": "function",
-          "description": "Sets the label of the toolbar action, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+          "description": "Sets the label of the messageDisplayAction, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
           "async": "callback",
           "parameters": [
             {
@@ -7224,7 +7528,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the toolbar action should use as label. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback."
+                  "description": "The string the messageDisplayAction should use as label. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback."
                 }
               }
             },
@@ -7239,7 +7543,7 @@
         {
           "name": "getLabel",
           "type": "function",
-          "description": "Gets the label of the toolbar action.",
+          "description": "Gets the label of the messageDisplayAction.",
           "async": "callback",
           "parameters": [
             {
@@ -7261,7 +7565,7 @@
         {
           "name": "setIcon",
           "type": "function",
-          "description": "Sets the icon for the toolbar action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "description": "Sets the icon for the messageDisplayAction. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
           "async": "callback",
           "parameters": [
             {
@@ -7316,7 +7620,7 @@
         {
           "name": "setPopup",
           "type": "function",
-          "description": "Sets the html document to be opened as a popup when the user clicks on the toolbar action's icon.",
+          "description": "Sets the html document to be opened as a popup when the user clicks on the messageDisplayAction's icon.",
           "async": "callback",
           "parameters": [
             {
@@ -7348,7 +7652,7 @@
         {
           "name": "getPopup",
           "type": "function",
-          "description": "Gets the html document set as the popup for this toolbar action.",
+          "description": "Gets the html document set as the popup for this messageDisplayAction.",
           "async": "callback",
           "parameters": [
             {
@@ -7370,7 +7674,7 @@
         {
           "name": "setBadgeText",
           "type": "function",
-          "description": "Sets the badge text for the toolbar action. The badge is displayed on top of the icon.",
+          "description": "Sets the badge text for the messageDisplayAction. The badge is displayed on top of the icon.",
           "async": "callback",
           "parameters": [
             {
@@ -7402,7 +7706,7 @@
         {
           "name": "getBadgeText",
           "type": "function",
-          "description": "Gets the badge text of the toolbar action. If no tab nor window is specified, the global badge text is returned.",
+          "description": "Gets the badge text of the messageDisplayAction. If no tab nor window is specified, the global badge text is returned.",
           "async": "callback",
           "parameters": [
             {
@@ -7459,7 +7763,7 @@
         {
           "name": "getBadgeBackgroundColor",
           "type": "function",
-          "description": "Gets the background color of the toolbar action.",
+          "description": "Gets the background color of the messageDisplayAction.",
           "async": "callback",
           "parameters": [
             {
@@ -7481,7 +7785,7 @@
         {
           "name": "enable",
           "type": "function",
-          "description": "Enables the toolbar action for a tab. By default, toolbar actions are enabled.",
+          "description": "Enables the messageDisplayAction for a tab. By default, a messageDisplayAction is enabled.",
           "async": "callback",
           "parameters": [
             {
@@ -7489,7 +7793,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the toolbar action."
+              "description": "The id of the tab for which you want to modify the messageDisplayAction."
             },
             {
               "type": "function",
@@ -7502,7 +7806,7 @@
         {
           "name": "disable",
           "type": "function",
-          "description": "Disables the toolbar action for a tab.",
+          "description": "Disables the messageDisplayAction for a tab.",
           "async": "callback",
           "parameters": [
             {
@@ -7510,7 +7814,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the toolbar action."
+              "description": "The id of the tab for which you want to modify the messageDisplayAction."
             },
             {
               "type": "function",
@@ -7523,7 +7827,7 @@
         {
           "name": "isEnabled",
           "type": "function",
-          "description": "Checks whether the toolbar action is enabled.",
+          "description": "Checks whether the messageDisplayAction is enabled.",
           "async": true,
           "parameters": [
             {
@@ -7545,7 +7849,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a toolbar action icon is clicked.  This event will not fire if the toolbar action has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when a messageDisplayAction icon is clicked.  This event will not fire if the messageDisplayAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -7585,6 +7889,157 @@
         "messagesRead"
       ],
       "types": [
+        {
+          "id": "MessageHeader",
+          "type": "object",
+          "description": "Basic information about a message.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "date": {
+              "$ref": "extensionTypes.Date"
+            },
+            "read": {
+              "type": "boolean"
+            },
+            "flagged": {
+              "type": "boolean"
+            },
+            "ccList": {
+              "description": "The Cc recipients. Not populated for news/nntp messages.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "bccList": {
+              "description": "The Bcc recipients. Not populated for news/nntp messages.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "author": {
+              "type": "string"
+            },
+            "subject": {
+              "type": "string"
+            },
+            "recipients": {
+              "description": "The To recipients. Not populated for news/nntp messages.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "folder": {
+              "$ref": "folders.MailFolder",
+              "description": "The <permission>accountsRead</permission> permission is required for this property to be included."
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "junk": {
+              "description": "Not populated for news/nntp messages.",
+              "type": "boolean"
+            },
+            "junkScore": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "headerMessageId": {
+              "type": "string",
+              "description": "The message-id header of the message."
+            }
+          }
+        },
+        {
+          "id": "MessageList",
+          "type": "object",
+          "description": "See :doc:`how-to/messageLists` for more information.",
+          "properties": {
+            "id": {
+              "type": "string",
+              "optional": true
+            },
+            "messages": {
+              "type": "array",
+              "items": {
+                "$ref": "MessageHeader"
+              }
+            }
+          }
+        },
+        {
+          "id": "MessagePart",
+          "type": "object",
+          "description": "Represents an email message \"part\", which could be the whole message",
+          "properties": {
+            "body": {
+              "type": "string",
+              "description": "The content of the part",
+              "optional": true
+            },
+            "contentType": {
+              "type": "string",
+              "optional": true
+            },
+            "headers": {
+              "type": "object",
+              "description": "An object of part headers, with the header name as key, and an array of header values as value",
+              "optional": true
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the part, if it is a file",
+              "optional": true
+            },
+            "partName": {
+              "type": "string",
+              "optional": true
+            },
+            "parts": {
+              "type": "array",
+              "items": {
+                "$ref": "MessagePart"
+              },
+              "description": "Any sub-parts of this part",
+              "optional": true
+            },
+            "size": {
+              "type": "integer",
+              "optional": true
+            }
+          }
+        },
+        {
+          "id": "MessageTag",
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string",
+              "description": "Distinct tag identifier – use this string when referring to a tag"
+            },
+            "tag": {
+              "type": "string",
+              "description": "Human-readable tag name"
+            },
+            "color": {
+              "type": "string",
+              "description": "Tag color"
+            },
+            "ordinal": {
+              "type": "string",
+              "description": "Custom sort string (usually empty)"
+            }
+          }
+        },
         {
           "id": "TagsDetail",
           "type": "object",
