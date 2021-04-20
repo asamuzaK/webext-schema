@@ -6560,6 +6560,8 @@
             "video",
             "audio",
             "browser_action",
+            "compose_action",
+            "message_display_action",
             "tab",
             "message_list",
             "folder_pane",
@@ -6648,6 +6650,10 @@
             },
             "targetElementId": {
               "type": "integer",
+              "optional": true
+            },
+            "fieldId": {
+              "type": "string",
               "optional": true
             },
             "selectedMessages": {
@@ -6785,7 +6791,12 @@
             "targetElementId": {
               "type": "integer",
               "optional": true,
-              "description": "An identifier of the clicked element, if any. Use menus.getTargetElement in the page to find the corresponding element."
+              "description": "An identifier of the clicked content element, if any. Use menus.getTargetElement in the page to find the corresponding element."
+            },
+            "fieldId": {
+              "type": "string",
+              "optional": true,
+              "description": "An identifier of the clicked Thunderbird UI element, if any."
             },
             "selectedMessages": {
               "$ref": "messages.MessageList",
