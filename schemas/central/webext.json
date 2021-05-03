@@ -676,9 +676,18 @@
                       "preprocess": "localize"
                     },
                     "favicon_url": {
-                      "type": "string",
+                      "choices": [
+                        {
+                          "type": "string",
+                          "format": "relativeUrl",
+                          "max_manifest_version": 2
+                        },
+                        {
+                          "type": "string",
+                          "format": "strictRelativeUrl"
+                        }
+                      ],
                       "optional": true,
-                      "format": "relativeUrl",
                       "preprocess": "localize"
                     },
                     "suggest_url": {
@@ -11081,6 +11090,8 @@
         "lastError": {
           "type": "object",
           "optional": true,
+          "max_manifest_version": 2,
+          "deprecated": "Please use $(ref:runtime.lastError).",
           "allowedContexts": [
             "content",
             "devtools"
@@ -11122,6 +11133,8 @@
         {
           "name": "getURL",
           "type": "function",
+          "deprecated": "Please use $(ref:runtime.getURL).",
+          "max_manifest_version": 2,
           "allowedContexts": [
             "content",
             "devtools"
@@ -11182,6 +11195,7 @@
         {
           "name": "getBackgroundPage",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Returns the JavaScript 'window' object for the background page running inside the current extension. Returns null if the extension has no background page.",
           "parameters": [],
           "returns": {
@@ -12812,10 +12826,12 @@
               "onError": "warn",
               "choices": [
                 {
+                  "max_manifest_version": 2,
                   "type": "string",
                   "format": "contentSecurityPolicy"
                 },
                 {
+                  "min_manifest_version": 3,
                   "type": "object",
                   "additionalProperties": {
                     "$ref": "UnrecognizedProperty"
@@ -15103,6 +15119,7 @@
       "functions": [
         {
           "name": "getBackgroundPage",
+          "max_manifest_version": 2,
           "type": "function",
           "description": "Retrieves the JavaScript 'window' object for the background page running inside the current extension/app. If the background page is an event page, the system will ensure it is loaded before calling the callback. If there is no background page, an error is set.",
           "async": "callback",
