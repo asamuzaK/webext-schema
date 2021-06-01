@@ -676,9 +676,18 @@
                       "preprocess": "localize"
                     },
                     "favicon_url": {
-                      "type": "string",
+                      "choices": [
+                        {
+                          "type": "string",
+                          "format": "relativeUrl",
+                          "max_manifest_version": 2
+                        },
+                        {
+                          "type": "string",
+                          "format": "strictRelativeUrl"
+                        }
+                      ],
                       "optional": true,
-                      "format": "relativeUrl",
                       "preprocess": "localize"
                     },
                     "suggest_url": {
@@ -8305,7 +8314,8 @@
         },
         "ftpProtocolEnabled": {
           "$ref": "types.Setting",
-          "description": "Returns whether the FTP protocol is enabled. Read-only."
+          "description": "Returns whether the FTP protocol is enabled. Read-only.",
+          "deprecated": "FTP support was removed from Firefox in bug 1574475"
         },
         "homepageOverride": {
           "$ref": "types.Setting",
@@ -11080,6 +11090,8 @@
         "lastError": {
           "type": "object",
           "optional": true,
+          "max_manifest_version": 2,
+          "deprecated": "Please use $(ref:runtime.lastError).",
           "allowedContexts": [
             "content",
             "devtools"
@@ -11121,6 +11133,8 @@
         {
           "name": "getURL",
           "type": "function",
+          "deprecated": "Please use $(ref:runtime.getURL).",
+          "max_manifest_version": 2,
           "allowedContexts": [
             "content",
             "devtools"
@@ -11181,6 +11195,7 @@
         {
           "name": "getBackgroundPage",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Returns the JavaScript 'window' object for the background page running inside the current extension. Returns null if the extension has no background page.",
           "parameters": [],
           "returns": {
@@ -11522,6 +11537,7 @@
                     "ircs",
                     "magnet",
                     "mailto",
+                    "matrix",
                     "mms",
                     "news",
                     "nntp",
@@ -12810,10 +12826,12 @@
               "onError": "warn",
               "choices": [
                 {
+                  "max_manifest_version": 2,
                   "type": "string",
                   "format": "contentSecurityPolicy"
                 },
                 {
+                  "min_manifest_version": 3,
                   "type": "object",
                   "additionalProperties": {
                     "$ref": "UnrecognizedProperty"
@@ -12848,11 +12866,37 @@
               "default": []
             },
             "web_accessible_resources": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "optional": true
+              "optional": true,
+              "choices": [
+                {
+                  "max_manifest_version": 2,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "min_manifest_version": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "resources": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "matches": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "MatchPatternRestricted"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
             },
             "developer": {
               "type": "object",
@@ -15101,6 +15145,7 @@
       "functions": [
         {
           "name": "getBackgroundPage",
+          "max_manifest_version": 2,
           "type": "function",
           "description": "Retrieves the JavaScript 'window' object for the background page running inside the current extension/app. If the background page is an event page, the system will ensure it is loaded before calling the callback. If there is no background page, an error is set.",
           "async": "callback",
