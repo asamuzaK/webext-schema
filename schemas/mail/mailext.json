@@ -2799,46 +2799,8 @@
               "type": "array",
               "description": "The identities associated with this account. The default identity is listed first, others in no particular order.",
               "items": {
-                "$ref": "accounts.MailIdentity"
+                "$ref": "identities.MailIdentity"
               }
-            }
-          }
-        },
-        {
-          "id": "MailIdentity",
-          "type": "object",
-          "properties": {
-            "accountId": {
-              "type": "string",
-              "description": "The id of the :ref:`accounts.MailAccount` this identity belongs to."
-            },
-            "id": {
-              "type": "string",
-              "description": "A unique identifier for this identity."
-            },
-            "label": {
-              "type": "string",
-              "description": "A user-defined label for this identity."
-            },
-            "name": {
-              "type": "string",
-              "description": "The user's name as used when messages are sent from this identity."
-            },
-            "email": {
-              "type": "string",
-              "description": "The user's email address as used when messages are sent from this identity."
-            },
-            "replyTo": {
-              "type": "string",
-              "description": "The reply-to email address associated with this identity."
-            },
-            "organization": {
-              "type": "string",
-              "description": "The organization associated with this identity."
-            },
-            "composeHtml": {
-              "type": "boolean",
-              "description": "Wether the identity uses HTML as the default compose format."
             }
           }
         }
@@ -2912,6 +2874,7 @@
           "type": "function",
           "description": "Sets the default identity for an account.",
           "async": true,
+          "deprecated": "This will be removed. Use :ref:`identities.setDefault` instead.",
           "parameters": [
             {
               "name": "accountId",
@@ -2928,6 +2891,7 @@
           "type": "function",
           "description": "Returns the default identity for an account, or null if it is not defined.",
           "async": "callback",
+          "deprecated": "This will be removed. Use :ref:`identities.getDefault` instead.",
           "parameters": [
             {
               "name": "accountId",
@@ -2939,7 +2903,7 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "accounts.MailIdentity"
+                  "$ref": "identities.MailIdentity"
                 }
               ]
             }
@@ -4875,7 +4839,7 @@
             },
             "from": {
               "$ref": "ComposeRecipient",
-              "description": "*Caution*: Setting a value for `from` does not change the used identity, it overrides the FROM header. Many e-mail servers do not accept emails where the FROM header does not match the sender identity. Must be set to exactly one valid e-mail address.",
+              "description": "*Caution*: Setting a value for `from` does not change the used identity, it overrides the FROM header. Many email servers do not accept emails where the FROM header does not match the sender identity. Must be set to exactly one valid email address.",
               "optional": true
             },
             "to": {
@@ -6206,6 +6170,293 @@
             {
               "name": "folder",
               "$ref": "folders.MailFolder"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "identities.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "OptionalPermission",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "accountsIdentities"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "identities",
+      "permissions": [
+        "accountsRead"
+      ],
+      "types": [
+        {
+          "id": "MailIdentity",
+          "type": "object",
+          "properties": {
+            "accountId": {
+              "type": "string",
+              "optional": true,
+              "description": "The id of the :ref:`accounts.MailAccount` this identity belongs to. The ``accountId`` property is read-only."
+            },
+            "composeHtml": {
+              "type": "boolean",
+              "optional": true,
+              "description": "If the identity uses HTML as the default compose format."
+            },
+            "email": {
+              "type": "string",
+              "optional": true,
+              "description": "The user's email address as used when messages are sent from this identity."
+            },
+            "id": {
+              "type": "string",
+              "optional": true,
+              "description": "A unique identifier for this identity. The ``id`` property is read-only."
+            },
+            "label": {
+              "type": "string",
+              "optional": true,
+              "description": "A user-defined label for this identity."
+            },
+            "name": {
+              "type": "string",
+              "optional": true,
+              "description": "The user's name as used when messages are sent from this identity."
+            },
+            "replyTo": {
+              "type": "string",
+              "optional": true,
+              "description": "The reply-to email address associated with this identity."
+            },
+            "organization": {
+              "type": "string",
+              "optional": true,
+              "description": "The organization associated with this identity."
+            },
+            "signature": {
+              "type": "string",
+              "optional": true,
+              "description": "The signature of the identity."
+            },
+            "signatureIsPlainText": {
+              "type": "boolean",
+              "optional": true,
+              "description": "If the signature should be interpreted as plain text or as HTML."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "list",
+          "type": "function",
+          "description": "Returns the identities of the specified account, or all identities if no account is specified. Do not expect the returned identities to be in any specific order. Use :ref:`identities.getDefault` to get the default identity of an account.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "accountId",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "identities.MailIdentity"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "type": "function",
+          "description": "Returns details of the requested identity, or null if it doesn't exist.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "identityId",
+              "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "identities.MailIdentity",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "create",
+          "permissions": [
+            "accountsIdentities"
+          ],
+          "type": "function",
+          "description": "Create a new identity in the specified account.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "accountId",
+              "type": "string"
+            },
+            {
+              "name": "details",
+              "$ref": "identities.MailIdentity"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "identities.MailIdentity"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "permissions": [
+            "accountsIdentities"
+          ],
+          "type": "function",
+          "description": "Attempts to delete the requested identity. Default identities cannot be deleted.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "identityId",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "update",
+          "permissions": [
+            "accountsIdentities"
+          ],
+          "type": "function",
+          "description": "Updates the details of an identity.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "identityId",
+              "type": "string"
+            },
+            {
+              "name": "details",
+              "$ref": "identities.MailIdentity"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "identities.MailIdentity"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getDefault",
+          "type": "function",
+          "description": "Returns the default identity for the requested account, or null if it is not defined.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "accountId",
+              "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "identities.MailIdentity"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setDefault",
+          "type": "function",
+          "description": "Sets the default identity for the requested account.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "accountId",
+              "type": "string"
+            },
+            {
+              "name": "identityId",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "onCreated",
+          "type": "function",
+          "description": "Fired when a new identity has been created and added to an account. The event also fires for default identities that are created when a new account is added.",
+          "parameters": [
+            {
+              "name": "identityId",
+              "type": "string"
+            },
+            {
+              "name": "identity",
+              "$ref": "MailIdentity"
+            }
+          ]
+        },
+        {
+          "name": "onDeleted",
+          "type": "function",
+          "description": "Fired when an identity has been removed from an account.",
+          "parameters": [
+            {
+              "name": "identityId",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "onUpdated",
+          "type": "function",
+          "description": "Fired when one or more properties of an identity have been modified. The returned :ref:`identities.MailIdentity` includes only the changed values.",
+          "parameters": [
+            {
+              "name": "identityId",
+              "type": "string"
+            },
+            {
+              "name": "changedValues",
+              "$ref": "MailIdentity"
             }
           ]
         }
@@ -8359,55 +8610,20 @@
               "type": "object",
               "name": "queryInfo",
               "properties": {
-                "subject": {
+                "author": {
                   "type": "string",
                   "optional": true,
-                  "description": "Returns only messages with this value matching the subject."
-                },
-                "fullText": {
-                  "type": "string",
-                  "optional": true,
-                  "description": "Returns only messages with this value somewhere in the mail (subject, body or author)."
+                  "description": "Returns only messages with this value matching the author. The search value is a single email address, a name or a combination (e.g.: ``Name <user@domain.org>``). The address part of the search value (if provided) must match the author's address completely. The name part of the search value (if provided) must match the author's name partially. All matches are done case-insensitive."
                 },
                 "body": {
                   "type": "string",
                   "optional": true,
                   "description": "Returns only messages with this value in the body of the mail."
                 },
-                "author": {
-                  "type": "string",
-                  "optional": true,
-                  "description": "Returns only messages with this value matching the author."
-                },
-                "recipients": {
-                  "type": "string",
-                  "optional": true,
-                  "description": "Returns only messages with this value matching one or more recipients."
-                },
-                "fromMe": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "Returns only messages with the author matching any configured identity."
-                },
-                "toMe": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "Returns only messages with one or more recipients matching any configured identity."
-                },
-                "unread": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "Returns only unread (or read if false) messages."
-                },
                 "flagged": {
                   "type": "boolean",
                   "optional": true,
                   "description": "Returns only flagged (or unflagged if false) messages."
-                },
-                "tags": {
-                  "$ref": "TagsDetail",
-                  "optional": true,
-                  "description": "Returns only messages with the specified tags. For a list of available tags, call the listTags method. Querying for messages that must *not* have a tag does not work."
                 },
                 "folder": {
                   "$ref": "folders.MailFolder",
@@ -8419,15 +8635,55 @@
                   "optional": true,
                   "description": "Returns only messages with a date after this value."
                 },
-                "toDate": {
-                  "$ref": "extensionTypes.Date",
+                "fromMe": {
+                  "type": "boolean",
                   "optional": true,
-                  "description": "Returns only messages with a date before this value."
+                  "description": "Returns only messages with the author's address matching any configured identity."
+                },
+                "fullText": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "Returns only messages with this value somewhere in the mail (subject, body or author)."
                 },
                 "headerMessageId": {
                   "type": "string",
                   "optional": true,
                   "description": "Returns only messages with a Message-ID header matching this value."
+                },
+                "includeSubFolders": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Search the folder specified by ``queryInfo.folder`` recursively."
+                },
+                "recipients": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "Returns only messages whose recipients match all specified addresses. The search value is a semicolon separated list of email addresses, names or combinations (e.g.: ``Name <user@domain.org>``). For a match, all specified addresses must equal a recipient's address completely and all specified names must match a recipient's name partially. All matches are done case-insensitive."
+                },
+                "subject": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "Returns only messages with this value matching the subject."
+                },
+                "tags": {
+                  "$ref": "TagsDetail",
+                  "optional": true,
+                  "description": "Returns only messages with the specified tags. For a list of available tags, call the :ref:`messages.listTags` method."
+                },
+                "toDate": {
+                  "$ref": "extensionTypes.Date",
+                  "optional": true,
+                  "description": "Returns only messages with a date before this value."
+                },
+                "toMe": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Returns only messages with at least one recipient address matching any configured identity."
+                },
+                "unread": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Returns only unread (or read if false) messages."
                 }
               }
             }
