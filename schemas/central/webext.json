@@ -8306,6 +8306,16 @@
             "mousedown"
           ],
           "description": "After which mouse event context menus should popup."
+        },
+        {
+          "id": "ColorManagementMode",
+          "type": "string",
+          "enum": [
+            "off",
+            "full",
+            "tagged_only"
+          ],
+          "description": "Color management mode."
         }
       ],
       "properties": {
@@ -8377,6 +8387,23 @@
         "zoomSiteSpecific": {
           "$ref": "types.Setting",
           "description": "This boolean setting controls whether zoom is applied on a per-site basis or to the current tab only. If privacy.resistFingerprinting is true, this setting has no effect and zoom is applied to the current tab only."
+        }
+      }
+    },
+    {
+      "namespace": "browserSettings.colorManagement",
+      "description": "Use the <code>browserSettings.colorManagement</code> API to query and set items related to color management.",
+      "permissions": [
+        "browserSettings"
+      ],
+      "properties": {
+        "mode": {
+          "$ref": "types.Setting",
+          "description": "This setting controls the mode used for color management and must be a string from $(ref:browserSettings.ColorManagementMode)"
+        },
+        "useNativeSRGB": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether or not native sRGB color management is used."
         }
       }
     }
@@ -11649,7 +11676,8 @@
             "fileioall",
             "noiostacks",
             "audiocallbacktracing",
-            "cpu"
+            "cpu",
+            "notimerresolutionchange"
           ]
         },
         {
