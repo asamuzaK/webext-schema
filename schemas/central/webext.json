@@ -12918,7 +12918,6 @@
                 {
                   "min_manifest_version": 3,
                   "type": "array",
-                  "postprocess": "webAcessibleMatching",
                   "items": {
                     "type": "object",
                     "properties": {
@@ -12929,17 +12928,9 @@
                         }
                       },
                       "matches": {
-                        "optional": true,
                         "type": "array",
                         "items": {
                           "$ref": "MatchPatternRestricted"
-                        }
-                      },
-                      "extensions": {
-                        "optional": true,
-                        "type": "array",
-                        "items": {
-                          "$ref": "ExtensionID"
                         }
                       }
                     }
