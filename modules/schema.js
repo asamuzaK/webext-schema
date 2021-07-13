@@ -334,6 +334,7 @@ class Schema {
   mock() {
     const schemas = this._parseSchemaContent();
     const schemaItems = Object.entries(schemas);
+    const aliasKeys = ['action', 'menus'];
     this._browser = {
       _sandbox: this._sandbox
     };
@@ -348,7 +349,8 @@ class Schema {
         const fileKey = camelize(key.replace(/\.json$/, '')).toLowerCase();
         const itemKey = namespace.replace(/\./g, '').toLowerCase();
         if (fileKey === itemKey || fileKey.startsWith(itemKey) ||
-            itemKey.startsWith(fileKey) || $import) {
+            itemKey.startsWith(fileKey) || aliasKeys.includes(itemKey) ||
+            $import) {
           const mapKey = [];
           let ns;
           if (namespace.includes('.')) {
