@@ -453,36 +453,6 @@
               "parameters": []
             }
           ]
-        },
-        {
-          "name": "import",
-          "unsupported": true,
-          "type": "function",
-          "description": "Imports bookmarks from an html bookmark file",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "export",
-          "unsupported": true,
-          "type": "function",
-          "description": "Exports bookmarks to an html bookmark file",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
         }
       ],
       "events": [
@@ -2381,31 +2351,7 @@
         "contextMenus"
       ],
       "description": "Use the browser.contextMenus API to add items to the browser's context menu. You can choose what types of objects your context menu additions apply to, such as images, hyperlinks, and pages.",
-      "$import": "menus",
-      "types": [
-        {
-          "id": "ContextType",
-          "type": "string",
-          "enum": [
-            "all",
-            "page",
-            "frame",
-            "selection",
-            "link",
-            "editable",
-            "password",
-            "image",
-            "video",
-            "audio",
-            "launcher",
-            "bookmark",
-            "browser_action",
-            "page_action",
-            "tab"
-          ],
-          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'tab' and 'tools_menu'."
-        }
-      ]
+      "$import": "menus"
     },
     {
       "namespace": "menus",
@@ -2422,26 +2368,43 @@
       "types": [
         {
           "id": "ContextType",
-          "type": "string",
-          "enum": [
-            "all",
-            "page",
-            "frame",
-            "selection",
-            "link",
-            "editable",
-            "password",
-            "image",
-            "video",
-            "audio",
-            "launcher",
-            "bookmark",
-            "browser_action",
-            "page_action",
-            "tab",
-            "tools_menu"
-          ],
-          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'tab' and 'tools_menu'."
+          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'tab' and 'tools_menu'.",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "all",
+                "page",
+                "frame",
+                "selection",
+                "link",
+                "editable",
+                "password",
+                "image",
+                "video",
+                "audio",
+                "launcher",
+                "bookmark",
+                "tab",
+                "tools_menu"
+              ]
+            },
+            {
+              "type": "string",
+              "enum": [
+                "browser_action",
+                "page_action"
+              ],
+              "max_manifest_version": 2
+            },
+            {
+              "type": "string",
+              "enum": [
+                "action"
+              ],
+              "min_manifest_version": 3
+            }
+          ]
         },
         {
           "id": "ItemType",
@@ -2697,9 +2660,33 @@
                   "description": "Whether this context menu item is enabled or disabled. Defaults to true."
                 },
                 "command": {
-                  "type": "string",
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "_execute_browser_action",
+                        "_execute_page_action",
+                        "_execute_sidebar_action"
+                      ],
+                      "max_manifest_version": 2,
+                      "description": "Manifest V2 supports internal commands _execute_page_action, _execute_browser_action and _execute_sidebar_action."
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "_execute_action",
+                        "_execute_page_action",
+                        "_execute_sidebar_action"
+                      ],
+                      "min_manifest_version": 3,
+                      "description": "Manifest V3 supports internal commands _execute_page_action, _execute_action and _execute_sidebar_action."
+                    }
+                  ],
                   "optional": true,
-                  "description": "Specifies a command to issue for the context click.  Currently supports internal commands _execute_page_action, _execute_browser_action and _execute_sidebar_action."
+                  "description": "Specifies a command to issue for the context click."
                 }
               }
             },
@@ -7730,55 +7717,70 @@
       "namespace": "manifest",
       "types": [
         {
+          "id": "ActionManifest",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "UnrecognizedProperty"
+          },
+          "properties": {
+            "default_title": {
+              "type": "string",
+              "optional": true,
+              "preprocess": "localize"
+            },
+            "default_icon": {
+              "$ref": "IconPath",
+              "optional": true
+            },
+            "theme_icons": {
+              "type": "array",
+              "optional": true,
+              "minItems": 1,
+              "items": {
+                "$ref": "ThemeIcons"
+              },
+              "description": "Specifies icons to use for dark and light themes"
+            },
+            "default_popup": {
+              "type": "string",
+              "format": "relativeUrl",
+              "optional": true,
+              "preprocess": "localize"
+            },
+            "browser_style": {
+              "type": "boolean",
+              "optional": true,
+              "default": false
+            },
+            "default_area": {
+              "description": "Defines the location the browserAction will appear by default.  The default location is navbar.",
+              "type": "string",
+              "enum": [
+                "navbar",
+                "menupanel",
+                "tabstrip",
+                "personaltoolbar"
+              ],
+              "optional": true
+            }
+          }
+        },
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "action": {
+              "min_manifest_version": 3,
+              "$ref": "ActionManifest",
+              "optional": true
+            }
+          }
+        },
+        {
           "$extend": "WebExtensionManifest",
           "properties": {
             "browser_action": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "UnrecognizedProperty"
-              },
-              "properties": {
-                "default_title": {
-                  "type": "string",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "default_icon": {
-                  "$ref": "IconPath",
-                  "optional": true
-                },
-                "theme_icons": {
-                  "type": "array",
-                  "optional": true,
-                  "minItems": 1,
-                  "items": {
-                    "$ref": "ThemeIcons"
-                  },
-                  "description": "Specifies icons to use for dark and light themes"
-                },
-                "default_popup": {
-                  "type": "string",
-                  "format": "relativeUrl",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "browser_style": {
-                  "type": "boolean",
-                  "optional": true,
-                  "default": false
-                },
-                "default_area": {
-                  "description": "Defines the location the browserAction will appear by default.  The default location is navbar.",
-                  "type": "string",
-                  "enum": [
-                    "navbar",
-                    "menupanel",
-                    "tabstrip",
-                    "personaltoolbar"
-                  ],
-                  "optional": true
-                }
-              },
+              "max_manifest_version": 2,
+              "$ref": "ActionManifest",
               "optional": true
             }
           }
@@ -7786,11 +7788,13 @@
       ]
     },
     {
-      "namespace": "browserAction",
+      "namespace": "action",
       "description": "Use browser actions to put icons in the main browser toolbar, to the right of the address bar. In addition to its icon, a browser action can also have a tooltip, a badge, and a popup.",
       "permissions": [
+        "manifest:action",
         "manifest:browser_action"
       ],
+      "min_manifest_version": 3,
       "types": [
         {
           "id": "Details",
@@ -8249,6 +8253,15 @@
           ]
         }
       ]
+    },
+    {
+      "namespace": "browserAction",
+      "permissions": [
+        "manifest:action",
+        "manifest:browser_action"
+      ],
+      "max_manifest_version": 2,
+      "$import": "action"
     }
   ],
   "browser_settings.json": [
@@ -8293,6 +8306,16 @@
             "mousedown"
           ],
           "description": "After which mouse event context menus should popup."
+        },
+        {
+          "id": "ColorManagementMode",
+          "type": "string",
+          "enum": [
+            "off",
+            "full",
+            "tagged_only"
+          ],
+          "description": "Color management mode."
         }
       ],
       "properties": {
@@ -8364,6 +8387,27 @@
         "zoomSiteSpecific": {
           "$ref": "types.Setting",
           "description": "This boolean setting controls whether zoom is applied on a per-site basis or to the current tab only. If privacy.resistFingerprinting is true, this setting has no effect and zoom is applied to the current tab only."
+        }
+      }
+    },
+    {
+      "namespace": "browserSettings.colorManagement",
+      "description": "Use the <code>browserSettings.colorManagement</code> API to query and set items related to color management.",
+      "permissions": [
+        "browserSettings"
+      ],
+      "properties": {
+        "mode": {
+          "$ref": "types.Setting",
+          "description": "This setting controls the mode used for color management and must be a string from $(ref:browserSettings.ColorManagementMode)"
+        },
+        "useNativeSRGB": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether or not native sRGB color management is used."
+        },
+        "useWebRenderCompositor": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether or not the WebRender compositor is used."
         }
       }
     }
@@ -11625,7 +11669,6 @@
             "screenshots",
             "seqstyle",
             "stackwalk",
-            "tasktracer",
             "threads",
             "jstracer",
             "jsallocations",
@@ -11637,7 +11680,8 @@
             "fileioall",
             "noiostacks",
             "audiocallbacktracing",
-            "cpu"
+            "cpu",
+            "notimerresolutionchange"
           ]
         },
         {
