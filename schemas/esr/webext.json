@@ -453,36 +453,6 @@
               "parameters": []
             }
           ]
-        },
-        {
-          "name": "import",
-          "unsupported": true,
-          "type": "function",
-          "description": "Imports bookmarks from an html bookmark file",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "export",
-          "unsupported": true,
-          "type": "function",
-          "description": "Exports bookmarks to an html bookmark file",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": []
-            }
-          ]
         }
       ],
       "events": [
@@ -621,427 +591,6 @@
       ]
     }
   ],
-  "browsing_data.json": [
-    {
-      "namespace": "manifest",
-      "types": [
-        {
-          "$extend": "OptionalPermission",
-          "choices": [
-            {
-              "type": "string",
-              "enum": [
-                "browsingData"
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "namespace": "browsingData",
-      "description": "Use the <code>chrome.browsingData</code> API to remove browsing data from a user's local profile.",
-      "permissions": [
-        "browsingData"
-      ],
-      "types": [
-        {
-          "id": "RemovalOptions",
-          "type": "object",
-          "description": "Options that determine exactly what data will be removed.",
-          "properties": {
-            "since": {
-              "$ref": "extensionTypes.Date",
-              "optional": true,
-              "description": "Remove data accumulated on or after this date, represented in milliseconds since the epoch (accessible via the <code>getTime</code> method of the JavaScript <code>Date</code> object). If absent, defaults to 0 (which would remove all browsing data)."
-            },
-            "hostnames": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "format": "hostname"
-              },
-              "optional": true,
-              "description": "Only remove data associated with these hostnames (only applies to cookies and localStorage)."
-            },
-            "originTypes": {
-              "type": "object",
-              "optional": true,
-              "description": "An object whose properties specify which origin types ought to be cleared. If this object isn't specified, it defaults to clearing only \"unprotected\" origins. Please ensure that you <em>really</em> want to remove application data before adding 'protectedWeb' or 'extensions'.",
-              "properties": {
-                "unprotectedWeb": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "Normal websites."
-                },
-                "protectedWeb": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "Websites that have been installed as hosted applications (be careful!)."
-                },
-                "extension": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "Extensions and packaged applications a user has installed (be _really_ careful!)."
-                }
-              }
-            }
-          }
-        },
-        {
-          "id": "DataTypeSet",
-          "type": "object",
-          "description": "A set of data types. Missing data types are interpreted as <code>false</code>.",
-          "properties": {
-            "cache": {
-              "type": "boolean",
-              "optional": true,
-              "description": "The browser's cache. Note: when removing data, this clears the <em>entire</em> cache: it is not limited to the range you specify."
-            },
-            "cookies": {
-              "type": "boolean",
-              "optional": true,
-              "description": "The browser's cookies."
-            },
-            "downloads": {
-              "type": "boolean",
-              "optional": true,
-              "description": "The browser's download list."
-            },
-            "formData": {
-              "type": "boolean",
-              "optional": true,
-              "description": "The browser's stored form data."
-            },
-            "history": {
-              "type": "boolean",
-              "optional": true,
-              "description": "The browser's history."
-            },
-            "indexedDB": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Websites' IndexedDB data."
-            },
-            "localStorage": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Websites' local storage data."
-            },
-            "serverBoundCertificates": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Server-bound certificates."
-            },
-            "passwords": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Stored passwords."
-            },
-            "pluginData": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Plugins' data."
-            },
-            "serviceWorkers": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Service Workers."
-            }
-          }
-        }
-      ],
-      "functions": [
-        {
-          "name": "settings",
-          "description": "Reports which types of data are currently selected in the 'Clear browsing data' settings UI.  Note: some of the data types included in this API are not available in the settings UI, and some UI settings control more than one data type listed here.",
-          "type": "function",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "callback",
-              "type": "function",
-              "parameters": [
-                {
-                  "name": "result",
-                  "type": "object",
-                  "properties": {
-                    "options": {
-                      "$ref": "RemovalOptions"
-                    },
-                    "dataToRemove": {
-                      "$ref": "DataTypeSet",
-                      "description": "All of the types will be present in the result, with values of <code>true</code> if they are both selected to be removed and permitted to be removed, otherwise <code>false</code>."
-                    },
-                    "dataRemovalPermitted": {
-                      "$ref": "DataTypeSet",
-                      "description": "All of the types will be present in the result, with values of <code>true</code> if they are permitted to be removed (e.g., by enterprise policy) and <code>false</code> if not."
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "remove",
-          "description": "Clears various types of browsing data stored in a user's profile.",
-          "type": "function",
-          "async": "callback",
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "dataToRemove",
-              "$ref": "DataTypeSet",
-              "description": "The set of data types to remove."
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when deletion has completed.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removeAppcache",
-          "description": "Clears websites' appcache data.",
-          "type": "function",
-          "async": "callback",
-          "unsupported": true,
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when websites' appcache data has been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removeCache",
-          "description": "Clears the browser's cache.",
-          "type": "function",
-          "async": "callback",
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when the browser's cache has been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removeCookies",
-          "description": "Clears the browser's cookies and server-bound certificates modified within a particular timeframe.",
-          "type": "function",
-          "async": "callback",
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when the browser's cookies and server-bound certificates have been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removeDownloads",
-          "description": "Clears the browser's list of downloaded files (<em>not</em> the downloaded files themselves).",
-          "type": "function",
-          "async": "callback",
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when the browser's list of downloaded files has been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removeFileSystems",
-          "description": "Clears websites' file system data.",
-          "type": "function",
-          "async": "callback",
-          "unsupported": true,
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when websites' file systems have been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removeFormData",
-          "description": "Clears the browser's stored form data (autofill).",
-          "type": "function",
-          "async": "callback",
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when the browser's form data has been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removeHistory",
-          "description": "Clears the browser's history.",
-          "type": "function",
-          "async": "callback",
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when the browser's history has cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removeIndexedDB",
-          "description": "Clears websites' IndexedDB data.",
-          "type": "function",
-          "async": "callback",
-          "unsupported": true,
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when websites' IndexedDB data has been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removeLocalStorage",
-          "description": "Clears websites' local storage data.",
-          "type": "function",
-          "async": "callback",
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when websites' local storage has been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removePluginData",
-          "description": "Clears plugins' data.",
-          "type": "function",
-          "async": "callback",
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when plugins' data has been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removePasswords",
-          "description": "Clears the browser's stored passwords.",
-          "type": "function",
-          "async": "callback",
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when the browser's passwords have been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        },
-        {
-          "name": "removeWebSQL",
-          "description": "Clears websites' WebSQL data.",
-          "type": "function",
-          "async": "callback",
-          "unsupported": true,
-          "parameters": [
-            {
-              "$ref": "RemovalOptions",
-              "name": "options"
-            },
-            {
-              "name": "callback",
-              "type": "function",
-              "description": "Called when websites' WebSQL databases have been cleared.",
-              "optional": true,
-              "parameters": []
-            }
-          ]
-        }
-      ]
-    }
-  ],
   "chrome_settings_overrides.json": [
     {
       "namespace": "manifest",
@@ -1074,26 +623,47 @@
                       "preprocess": "localize"
                     },
                     "keyword": {
-                      "type": "string",
                       "optional": true,
-                      "preprocess": "localize"
+                      "choices": [
+                        {
+                          "type": "string",
+                          "preprocess": "localize"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "preprocess": "localize"
+                          },
+                          "minItems": 1
+                        }
+                      ]
                     },
                     "search_url": {
                       "type": "string",
                       "format": "url",
-                      "pattern": "^https://.*$",
+                      "pattern": "^(https://|http://(localhost|127\\.0\\.0\\.1|\\[::1\\])(:\\d*)?(/|$)).*$",
                       "preprocess": "localize"
                     },
                     "favicon_url": {
-                      "type": "string",
+                      "choices": [
+                        {
+                          "type": "string",
+                          "format": "relativeUrl",
+                          "max_manifest_version": 2
+                        },
+                        {
+                          "type": "string",
+                          "format": "strictRelativeUrl"
+                        }
+                      ],
                       "optional": true,
-                      "format": "relativeUrl",
                       "preprocess": "localize"
                     },
                     "suggest_url": {
                       "type": "string",
                       "optional": true,
-                      "pattern": "^https://.*$|^$",
+                      "pattern": "^$|^(https://|http://(localhost|127\\.0\\.0\\.1|\\[::1\\])(:\\d*)?(/|$)).*$",
                       "preprocess": "localize"
                     },
                     "instant_url": {
@@ -1150,7 +720,7 @@
                       "type": "string",
                       "optional": true,
                       "format": "url",
-                      "pattern": "^https://.*$",
+                      "pattern": "^(https://|http://(localhost|127\\.0\\.0\\.1|\\[::1\\])(:\\d*)?(/|$)).*$",
                       "preprocess": "localize"
                     },
                     "alternate_urls": {
@@ -2781,31 +2351,7 @@
         "contextMenus"
       ],
       "description": "Use the browser.contextMenus API to add items to the browser's context menu. You can choose what types of objects your context menu additions apply to, such as images, hyperlinks, and pages.",
-      "$import": "menus",
-      "types": [
-        {
-          "id": "ContextType",
-          "type": "string",
-          "enum": [
-            "all",
-            "page",
-            "frame",
-            "selection",
-            "link",
-            "editable",
-            "password",
-            "image",
-            "video",
-            "audio",
-            "launcher",
-            "bookmark",
-            "browser_action",
-            "page_action",
-            "tab"
-          ],
-          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'tab' and 'tools_menu'."
-        }
-      ]
+      "$import": "menus"
     },
     {
       "namespace": "menus",
@@ -2822,26 +2368,43 @@
       "types": [
         {
           "id": "ContextType",
-          "type": "string",
-          "enum": [
-            "all",
-            "page",
-            "frame",
-            "selection",
-            "link",
-            "editable",
-            "password",
-            "image",
-            "video",
-            "audio",
-            "launcher",
-            "bookmark",
-            "browser_action",
-            "page_action",
-            "tab",
-            "tools_menu"
-          ],
-          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'tab' and 'tools_menu'."
+          "description": "The different contexts a menu can appear in. Specifying 'all' is equivalent to the combination of all other contexts except for 'tab' and 'tools_menu'.",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "all",
+                "page",
+                "frame",
+                "selection",
+                "link",
+                "editable",
+                "password",
+                "image",
+                "video",
+                "audio",
+                "launcher",
+                "bookmark",
+                "tab",
+                "tools_menu"
+              ]
+            },
+            {
+              "type": "string",
+              "enum": [
+                "browser_action",
+                "page_action"
+              ],
+              "max_manifest_version": 2
+            },
+            {
+              "type": "string",
+              "enum": [
+                "action"
+              ],
+              "min_manifest_version": 3
+            }
+          ]
         },
         {
           "id": "ItemType",
@@ -3097,9 +2660,33 @@
                   "description": "Whether this context menu item is enabled or disabled. Defaults to true."
                 },
                 "command": {
-                  "type": "string",
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "_execute_browser_action",
+                        "_execute_page_action",
+                        "_execute_sidebar_action"
+                      ],
+                      "max_manifest_version": 2,
+                      "description": "Manifest V2 supports internal commands _execute_page_action, _execute_browser_action and _execute_sidebar_action."
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "_execute_action",
+                        "_execute_page_action",
+                        "_execute_sidebar_action"
+                      ],
+                      "min_manifest_version": 3,
+                      "description": "Manifest V3 supports internal commands _execute_page_action, _execute_action and _execute_sidebar_action."
+                    }
+                  ],
                   "optional": true,
-                  "description": "Specifies a command to issue for the context click.  Currently supports internal commands _execute_page_action, _execute_browser_action and _execute_sidebar_action."
+                  "description": "Specifies a command to issue for the context click."
                 }
               }
             },
@@ -5093,7 +4680,8 @@
             "pinned",
             "sharingState",
             "status",
-            "title"
+            "title",
+            "url"
           ],
           "description": "Event names supported in onUpdated."
         },
@@ -5865,6 +5453,21 @@
           ]
         },
         {
+          "name": "warmup",
+          "type": "function",
+          "description": "Warm up a tab",
+          "async": true,
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "tabId",
+              "minimum": 0,
+              "optional": false,
+              "description": "The ID of the tab to warm up."
+            }
+          ]
+        },
+        {
           "name": "remove",
           "type": "function",
           "description": "Closes one or more tabs.",
@@ -5964,7 +5567,7 @@
         {
           "name": "captureTab",
           "type": "function",
-          "description": "Captures the visible area of a specified tab. You must have $(topic:declare_permissions)[&lt;all_urls&gt;] permission to use this method.",
+          "description": "Captures an area of a specified tab. You must have $(topic:declare_permissions)[&lt;all_urls&gt;] permission to use this method.",
           "permissions": [
             "<all_urls>"
           ],
@@ -5987,7 +5590,7 @@
         {
           "name": "captureVisibleTab",
           "type": "function",
-          "description": "Captures the visible area of the currently active tab in the specified window. You must have $(topic:declare_permissions)[&lt;all_urls&gt;] permission to use this method.",
+          "description": "Captures an area of the currently active tab in the specified window. You must have $(topic:declare_permissions)[&lt;all_urls&gt;] permission to use this method.",
           "permissions": [
             "<all_urls>"
           ],
@@ -7079,13 +6682,14 @@
           "id": "ResultType",
           "type": "string",
           "enum": [
+            "dynamic",
             "remote_tab",
             "search",
             "tab",
             "tip",
             "url"
           ],
-          "description": "Possible types of results. <code>remote_tab</code>: A synced tab from another device. <code>search</code>: A search suggestion from a search engine. <code>tab</code>: An open tab in the browser. <code>tip</code>: An actionable message to help the user with their query. <code>url</code>: A URL that's not one of the other types."
+          "description": "Possible types of results. <code>dynamic</code>: A result whose view and payload are specified by the extension. <code>remote_tab</code>: A synced tab from another device. <code>search</code>: A search suggestion from a search engine. <code>tab</code>: An open tab in the browser. <code>tip</code>: An actionable message to help the user with their query. <code>url</code>: A URL that's not one of the other types."
         },
         {
           "id": "SearchOptions",
@@ -7264,12 +6868,17 @@
         {
           "name": "onResultPicked",
           "type": "function",
-          "description": "Typically, a provider includes a <code>url</code> property in its results' payloads. When the user picks a result with a URL, Firefox automatically loads the URL. URLs don't make sense for every result type, however. When the user picks a result without a URL, this event is fired. The provider should take an appropriate action in response. Currently the only applicable <code>ResultType</code> is <code>tip</code>.",
+          "description": "Typically, a provider includes a <code>url</code> property in its results' payloads. When the user picks a result with a URL, Firefox automatically loads the URL. URLs don't make sense for every result type, however. When the user picks a result without a URL, this event is fired. The provider should take an appropriate action in response. Currently the only applicable <code>ResultTypes</code> are <code>dynamic</code> and <code>tip</code>.",
           "parameters": [
             {
               "name": "payload",
               "type": "object",
               "description": "The payload of the result that was picked."
+            },
+            {
+              "name": "elementName",
+              "type": "string",
+              "description": "If the result is a dynamic type, this is the name of the element in the result view that was picked. If the result is not a dynamic type, this is an empty string."
             }
           ],
           "extraParameters": [
@@ -7599,8 +7208,21 @@
                   "description": "The height in pixels of the new window, including the frame. If not specified defaults to a natural height."
                 },
                 "focused": {
-                  "unsupported": true,
-                  "type": "boolean",
+                  "choices": [
+                    {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ],
+                      "deprecated": "Opening inactive windows is not supported."
+                    }
+                  ],
                   "optional": true,
                   "description": "If true, opens an active window. If false, opens an inactive window."
                 },
@@ -8095,55 +7717,70 @@
       "namespace": "manifest",
       "types": [
         {
+          "id": "ActionManifest",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "UnrecognizedProperty"
+          },
+          "properties": {
+            "default_title": {
+              "type": "string",
+              "optional": true,
+              "preprocess": "localize"
+            },
+            "default_icon": {
+              "$ref": "IconPath",
+              "optional": true
+            },
+            "theme_icons": {
+              "type": "array",
+              "optional": true,
+              "minItems": 1,
+              "items": {
+                "$ref": "ThemeIcons"
+              },
+              "description": "Specifies icons to use for dark and light themes"
+            },
+            "default_popup": {
+              "type": "string",
+              "format": "relativeUrl",
+              "optional": true,
+              "preprocess": "localize"
+            },
+            "browser_style": {
+              "type": "boolean",
+              "optional": true,
+              "default": false
+            },
+            "default_area": {
+              "description": "Defines the location the browserAction will appear by default.  The default location is navbar.",
+              "type": "string",
+              "enum": [
+                "navbar",
+                "menupanel",
+                "tabstrip",
+                "personaltoolbar"
+              ],
+              "optional": true
+            }
+          }
+        },
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "action": {
+              "min_manifest_version": 3,
+              "$ref": "ActionManifest",
+              "optional": true
+            }
+          }
+        },
+        {
           "$extend": "WebExtensionManifest",
           "properties": {
             "browser_action": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "UnrecognizedProperty"
-              },
-              "properties": {
-                "default_title": {
-                  "type": "string",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "default_icon": {
-                  "$ref": "IconPath",
-                  "optional": true
-                },
-                "theme_icons": {
-                  "type": "array",
-                  "optional": true,
-                  "minItems": 1,
-                  "items": {
-                    "$ref": "ThemeIcons"
-                  },
-                  "description": "Specifies icons to use for dark and light themes"
-                },
-                "default_popup": {
-                  "type": "string",
-                  "format": "relativeUrl",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "browser_style": {
-                  "type": "boolean",
-                  "optional": true,
-                  "default": false
-                },
-                "default_area": {
-                  "description": "Defines the location the browserAction will appear by default.  The default location is navbar.",
-                  "type": "string",
-                  "enum": [
-                    "navbar",
-                    "menupanel",
-                    "tabstrip",
-                    "personaltoolbar"
-                  ],
-                  "optional": true
-                }
-              },
+              "max_manifest_version": 2,
+              "$ref": "ActionManifest",
               "optional": true
             }
           }
@@ -8151,11 +7788,13 @@
       ]
     },
     {
-      "namespace": "browserAction",
+      "namespace": "action",
       "description": "Use browser actions to put icons in the main browser toolbar, to the right of the address bar. In addition to its icon, a browser action can also have a tooltip, a badge, and a popup.",
       "permissions": [
+        "manifest:action",
         "manifest:browser_action"
       ],
+      "min_manifest_version": 3,
       "types": [
         {
           "id": "Details",
@@ -8614,6 +8253,15 @@
           ]
         }
       ]
+    },
+    {
+      "namespace": "browserAction",
+      "permissions": [
+        "manifest:action",
+        "manifest:browser_action"
+      ],
+      "max_manifest_version": 2,
+      "$import": "action"
     }
   ],
   "browser_settings.json": [
@@ -8658,6 +8306,16 @@
             "mousedown"
           ],
           "description": "After which mouse event context menus should popup."
+        },
+        {
+          "id": "ColorManagementMode",
+          "type": "string",
+          "enum": [
+            "off",
+            "full",
+            "tagged_only"
+          ],
+          "description": "Color management mode."
         }
       ],
       "properties": {
@@ -8679,7 +8337,8 @@
         },
         "ftpProtocolEnabled": {
           "$ref": "types.Setting",
-          "description": "This boolean setting controls whether the FTP protocol is enabled."
+          "description": "Returns whether the FTP protocol is enabled. Read-only.",
+          "deprecated": "FTP support was removed from Firefox in bug 1574475"
         },
         "homepageOverride": {
           "$ref": "types.Setting",
@@ -8730,6 +8389,453 @@
           "description": "This boolean setting controls whether zoom is applied on a per-site basis or to the current tab only. If privacy.resistFingerprinting is true, this setting has no effect and zoom is applied to the current tab only."
         }
       }
+    },
+    {
+      "namespace": "browserSettings.colorManagement",
+      "description": "Use the <code>browserSettings.colorManagement</code> API to query and set items related to color management.",
+      "permissions": [
+        "browserSettings"
+      ],
+      "properties": {
+        "mode": {
+          "$ref": "types.Setting",
+          "description": "This setting controls the mode used for color management and must be a string from $(ref:browserSettings.ColorManagementMode)"
+        },
+        "useNativeSRGB": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether or not native sRGB color management is used."
+        },
+        "useWebRenderCompositor": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether or not the WebRender compositor is used."
+        }
+      }
+    }
+  ],
+  "browsing_data.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "OptionalPermission",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "browsingData"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "browsingData",
+      "description": "Use the <code>chrome.browsingData</code> API to remove browsing data from a user's local profile.",
+      "permissions": [
+        "browsingData"
+      ],
+      "types": [
+        {
+          "id": "RemovalOptions",
+          "type": "object",
+          "description": "Options that determine exactly what data will be removed.",
+          "properties": {
+            "since": {
+              "$ref": "extensionTypes.Date",
+              "optional": true,
+              "description": "Remove data accumulated on or after this date, represented in milliseconds since the epoch (accessible via the <code>getTime</code> method of the JavaScript <code>Date</code> object). If absent, defaults to 0 (which would remove all browsing data)."
+            },
+            "hostnames": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "hostname"
+              },
+              "optional": true,
+              "description": "Only remove data associated with these hostnames (only applies to cookies and localStorage)."
+            },
+            "cookieStoreId": {
+              "type": "string",
+              "description": "Only remove data associated with this specific cookieStoreId.",
+              "optional": true
+            },
+            "originTypes": {
+              "type": "object",
+              "optional": true,
+              "description": "An object whose properties specify which origin types ought to be cleared. If this object isn't specified, it defaults to clearing only \"unprotected\" origins. Please ensure that you <em>really</em> want to remove application data before adding 'protectedWeb' or 'extensions'.",
+              "properties": {
+                "unprotectedWeb": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Normal websites."
+                },
+                "protectedWeb": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Websites that have been installed as hosted applications (be careful!)."
+                },
+                "extension": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Extensions and packaged applications a user has installed (be _really_ careful!)."
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "DataTypeSet",
+          "type": "object",
+          "description": "A set of data types. Missing data types are interpreted as <code>false</code>.",
+          "properties": {
+            "cache": {
+              "type": "boolean",
+              "optional": true,
+              "description": "The browser's cache. Note: when removing data, this clears the <em>entire</em> cache: it is not limited to the range you specify."
+            },
+            "cookies": {
+              "type": "boolean",
+              "optional": true,
+              "description": "The browser's cookies."
+            },
+            "downloads": {
+              "type": "boolean",
+              "optional": true,
+              "description": "The browser's download list."
+            },
+            "formData": {
+              "type": "boolean",
+              "optional": true,
+              "description": "The browser's stored form data."
+            },
+            "history": {
+              "type": "boolean",
+              "optional": true,
+              "description": "The browser's history."
+            },
+            "indexedDB": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Websites' IndexedDB data."
+            },
+            "localStorage": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Websites' local storage data."
+            },
+            "serverBoundCertificates": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Server-bound certificates."
+            },
+            "passwords": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Stored passwords."
+            },
+            "pluginData": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Plugins' data."
+            },
+            "serviceWorkers": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Service Workers."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "settings",
+          "description": "Reports which types of data are currently selected in the 'Clear browsing data' settings UI.  Note: some of the data types included in this API are not available in the settings UI, and some UI settings control more than one data type listed here.",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "callback",
+              "type": "function",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "object",
+                  "properties": {
+                    "options": {
+                      "$ref": "RemovalOptions"
+                    },
+                    "dataToRemove": {
+                      "$ref": "DataTypeSet",
+                      "description": "All of the types will be present in the result, with values of <code>true</code> if they are both selected to be removed and permitted to be removed, otherwise <code>false</code>."
+                    },
+                    "dataRemovalPermitted": {
+                      "$ref": "DataTypeSet",
+                      "description": "All of the types will be present in the result, with values of <code>true</code> if they are permitted to be removed (e.g., by enterprise policy) and <code>false</code> if not."
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "remove",
+          "description": "Clears various types of browsing data stored in a user's profile.",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "dataToRemove",
+              "$ref": "DataTypeSet",
+              "description": "The set of data types to remove."
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when deletion has completed.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeAppcache",
+          "description": "Clears websites' appcache data.",
+          "type": "function",
+          "async": "callback",
+          "unsupported": true,
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when websites' appcache data has been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeCache",
+          "description": "Clears the browser's cache.",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when the browser's cache has been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeCookies",
+          "description": "Clears the browser's cookies and server-bound certificates modified within a particular timeframe.",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when the browser's cookies and server-bound certificates have been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeDownloads",
+          "description": "Clears the browser's list of downloaded files (<em>not</em> the downloaded files themselves).",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when the browser's list of downloaded files has been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeFileSystems",
+          "description": "Clears websites' file system data.",
+          "type": "function",
+          "async": "callback",
+          "unsupported": true,
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when websites' file systems have been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeFormData",
+          "description": "Clears the browser's stored form data (autofill).",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when the browser's form data has been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeHistory",
+          "description": "Clears the browser's history.",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when the browser's history has cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeIndexedDB",
+          "description": "Clears websites' IndexedDB data.",
+          "type": "function",
+          "async": "callback",
+          "unsupported": true,
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when websites' IndexedDB data has been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeLocalStorage",
+          "description": "Clears websites' local storage data.",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when websites' local storage has been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removePluginData",
+          "description": "Clears plugins' data.",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when plugins' data has been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removePasswords",
+          "description": "Clears the browser's stored passwords.",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when the browser's passwords have been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeWebSQL",
+          "description": "Clears websites' WebSQL data.",
+          "type": "function",
+          "async": "callback",
+          "unsupported": true,
+          "parameters": [
+            {
+              "$ref": "RemovalOptions",
+              "name": "options"
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called when websites' WebSQL databases have been cleared.",
+              "optional": true,
+              "parameters": []
+            }
+          ]
+        }
+      ]
     }
   ],
   "captive_portal.json": [
@@ -11028,6 +11134,8 @@
         "lastError": {
           "type": "object",
           "optional": true,
+          "max_manifest_version": 2,
+          "deprecated": "Please use $(ref:runtime.lastError).",
           "allowedContexts": [
             "content",
             "devtools"
@@ -11069,6 +11177,8 @@
         {
           "name": "getURL",
           "type": "function",
+          "deprecated": "Please use $(ref:runtime.getURL).",
+          "max_manifest_version": 2,
           "allowedContexts": [
             "content",
             "devtools"
@@ -11129,6 +11239,7 @@
         {
           "name": "getBackgroundPage",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Returns the JavaScript 'window' object for the background page running inside the current extension. Returns null if the extension has no background page.",
           "parameters": [],
           "returns": {
@@ -11261,7 +11372,7 @@
         {
           "id": "ImageDetails",
           "type": "object",
-          "description": "Details about the format and quality of an image.",
+          "description": "Details about the format, quality, area and scale of the capture.",
           "properties": {
             "format": {
               "$ref": "ImageFormat",
@@ -11274,6 +11385,30 @@
               "minimum": 0,
               "maximum": 100,
               "description": "When format is <code>\"jpeg\"</code>, controls the quality of the resulting image.  This value is ignored for PNG images.  As quality is decreased, the resulting image will have more visual artifacts, and the number of bytes needed to store it will decrease."
+            },
+            "rect": {
+              "type": "object",
+              "optional": true,
+              "description": "The area of the document to capture, in CSS pixels, relative to the page.  If omitted, capture the visible viewport.",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "width": {
+                  "type": "number"
+                },
+                "height": {
+                  "type": "number"
+                }
+              }
+            },
+            "scale": {
+              "type": "number",
+              "optional": true,
+              "description": "The scale of the resulting image.  Defaults to <code>devicePixelRatio</code>."
             }
           }
         },
@@ -11436,6 +11571,7 @@
                     "bitcoin",
                     "dat",
                     "dweb",
+                    "ftp",
                     "geo",
                     "gopher",
                     "im",
@@ -11445,6 +11581,7 @@
                     "ircs",
                     "magnet",
                     "mailto",
+                    "matrix",
                     "mms",
                     "news",
                     "nntp",
@@ -11532,7 +11669,6 @@
             "screenshots",
             "seqstyle",
             "stackwalk",
-            "tasktracer",
             "threads",
             "jstracer",
             "jsallocations",
@@ -11542,7 +11678,10 @@
             "ipcmessages",
             "fileio",
             "fileioall",
-            "noiostacks"
+            "noiostacks",
+            "audiocallbacktracing",
+            "cpu",
+            "notimerresolutionchange"
           ]
         },
         {
@@ -12548,7 +12687,8 @@
             "manifest_version": {
               "type": "integer",
               "minimum": 2,
-              "maximum": 2
+              "maximum": 3,
+              "postprocess": "manifestVersionCheck"
             },
             "applications": {
               "type": "object",
@@ -12679,6 +12819,15 @@
                   "additionalProperties": {
                     "$ref": "UnrecognizedProperty"
                   }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "service_worker": {
+                      "$ref": "ExtensionURL"
+                    }
+                  },
+                  "postprocess": "requireBackgroundServiceWorkerEnabled"
                 }
               ],
               "optional": true
@@ -12721,10 +12870,12 @@
               "onError": "warn",
               "choices": [
                 {
+                  "max_manifest_version": 2,
                   "type": "string",
                   "format": "contentSecurityPolicy"
                 },
                 {
+                  "min_manifest_version": 3,
                   "type": "object",
                   "additionalProperties": {
                     "$ref": "UnrecognizedProperty"
@@ -12735,18 +12886,6 @@
                       "optional": true,
                       "format": "contentSecurityPolicy",
                       "description": "The Content Security Policy used for extension pages."
-                    },
-                    "content_scripts": {
-                      "type": "string",
-                      "optional": true,
-                      "format": "contentSecurityPolicy",
-                      "description": "The Content Security Policy used for content scripts."
-                    },
-                    "isolated_world": {
-                      "type": "string",
-                      "optional": true,
-                      "format": "contentSecurityPolicy",
-                      "description": "An alias for content_scripts to support Chrome compatibility.  Content Security Policy implementations may differ between Firefox and Chrome.  If both isolated_world and content_scripts exist, the value from content_scripts will be used."
                     }
                   }
                 }
@@ -12771,11 +12910,37 @@
               "default": []
             },
             "web_accessible_resources": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "optional": true
+              "optional": true,
+              "choices": [
+                {
+                  "max_manifest_version": 2,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "min_manifest_version": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "resources": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "matches": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "MatchPatternRestricted"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
             },
             "developer": {
               "type": "object",
@@ -13347,9 +13512,7 @@
                 "usb",
                 "wifi",
                 "wimax",
-                "2g",
-                "3g",
-                "4g"
+                "mobile"
               ],
               "description": "If known, the type of network connection that is avialable."
             },
@@ -14401,7 +14564,8 @@
             "ftp": {
               "type": "string",
               "optional": true,
-              "description": "The address of the ftp proxy, can include a port."
+              "deprecated": true,
+              "description": "The address of the ftp proxy, can include a port.  Deprecated since Firefox 88."
             },
             "ssl": {
               "type": "string",
@@ -14642,6 +14806,16 @@
               "description": "The maximum TLS version supported."
             }
           }
+        },
+        {
+          "id": "HTTPSOnlyModeOption",
+          "type": "string",
+          "enum": [
+            "always",
+            "private_browsing",
+            "never"
+          ],
+          "description": "The mode for https-only mode."
         }
       ],
       "properties": {
@@ -14660,6 +14834,10 @@
         "tlsVersionRestriction": {
           "$ref": "types.Setting",
           "description": "This property controls the minimum and maximum TLS versions. This setting's value is an object of $(ref:tlsVersionRestrictionConfig)."
+        },
+        "httpsOnlyMode": {
+          "$ref": "types.Setting",
+          "description": "Allow users to query the mode for 'HTTPS-Only Mode'. This setting's value is of type HTTPSOnlyModeOption, defaulting to <code>never</code>."
         }
       }
     },
@@ -14763,7 +14941,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "Permission",
+          "$extend": "OptionalPermission",
           "choices": [
             {
               "type": "string",
@@ -14875,7 +15053,11 @@
           "id": "PlatformArch",
           "type": "string",
           "enum": [
+            "aarch64",
             "arm",
+            "ppc64",
+            "s390x",
+            "sparc64",
             "x86-32",
             "x86-64"
           ],
@@ -15007,6 +15189,7 @@
       "functions": [
         {
           "name": "getBackgroundPage",
+          "max_manifest_version": 2,
           "type": "function",
           "description": "Retrieves the JavaScript 'window' object for the background page running inside the current extension/app. If the background page is an event page, the system will ensure it is loaded before calling the callback. If there is no background page, an error is set.",
           "async": "callback",
@@ -16701,8 +16884,7 @@
             },
             {
               "name": "expectedError",
-              "$ref": "ExpectedError",
-              "optional": true
+              "$ref": "ExpectedError"
             },
             {
               "name": "message",
@@ -16721,8 +16903,7 @@
             },
             {
               "name": "expectedError",
-              "$ref": "ExpectedError",
-              "optional": true
+              "$ref": "ExpectedError"
             },
             {
               "name": "message",
@@ -16963,7 +17144,8 @@
                 },
                 "toolbar_field_separator": {
                   "$ref": "ThemeColor",
-                  "optional": true
+                  "optional": true,
+                  "deprecated": "This color property is ignored in Firefox >= 89."
                 },
                 "toolbar_top_separator": {
                   "$ref": "ThemeColor",
