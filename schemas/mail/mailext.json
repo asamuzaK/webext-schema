@@ -4064,7 +4064,7 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "IconPath"
+                      "$ref": "manifest.IconPath"
                     }
                   ],
                   "optional": true,
@@ -5829,7 +5829,7 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "IconPath"
+                      "$ref": "manifest.IconPath"
                     }
                   ],
                   "optional": true,
@@ -8492,7 +8492,7 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "IconPath"
+                      "$ref": "manifest.IconPath"
                     }
                   ],
                   "optional": true,

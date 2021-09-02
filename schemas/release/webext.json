@@ -9926,6 +9926,11 @@
               "description": "False if this download is recorded in the history, true if it is not recorded.",
               "type": "boolean"
             },
+            "cookieStoreId": {
+              "type": "string",
+              "optional": true,
+              "description": "The cookie store ID of the contextual identity."
+            },
             "danger": {
               "$ref": "DangerType",
               "description": "Indication of whether this download is thought to be safe or known to be suspicious."
@@ -10124,6 +10129,11 @@
               "optional": true,
               "type": "string"
             },
+            "cookieStoreId": {
+              "type": "string",
+              "optional": true,
+              "description": "The cookie store ID of the contextual identity."
+            },
             "danger": {
               "$ref": "DangerType",
               "description": "Indication of whether this download is thought to be safe or known to be suspicious.",
@@ -10206,6 +10216,11 @@
                   "optional": true,
                   "default": false,
                   "type": "boolean"
+                },
+                "cookieStoreId": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The cookie store ID of the contextual identity; requires \"cookies\" permission."
                 },
                 "conflictAction": {
                   "$ref": "FilenameConflictAction",
@@ -12892,13 +12907,36 @@
               ]
             },
             "permissions": {
-              "type": "array",
               "default": [],
+              "optional": true,
+              "choices": [
+                {
+                  "max_manifest_version": 2,
+                  "type": "array",
+                  "items": {
+                    "$ref": "PermissionOrOrigin",
+                    "onError": "warn"
+                  }
+                },
+                {
+                  "min_manifest_version": 3,
+                  "type": "array",
+                  "items": {
+                    "$ref": "Permission",
+                    "onError": "warn"
+                  }
+                }
+              ]
+            },
+            "host_permissions": {
+              "min_manifest_version": 3,
+              "type": "array",
               "items": {
-                "$ref": "PermissionOrOrigin",
+                "$ref": "MatchPattern",
                 "onError": "warn"
               },
-              "optional": true
+              "optional": true,
+              "default": []
             },
             "optional_permissions": {
               "type": "array",
