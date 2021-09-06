@@ -26,7 +26,7 @@
     "commander": "^8.1.0",
     "decamelize": "^5.0.0",
     "json5": "^2.2.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.2",
     "sinon": "^11.1.2"
   },
   "devDependencies": {
@@ -40,5 +40,5 @@
     "mocha": "^9.1.1",
     "nyc": "^15.1.0"
   },
-  "version": "1.5.2"
+  "version": "1.5.3"
 }
