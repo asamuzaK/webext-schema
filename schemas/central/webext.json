@@ -17254,6 +17254,10 @@
                   "$ref": "ThemeColor",
                   "optional": true
                 },
+                "ntp_card_background": {
+                  "$ref": "ThemeColor",
+                  "optional": true
+                },
                 "ntp_text": {
                   "$ref": "ThemeColor",
                   "optional": true
