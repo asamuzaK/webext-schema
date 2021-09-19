@@ -1,23 +1,22 @@
 /**
  * update.js
  */
-'use strict';
+
 /* api */
-const { URL } = require('url');
-const JSON5 = require('json5');
-const { createFile } = require('./file-util');
-const { getType, isString, throwErr } = require('./common');
-const { version } = require('../package.json');
-const commander = require('commander');
-const fetch = require('node-fetch');
-const path = require('path');
-const process = require('process');
+import { CHAR, INDENT } from './constant.js';
+import { URL } from 'url';
+import JSON5 from 'json5';
+import { createFile } from './file-util.js';
+import { getType, isString, throwErr } from './common.js';
+import commander from 'commander';
+import fetch from 'node-fetch';
+import path from 'path';
+import process from 'process';
 
 /* constants */
-const { CHAR, INDENT } = require('./constant');
 const DIR_CWD = process.cwd();
 const PERM_FILE = 0o644;
-const ESR_VER = 91;
+export const ESR_VER = 91;
 
 /**
  * fetch text
@@ -25,7 +24,7 @@ const ESR_VER = 91;
  * @param {string} url - URL
  * @returns {string} - content text
  */
-const fetchText = async url => {
+export const fetchText = async url => {
   if (!isString(url)) {
     throw new TypeError(`Expected String but got ${getType(url)}.`);
   }
@@ -44,7 +43,7 @@ const fetchText = async url => {
  * @param {string} channel - release channel
  * @returns {string} - channel URL
  */
-const getChannelUrl = channel => {
+export const getChannelUrl = channel => {
   let dir;
   switch (channel) {
     case 'central':
@@ -72,7 +71,7 @@ const getChannelUrl = channel => {
  * @param {string} baseUrl - base URL
  * @returns {object} - schema data
  */
-const getSchemaData = async (file, baseUrl) => {
+export const getSchemaData = async (file, baseUrl) => {
   if (!isString(file)) {
     throw new TypeError(`Expected String but got ${getType(file)}.`);
   }
@@ -93,7 +92,7 @@ const getSchemaData = async (file, baseUrl) => {
  * @param {string} baseUrl - base URL
  * @returns {Array} - schema file list
  */
-const getFileList = async baseUrl => {
+export const getFileList = async baseUrl => {
   if (!isString(baseUrl)) {
     throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
   }
@@ -119,7 +118,7 @@ const getFileList = async baseUrl => {
  * @param {string} baseUrl - base URL
  * @returns {Promise.<Array>} - schemas data in array
  */
-const getAllSchemaData = async baseUrl => {
+export const getAllSchemaData = async baseUrl => {
   if (!isString(baseUrl)) {
     throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
   }
@@ -138,7 +137,7 @@ const getAllSchemaData = async baseUrl => {
  * @param {Array} arr - array of schema file names
  * @returns {Promise.<Array>} - schema data in array
  */
-const getListedSchemaData = async (baseUrl, arr) => {
+export const getListedSchemaData = async (baseUrl, arr) => {
   if (!isString(baseUrl)) {
     throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
   }
@@ -158,7 +157,7 @@ const getListedSchemaData = async (baseUrl, arr) => {
  * @param {string} baseUrl - base URL
  * @returns {Promise.<Array>} - results of each handler
  */
-const getMailExtSchemaData = async baseUrl => {
+export const getMailExtSchemaData = async baseUrl => {
   if (!isString(baseUrl)) {
     throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
   }
@@ -183,7 +182,7 @@ const getMailExtSchemaData = async baseUrl => {
  * @param {string} channel - release channel
  * @returns {object} - schema
  */
-const createUnifiedSchema = async channel => {
+export const createUnifiedSchema = async channel => {
   const channelUrl = getChannelUrl(channel);
   const schema = {};
   let arr;
@@ -227,7 +226,7 @@ const createUnifiedSchema = async channel => {
  * @param {boolean} info - console info
  * @returns {string} - file path
  */
-const saveSchemaFile = async (channel, info) => {
+export const saveSchemaFile = async (channel, info) => {
   if (!isString(channel)) {
     throw new TypeError(`Expected String but got ${getType(channel)}.`);
   }
@@ -251,7 +250,7 @@ const saveSchemaFile = async (channel, info) => {
  * @param {object} cmdOpts - command options
  * @returns {Promise.<Array|Error>} - promise chain
  */
-const updateSchemas = (cmdOpts = {}) => {
+export const updateSchemas = (cmdOpts = {}) => {
   const { channel, info } = cmdOpts;
   const func = [];
   if (channel) {
@@ -274,11 +273,11 @@ const updateSchemas = (cmdOpts = {}) => {
  * @param {Array} args - process.argv
  * @returns {void}
  */
-const parseCommand = args => {
+export const parseCommand = args => {
   const reg = /^(?:(?:--)?help|-[h|v]|--version|u(?:pdate)?)$/;
   if (Array.isArray(args) && args.some(arg => reg.test(arg))) {
     commander.exitOverride();
-    commander.version(version, '-v, --version');
+    commander.version(process.env.npm_package_version, '-v, --version');
     commander.command('update').alias('u').description('update schemas')
       .option('-c, --channel <name>', 'specify the release channel')
       .option('-i, --info', 'console info')
@@ -291,18 +290,6 @@ const parseCommand = args => {
   }
 };
 
-module.exports = {
-  ESR_VER,
-  commander,
-  createUnifiedSchema,
-  fetchText,
-  getAllSchemaData,
-  getChannelUrl,
-  getFileList,
-  getListedSchemaData,
-  getMailExtSchemaData,
-  getSchemaData,
-  parseCommand,
-  saveSchemaFile,
-  updateSchemas
+export {
+  commander
 };

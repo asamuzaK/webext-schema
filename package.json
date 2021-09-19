@@ -10,6 +10,7 @@
   },
   "license": "MPL-2.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "lint": "eslint --fix .",
     "start": "node index",

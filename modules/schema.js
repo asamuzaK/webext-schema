@@ -1,19 +1,18 @@
 /**
  * schema.js
  */
-'use strict';
+
 /* api */
-const { getType, isObjectNotEmpty, isString } = require('./common');
-const camelize = require('camelize');
-const decamelize = require('decamelize');
-const fs = require('fs');
-const path = require('path');
-const sinon = require('sinon');
+import { CHAR } from './constant.js';
+import { convertUriToFilePath } from './file-util.js';
+import { getType, isObjectNotEmpty, isString } from './common.js';
+import camelize from 'camelize';
+import decamelize from 'decamelize';
+import fs from 'fs';
+import path from 'path';
+import sinon from 'sinon';
 
-/* constants */
-const { CHAR } = require('./constant');
-
-class Schema {
+export class Schema {
   /**
    * construct
    *
@@ -267,9 +266,8 @@ class Schema {
    */
   _parseSchemaContent() {
     const fileName = this._channel === 'mail' ? 'mailext.json' : 'webext.json';
-    const file = path.resolve(
-      path.join(__dirname, '../', 'schemas', this._channel, fileName)
-    );
+    const dirName = path.dirname(convertUriToFilePath(import.meta.url));
+    const file = path.join(dirName, '../', 'schemas', this._channel, fileName);
     const content = fs.readFileSync(file, {
       encoding: CHAR,
       flag: 'r'
@@ -379,7 +377,3 @@ class Schema {
     return this._browser;
   }
 }
-
-module.exports = {
-  Schema
-};

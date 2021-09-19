@@ -1,17 +1,19 @@
-'use strict';
-const {
+/* api */
+import { assert } from 'chai';
+import { describe, it } from 'mocha';
+import fetch from 'node-fetch';
+import fs from 'fs';
+import path from 'path';
+import process from 'process';
+import sinon from 'sinon';
+
+/* test */
+import {
   ESR_VER,
   commander, createUnifiedSchema, fetchText, getAllSchemaData, getChannelUrl,
   getFileList, getListedSchemaData, getMailExtSchemaData, getSchemaData,
   parseCommand, saveSchemaFile, updateSchemas
-} = require('../modules/update');
-const { assert } = require('chai');
-const { describe, it } = require('mocha');
-const fetch = require('node-fetch');
-const fs = require('fs');
-const path = require('path');
-const process = require('process');
-const sinon = require('sinon');
+} from '../modules/update.js';
 
 describe('fetch text', () => {
   it('should throw', async () => {
