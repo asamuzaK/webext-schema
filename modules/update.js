@@ -282,11 +282,7 @@ export const parseCommand = args => {
       .option('-c, --channel <name>', 'specify the release channel')
       .option('-i, --info', 'console info')
       .action(updateSchemas);
-    try {
-      commander.parse(args);
-    } catch (e) {
-      // fail through
-    }
+    commander.parse(args);
   }
 };
 
