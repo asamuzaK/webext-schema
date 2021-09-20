@@ -27,7 +27,7 @@
     "commander": "^8.2.0",
     "decamelize": "^5.0.0",
     "json5": "^2.2.0",
-    "node-fetch": "^2.6.2",
+    "node-fetch": "^3.0.0",
     "sinon": "^11.1.2"
   },
   "devDependencies": {
