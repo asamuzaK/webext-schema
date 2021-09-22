@@ -1,17 +1,19 @@
-'use strict';
-const {
+/* api */
+import { assert } from 'chai';
+import { describe, it } from 'mocha';
+import fs from 'fs';
+import nock from 'nock';
+import path from 'path';
+import process from 'process';
+import sinon from 'sinon';
+
+/* test */
+import {
   ESR_VER,
   commander, createUnifiedSchema, fetchText, getAllSchemaData, getChannelUrl,
   getFileList, getListedSchemaData, getMailExtSchemaData, getSchemaData,
   parseCommand, saveSchemaFile, updateSchemas
-} = require('../modules/update');
-const { assert } = require('chai');
-const { describe, it } = require('mocha');
-const fetch = require('node-fetch');
-const fs = require('fs');
-const path = require('path');
-const process = require('process');
-const sinon = require('sinon');
+} from '../modules/update.js';
 
 describe('fetch text', () => {
   it('should throw', async () => {
@@ -22,37 +24,30 @@ describe('fetch text', () => {
   });
 
   it('should throw', async () => {
-    const stubFetch = sinon.stub(fetch, 'Promise').resolves({});
+    nock('https://example.com').get('/').reply(undefined);
     await fetchText('https://example.com').catch(e => {
       assert.instanceOf(e, Error, 'error');
       assert.strictEqual(e.message,
         'Network response was not ok. status: undefined');
     });
-    stubFetch.restore();
+    nock.cleanAll();
   });
 
   it('should throw', async () => {
-    const stubFetch = sinon.stub(fetch, 'Promise').resolves({
-      ok: false,
-      status: 404
-    });
+    nock('https://example.com').get('/').reply(404);
     await fetchText('https://example.com').catch(e => {
       assert.instanceOf(e, Error, 'error');
       assert.strictEqual(e.message,
         'Network response was not ok. status: 404');
     });
-    stubFetch.restore();
+    nock.cleanAll();
   });
 
   it('should get result', async () => {
-    const stubFetch = sinon.stub(fetch, 'Promise').resolves({
-      ok: true,
-      status: 200,
-      text: () => 'foo'
-    });
+    nock('https://example.com').get('/').reply(200, 'foo');
     const res = await fetchText('https://example.com');
-    stubFetch.restore();
     assert.strictEqual(res, 'foo', 'result');
+    nock.cleanAll();
   });
 });
 
@@ -123,19 +118,17 @@ describe('get schema data', () => {
   });
 
   it('should get object', async () => {
-    const stubFetch = sinon.stub(fetch, 'Promise').resolves({
-      ok: true,
-      status: 200,
-      text: () => '{"foo": ["bar"]}\n'
+    nock('https://example.com').get('/foo.json').reply(200, {
+      foo: ['bar']
     });
     const res = await getSchemaData('foo.json', 'https://example.com');
-    stubFetch.restore();
     assert.deepEqual(res, {
       file: 'foo.json',
       schema: {
         foo: ['bar']
       }
     }, 'result');
+    nock.cleanAll();
   });
 });
 
@@ -148,19 +141,15 @@ describe('get schema file list from jar manifest', () => {
   });
 
   it('should get array', async () => {
-    const stubFetch = sinon.stub(fetch, 'Promise').resolves({
-      ok: true,
-      status: 200,
-      text: () => '# comment\n\ntoolkit.jar:\n% content extensions %content/extensions/\n    content/extensions/schemas/alarms.json\n    content/extensions/schemas/browser_settings.json\n#ifndef ANDROID\n    content/extensions/schemas/geckoProfiler.json\n#endif\n    content/extensions/schemas/i18n.json\n'
-    });
+    nock('https://example.com').get('/jar.mn').reply(200, '# comment\n\ntoolkit.jar:\n% content extensions %content/extensions/\n    content/extensions/schemas/alarms.json\n    content/extensions/schemas/browser_settings.json\n#ifndef ANDROID\n    content/extensions/schemas/geckoProfiler.json\n#endif\n    content/extensions/schemas/i18n.json\n');
     const res = await getFileList('https://example.com');
-    stubFetch.restore();
     assert.deepEqual(res, [
       'alarms.json',
       'browser_settings.json',
       'geckoProfiler.json',
       'i18n.json'
     ], 'result');
+    nock.cleanAll();
   });
 });
 
@@ -173,24 +162,15 @@ describe('get all schema data', () => {
   });
 
   it('should get array', async () => {
-    const stubFetch = sinon.stub(fetch, 'Promise');
-    stubFetch.onCall(0).resolves({
-      ok: true,
-      status: 200,
-      text: () => 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n'
-    });
-    stubFetch.onCall(1).resolves({
-      ok: true,
-      status: 200,
-      text: () => '{"foo": "foobar"}'
-    });
-    stubFetch.onCall(2).resolves({
-      ok: true,
-      status: 200,
-      text: () => '{"baz": "qux"}'
-    });
+    nock('https://example.com').get('/jar.mn')
+      .reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n')
+      .get('/foo.json').reply(200, {
+        foo: 'foobar'
+      })
+      .get('/bar.json').reply(200, {
+        baz: 'qux'
+      });
     const res = await getAllSchemaData('https://example.com/');
-    stubFetch.restore();
     assert.deepEqual(res, [
       {
         file: 'foo.json',
@@ -205,6 +185,7 @@ describe('get all schema data', () => {
         }
       }
     ], 'result');
+    nock.cleanAll();
   });
 });
 
@@ -224,20 +205,13 @@ describe('get listed schema data', () => {
   });
 
   it('should get array', async () => {
-    const stubFetch = sinon.stub(fetch, 'Promise');
-    stubFetch.onCall(0).resolves({
-      ok: true,
-      status: 200,
-      text: () => '{"foo": "foobar"}'
-    });
-    stubFetch.onCall(1).resolves({
-      ok: true,
-      status: 200,
-      text: () => '{"baz": "qux"}'
+    nock('https://example.com').get('/foo.json').reply(200, {
+      foo: 'foobar'
+    }).get('/bar.json').reply(200, {
+      baz: 'qux'
     });
     const res = await getListedSchemaData('https://example.com/',
       ['foo.json', 'bar.json']);
-    stubFetch.restore();
     assert.deepEqual(res, [
       {
         file: 'foo.json',
@@ -252,6 +226,7 @@ describe('get listed schema data', () => {
         }
       }
     ], 'result');
+    nock.cleanAll();
   });
 });
 
@@ -264,24 +239,15 @@ describe('get MailExtensions schema data', () => {
   });
 
   it('should get array', async () => {
-    const stubFetch = sinon.stub(fetch, 'Promise');
-    stubFetch.onCall(0).resolves({
-      ok: true,
-      status: 200,
-      text: () => '# comment\n\nmessenger.jar:\n% content/messenger/ext-mail.json\n    content/messenger/schemas/accounts.json\n    content/messenger/schemas/browserAction.json\n    content/messenger/schemas/commands.json\n    content/messenger/schemas/pkcs11.json\n'
-    });
-    stubFetch.onCall(1).resolves({
-      ok: true,
-      status: 200,
-      text: () => '{"foo": "foobar"}'
-    });
-    stubFetch.onCall(2).resolves({
-      ok: true,
-      status: 200,
-      text: () => '{"bar": "baz"}'
-    });
+    nock('https://example.com').get('/jar.mn')
+      .reply(200, '# comment\n\nmessenger.jar:\n% content/messenger/ext-mail.json\n    content/messenger/schemas/accounts.json\n    content/messenger/schemas/browserAction.json\n    content/messenger/schemas/commands.json\n    content/messenger/schemas/pkcs11.json\n')
+      .get('/schemas/accounts.json').reply(200, {
+        foo: 'foobar'
+      })
+      .get('/schemas/browserAction.json').reply(200, {
+        bar: 'baz'
+      });
     const res = await getMailExtSchemaData('https://example.com/');
-    stubFetch.restore();
     assert.deepEqual(res, [
       {
         file: 'accounts.json',
@@ -296,6 +262,7 @@ describe('get MailExtensions schema data', () => {
         }
       }
     ], 'result');
+    nock.cleanAll();
   });
 });
 

@@ -1,10 +1,9 @@
-'use strict';
 /* api */
-const {
-  Schema
-} = require('../index');
-const { assert } = require('chai');
-const { describe, it } = require('mocha');
+import { assert } from 'chai';
+import { describe, it } from 'mocha';
+
+/* test */
+import { Schema } from '../index.js';
 
 describe('Schema', () => {
   it('should be instance of Schema', () => {

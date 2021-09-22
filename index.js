@@ -1,12 +1,12 @@
 /**
  * index.js
  */
-'use strict';
+
 /* api */
-const { Schema } = require('./modules/schema');
-const { logErr, throwErr } = require('./modules/common');
-const { parseCommand } = require('./modules/update');
-const process = require('process');
+import { Schema } from './modules/schema.js';
+import { logErr, throwErr } from './modules/common.js';
+import { parseCommand } from './modules/update.js';
+import process from 'process';
 
 /* process */
 process.on('uncaughtException', throwErr);
@@ -14,6 +14,6 @@ process.on('unhandledRejection', logErr);
 
 parseCommand(process.argv);
 
-module.exports = {
+export {
   Schema
 };

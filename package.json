@@ -10,10 +10,11 @@
   },
   "license": "MPL-2.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "lint": "eslint --fix .",
     "start": "node index",
-    "test": "nyc --reporter=text mocha test/*.test.js --exit",
+    "test": "c8 --reporter=text mocha test/*.test.js --exit",
     "update": "node index update -i",
     "update:beta": "node index update -c beta -i",
     "update:central": "node index update -c central -i",
@@ -26,10 +27,11 @@
     "commander": "^8.2.0",
     "decamelize": "^5.0.0",
     "json5": "^2.2.0",
-    "node-fetch": "^2.6.2",
+    "node-fetch": "^3.0.0",
     "sinon": "^11.1.2"
   },
   "devDependencies": {
+    "c8": "^7.9.0",
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
@@ -38,7 +40,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "mocha": "^9.1.1",
-    "nyc": "^15.1.0"
+    "nock": "^13.1.3"
   },
   "version": "1.5.3"
 }

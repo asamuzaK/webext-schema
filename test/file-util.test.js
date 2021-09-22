@@ -1,20 +1,21 @@
-'use strict';
 /* api */
-const { URL } = require('url');
-const {
+import { URL } from 'url';
+import { assert } from 'chai';
+import { describe, it } from 'mocha';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import process from 'process';
+import { IS_WIN } from '../modules/constant.js';
+
+/* test */
+import {
   convertUriToFilePath, createDirectory, createFile,
   getAbsPath, getFileNameFromFilePath, getFileTimestamp, getStat,
   isDir, isExecutable, isFile, isSubDir, removeDir, removeDirectory, readFile
-} = require('../modules/file-util');
-const { assert } = require('chai');
-const { describe, it } = require('mocha');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const process = require('process');
+} from '../modules/file-util.js';
 
 /* constants */
-const { IS_WIN } = require('../modules/constant');
 const DIR_CWD = process.cwd();
 const PERM_EXEC = 0o700;
 const PERM_FILE = 0o600;

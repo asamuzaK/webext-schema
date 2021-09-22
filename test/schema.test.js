@@ -1,8 +1,9 @@
-'use strict';
 /* api */
-const { Schema } = require('../modules/schema');
-const { assert } = require('chai');
-const { describe, it } = require('mocha');
+import { assert } from 'chai';
+import { describe, it } from 'mocha';
+
+/* test */
+import { Schema } from '../modules/schema.js';
 
 describe('Schema', () => {
   describe('construct', () => {
