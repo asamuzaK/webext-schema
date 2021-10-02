@@ -234,7 +234,7 @@ export const saveSchemaFile = async (channel, info) => {
   const content = `${JSON.stringify(schema, null, INDENT)}\n`;
   const fileName = channel === 'mail' ? 'mailext' : 'webext';
   const filePath =
-    path.resolve(path.join(DIR_CWD, 'schemas', channel, `${fileName}.json`));
+    path.resolve(DIR_CWD, 'schemas', channel, `${fileName}.json`);
   const file = await createFile(filePath, content, {
     encoding: CHAR, flag: 'w', mode: PERM_FILE
   });
