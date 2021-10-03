@@ -76,39 +76,3 @@ export const isObjectNotEmpty = o => {
  * @returns {boolean} - result
  */
 export const isString = o => typeof o === 'string' || o instanceof String;
-
-/**
- * stringify positive integer
- *
- * @param {number} i - integer
- * @param {boolean} [zero] - treat 0 as a positive integer
- * @returns {?string} - stringified integer
- */
-export const stringifyPositiveInt = (i, zero = false) =>
-  Number.isSafeInteger(i) && ((zero && i >= 0) || i > 0) ? `${i}` : null;
-
-/**
- * escape matching char
- *
- * @param {string} str - argument
- * @param {RegExp} re - RegExp
- * @returns {?string} - string
- */
-export const escapeChar = (str, re) =>
-  isString(str) && re && re.global ? str.replace(re, (m, c) => `\\${c}`) : null;
-
-/**
- * strip HTML tags and decode HTML entities
- *
- * @param {string} v - value
- * @returns {string} - converted value
- */
-export const stripHtmlTags = v => {
-  while (/^\n*<(?:[^>]+:)?[^>]+?>|<\/(?:[^>]+:)?[^>]+>\n*$/.test(v)) {
-    v = v.replace(/^\n*<(?:[^>]+:)?[^>]+?>/, '')
-      .replace(/<\/(?:[^>]+:)?[^>]+>\n*$/, '\n');
-  }
-  return v.replace(/<\/(?:[^>]+:)?[^>]+>\n*<!--.*-->\n*<(?:[^>]+:)?[^>]+>/g, '\n\n')
-    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
-    .replace(/&amp;/g, '&');
-};
