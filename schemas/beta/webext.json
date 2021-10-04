@@ -9322,6 +9322,18 @@
           "description": "A cookie's 'SameSite' state (https://tools.ietf.org/html/draft-west-first-party-cookies). 'no_restriction' corresponds to a cookie set without a 'SameSite' attribute, 'lax' to 'SameSite=Lax', and 'strict' to 'SameSite=Strict'."
         },
         {
+          "id": "PartitionKey",
+          "type": "object",
+          "description": "The description of the storage partition of a cookie. This object may be omitted (null) if a cookie is not partitioned.",
+          "properties": {
+            "topLevelSite": {
+              "type": "string",
+              "optional": true,
+              "description": "The first-party URL of the cookie, if the cookie is in storage partitioned by the top-level site."
+            }
+          }
+        },
+        {
           "id": "Cookie",
           "type": "object",
           "description": "Represents information about an HTTP cookie.",
@@ -9374,6 +9386,11 @@
             "firstPartyDomain": {
               "type": "string",
               "description": "The first-party domain of the cookie."
+            },
+            "partitionKey": {
+              "$ref": "PartitionKey",
+              "optional": true,
+              "description": "The cookie's storage partition, if any. null if not partitioned."
             }
           }
         },
@@ -9441,6 +9458,11 @@
                   "type": "string",
                   "optional": true,
                   "description": "The first-party domain which the cookie to retrieve is associated. This attribute is required if First-Party Isolation is enabled."
+                },
+                "partitionKey": {
+                  "$ref": "PartitionKey",
+                  "optional": true,
+                  "description": "The storage partition, if the cookie is part of partitioned storage. By default, only non-partitioned cookies are returned."
                 }
               }
             },
@@ -9508,6 +9530,11 @@
                   "type": "string",
                   "optional": "omit-key-if-missing",
                   "description": "Restricts the retrieved cookies to those whose first-party domains match this one. This attribute is required if First-Party Isolation is enabled. To not filter by a specific first-party domain, use `null` or `undefined`."
+                },
+                "partitionKey": {
+                  "$ref": "PartitionKey",
+                  "optional": true,
+                  "description": "Selects a specific storage partition to look up cookies. Defaults to null, in which case only non-partitioned cookies are retrieved. If an object iis passed, partitioned cookies are also included, and filtered based on the keys present in the given PartitionKey description. An empty object ({}) returns all cookies (partitioned + unpartitioned), a non-empty object (e.g. {topLevelSite: '...'}) only returns cookies whose partition match all given attributes."
                 }
               }
             },
@@ -9592,6 +9619,11 @@
                   "type": "string",
                   "optional": true,
                   "description": "The first-party domain of the cookie. This attribute is required if First-Party Isolation is enabled."
+                },
+                "partitionKey": {
+                  "$ref": "PartitionKey",
+                  "optional": true,
+                  "description": "The storage partition, if the cookie is part of partitioned storage. By default, non-partitioned storage is used."
                 }
               }
             },
@@ -9638,6 +9670,11 @@
                   "type": "string",
                   "optional": true,
                   "description": "The first-party domain associated with the cookie. This attribute is required if First-Party Isolation is enabled."
+                },
+                "partitionKey": {
+                  "$ref": "PartitionKey",
+                  "optional": true,
+                  "description": "The storage partition, if the cookie is part of partitioned storage. By default, non-partitioned storage is used."
                 }
               }
             },
@@ -9667,6 +9704,11 @@
                     "firstPartyDomain": {
                       "type": "string",
                       "description": "The first-party domain associated with the cookie that's been removed."
+                    },
+                    "partitionKey": {
+                      "$ref": "PartitionKey",
+                      "optional": true,
+                      "description": "The storage partition, if the cookie is part of partitioned storage. null if not partitioned."
                     }
                   }
                 }
@@ -17251,6 +17293,10 @@
                   "optional": true
                 },
                 "ntp_background": {
+                  "$ref": "ThemeColor",
+                  "optional": true
+                },
+                "ntp_card_background": {
                   "$ref": "ThemeColor",
                   "optional": true
                 },
