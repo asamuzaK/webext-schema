@@ -1,4 +1,5 @@
 [![build](https://github.com/asamuzaK/webext-schema/workflows/build/badge.svg)](https://github.com/asamuzaK/webext-schema/actions?query=workflow%3Abuild)
+[![CodeQL](https://github.com/asamuzaK/webext-schema/workflows/CodeQL/badge.svg)](https://github.com/asamuzaK/webext-schema/actions?query=workflow%3ACodeQL)
 [![dependencies Status](https://david-dm.org/asamuzaK/webext-schema/status.svg)](https://david-dm.org/asamuzaK/webext-schema)
 [![devDependencies Status](https://david-dm.org/asamuzaK/webext-schema/dev-status.svg)](https://david-dm.org/asamuzaK/webext-schema?type=dev)
 [![npm version](https://badge.fury.io/js/webext-schema.svg)](https://badge.fury.io/js/webext-schema)
