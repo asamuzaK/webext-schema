@@ -2696,7 +2696,7 @@
         {
           "name": "getCurrent",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "description": "Returns the current theme for the specified window or the last focused window.",
           "parameters": [
             {
@@ -2704,6 +2704,16 @@
               "name": "windowId",
               "optional": true,
               "description": "The window for which we want the theme."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "ThemeType"
+                }
+              ]
             }
           ]
         },
@@ -3197,7 +3207,7 @@
         {
           "name": "onSearchRequest",
           "type": "function",
-          "description": "Creates a read-only addressbook that fires this event when searching for a contact. Note: This event may change in future releases of Thunderbird.",
+          "description": "Registering this listener will create and list a read-only address book in Thunderbird's address book window, similar to LDAP address books. When selecting this address book, users will first see no contacts, but they can search for them, which will fire this event. Contacts returned by the listener callback will be displayed as contact cards in the address book. Several listeners can be registered, to create multiple address books.\n\nThe event also fires for each registered listener (for each created read-only address book), when users type something into the mail composer's <code>To:</code> field, or into similar fields like the calendar meeting attendees field. Contacts returned by the listener callback will be added to the autocomplete results in the dropdown of that field.\n\nExample: <literalinclude>includes/addressBooks/onSearchRequest.js<lang>JavaScript</lang></literalinclude>",
           "parameters": [
             {
               "name": "node",
@@ -3219,22 +3229,23 @@
           "extraParameters": [
             {
               "name": "parameters",
+              "description": "Descriptions for the address book created by registering this listener.",
               "type": "object",
               "properties": {
                 "addressBookName": {
                   "type": "string",
                   "optional": true,
-                  "description": "The initial name of the address book."
+                  "description": "The name of the created address book."
                 },
                 "isSecure": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Whether the address book is searched securely."
+                  "description": "Whether the address book search queries are using encrypted protocols like HTTPS."
                 },
                 "id": {
                   "type": "string",
                   "optional": true,
-                  "description": "The id of the address book."
+                  "description": "The unique ID of the created address book. If several listeners have been added, the ``id`` allows to identify which address book initiated the search request. If not provided, a unique ID will be generated for you."
                 }
               }
             }
@@ -3335,11 +3346,24 @@
         {
           "name": "list",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "parentId",
               "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "ContactNode"
+                  }
+                }
+              ]
             }
           ],
           "description": "Gets all the contacts in the address book with the id <code>parentId</code>."
@@ -3347,7 +3371,7 @@
         {
           "name": "quickSearch",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "parentId",
@@ -3397,18 +3421,41 @@
                   }
                 }
               ]
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "ContactNode"
+                  }
+                }
+              ]
             }
           ],
-          "description": "Gets all contacts matching <code>searchString</code> in the address book with the id <code>parentId</code>."
+          "description": "Gets all contacts matching ``queryInfo`` in the address book with the id ``parentId``."
         },
         {
           "name": "get",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "id",
               "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "ContactNode"
+                }
+              ]
             }
           ],
           "description": "Gets a single contact."
@@ -3416,7 +3463,7 @@
         {
           "name": "create",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "parentId",
@@ -3431,6 +3478,17 @@
             {
               "name": "properties",
               "$ref": "ContactProperties"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string",
+                  "description": "The ID of the new contact."
+                }
+              ]
             }
           ],
           "description": "Adds a new contact to the address book with the id <code>parentId</code>."
@@ -3570,11 +3628,24 @@
         {
           "name": "list",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "parentId",
               "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "MailingListNode"
+                  }
+                }
+              ]
             }
           ],
           "description": "Gets all the mailing lists in the address book with id <code>parentId</code>."
@@ -3582,11 +3653,21 @@
         {
           "name": "get",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "id",
               "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "MailingListNode"
+                }
+              ]
             }
           ],
           "description": "Gets a single mailing list."
@@ -3594,7 +3675,7 @@
         {
           "name": "create",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "parentId",
@@ -3616,6 +3697,17 @@
                   "optional": true
                 }
               }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string",
+                  "description": "The ID of the new mailing list."
+                }
+              ]
             }
           ],
           "description": "Creates a new mailing list in the address book with id <code>parentId</code>."
@@ -3680,11 +3772,24 @@
         {
           "name": "listMembers",
           "type": "function",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "id",
               "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "contacts.ContactNode"
+                  }
+                }
+              ]
             }
           ],
           "description": "Gets all contacts that are members of the mailing list with id <code>id</code>."
@@ -5381,11 +5486,31 @@
           "permissions": [
             "compose"
           ],
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "tabId",
               "type": "integer"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "choices": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "ComposeAttachment"
+                      }
+                    },
+                    {
+                      "type": "any"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -5396,7 +5521,7 @@
           "permissions": [
             "compose"
           ],
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "tabId",
@@ -5417,6 +5542,23 @@
                   "additionalProperties": true
                 }
               }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "choices": [
+                    {
+                      "$ref": "ComposeAttachment"
+                    },
+                    {
+                      "type": "any"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -5427,7 +5569,7 @@
           "permissions": [
             "compose"
           ],
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "tabId",
@@ -5453,6 +5595,23 @@
                   "optional": true
                 }
               }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "choices": [
+                    {
+                      "$ref": "ComposeAttachment"
+                    },
+                    {
+                      "type": "any"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -6061,11 +6220,21 @@
           "name": "isEnabled",
           "type": "function",
           "description": "Checks whether the composeAction is enabled.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "details",
               "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "boolean"
+                }
+              ]
             }
           ]
         },
@@ -8185,12 +8354,29 @@
           "name": "getDisplayedMessage",
           "type": "function",
           "description": "Gets the currently displayed message in the specified tab. It returns null if no messages are displayed, or if multiple messages are displayed.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "tabId",
               "type": "integer",
               "minimum": 1
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "choices": [
+                    {
+                      "$ref": "messages.MessageHeader"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -8198,12 +8384,25 @@
           "name": "getDisplayedMessages",
           "type": "function",
           "description": "Gets an array of the currently displayed messages in the specified tab. The array is empty if no messages are displayed.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "tabId",
               "type": "integer",
               "minimum": 1
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "messages.MessageHeader"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -8724,11 +8923,21 @@
           "name": "isEnabled",
           "type": "function",
           "description": "Checks whether the messageDisplayAction is enabled.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "details",
               "$ref": "Details"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "boolean"
+                }
+              ]
             }
           ]
         },
@@ -8894,7 +9103,13 @@
             "headers": {
               "type": "object",
               "description": "An object of part headers, with the header name as key, and an array of header values as value",
-              "optional": true
+              "optional": true,
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
             },
             "name": {
               "type": "string",
@@ -9109,7 +9324,7 @@
           "name": "list",
           "type": "function",
           "description": "Gets all messages in a folder.",
-          "async": true,
+          "async": "callback",
           "permissions": [
             "accountsRead"
           ],
@@ -9117,6 +9332,16 @@
             {
               "name": "folder",
               "$ref": "folders.MailFolder"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "MessageList"
+                }
+              ]
             }
           ]
         },
@@ -9124,11 +9349,21 @@
           "name": "continueList",
           "type": "function",
           "description": "Returns the next chunk of messages in a list. See :doc:`how-to/messageLists` for more information.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "messageListId",
               "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "MessageList"
+                }
+              ]
             }
           ]
         },
@@ -9136,11 +9371,21 @@
           "name": "get",
           "type": "function",
           "description": "Returns a specified message.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "messageId",
               "type": "integer"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "MessageHeader"
+                }
+              ]
             }
           ]
         },
@@ -9148,23 +9393,43 @@
           "name": "getFull",
           "type": "function",
           "description": "Returns a specified message, including all headers and MIME parts.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "messageId",
               "type": "integer"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "MessagePart"
+                }
+              ]
             }
           ]
         },
         {
           "name": "getRaw",
           "type": "function",
-          "description": "Returns the unmodified source of a message as a `binary string <https://developer.mozilla.org/en-US/docs/Web/API/DOMString/Binary>`__.",
-          "async": true,
+          "description": "Returns the unmodified source of a message as a `binary string <https://developer.mozilla.org/en-US/docs/Web/API/DOMString/Binary>`__, which is a simple series of 8-bit values. If the message contains non-ASCII characters, the body parts in the binary string cannot be read directly and must be decoded according to their character sets. Use :ref:`messages.getFull` to get the correctly decoded parts. Manually decoding the raw message is probably too error-prone, especially if the message contains MIME parts with different character set encodings or attachments.\n\nTo get a readable version of the raw message as it appears in Thunderbird's message source view, it may be sufficient to decode the message according to the character set specified in its main ``content-type`` header (example: `text/html; charset=UTF-8`) using the following function (see MDN for `supported input encodings <https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API/Encodings>`__): <literalinclude>includes/messages/decodeBinaryString.js<lang>JavaScript</lang></literalinclude>",
+          "async": "callback",
           "parameters": [
             {
               "name": "messageId",
               "type": "integer"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string"
+                }
+              ]
             }
           ]
         },
@@ -9172,11 +9437,24 @@
           "name": "listAttachments",
           "type": "function",
           "description": "Lists all of the attachments of a message.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "messageId",
               "type": "integer"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "Attachment"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -9184,7 +9462,7 @@
           "name": "getAttachmentFile",
           "type": "function",
           "description": "Gets the content of an attachment as a DOM <code>File</code> object.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "messageId",
@@ -9194,6 +9472,18 @@
               "name": "partName",
               "type": "string",
               "pattern": "^\\d+(\\.\\d+)*$"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "object",
+                  "isInstanceOf": "File",
+                  "additionalProperties": true
+                }
+              ]
             }
           ]
         },
@@ -9201,12 +9491,17 @@
           "name": "query",
           "type": "function",
           "description": "Gets all messages that have the specified properties, or all messages if no properties are specified.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "type": "object",
               "name": "queryInfo",
               "properties": {
+                "attachment": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "If specified, returns only messages with or without attachments."
+                },
                 "author": {
                   "type": "string",
                   "optional": true,
@@ -9283,6 +9578,16 @@
                   "description": "Returns only unread (or read if false) messages."
                 }
               }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "MessageList"
+                }
+              ]
             }
           ]
         },
@@ -9405,8 +9710,22 @@
           "name": "listTags",
           "type": "function",
           "description": "Returns a list of tags that can be set on messages, and their human-friendly name, colour, and sort order.",
-          "async": true,
-          "parameters": []
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "MessageTag"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     }
