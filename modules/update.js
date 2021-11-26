@@ -7,7 +7,7 @@ import { CHAR, INDENT } from './constant.js';
 import { URL } from 'url';
 import JSON5 from 'json5';
 import { createFile } from './file-util.js';
-import { getType, isString, throwErr } from './common.js';
+import { getType, isString } from './common.js';
 import commander from 'commander';
 import fetch from 'node-fetch';
 import path from 'path';
@@ -248,9 +248,9 @@ export const saveSchemaFile = async (channel, info) => {
  * update schemas files
  *
  * @param {object} cmdOpts - command options
- * @returns {Promise.<Array|Error>} - promise chain
+ * @returns {void}
  */
-export const updateSchemas = (cmdOpts = {}) => {
+export const updateSchemas = async (cmdOpts = {}) => {
   const { channel, info } = cmdOpts;
   const func = [];
   if (channel) {
@@ -264,7 +264,13 @@ export const updateSchemas = (cmdOpts = {}) => {
       saveSchemaFile('mail', info)
     );
   }
-  return Promise.all(func).catch(throwErr);
+  const arr = await Promise.allSettled(func);
+  for (const i of arr) {
+    const { reason, status } = i;
+    if (status === 'rejected' && reason) {
+      console.trace(reason);
+    }
+  }
 };
 
 /**

@@ -436,205 +436,134 @@ describe('save schema file', () => {
 });
 
 describe('update schemas files', () => {
-  it('should get result', async () => {
-    const stubAll = sinon.stub(Promise, 'all').callsFake(async arr => {
-      let val;
-      switch (arr.length) {
-        case 3:
-          val = [
-            [
-              {
-                file: 'foo',
-                schema: {
-                  foo: 'baz'
-                }
-              }
-            ],
-            [
-              {
-                file: 'baz',
-                schema: {
-                  baz: 'qux'
-                }
-              }
-            ],
-            [
-              {
-                file: 'foobar',
-                schema: {
-                  foobar: 'quux'
-                }
-              }
-            ]
-          ];
-          break;
-        case 2:
-          val = [
-            [
-              {
-                file: 'foo',
-                schema: {
-                  foo: 'bar'
-                }
-              }
-            ],
-            [
-              {
-                file: 'baz',
-                schema: {
-                  baz: 'qux'
-                }
-              }
-            ]
-          ];
-          break;
-        default: {
-          val = [];
-          for (const i of arr) {
-            const j = await i;
-            val.push(j);
-          }
-        }
+  it('should call function', async () => {
+    const stubAll = sinon.stub(Promise, 'allSettled').resolves([
+      {
+        status: 'resolved'
+      },
+      {
+        status: 'resolved'
+      },
+      {
+        reason: new Error('error'),
+        status: 'rejected'
+      },
+      {
+        reason: new Error('error'),
+        status: 'rejected'
+      },
+      {
+        status: 'resolved'
       }
-      return val;
-    });
-    const stubWrite = sinon.stub(fs.promises, 'writeFile');
-    const writeCount = stubWrite.callCount;
-    const betaPath =
-      path.join(process.cwd(), 'schemas', 'beta', 'webext.json');
-    const centralPath =
-      path.join(process.cwd(), 'schemas', 'central', 'webext.json');
-    const esrPath =
-      path.join(process.cwd(), 'schemas', 'esr', 'webext.json');
-    const releasePath =
-      path.join(process.cwd(), 'schemas', 'release', 'webext.json');
-    const mailPath =
-      path.join(process.cwd(), 'schemas', 'mail', 'mailext.json');
-    const res = await updateSchemas();
-    const { callCount: writeCallCount } = stubWrite;
-    stubWrite.restore();
+    ]);
+    const stubTrace = sinon.stub(console, 'trace');
+    const i = stubTrace.callCount;
+    await updateSchemas();
+    const { callCount: traceCallCount } = stubTrace;
     stubAll.restore();
-    assert.strictEqual(writeCallCount, writeCount + 5, 'write');
-    assert.deepEqual(res, [
-      betaPath,
-      centralPath,
-      esrPath,
-      releasePath,
-      mailPath
-    ], 'result');
+    stubTrace.restore();
+    assert.strictEqual(traceCallCount, i + 2, 'trace');
   });
 
-  it('should get result', async () => {
-    const stubAll = sinon.stub(Promise, 'all').callsFake(async arr => {
-      let val;
-      switch (arr.length) {
-        case 3:
-          val = [
-            [
-              {
-                file: 'foo',
-                schema: {
-                  foo: 'baz'
-                }
-              }
-            ],
-            [
-              {
-                file: 'baz',
-                schema: {
-                  baz: 'qux'
-                }
-              }
-            ],
-            [
-              {
-                file: 'foobar',
-                schema: {
-                  foobar: 'quux'
-                }
-              }
-            ]
-          ];
-          break;
-        case 2:
-          val = [
-            [
-              {
-                file: 'foo',
-                schema: {
-                  foo: 'bar'
-                }
-              }
-            ],
-            [
-              {
-                file: 'baz',
-                schema: {
-                  baz: 'qux'
-                }
-              }
-            ]
-          ];
-          break;
-        default: {
-          val = [];
-          for (const i of arr) {
-            const j = await i;
-            val.push(j);
-          }
-        }
+  it('should not call function', async () => {
+    const stubAll = sinon.stub(Promise, 'allSettled').resolves([
+      {
+        status: 'resolved'
+      },
+      {
+        status: 'resolved'
+      },
+      {
+        status: 'resolved'
+      },
+      {
+        status: 'resolved'
+      },
+      {
+        status: 'resolved'
       }
-      return val;
-    });
-    const stubWrite = sinon.stub(fs.promises, 'writeFile');
-    const writeCount = stubWrite.callCount;
-    const releasePath =
-      path.join(process.cwd(), 'schemas', 'release', 'webext.json');
-    const res = await updateSchemas({ channel: 'release' });
-    const { callCount: writeCallCount } = stubWrite;
-    stubWrite.restore();
+    ]);
+    const stubTrace = sinon.stub(console, 'trace');
+    const i = stubTrace.callCount;
+    await updateSchemas();
+    const { callCount: traceCallCount } = stubTrace;
     stubAll.restore();
-    assert.strictEqual(writeCallCount, writeCount + 1, 'write');
-    assert.deepEqual(res, [releasePath], 'result');
+    stubTrace.restore();
+    assert.strictEqual(traceCallCount, i, 'trace');
   });
 
-  describe('parse command', () => {
-    const func = parseCommand;
+  it('should call function', async () => {
+    const stubAll = sinon.stub(Promise, 'allSettled').resolves([
+      {
+        reason: new Error('error'),
+        status: 'rejected'
+      }
+    ]);
+    const stubTrace = sinon.stub(console, 'trace');
+    const i = stubTrace.callCount;
+    const opt = {
+      channel: 'beta'
+    };
+    await updateSchemas(opt);
+    const { callCount: traceCallCount } = stubTrace;
+    stubAll.restore();
+    stubTrace.restore();
+    assert.strictEqual(traceCallCount, i + 1, 'trace');
+  });
 
-    it('should not parse', () => {
-      const stubParse = sinon.stub(commander, 'parse');
-      const i = stubParse.callCount;
-      func();
-      assert.strictEqual(stubParse.callCount, i, 'not called');
-      stubParse.restore();
-    });
+  it('should not call function', async () => {
+    const stubAll = sinon.stub(Promise, 'allSettled').resolves([
+      {
+        status: 'resolved'
+      }
+    ]);
+    const stubTrace = sinon.stub(console, 'trace');
+    const i = stubTrace.callCount;
+    const opt = {
+      channel: 'beta'
+    };
+    await updateSchemas(opt);
+    const { callCount: traceCallCount } = stubTrace;
+    stubAll.restore();
+    stubTrace.restore();
+    assert.strictEqual(traceCallCount, i, 'trace');
+  });
+});
 
-    it('should not parse', () => {
-      const stubParse = sinon.stub(commander, 'parse');
-      const i = stubParse.callCount;
-      func([]);
-      assert.strictEqual(stubParse.callCount, i, 'not called');
-      stubParse.restore();
-    });
+describe('parse command', () => {
+  it('should not parse', () => {
+    const stubParse = sinon.stub(commander, 'parse');
+    const i = stubParse.callCount;
+    parseCommand();
+    assert.strictEqual(stubParse.callCount, i, 'not called');
+    stubParse.restore();
+  });
 
-    it('should not parse', () => {
-      const stubParse = sinon.stub(commander, 'parse');
-      const i = stubParse.callCount;
-      func(['foo', 'bar', 'baz']);
-      assert.strictEqual(stubParse.callCount, i, 'not called');
-      stubParse.restore();
-    });
+  it('should not parse', () => {
+    const stubParse = sinon.stub(commander, 'parse');
+    const i = stubParse.callCount;
+    parseCommand([]);
+    assert.strictEqual(stubParse.callCount, i, 'not called');
+    stubParse.restore();
+  });
 
-    it('should parse', () => {
-      const stubParse = sinon.stub(commander, 'parse');
-      const stubVer = sinon.stub(commander, 'version');
-      const i = stubParse.callCount;
-      const j = stubVer.callCount;
-      func(['foo', 'bar', '-v']);
-      assert.strictEqual(stubParse.callCount, i + 1, 'called');
-      assert.strictEqual(stubVer.callCount, j + 1, 'called');
-      stubParse.restore();
-      stubVer.restore();
-    });
+  it('should not parse', () => {
+    const stubParse = sinon.stub(commander, 'parse');
+    const i = stubParse.callCount;
+    parseCommand(['foo', 'bar', 'baz']);
+    assert.strictEqual(stubParse.callCount, i, 'not called');
+    stubParse.restore();
+  });
+
+  it('should parse', () => {
+    const stubParse = sinon.stub(commander, 'parse');
+    const stubVer = sinon.stub(commander, 'version');
+    const i = stubParse.callCount;
+    const j = stubVer.callCount;
+    parseCommand(['foo', 'bar', '-v']);
+    assert.strictEqual(stubParse.callCount, i + 1, 'called');
+    assert.strictEqual(stubVer.callCount, j + 1, 'called');
+    stubParse.restore();
+    stubVer.restore();
   });
 });
