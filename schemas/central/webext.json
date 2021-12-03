@@ -11750,6 +11750,7 @@
             "cpuallthreads",
             "samplingallthreads",
             "markersallthreads",
+            "unregisteredthreads",
             "responsiveness"
           ]
         },
