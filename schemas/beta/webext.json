@@ -11731,7 +11731,9 @@
             "js",
             "leaf",
             "mainthreadio",
-            "responsiveness",
+            "fileio",
+            "fileioall",
+            "noiostacks",
             "screenshots",
             "seqstyle",
             "stackwalk",
@@ -11739,15 +11741,17 @@
             "jstracer",
             "jsallocations",
             "nostacksampling",
-            "nativeallocations",
             "preferencereads",
+            "nativeallocations",
             "ipcmessages",
-            "fileio",
-            "fileioall",
-            "noiostacks",
             "audiocallbacktracing",
             "cpu",
-            "notimerresolutionchange"
+            "notimerresolutionchange",
+            "cpuallthreads",
+            "samplingallthreads",
+            "markersallthreads",
+            "unregisteredthreads",
+            "responsiveness"
           ]
         },
         {
@@ -12757,34 +12761,13 @@
               "postprocess": "manifestVersionCheck"
             },
             "applications": {
-              "type": "object",
-              "optional": true,
-              "properties": {
-                "gecko": {
-                  "$ref": "FirefoxSpecificProperties",
-                  "optional": true
-                }
-              }
+              "$ref": "BrowserSpecificSettings",
+              "description": "The applications property is deprecated, please use 'browser_specific_settings'",
+              "optional": true
             },
             "browser_specific_settings": {
-              "type": "object",
-              "optional": true,
-              "properties": {
-                "gecko": {
-                  "$ref": "FirefoxSpecificProperties",
-                  "optional": true
-                },
-                "edge": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "any"
-                  },
-                  "optional": true
-                }
-              },
-              "additionalProperties": {
-                "$ref": "UnrecognizedProperty"
-              }
+              "$ref": "BrowserSpecificSettings",
+              "optional": true
             },
             "name": {
               "type": "string",
@@ -12816,6 +12799,32 @@
               "format": "url",
               "optional": true,
               "preprocess": "localize"
+            },
+            "install_origins": {
+              "type": "array",
+              "optional": true,
+              "items": {
+                "type": "string",
+                "format": "origin"
+              }
+            },
+            "developer": {
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "url",
+                  "optional": true,
+                  "preprocess": "localize",
+                  "onError": "warn"
+                }
+              }
             }
           }
         },
@@ -13030,22 +13039,6 @@
                   }
                 }
               ]
-            },
-            "developer": {
-              "type": "object",
-              "optional": true,
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "url": {
-                  "type": "string",
-                  "optional": true,
-                  "preprocess": "localize"
-                }
-              }
             },
             "hidden": {
               "type": "boolean",
@@ -13310,6 +13303,19 @@
               "type": "string",
               "optional": true
             }
+          }
+        },
+        {
+          "id": "BrowserSpecificSettings",
+          "type": "object",
+          "properties": {
+            "gecko": {
+              "$ref": "FirefoxSpecificProperties",
+              "optional": true
+            }
+          },
+          "additionalProperties": {
+            "type": "any"
           }
         },
         {
@@ -15358,6 +15364,27 @@
           }
         },
         {
+          "name": "getFrameId",
+          "type": "function",
+          "allowedContexts": [
+            "content",
+            "devtools"
+          ],
+          "description": "Get the frameId of any window global or frame element.",
+          "parameters": [
+            {
+              "type": "any",
+              "name": "target",
+              "description": "A WindowProxy or a Browsing Context container element (IFrame, Frame, Embed, Object) for the target frame."
+            }
+          ],
+          "allowCrossOriginArguments": true,
+          "returns": {
+            "type": "number",
+            "description": "The frameId of the target frame, or -1 if it doesn't exist."
+          }
+        },
+        {
           "name": "setUninstallURL",
           "type": "function",
           "description": "Sets the URL to be visited upon uninstallation. This may be used to clean up server-side data, do analytics, and implement surveys. Maximum 255 characters.",
@@ -15805,6 +15832,131 @@
               "$ref": "OnRestartRequiredReason",
               "name": "reason",
               "description": "The reason that the event is being dispatched."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scripting.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "OptionalPermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "scripting"
+              ],
+              "min_manifest_version": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "scripting",
+      "description": "Use the scripting API to execute script in different contexts.",
+      "permissions": [
+        "scripting"
+      ],
+      "min_manifest_version": 3,
+      "types": [
+        {
+          "id": "ScriptInjection",
+          "type": "object",
+          "description": "Details of a script injection",
+          "properties": {
+            "args": {
+              "type": "array",
+              "optional": true,
+              "description": "The arguments to curry into a provided function. This is only valid if the <code>func</code> parameter is specified. These arguments must be JSON-serializable.",
+              "items": {
+                "type": "any"
+              }
+            },
+            "files": {
+              "type": "array",
+              "optional": true,
+              "description": "The path of the JS or CSS files to inject, relative to the extension's root directory. Exactly one of <code>files</code> and <code>func</code> must be specified.",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            },
+            "func": {
+              "type": "function",
+              "optional": true,
+              "description": "A JavaScript function to inject. This function will be serialized, and then deserialized for injection. This means that any bound parameters and execution context will be lost. Exactly one of <code>files</code> and <code>func</code> must be specified."
+            },
+            "target": {
+              "$ref": "InjectionTarget",
+              "description": "Details specifying the target into which to inject the script."
+            }
+          }
+        },
+        {
+          "id": "InjectionResult",
+          "type": "object",
+          "description": "Result of a script injection.",
+          "properties": {
+            "frameId": {
+              "type": "number",
+              "description": "The frame ID associated with the injection."
+            },
+            "result": {
+              "type": "any",
+              "optional": true,
+              "description": "The result of the script execution."
+            }
+          }
+        },
+        {
+          "id": "InjectionTarget",
+          "type": "object",
+          "properties": {
+            "frameIds": {
+              "type": "array",
+              "optional": true,
+              "description": "The IDs of specific frames to inject into.",
+              "items": {
+                "type": "number"
+              }
+            },
+            "tabId": {
+              "type": "number",
+              "description": "The ID of the tab into which to inject."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "executeScript",
+          "type": "function",
+          "description": "Injects a script into a target context. The script will be run at <code>document_idle</code>.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "injection",
+              "$ref": "ScriptInjection",
+              "description": "The details of the script which to inject."
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Invoked upon completion of the injection. The resulting array contains the result of execution for each frame where the injection succeeded.",
+              "parameters": [
+                {
+                  "name": "results",
+                  "type": "array",
+                  "items": {
+                    "$ref": "InjectionResult"
+                  }
+                }
+              ]
             }
           ]
         }
