@@ -331,6 +331,22 @@
               "$ref": "extensionTypes.RunAt",
               "optional": true,
               "description": "The soonest that the JavaScript or CSS will be injected into the tab. Defaults to \"document_idle\"."
+            },
+            "cookieStoreId": {
+              "choices": [
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "optional": true,
+              "description": "limit the set of matched tabs to those that belong to the given cookie store id"
             }
           }
         },
@@ -4757,6 +4773,18 @@
                 "description": "Set this to true if the file upload was aborted.",
                 "optional": true
               },
+              "error": {
+                "choices": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Report an error to the user. Set it to true for showing a generic error message, or set it to a specific error message.",
+                "optional": true
+              },
               "url": {
                 "type": "string",
                 "description": "The URL where the uploaded file can be accessed.",
@@ -4791,6 +4819,56 @@
               "description": "The tab where the upload was initiated. Currently only available for the message composer."
             }
           ]
+        },
+        {
+          "name": "onFileRename",
+          "type": "function",
+          "description": "Fired when an already uploaded file should be renamed.",
+          "parameters": [
+            {
+              "name": "account",
+              "$ref": "CloudFileAccount",
+              "description": "The account used for the file upload."
+            },
+            {
+              "type": "integer",
+              "name": "fileId",
+              "minimum": 1,
+              "description": "An identifier for the file which should be renamed."
+            },
+            {
+              "type": "string",
+              "name": "newName",
+              "description": "The new name of the file."
+            },
+            {
+              "name": "tab",
+              "$ref": "tabs.Tab",
+              "description": "The tab where the rename was initiated. Currently only available for the message composer."
+            }
+          ],
+          "returns": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "choices": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "Report an error to the user. Set it to true for showing a generic error message, or set it to a specific error message.",
+                "optional": true
+              },
+              "url": {
+                "type": "string",
+                "description": "The URL where the renamed file can be accessed.",
+                "optional": true
+              }
+            }
+          }
         },
         {
           "name": "onFileDeleted",
