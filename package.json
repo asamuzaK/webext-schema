@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "camelize": "^1.0.0",
-    "commander": "^8.3.0",
+    "commander": "^9.0.0",
     "decamelize": "^6.0.0",
     "json5": "^2.2.0",
     "node-fetch": "^3.2.0",
