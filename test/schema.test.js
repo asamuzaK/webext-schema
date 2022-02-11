@@ -855,7 +855,7 @@ describe('Schema', () => {
       const schema = new Schema();
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
-      assert.deepEqual(res, schema._schema, 'schema')
+      assert.deepEqual(res, schema._schema, 'schema');
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -867,7 +867,7 @@ describe('Schema', () => {
       const schema = new Schema('beta');
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
-      assert.deepEqual(res, schema._schema, 'schema')
+      assert.deepEqual(res, schema._schema, 'schema');
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -879,7 +879,7 @@ describe('Schema', () => {
       const schema = new Schema('central');
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
-      assert.deepEqual(res, schema._schema, 'schema')
+      assert.deepEqual(res, schema._schema, 'schema');
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -891,7 +891,7 @@ describe('Schema', () => {
       const schema = new Schema('esr');
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
-      assert.deepEqual(res, schema._schema, 'schema')
+      assert.deepEqual(res, schema._schema, 'schema');
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -903,7 +903,7 @@ describe('Schema', () => {
       const schema = new Schema('release');
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
-      assert.deepEqual(res, schema._schema, 'schema')
+      assert.deepEqual(res, schema._schema, 'schema');
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -915,7 +915,7 @@ describe('Schema', () => {
       const schema = new Schema('mail');
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
-      assert.deepEqual(res, schema._schema, 'schema')
+      assert.deepEqual(res, schema._schema, 'schema');
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
