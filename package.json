@@ -14,7 +14,12 @@
   "scripts": {
     "lint": "eslint --fix .",
     "start": "node index",
-    "test": "c8 --reporter=text mocha test/*.test.js --exit",
+    "test": "npm run test:central",
+    "test:beta": "c8 mocha test/*.test.js --require test/mocha/setup.js --channel=beta --exit",
+    "test:central": "c8 mocha test/*.test.js --require test/mocha/setup.js --channel=central --exit",
+    "test:esr": "c8 mocha test/*.test.js --require test/mocha/setup.js --channel=esr --exit",
+    "test:release": "c8 mocha test/*.test.js --require test/mocha/setup.js --channel=release --exit",
+    "test_all": "npm-run-all -s test:*",
     "update": "node index update -i",
     "update:beta": "node index update -c beta -i",
     "update:central": "node index update -c central -i",
