@@ -273,9 +273,8 @@ export class Schema {
       encoding: CHAR,
       flag: 'r'
     });
-    const schema = JSON.parse(content);
-    this._schema = schema;
-    return schema;
+    this._schema = JSON.parse(content);
+    return this._schema;
   }
 
   /**
