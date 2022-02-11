@@ -855,6 +855,7 @@ describe('Schema', () => {
       const schema = new Schema();
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
+      assert.deepEqual(res, schema._schema, 'schema')
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -866,6 +867,7 @@ describe('Schema', () => {
       const schema = new Schema('beta');
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
+      assert.deepEqual(res, schema._schema, 'schema')
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -877,6 +879,7 @@ describe('Schema', () => {
       const schema = new Schema('central');
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
+      assert.deepEqual(res, schema._schema, 'schema')
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -888,6 +891,7 @@ describe('Schema', () => {
       const schema = new Schema('esr');
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
+      assert.deepEqual(res, schema._schema, 'schema')
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -899,6 +903,7 @@ describe('Schema', () => {
       const schema = new Schema('release');
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
+      assert.deepEqual(res, schema._schema, 'schema')
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -910,6 +915,7 @@ describe('Schema', () => {
       const schema = new Schema('mail');
       const res = schema._parseSchemaContent();
       assert.isObject(res, 'result');
+      assert.deepEqual(res, schema._schema, 'schema')
       const items = Object.entries(res);
       for (const [key, value] of items) {
         assert.isTrue(key.endsWith('.json'), `${key}`);
@@ -939,6 +945,14 @@ describe('Schema', () => {
 
     it('should get array', () => {
       const schema = new Schema();
+      schema._parseSchemaContent();
+      assert.isObject(schema._schema, 'schema');
+      const res = schema.get('browser_action.json');
+      assert.isArray(res, 'result');
+    });
+
+    it('should get array', () => {
+      const schema = new Schema();
       const res = schema.get('browser_action');
       assert.isArray(res, 'result');
     });
@@ -953,6 +967,18 @@ describe('Schema', () => {
   describe('get all schemas', () => {
     it('should get object', () => {
       const schema = new Schema();
+      schema._parseSchemaContent();
+      assert.isObject(schema._schema, 'schema');
+      const res = schema.getAll();
+      assert.isObject(res, 'result');
+      const keys = Object.keys(res);
+      for (const key of keys) {
+        assert.isTrue(key.endsWith('.json'), 'key');
+      }
+    });
+
+    it('should get object', () => {
+      const schema = new Schema();
       const res = schema.getAll();
       assert.isObject(res, 'result');
       const keys = Object.keys(res);
@@ -963,6 +989,17 @@ describe('Schema', () => {
   });
 
   describe('list schemas', () => {
+    it('should get array', () => {
+      const schema = new Schema();
+      schema._parseSchemaContent();
+      assert.isObject(schema._schema, 'schema');
+      const res = schema.list();
+      assert.isArray(res, 'result');
+      for (const key of res) {
+        assert.isTrue(key.endsWith('.json'), 'key');
+      }
+    });
+
     it('should get array', () => {
       const schema = new Schema();
       const res = schema.list();
@@ -1010,6 +1047,112 @@ describe('Schema', () => {
   });
 
   describe('mock browser api', () => {
+    it('should get stubbed api', () => {
+      const schema = new Schema();
+      schema._parseSchemaContent();
+      assert.isObject(schema._schema, 'schema');
+      const browser = schema.mock();
+      assert.isObject(browser, 'browser');
+      const {
+        bookmarks, browserAction, browserSettings, commands, contextMenus,
+        contextualIdentities, devtools, i18n, management, menus, notifications,
+        permissions, privacy, runtime, sessions, storage, tabs, theme, windows
+      } = browser;
+      const { inspectedWindow } = devtools;
+      assert.isObject(bookmarks, 'bookmarks');
+      assert.isFunction(bookmarks.create, 'bookmarks.create');
+      assert.isNumber(bookmarks.create.callCount, 'stub bookmarks.create');
+      assert.isObject(browserAction, 'browserAction');
+      assert.isFunction(browserAction.setTitle, 'browserAction.setTitle');
+      assert.isNumber(browserAction.setTitle.callCount,
+        'stub browserAction.setTitle');
+      assert.isObject(browserAction.onClicked, 'browserAction.onClicked');
+      assert.isFunction(browserAction.onClicked.addListener,
+        'browserAction.onClicked.addListener');
+      assert.isNumber(browserAction.onClicked.addListener.callCount,
+        'stub browserAction.onClicked.addListener.callCount');
+      assert.isObject(browserSettings, 'browserSettings');
+      assert.isObject(browserSettings.closeTabsByDoubleClick,
+        'browserSettings.closeTabsByDoubleClick');
+      assert.isObject(commands, 'commands');
+      assert.isFunction(commands.update, 'commands.update');
+      assert.isNumber(commands.update.callCount, 'stub commands.update');
+      assert.isObject(contextMenus, 'contextMenus');
+      assert.isFunction(contextMenus.create, 'contextMenus.create');
+      assert.isNumber(contextMenus.create.callCount,
+        'stub contextMenus.create');
+      assert.isObject(contextualIdentities, 'contextualIdentities');
+      assert.isFunction(contextualIdentities.get, 'contextualIdentities.get');
+      assert.isNumber(contextualIdentities.get.callCount,
+        'stub contextualIdentities.get');
+      assert.isObject(devtools, 'devtools');
+      assert.isObject(inspectedWindow, 'inspectedWindow');
+      assert.isFunction(inspectedWindow.reload, 'inspectedWindow.reload');
+      assert.isNumber(inspectedWindow.reload.callCount,
+        'stub inspectedWindow.reload');
+      assert.isObject(i18n, 'i18n');
+      assert.isFunction(i18n.getMessage, 'i18n.getMessage');
+      assert.isNumber(i18n.getMessage.callCount, 'stub i18n.getMessage');
+      assert.isObject(management, 'management');
+      assert.isFunction(management.get, 'management.get');
+      assert.isNumber(management.get.callCount, 'stub management.get');
+      assert.isObject(menus, 'menus');
+      assert.isFunction(menus.create, 'menus.create');
+      assert.isNumber(menus.create.callCount, 'stub menus.create');
+      assert.isFunction(menus.getTargetElement, 'menus.getTargetElement');
+      assert.isNumber(menus.getTargetElement.callCount,
+        'stub menus.getTargetElement');
+      assert.isFunction(menus.removeAll, 'menus.removeAll');
+      assert.isNumber(menus.removeAll.callCount, 'stub menus.removeAll');
+      assert.isObject(notifications, 'notifications');
+      assert.isFunction(notifications.create, 'notifications.create');
+      assert.isNumber(notifications.create.callCount,
+        'stub notifications.create');
+      assert.isObject(notifications.onClosed, 'notifications.onClosed');
+      assert.isFunction(notifications.onClosed.addListener,
+        'notifications.onClosed.addListener');
+      assert.isNumber(notifications.onClosed.addListener.callCount,
+        'stub notifications.onClosed.addListener');
+      assert.isObject(permissions, 'permissions');
+      assert.isFunction(permissions.request, 'permissions.request');
+      assert.isNumber(permissions.request.callCount,
+        'stub permissions.request');
+      assert.isObject(privacy.network.tlsVersionRestrictionConfig,
+        'privacy.network.tlsVersionRestrictionConfig');
+      assert.isObject(runtime, 'runtime');
+      assert.isFunction(runtime.connect, 'runtime.connect');
+      assert.isNumber(runtime.connect.callCount, 'stub runtime.connect');
+      assert.isObject(runtime.Port, 'runtime.Port');
+      assert.isFunction(runtime.Port.disconnect, 'runtime.Port.disconnect');
+      assert.isFunction(runtime.Port.onDisconnect.addListener,
+        'runtime.Port.disconnect');
+      assert.isFunction(runtime.Port.onDisconnect.addListener,
+        'runtime.Port.onDisconnect.addListener');
+      assert.isObject(sessions, 'sessions');
+      assert.isFunction(sessions.getRecentlyClosed,
+        'sessions.getRecentlyClosed');
+      assert.isNumber(sessions.getRecentlyClosed.callCount,
+        'stub sessions.getRecentlyClosed');
+      assert.isObject(storage, 'storage');
+      assert.isObject(storage.local, 'storage.local');
+      assert.isFunction(storage.local.get, 'storage.local.get');
+      assert.isNumber(storage.local.get.callCount, 'stub storage.local.get');
+      assert.isObject(storage.onChanged, 'storage.onChanged');
+      assert.isFunction(storage.onChanged.addListener,
+        'storage.onChanged.addListener');
+      assert.isNumber(storage.onChanged.addListener.callCount,
+        'stub storage.onChanged.addListener');
+      assert.isObject(tabs, 'tabs');
+      assert.isFunction(tabs.get, 'tabs.get');
+      assert.isNumber(tabs.get.callCount, 'stub tabs.get');
+      assert.isObject(theme, 'theme');
+      assert.isFunction(theme.getCurrent, 'theme.getCurrent');
+      assert.isNumber(theme.getCurrent.callCount, 'stub theme.getCurrent');
+      assert.isObject(windows, 'windows');
+      assert.isFunction(windows.get, 'windows.get');
+      assert.isNumber(windows.get.callCount, 'stub windows.get');
+    });
+
     it('should get stubbed api', () => {
       const schema = new Schema();
       const browser = schema.mock();

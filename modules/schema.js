@@ -35,6 +35,7 @@ export class Schema {
     this._importMap = new Map();
     this._refMap = new Map();
     this._browser = null;
+    this._schema = null;
   }
 
   /* getter / setter */
@@ -272,8 +273,8 @@ export class Schema {
       encoding: CHAR,
       flag: 'r'
     });
-    const schema = JSON.parse(content);
-    return schema;
+    this._schema = JSON.parse(content);
+    return this._schema;
   }
 
   /**
@@ -286,7 +287,7 @@ export class Schema {
     if (!isString(name)) {
       throw new TypeError(`Expected String but got ${getType(name)}.`);
     }
-    const schemas = this._parseSchemaContent();
+    const schemas = this._schema || this._parseSchemaContent();
     const items = Object.entries(schemas);
     const label = decamelize(name.replace(/\.json$/, ''));
     let schema;
@@ -305,7 +306,7 @@ export class Schema {
    * @returns {object} - schemas
    */
   getAll() {
-    const schemas = this._parseSchemaContent();
+    const schemas = this._schema || this._parseSchemaContent();
     return schemas;
   }
 
@@ -315,7 +316,7 @@ export class Schema {
    * @returns {Array} - file list
    */
   list() {
-    const schemas = this._parseSchemaContent();
+    const schemas = this._schema || this._parseSchemaContent();
     const items = Object.keys(schemas);
     const arr = [];
     for (const item of items) {
@@ -330,7 +331,7 @@ export class Schema {
    * @returns {object} - stubbed browser api
    */
   mock() {
-    const schemas = this._parseSchemaContent();
+    const schemas = this._schema || this._parseSchemaContent();
     const schemaItems = Object.entries(schemas);
     const aliasKeys = ['action', 'menus'];
     this._browser = {
