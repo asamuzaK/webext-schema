@@ -1300,9 +1300,6 @@
   "permissions.json": [
     {
       "namespace": "permissions",
-      "permissions": [
-        "manifest:optional_permissions"
-      ],
       "types": [
         {
           "id": "Permissions",

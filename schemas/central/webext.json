@@ -13018,6 +13018,11 @@
                 }
               ]
             },
+            "granted_host_permissions": {
+              "type": "boolean",
+              "optional": true,
+              "default": false
+            },
             "host_permissions": {
               "min_manifest_version": 3,
               "type": "array",
@@ -14493,9 +14498,6 @@
   "permissions.json": [
     {
       "namespace": "permissions",
-      "permissions": [
-        "manifest:optional_permissions"
-      ],
       "types": [
         {
           "id": "Permissions",
@@ -16086,6 +16088,13 @@
               "optional": true,
               "default": "document_idle",
               "description": "Specifies when JavaScript files are injected into the web page. The preferred and default value is <code>document_idle</code>."
+            },
+            "persistAcrossSessions": {
+              "type": "boolean",
+              "enum": [
+                false
+              ],
+              "description": "Specifies if this content script will persist into future sessions. This is currently NOT supported."
             }
           }
         }
