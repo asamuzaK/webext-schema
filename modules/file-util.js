@@ -4,7 +4,7 @@
 
 /* api */
 import { IS_WIN } from './constant.js';
-import { URL, fileURLToPath } from 'url';
+import { fileURLToPath } from 'url';
 import { getType, isString } from './common.js';
 import fs, { promises as fsPromise } from 'fs';
 import path from 'path';

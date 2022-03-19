@@ -4,7 +4,6 @@
 
 /* api */
 import { CHAR, INDENT } from './constant.js';
-import { URL } from 'url';
 import JSON5 from 'json5';
 import { createFile } from './file-util.js';
 import { getType, isString } from './common.js';
