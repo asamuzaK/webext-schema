@@ -1711,7 +1711,6 @@
       "functions": [
         {
           "name": "getBackgroundPage",
-          "max_manifest_version": 2,
           "type": "function",
           "description": "Retrieves the JavaScript 'window' object for the background page running inside the current extension/app. If the background page is an event page, the system will ensure it is loaded before calling the callback. If there is no background page, an error is set.",
           "async": "callback",
@@ -2635,6 +2634,26 @@
                   },
                   "maxItems": 15,
                   "optional": true
+                },
+                "color_scheme": {
+                  "description": "If set, overrides the general 'toolbar theme'.",
+                  "optional": true,
+                  "type": "string",
+                  "enum": [
+                    "light",
+                    "dark",
+                    "auto"
+                  ]
+                },
+                "content_color_scheme": {
+                  "description": "If set, overrides the color scheme for the content area.",
+                  "optional": true,
+                  "type": "string",
+                  "enum": [
+                    "light",
+                    "dark",
+                    "auto"
+                  ]
                 }
               },
               "additionalProperties": {
