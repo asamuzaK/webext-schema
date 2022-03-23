@@ -31,7 +31,7 @@
     "camelize": "^1.0.0",
     "commander": "^9.1.0",
     "decamelize": "^6.0.0",
-    "json5": "^2.2.0",
+    "json5": "^2.2.1",
     "node-fetch": "^3.2.3",
     "sinon": "^13.0.1"
   },
