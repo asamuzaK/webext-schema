@@ -552,6 +552,7 @@ describe('browser', () => {
       ];
       for (const item of items) {
         const i = browser.commands.update.callCount;
+        // eslint-disable-next-line no-await-in-loop
         const res = await func('foo', item);
         assert.strictEqual(browser.commands.update.callCount, i + 1,
                            `called ${item}`);
