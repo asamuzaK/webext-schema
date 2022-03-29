@@ -2121,13 +2121,11 @@
         },
         {
           "name": "onSuspend",
-          "unsupported": true,
           "type": "function",
           "description": "Sent to the event page just before it is unloaded. This gives the extension opportunity to do some clean up. Note that since the page is unloading, any asynchronous operations started while handling this event are not guaranteed to complete. If more activity for the event page occurs before it gets unloaded the onSuspendCanceled event will be sent and the page won't be unloaded. "
         },
         {
           "name": "onSuspendCanceled",
-          "unsupported": true,
           "type": "function",
           "description": "Sent after onSuspend to indicate that the app won't be unloaded after all."
         },
@@ -4853,7 +4851,7 @@
             "properties": {
               "aborted": {
                 "type": "boolean",
-                "description": "Set this to true if the file upload was aborted.",
+                "description": "Set this to true if the file upload was aborted by the user and an :ref:`cloudFile.onFileUploadAbort` event has been received. No error message will be shown to the user.",
                 "optional": true
               },
               "error": {
@@ -5435,6 +5433,14 @@
               "description": "Whether the message is an HTML message or a plain text message.",
               "optional": true
             },
+            "customHeaders": {
+              "type": "array",
+              "items": {
+                "$ref": "CustomHeader"
+              },
+              "description": "Array of custom headers. Headers will be returned in ``Http-Header-Case`` (a.k.a. ``Train-Case``)",
+              "optional": true
+            },
             "attachments": {
               "type": "array",
               "items": {
@@ -5489,6 +5495,21 @@
               "type": "integer",
               "optional": true,
               "description": "The size in bytes of this attachment. Read-only."
+            }
+          }
+        },
+        {
+          "id": "CustomHeader",
+          "type": "object",
+          "description": "A custom header definition.",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Name of a custom header, must have a ``X-`` prefix.",
+              "pattern": "^X-.*$"
+            },
+            "value": {
+              "type": "string"
             }
           }
         }
