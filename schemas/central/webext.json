@@ -2611,6 +2611,7 @@
                 },
                 "onclick": {
                   "type": "function",
+                  "max_manifest_version": 2,
                   "optional": true,
                   "description": "A function that will be called back when the menu item is clicked. Event pages cannot use this; instead, they should register a listener for $(ref:contextMenus.onClicked).",
                   "parameters": [
@@ -2766,6 +2767,7 @@
                 },
                 "onclick": {
                   "type": "function",
+                  "max_manifest_version": 2,
                   "optional": "omit-key-if-missing",
                   "parameters": [
                     {
@@ -16479,6 +16481,23 @@
                 }
               ]
             }
+          ],
+          "events": [
+            {
+              "name": "onChanged",
+              "type": "function",
+              "description": "Fired when one or more items change.",
+              "parameters": [
+                {
+                  "name": "changes",
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "StorageChange"
+                  },
+                  "description": "Object mapping each key that changed to its corresponding $(ref:storage.StorageChange) for that item."
+                }
+              ]
+            }
           ]
         },
         {
@@ -16632,6 +16651,23 @@
                   "description": "Callback on success, or on failure (in which case $(ref:runtime.lastError) will be set).",
                   "parameters": [],
                   "optional": true
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "onChanged",
+              "type": "function",
+              "description": "Fired when one or more items change.",
+              "parameters": [
+                {
+                  "name": "changes",
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "StorageChange"
+                  },
+                  "description": "Object mapping each key that changed to its corresponding $(ref:storage.StorageChange) for that item."
                 }
               ]
             }

@@ -4767,12 +4767,8 @@
                 "data_format": {
                   "type": "string",
                   "optional": true,
-                  "default": "File",
-                  "description": "Determines the format of the ``data`` argument in ``onFileUpload``. Support for ArrayBuffer will be removed in Thunderbird 102.",
-                  "enum": [
-                    "ArrayBuffer",
-                    "File"
-                  ]
+                  "deprecated": true,
+                  "description": "This property is no longer used. The only supported data format for the ``data`` argument in ``onFileUpload`` is `File <https://developer.mozilla.org/docs/Web/API/File>`__."
                 },
                 "reuse_uploads": {
                   "description": "If a previously uploaded cloud file attachment is reused at a later time in a different message, Thunderbird may use the already known ``url`` and ``templateInfo`` values without triggering the registered :ref:`cloudFile.onFileUpload` listener again. Setting this option to false will always trigger the registered listener, providing the already known values through the ``relatedFileInfo`` parameter of the :ref:`cloudFile.onFileUpload` event, to let the provider decide how to handle these cases.",
@@ -5106,20 +5102,10 @@
               "description": "Filename of the file to be transferred."
             },
             "data": {
-              "choices": [
-                {
-                  "type": "object",
-                  "isInstanceOf": "ArrayBuffer",
-                  "additionalProperties": true,
-                  "description": "Contents of the file to be transferred."
-                },
-                {
-                  "type": "object",
-                  "isInstanceOf": "File",
-                  "additionalProperties": true,
-                  "description": "Contents of the file to be transferred."
-                }
-              ]
+              "type": "object",
+              "isInstanceOf": "File",
+              "additionalProperties": true,
+              "description": "Contents of the file to be transferred."
             }
           }
         },
@@ -10500,7 +10486,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates a new tab or switches to a tab with the given URL, if it exists already.",
+          "description": "Creates a new tab.",
           "async": "callback",
           "parameters": [
             {
