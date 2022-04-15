@@ -12,6 +12,7 @@ describe('Schema', () => {
       assert.instanceOf(schema, Schema, 'instance');
       assert.strictEqual(schema.channel, 'beta', 'channel');
       assert.isObject(schema._sandbox, 'sandbox');
+      schema._sandbox.restore();
     });
 
     it('should be instance of Schema', () => {
@@ -19,6 +20,7 @@ describe('Schema', () => {
       assert.instanceOf(schema, Schema, 'instance');
       assert.strictEqual(schema.channel, 'central', 'channel');
       assert.isObject(schema._sandbox, 'sandbox');
+      schema._sandbox.restore();
     });
 
     it('should be instance of Schema', () => {
@@ -32,6 +34,7 @@ describe('Schema', () => {
       assert.instanceOf(schema, Schema, 'instance');
       assert.strictEqual(schema.channel, 'beta', 'channel');
       assert.isObject(schema._sandbox, 'sandbox');
+      schema._sandbox.restore();
     });
 
     it('should be instance of Schema', () => {
@@ -45,6 +48,7 @@ describe('Schema', () => {
       assert.instanceOf(schema, Schema, 'instance');
       assert.strictEqual(schema.channel, 'central', 'channel');
       assert.isObject(schema._sandbox, 'sandbox');
+      schema._sandbox.restore();
     });
   });
 
