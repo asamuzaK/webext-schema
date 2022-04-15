@@ -33,7 +33,7 @@
     "decamelize": "^6.0.0",
     "json5": "^2.2.1",
     "node-fetch": "^3.2.3",
-    "sinon": "^13.0.1"
+    "sinon": "^13.0.2"
   },
   "devDependencies": {
     "c8": "^7.11.0",
