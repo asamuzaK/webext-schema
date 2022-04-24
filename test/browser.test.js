@@ -684,6 +684,16 @@ describe('browser', () => {
       assert.isNull(res, 'result');
     });
 
+    it('should not log error', async () => {
+      browser.management.getAll.resolves([]);
+      const stub = sinon.stub(console, 'error');
+      const res = await func();
+      const { called } = stub;
+      stub.restore();
+      assert.isFalse(called, 'not logged');
+      assert.isNull(res, 'result');
+    });
+
     it('should get array', async () => {
       browser.management.getAll.resolves([
         {
@@ -703,7 +713,11 @@ describe('browser', () => {
           type: 'bar'
         }
       ]);
+      const stub = sinon.stub(console, 'error');
       const res = await func();
+      const { called } = stub;
+      stub.restore();
+      assert.isFalse(called, 'not logged');
       assert.isArray(res, 'array');
       assert.deepEqual(res, [
         {
@@ -777,6 +791,16 @@ describe('browser', () => {
       const res = await func();
       stub.restore();
       assert.strictEqual(msg, 'error', 'log');
+      assert.isNull(res, 'result');
+    });
+
+    it('should not log error', async () => {
+      browser.management.getAll.resolves([]);
+      const stub = sinon.stub(console, 'error');
+      const res = await func();
+      const { called } = stub;
+      stub.restore();
+      assert.isFalse(called, 'not logged');
       assert.isNull(res, 'result');
     });
 
