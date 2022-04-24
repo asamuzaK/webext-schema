@@ -767,6 +767,19 @@ describe('browser', () => {
       assert.isNull(res, 'result');
     });
 
+    it('should log error message', async () => {
+      let msg;
+      const e = new Error('error');
+      const stub = sinon.stub(console, 'error').callsFake(m => {
+        msg = (m && m.message) || m;
+      });
+      browser.management.getAll.rejects(e);
+      const res = await func();
+      stub.restore();
+      assert.strictEqual(msg, 'error', 'log');
+      assert.isNull(res, 'result');
+    });
+
     it('should get array', async () => {
       browser.management.getAll.resolves([
         {
