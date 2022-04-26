@@ -5000,6 +5000,11 @@
                   "type": "string",
                   "optional": true,
                   "description": "The title used for display if the tab is created in discarded mode."
+                },
+                "muted": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the tab should be muted when created."
                 }
               }
             },
@@ -13018,6 +13023,11 @@
                 }
               ]
             },
+            "granted_host_permissions": {
+              "type": "boolean",
+              "optional": true,
+              "default": false
+            },
             "host_permissions": {
               "min_manifest_version": 3,
               "type": "array",
@@ -14493,9 +14503,6 @@
   "permissions.json": [
     {
       "namespace": "permissions",
-      "permissions": [
-        "manifest:optional_permissions"
-      ],
       "types": [
         {
           "id": "Permissions",
@@ -15337,7 +15344,6 @@
       "functions": [
         {
           "name": "getBackgroundPage",
-          "max_manifest_version": 2,
           "type": "function",
           "description": "Retrieves the JavaScript 'window' object for the background page running inside the current extension/app. If the background page is an event page, the system will ensure it is loaded before calling the callback. If there is no background page, an error is set.",
           "async": "callback",
@@ -15748,13 +15754,11 @@
         },
         {
           "name": "onSuspend",
-          "unsupported": true,
           "type": "function",
           "description": "Sent to the event page just before it is unloaded. This gives the extension opportunity to do some clean up. Note that since the page is unloading, any asynchronous operations started while handling this event are not guaranteed to complete. If more activity for the event page occurs before it gets unloaded the onSuspendCanceled event will be sent and the page won't be unloaded. "
         },
         {
           "name": "onSuspendCanceled",
-          "unsupported": true,
           "type": "function",
           "description": "Sent after onSuspend to indicate that the app won't be unloaded after all."
         },
@@ -15943,6 +15947,10 @@
             "target": {
               "$ref": "InjectionTarget",
               "description": "Details specifying the target into which to inject the script."
+            },
+            "world": {
+              "$ref": "ExecutionWorld",
+              "optional": true
             }
           }
         },
@@ -16045,6 +16053,14 @@
           }
         },
         {
+          "id": "ExecutionWorld",
+          "type": "string",
+          "enum": [
+            "ISOLATED"
+          ],
+          "description": "The JavaScript world for a script to execute within. We currently only support the <code>'ISOLATED'</code> world."
+        },
+        {
           "id": "RegisteredContentScript",
           "type": "object",
           "properties": {
@@ -16084,8 +16100,22 @@
             "runAt": {
               "$ref": "extensionTypes.RunAt",
               "optional": true,
-              "default": "document_idle",
               "description": "Specifies when JavaScript files are injected into the web page. The preferred and default value is <code>document_idle</code>."
+            },
+            "persistAcrossSessions": {
+              "type": "boolean",
+              "enum": [
+                false
+              ],
+              "description": "Specifies if this content script will persist into future sessions. This is currently NOT supported."
+            },
+            "css": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of CSS files to be injected into matching pages. These are injected in the order they appear in this array.",
+              "items": {
+                "$ref": "manifest.ExtensionURL"
+              }
             }
           }
         }
@@ -16222,6 +16252,39 @@
               "name": "callback",
               "type": "function",
               "description": "Invoked upon completion of the unregistration.",
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "updateContentScripts",
+          "type": "function",
+          "description": "Updates one or more content scripts for this extension.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "scripts",
+              "type": "array",
+              "description": "Contains a list of scripts to be updated. If there are errors during script parsing/file validation, or if the IDs specified do not already exist, then no scripts are updated.",
+              "items": {
+                "type": "object",
+                "$import": "RegisteredContentScript",
+                "properties": {
+                  "persistAcrossSessions": {
+                    "type": "boolean",
+                    "optional": true,
+                    "enum": [
+                      false
+                    ],
+                    "description": "Specifies if this content script will persist into future sessions. This is currently NOT supported."
+                  }
+                }
+              }
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Invoked when scripts have been updated.",
               "parameters": []
             }
           ]
@@ -17804,6 +17867,26 @@
                   },
                   "maxItems": 15,
                   "optional": true
+                },
+                "color_scheme": {
+                  "optional": true,
+                  "type": "string",
+                  "enum": [
+                    "auto",
+                    "light",
+                    "dark",
+                    "system"
+                  ]
+                },
+                "content_color_scheme": {
+                  "optional": true,
+                  "type": "string",
+                  "enum": [
+                    "auto",
+                    "light",
+                    "dark",
+                    "system"
+                  ]
                 }
               },
               "additionalProperties": {
