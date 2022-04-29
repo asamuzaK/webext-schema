@@ -83,7 +83,7 @@ export class Schema {
    */
   _assignImportMap() {
     if (this._importMap.size) {
-      const items = Array.from(this._importMap);
+      const items = [...this._importMap];
       for (const [key, value] of items) {
         const target = this._getTargetFromNamespace(key);
         if (target) {
@@ -111,7 +111,7 @@ export class Schema {
    */
   _assignRefMap() {
     if (this._refMap.size) {
-      const items = Array.from(this._refMap);
+      const items = [...this._refMap];
       for (const [key, value] of items) {
         const target = this._getTargetFromNamespace(key);
         if (target) {
