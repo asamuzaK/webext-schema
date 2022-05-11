@@ -3,11 +3,11 @@
  */
 
 /* api */
-import { IS_WIN } from './constant.js';
 import { fileURLToPath } from 'url';
 import { getType, isString } from './common.js';
 import fs, { promises as fsPromise } from 'fs';
 import path from 'path';
+import { IS_WIN } from './constant.js';
 
 /* constants */
 const MASK_BIT = 0o111;
@@ -135,7 +135,7 @@ export const getFileNameFromFilePath = (file, subst = SUBST) => {
 };
 
 /**
- * remove the directory and it's files
+ * remove the directory and it's files synchronously
  *
  * @param {string} dir - directory path
  * @param {string} baseDir - base directory path
@@ -146,16 +146,10 @@ export const removeDir = (dir, baseDir) => {
     if (!isSubDir(dir, baseDir)) {
       throw new Error(`${dir} is not a subdirectory of ${baseDir}.`);
     }
-    const files = fs.readdirSync(dir);
-    files.length && files.forEach(file => {
-      const cur = path.join(dir, file);
-      if (fs.lstatSync(cur).isDirectory()) {
-        removeDir(cur, baseDir);
-      } else {
-        fs.unlinkSync(cur);
-      }
+    fs.rmSync(dir, {
+      force: true,
+      recursive: true
     });
-    fs.rmdirSync(dir);
   }
 };
 
@@ -167,7 +161,15 @@ export const removeDir = (dir, baseDir) => {
  * @returns {void}
  */
 export const removeDirectory = async (dir, baseDir) => {
-  await removeDir(dir, baseDir);
+  if (isDir(dir)) {
+    if (!isSubDir(dir, baseDir)) {
+      throw new Error(`${dir} is not a subdirectory of ${baseDir}.`);
+    }
+    await fsPromise.rm(dir, {
+      force: true,
+      recursive: true
+    });
+  }
 };
 
 /**
