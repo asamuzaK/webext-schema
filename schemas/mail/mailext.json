@@ -2873,7 +2873,7 @@
         {
           "name": "list",
           "type": "function",
-          "description": "Returns all mail accounts.",
+          "description": "Returns all mail accounts. They will be returned in the same order as used in Thunderbird's folder pane.",
           "async": "callback",
           "parameters": [
             {
@@ -5359,6 +5359,41 @@
               "$ref": "ComposeRecipientList",
               "optional": true
             },
+            "overrideDefaultFcc": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Indicates whether the default fcc setting (defined by the used identity) is being overridden for this message. Setting ``false`` will clear the override. Setting ``true`` will throw an exception, if ``overrideDefaultFccFolder`` is not set as well."
+            },
+            "overrideDefaultFccFolder": {
+              "choices": [
+                {
+                  "$ref": "folders.MailFolder"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    ""
+                  ]
+                }
+              ],
+              "optional": true,
+              "description": " This value overrides the default fcc setting (defined by the used identity) for this message only. Either a :ref:`folders.MailFolder` specifying the folder for the copy of the sent message, or ``\"\"`` to not save a copy at all."
+            },
+            "additionalFccFolder": {
+              "choices": [
+                {
+                  "$ref": "folders.MailFolder"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    ""
+                  ]
+                }
+              ],
+              "description": "An additional fcc folder which can be selected while composing the message, ``\"\"`` if not used.",
+              "optional": true
+            },
             "replyTo": {
               "$ref": "ComposeRecipientList",
               "optional": true
@@ -5419,13 +5454,51 @@
               "description": "Whether the message is an HTML message or a plain text message.",
               "optional": true
             },
+            "deliveryFormat": {
+              "type": "string",
+              "enum": [
+                "auto",
+                "plaintext",
+                "html",
+                "both"
+              ],
+              "description": "Defines the mime format of the send message (ignored on plain text messages). Defaults to ``auto``, which will send html messages as plain text, if they do not include any formatting, and as ``both`` otherwise (a multipart/mixed message).",
+              "optional": true
+            },
             "customHeaders": {
               "type": "array",
               "items": {
                 "$ref": "CustomHeader"
               },
-              "description": "Array of custom headers. Headers will be returned in ``Http-Header-Case`` (a.k.a. ``Train-Case``)",
+              "description": "Array of custom headers. Headers will be returned in ``Http-Header-Case`` (a.k.a. ``Train-Case``). Set an empty array to clear all custom headers.",
               "optional": true
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "lowest",
+                "low",
+                "normal",
+                "high",
+                "highest"
+              ],
+              "description": "The priority of the message.",
+              "optional": true
+            },
+            "returnReceipt": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Add the ``Disposition-Notification-To`` header to the message to requests the recipients email client to send a reply once the message has been received. Recipient server may strip the header and the recipient might ignore the request."
+            },
+            "deliveryStatusNotification": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Let the sender know when the recipient's server received the message. Not supported by all servers."
+            },
+            "attachVCard": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Wether or not the vCard of the used identity will be attached to the message during send. Note: If the value has not been modified, selecting a different identity will load the default value of the new identity."
             },
             "attachments": {
               "type": "array",
@@ -6715,7 +6788,7 @@
             },
             "subFolders": {
               "type": "array",
-              "description": "Subfolders are only included if requested.",
+              "description": "Subfolders are only included if requested. They will be returned in the same order as used in Thunderbird's folder pane.",
               "items": {
                 "$ref": "MailFolder"
               },
@@ -9285,7 +9358,8 @@
               "enum": [
                 "messagesMove",
                 "messagesRead",
-                "messagesDelete"
+                "messagesDelete",
+                "messagesTags"
               ]
             }
           ]
@@ -9333,6 +9407,10 @@
             "headerMessageId": {
               "type": "string",
               "description": "The message-id header of the message."
+            },
+            "headersOnly": {
+              "description": "Some account types (for example POP) allow to download only the headers of the message, but not its body. The body of such messages will not be available.",
+              "type": "boolean"
             },
             "id": {
               "type": "integer",
@@ -9695,7 +9773,7 @@
         {
           "name": "getFull",
           "type": "function",
-          "description": "Returns a specified message, including all headers and MIME parts.",
+          "description": "Returns a specified message, including all headers and MIME parts. Throws if the message could not be read, for example due to network issues.",
           "async": "callback",
           "parameters": [
             {
@@ -9717,7 +9795,7 @@
         {
           "name": "getRaw",
           "type": "function",
-          "description": "Returns the unmodified source of a message as a `binary string <https://developer.mozilla.org/en-US/docs/Web/API/DOMString/Binary>`__, which is a simple series of 8-bit values. If the message contains non-ASCII characters, the body parts in the binary string cannot be read directly and must be decoded according to their character sets. Use :ref:`messages.getFull` to get the correctly decoded parts. Manually decoding the raw message is probably too error-prone, especially if the message contains MIME parts with different character set encodings or attachments.\n\nTo get a readable version of the raw message as it appears in Thunderbird's message source view, it may be sufficient to decode the message according to the character set specified in its main ``content-type`` header (example: `text/html; charset=UTF-8`) using the following function (see MDN for `supported input encodings <https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API/Encodings>`__): <literalinclude>includes/messages/decodeBinaryString.js<lang>JavaScript</lang></literalinclude>",
+          "description": "Returns the unmodified source of a message as a `binary string <https://developer.mozilla.org/en-US/docs/Web/API/DOMString/Binary>`__, which is a simple series of 8-bit values. Throws if the message could not be read, for example due to network issues. If the message contains non-ASCII characters, the body parts in the binary string cannot be read directly and must be decoded according to their character sets. Use :ref:`messages.getFull` to get the correctly decoded parts. Manually decoding the raw message is probably too error-prone, especially if the message contains MIME parts with different character set encodings or attachments.\n\nTo get a readable version of the raw message as it appears in Thunderbird's message source view, it may be sufficient to decode the message according to the character set specified in its main ``content-type`` header (example: `text/html; charset=UTF-8`) using the following function (see MDN for `supported input encodings <https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API/Encodings>`__): <literalinclude>includes/messages/decodeBinaryString.js<lang>JavaScript</lang></literalinclude>",
           "async": "callback",
           "parameters": [
             {
@@ -10027,6 +10105,78 @@
                   }
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "createTag",
+          "type": "function",
+          "description": "Creates a new message tag. Tagging a message will store the tag's key in the user's message.",
+          "async": true,
+          "permissions": [
+            "messagesTags"
+          ],
+          "parameters": [
+            {
+              "type": "string",
+              "name": "key",
+              "pattern": "^[$a-zA-Z0-9]+$"
+            },
+            {
+              "type": "string",
+              "name": "tag"
+            },
+            {
+              "type": "string",
+              "name": "color",
+              "pattern": "^#[0-9a-f]{6}"
+            }
+          ]
+        },
+        {
+          "name": "updateTag",
+          "type": "function",
+          "description": "Updates a message tag.",
+          "async": true,
+          "permissions": [
+            "messagesTags"
+          ],
+          "parameters": [
+            {
+              "type": "string",
+              "name": "key",
+              "pattern": "^[$a-zA-Z0-9]+$"
+            },
+            {
+              "type": "object",
+              "name": "updateProperties",
+              "properties": {
+                "tag": {
+                  "type": "string",
+                  "optional": "true"
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-f]{6}",
+                  "optional": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "deleteTag",
+          "type": "function",
+          "description": "Deletes a message tag, removing it from the list of known tags. Its key will not be removed from tagged messages, but they will appear untagged. Recreating a deleted tag, will make all former tagged messages appear tagged again.",
+          "async": true,
+          "permissions": [
+            "messagesTags"
+          ],
+          "parameters": [
+            {
+              "type": "string",
+              "name": "key",
+              "pattern": "^[$a-zA-Z0-9]+$"
             }
           ]
         }
