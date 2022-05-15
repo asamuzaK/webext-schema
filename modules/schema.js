@@ -94,8 +94,7 @@ export class Schema {
           } else if (this._browser[$import]) {
             importValue = this._browser[$import];
           } else {
-            importValue =
-              this._browser[namespace] && this._browser[namespace][$import];
+            importValue = this._browser[namespace]?.[$import];
           }
           Object.assign(target, importValue);
         }
@@ -122,8 +121,7 @@ export class Schema {
           } else if (this._browser[$ref]) {
             refValue = this._browser[$ref];
           } else {
-            refValue =
-              this._browser[namespace] && this._browser[namespace][$ref];
+            refValue = this._browser[namespace]?.[$ref];
           }
           Object.assign(target, refValue);
         }
@@ -149,7 +147,7 @@ export class Schema {
     for (const item of events) {
       const { name, type, unsupported } = item;
       if (!unsupported && name && type === 'function') {
-        target[name] = target[name] || {};
+        target[name] = target[name] ?? {};
         target[name].addListener = this._sandbox.stub();
         target[name].hasListener = this._sandbox.stub();
         target[name].removeListener = this._sandbox.stub();
@@ -210,7 +208,7 @@ export class Schema {
           target[key] = this._sandbox.stub();
         } else if (type === 'object' || $ref ||
                    Object.prototype.hasOwnProperty.call(item, 'properties')) {
-          target[key] = target[key] || {};
+          target[key] = target[key] ?? {};
           properties && this._mockProperties(
             target[key], properties, `${namespace}.${key}`
           );
@@ -247,7 +245,7 @@ export class Schema {
         $import &&
           this._importMap.set(`${namespace}.${id}`, { $import, namespace });
         if (type === 'object' || $import || events || functions || properties) {
-          target[id] = target[id] || {};
+          target[id] = target[id] ?? {};
           events && this._mockEvents(target[id], events);
           functions && this._mockFunctions(target[id], functions);
           properties &&
@@ -287,7 +285,7 @@ export class Schema {
     if (!isString(name)) {
       throw new TypeError(`Expected String but got ${getType(name)}.`);
     }
-    const schemas = this._schema || this._parseSchemaContent();
+    const schemas = this._schema ?? this._parseSchemaContent();
     const items = Object.entries(schemas);
     const label = decamelize(name.replace(/\.json$/, ''));
     let schema;
@@ -306,7 +304,7 @@ export class Schema {
    * @returns {object} - schemas
    */
   getAll() {
-    const schemas = this._schema || this._parseSchemaContent();
+    const schemas = this._schema ?? this._parseSchemaContent();
     return schemas;
   }
 
@@ -316,7 +314,7 @@ export class Schema {
    * @returns {Array} - file list
    */
   list() {
-    const schemas = this._schema || this._parseSchemaContent();
+    const schemas = this._schema ?? this._parseSchemaContent();
     const items = Object.keys(schemas);
     const arr = [];
     for (const item of items) {
@@ -331,7 +329,7 @@ export class Schema {
    * @returns {object} - stubbed browser api
    */
   mock() {
-    const schemas = this._schema || this._parseSchemaContent();
+    const schemas = this._schema ?? this._parseSchemaContent();
     const schemaItems = Object.entries(schemas);
     const aliasKeys = ['action', 'menus'];
     this._browser = {
@@ -354,13 +352,13 @@ export class Schema {
           let ns;
           if (namespace.includes('.')) {
             const [itemNamespace, itemSubNamespace] = namespace.split('.');
-            this._browser[itemNamespace] = this._browser[itemNamespace] || {};
+            this._browser[itemNamespace] = this._browser[itemNamespace] ?? {};
             this._browser[itemNamespace][itemSubNamespace] =
-              this._browser[itemNamespace][itemSubNamespace] || {};
+              this._browser[itemNamespace][itemSubNamespace] ?? {};
             mapKey.push(itemNamespace, itemSubNamespace);
             ns = this._browser[itemNamespace][itemSubNamespace];
           } else {
-            this._browser[namespace] = this._browser[namespace] || {};
+            this._browser[namespace] = this._browser[namespace] ?? {};
             mapKey.push(namespace);
             ns = this._browser[namespace];
           }
