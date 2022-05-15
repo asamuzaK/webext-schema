@@ -252,7 +252,7 @@ export const getEnabledTheme = async () => {
       const arr = await management.getAll();
       if (Array.isArray(arr) && arr.length) {
         res =
-          arr.filter(info => info?.type === 'theme' && info.enabled && info);
+          arr.filter(info => info?.type === 'theme' && info?.enabled && info);
       }
     } catch (e) {
       logErr(e);
