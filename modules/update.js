@@ -168,9 +168,7 @@ export const getMailExtSchemaData = async baseUrl => {
   ];
   const func = [];
   for (const item of items) {
-    if (!excludeFile.includes(item)) {
-      func.push(getSchemaData(item, schemaUrl));
-    }
+    !excludeFile.includes(item) && func.push(getSchemaData(item, schemaUrl));
   }
   return Promise.all(func);
 };
