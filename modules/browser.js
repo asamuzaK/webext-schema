@@ -728,17 +728,12 @@ export const queryTabs = async opt => {
 export const execScriptToTab = async (tabId, opt = {}) => {
   let res;
   try {
-    const isGranted = await isPermissionGranted({
-      permissions: ['activeTab']
-    });
     if (Number.isInteger(tabId)) {
       res = await tabs.executeScript(tabId, opt);
-    } else if (isGranted) {
-      if (isObjectNotEmpty(tabId)) {
-        res = await tabs.executeScript(tabId);
-      } else {
-        res = await tabs.executeScript(opt);
-      }
+    } else if (isObjectNotEmpty(tabId)) {
+      res = await tabs.executeScript(tabId);
+    } else if (isObjectNotEmpty(opt)) {
+      res = await tabs.executeScript(opt);
     } else {
       res = null;
     }

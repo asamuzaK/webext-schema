@@ -1478,12 +1478,6 @@ describe('browser', () => {
 
   describe('execute content script to existing tab', () => {
     const func = mjs.execScriptToTab;
-    beforeEach(() => {
-      browser.permissions.contains.resolves(false);
-    });
-    afterEach(() => {
-      browser.permissions.contains.resolves(false);
-    });
 
     it('should get null if no argument given', async () => {
       const res = await func();
@@ -1528,25 +1522,6 @@ describe('browser', () => {
       assert.deepEqual(res, false, 'result');
     });
 
-    it('should get null if active tab permission is not granted', async () => {
-      const stubErr = sinon.stub(console, 'error');
-      const file = '/foo/bar';
-      const i = browser.tabs.executeScript.withArgs({
-        file
-      }).callCount;
-      browser.tabs.executeScript.withArgs({
-        file
-      }).resolves([{}]);
-      const res = await func({ file });
-      const { calledOnce: errCalled } = stubErr;
-      stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs({
-        file
-      }).callCount, i, 'not called');
-      assert.isFalse(errCalled, 'error not called');
-      assert.isNull(res, 'result');
-    });
-
     it('should get result', async () => {
       const stubErr = sinon.stub(console, 'error');
       const file = '/foo/bar';
@@ -1556,7 +1531,6 @@ describe('browser', () => {
       browser.tabs.executeScript.withArgs({
         file
       }).resolves([{}]);
-      browser.permissions.contains.resolves(true);
       const res = await func({ file });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
@@ -1576,7 +1550,6 @@ describe('browser', () => {
       browser.tabs.executeScript.withArgs({
         file
       }).rejects(new Error('error'));
-      browser.permissions.contains.resolves(true);
       const res = await func({ file });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
@@ -1587,25 +1560,6 @@ describe('browser', () => {
       assert.deepEqual(res, false, 'result');
     });
 
-    it('should get null if active tab permission is not granted', async () => {
-      const stubErr = sinon.stub(console, 'error');
-      const file = '/foo/bar';
-      const i = browser.tabs.executeScript.withArgs({
-        file
-      }).callCount;
-      browser.tabs.executeScript.withArgs({
-        file
-      }).resolves([{}]);
-      const res = await func(null, { file });
-      const { calledOnce: errCalled } = stubErr;
-      stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs({
-        file
-      }).callCount, i, 'not called');
-      assert.isFalse(errCalled, 'error not called');
-      assert.isNull(res, 'result');
-    });
-
     it('should get result', async () => {
       const stubErr = sinon.stub(console, 'error');
       const file = '/foo/bar';
@@ -1615,7 +1569,6 @@ describe('browser', () => {
       browser.tabs.executeScript.withArgs({
         file
       }).resolves([{}]);
-      browser.permissions.contains.resolves(true);
       const res = await func(null, { file });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
@@ -1635,7 +1588,6 @@ describe('browser', () => {
       browser.tabs.executeScript.withArgs({
         file
       }).rejects(new Error('error'));
-      browser.permissions.contains.resolves(true);
       const res = await func(null, { file });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
@@ -1681,7 +1633,7 @@ describe('browser', () => {
       assert.deepEqual(res, [[{}], false], 'result');
     });
 
-    it('should get call function', async () => {
+    it('should call function', async () => {
       const stubErr = sinon.stub(console, 'error');
       const file = '/foo/bar';
       const i = browser.tabs.executeScript.withArgs(1, {
@@ -1735,6 +1687,12 @@ describe('browser', () => {
 
   describe('execute scripts to tab in order', () => {
     const func = mjs.execScriptsToTabInOrder;
+    beforeEach(() => {
+      browser.permissions.contains.resolves(false);
+    });
+    afterEach(() => {
+      browser.permissions.contains.resolves(false);
+    });
 
     it('should get null if no arguments given', async () => {
       const res = await func();
