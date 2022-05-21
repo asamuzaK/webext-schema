@@ -1687,12 +1687,6 @@ describe('browser', () => {
 
   describe('execute scripts to tab in order', () => {
     const func = mjs.execScriptsToTabInOrder;
-    beforeEach(() => {
-      browser.permissions.contains.resolves(false);
-    });
-    afterEach(() => {
-      browser.permissions.contains.resolves(false);
-    });
 
     it('should get null if no arguments given', async () => {
       const res = await func();
