@@ -403,7 +403,8 @@
               "additionalProperties": {
                 "$ref": "experiments.ExperimentAPI"
               },
-              "optional": true
+              "optional": true,
+              "privileged": true
             }
           }
         }
@@ -774,7 +775,8 @@
               "items": {
                 "type": "string"
               },
-              "optional": true
+              "optional": true,
+              "privileged": true
             }
           }
         }
@@ -8853,6 +8855,62 @@
               ]
             }
           ]
+        },
+        {
+          "name": "open",
+          "type": "function",
+          "description": "Opens a message in a new tab or in a new window.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "openProperties",
+              "type": "object",
+              "description": "Settings for opening the message. Exactly one of messageId or headerMessageId must be specified.",
+              "properties": {
+                "messageId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 1,
+                  "description": "The id of a message to be opened. Will throw, if the provided ``messageId`` is unknown or invalid."
+                },
+                "headerMessageId": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The headerMessageId of a message to be opened. Will throw, if the provided ``headerMessageId`` is unknown or invalid."
+                },
+                "location": {
+                  "type": "string",
+                  "enum": [
+                    "tab",
+                    "window"
+                  ],
+                  "optional": true,
+                  "description": "Where to open the message. If not specified, the users preference is honoured."
+                },
+                "active": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the new tab should become the active tab in the window. Only applicable to messages opened in tabs."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "minimum": -2,
+                  "optional": true,
+                  "description": "The id of the window, where the new tab should be created. Defaults to the current window. Only applicable to messages opened in tabs."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "tab",
+                  "$ref": "tabs.Tab"
+                }
+              ]
+            }
+          ]
         }
       ]
     }
@@ -10708,12 +10766,13 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates a new tab.",
+          "description": "Creates a new content tab. Use the :ref:`messageDisplay_api` to open messages.",
           "async": "callback",
           "parameters": [
             {
               "type": "object",
               "name": "createProperties",
+              "description": "Properties for the new tab. Defaults to an empty tab, if no ``url`` is provided.",
               "properties": {
                 "windowId": {
                   "type": "integer",
@@ -10730,7 +10789,7 @@
                 "url": {
                   "type": "string",
                   "optional": true,
-                  "description": "The URL to navigate the tab to initially. Fully-qualified URLs must include a scheme (i.e. 'http://www.google.com', not 'www.google.com'). Relative URLs will be relative to the current page within the extension. Defaults to the New Tab Page."
+                  "description": "The URL to navigate the tab to initially. Fully-qualified URLs must include a scheme (i.e. 'http://www.google.com', not 'www.google.com'). Relative URLs will be relative to the current page within the extension."
                 },
                 "active": {
                   "type": "boolean",
@@ -10903,16 +10962,17 @@
             {
               "type": "object",
               "name": "updateProperties",
+              "description": "Properties which should to be updated.",
               "properties": {
                 "url": {
                   "type": "string",
                   "optional": true,
-                  "description": "A URL to navigate the tab to."
+                  "description": "A URL to navigate the tab to. Only applicable for ``content`` tabs and active ``mail`` tabs."
                 },
                 "active": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Whether the tab should be active. Does not affect whether the window is focused (see :ref:`windows.update`)."
+                  "description": "Set this to true, if the tab should be active. Does not affect whether the window is focused (see :ref:`windows.update`). Setting this to false has no effect."
                 }
               }
             },

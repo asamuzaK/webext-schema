@@ -3066,7 +3066,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "PermissionNoPrompt",
+          "$extend": "PermissionPrivileged",
           "choices": [
             {
               "type": "string",
@@ -6430,7 +6430,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "PermissionNoPrompt",
+          "$extend": "PermissionPrivileged",
           "choices": [
             {
               "type": "string",
@@ -7275,7 +7275,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "PermissionNoPrompt",
+          "$extend": "PermissionPrivileged",
           "choices": [
             {
               "type": "string",
@@ -10910,7 +10910,8 @@
               "additionalProperties": {
                 "$ref": "experiments.ExperimentAPI"
               },
-              "optional": true
+              "optional": true,
+              "privileged": true
             }
           }
         }
@@ -11761,7 +11762,8 @@
               "items": {
                 "type": "string"
               },
-              "optional": true
+              "optional": true,
+              "privileged": true
             }
           }
         }
@@ -13090,16 +13092,29 @@
           ]
         },
         {
+          "id": "PermissionPrivileged",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "mozillaAddons"
+              ]
+            }
+          ]
+        },
+        {
           "id": "PermissionNoPrompt",
           "choices": [
             {
-              "$ref": "OptionalPermission"
+              "$ref": "OptionalPermissionNoPrompt"
+            },
+            {
+              "$ref": "PermissionPrivileged"
             },
             {
               "type": "string",
               "enum": [
                 "alarms",
-                "mozillaAddons",
                 "storage",
                 "unlimitedStorage"
               ]
@@ -13443,7 +13458,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "PermissionNoPrompt",
+          "$extend": "PermissionPrivileged",
           "choices": [
             {
               "type": "string",
@@ -16634,7 +16649,7 @@
           }
         },
         {
-          "$extend": "PermissionNoPrompt",
+          "$extend": "PermissionPrivileged",
           "choices": [
             {
               "type": "string",
