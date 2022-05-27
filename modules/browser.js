@@ -424,21 +424,27 @@ export const getOs = async () => {
 /**
  * make a connection
  *
- * @param {string} [extId] - extension ID
+ * @param {number|string} [id] - tab ID / extension ID
  * @param {object} [info] - info
  * @returns {object} - runtime.Port
  */
-export const makeConnection = async (extId, info) => {
+export const makeConnection = async (id, info) => {
   let port;
-  if (isString(extId)) {
+  if (Number.isInteger(id)) {
     if (isObjectNotEmpty(info)) {
-      port = await runtime.connect(extId, info);
+      port = await tabs.connect(id, info);
     } else {
-      port = await runtime.connect(extId);
+      port = await tabs.connect(id);
     }
-  } else if (isObjectNotEmpty(extId)) {
-    port = await runtime.connect(extId);
-  } else if (!extId && isObjectNotEmpty(info)) {
+  } else if (isString(id)) {
+    if (isObjectNotEmpty(info)) {
+      port = await runtime.connect(id, info);
+    } else {
+      port = await runtime.connect(id);
+    }
+  } else if (isObjectNotEmpty(id)) {
+    port = await runtime.connect(id);
+  } else if (!id && isObjectNotEmpty(info)) {
     port = await runtime.connect(info);
   } else {
     port = await runtime.connect();

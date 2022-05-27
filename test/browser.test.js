@@ -1016,33 +1016,46 @@ describe('browser', () => {
     const func = mjs.makeConnection;
 
     it('should get object', async () => {
+      browser.tabs.connect.withArgs(1).resolves({ bar: 'baz' });
+      const res = await func(1);
+      assert.deepEqual(res, { bar: 'baz' }, 'result');
+    });
+
+    it('should get object', async () => {
+      browser.tabs.connect.withArgs(1, { foo: 'bar' }).resolves({ bar: 'baz' });
+      const res = await func(1, { foo: 'bar' });
+      assert.deepEqual(res, { bar: 'baz' }, 'result');
+    });
+
+    it('should get object', async () => {
       browser.runtime.connect.withArgs('foo').resolves({ bar: 'baz' });
       const res = await func('foo');
       assert.deepEqual(res, { bar: 'baz' }, 'result');
     });
 
     it('should get object', async () => {
-      browser.runtime.connect.withArgs('foo', { bar: 'baz' }).resolves({});
-      const res = await func('foo', { bar: 'baz' });
-      assert.deepEqual(res, {}, 'result');
+      browser.runtime.connect.withArgs('foo', { foo: 'bar' })
+        .resolves({ bar: 'baz' });
+      const res = await func('foo', { foo: 'bar' });
+      assert.deepEqual(res, { bar: 'baz' }, 'result');
     });
 
     it('should get object', async () => {
-      browser.runtime.connect.withArgs({ foo: 'bar' }).resolves({});
+      browser.runtime.connect.withArgs({ foo: 'bar' }).resolves({ bar: 'baz' });
       const res = await func({ foo: 'bar' });
-      assert.deepEqual(res, {}, 'result');
+      assert.deepEqual(res, { bar: 'baz' }, 'result');
     });
 
     it('should get object', async () => {
-      browser.runtime.connect.withArgs({ foo: 'bar' }).resolves({});
+      browser.runtime.connect.withArgs({ foo: 'bar' }).resolves({ bar: 'baz' });
       const res = await func(null, { foo: 'bar' });
-      assert.deepEqual(res, {}, 'result');
+      assert.deepEqual(res, { bar: 'baz'}, 'result');
     });
 
     it('should get object', async () => {
-      browser.runtime.connect.withArgs().resolves({});
+      browser.runtime.connect.withArgs().resolves({ bar: 'baz' });
       const res = await func();
-      assert.deepEqual(res, {}, 'result');
+      assert.deepEqual(res, { bar: 'baz' }, 'result');
     });
   });
 
