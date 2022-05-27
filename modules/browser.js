@@ -426,9 +426,10 @@ export const getOs = async () => {
  *
  * @param {number|string} [id] - tab ID / extension ID
  * @param {object} [info] - info
+ * @param {boolean} [app] - connect to native application
  * @returns {object} - runtime.Port
  */
-export const makeConnection = async (id, info) => {
+export const makeConnection = async (id, info, app) => {
   let port;
   if (Number.isInteger(id)) {
     if (isObjectNotEmpty(info)) {
@@ -438,14 +439,30 @@ export const makeConnection = async (id, info) => {
     }
   } else if (isString(id)) {
     if (isObjectNotEmpty(info)) {
-      port = await runtime.connect(id, info);
+      if (app) {
+        port = await runtime.connectNative(info);
+      } else {
+        port = await runtime.connect(id, info);
+      }
+    } else if (info && getType(info) === 'Boolean') {
+      port = await runtime.connectNative({
+        name: id
+      });
     } else {
       port = await runtime.connect(id);
     }
   } else if (isObjectNotEmpty(id)) {
-    port = await runtime.connect(id);
+    if ((info && getType(info) === 'Boolean') || app) {
+      port = await runtime.connectNative(id);
+    } else {
+      port = await runtime.connect(id);
+    }
   } else if (!id && isObjectNotEmpty(info)) {
-    port = await runtime.connect(info);
+    if (app) {
+      port = await runtime.connectNative(info);
+    } else {
+      port = await runtime.connect(info);
+    }
   } else {
     port = await runtime.connect();
   }
