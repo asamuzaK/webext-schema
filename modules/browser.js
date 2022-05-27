@@ -455,7 +455,7 @@ export const makeConnection = async (id, info) => {
 /**
  * send message
  *
- * @param {number|string} id - tabId or extension ID
+ * @param {number|string} id - tab ID / extension ID
  * @param {*} msg - message
  * @param {object} opt - options
  * @returns {?Function} - tabs.sendMessage() | runtime.sendMessage()
