@@ -1054,14 +1054,14 @@ describe('browser', () => {
     });
 
     it('should get object', async () => {
-      browser.runtime.connectNative.withArgs({ foo: 'bar' })
+      browser.runtime.connectNative.withArgs({ foo: 'bar', name: 'foo' })
         .resolves({ bar: 'baz' });
       const res = await func('foo', { foo: 'bar' }, true);
       assert.deepEqual(res, { bar: 'baz' }, 'result');
     });
 
     it('should get object', async () => {
-      browser.runtime.connectNative.withArgs({ foo: 'bar' })
+      browser.runtime.connectNative.withArgs({ foo: 'bar', name: 'foo' })
         .resolves({ bar: 'baz' });
       const res = await func('foo', { foo: 'bar' }, !0);
       assert.deepEqual(res, { bar: 'baz' }, 'result');

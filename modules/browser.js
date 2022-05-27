@@ -424,9 +424,9 @@ export const getOs = async () => {
 /**
  * make a connection
  *
- * @param {number|string} [id] - tab ID / extension ID
- * @param {object} [info] - info
- * @param {boolean} [app] - connect to native application
+ * @param {number|string} [id] - tab ID / extension ID / host name
+ * @param {object} [info] - connection info
+ * @param {boolean} [app] - connect to native messaging host
  * @returns {object} - runtime.Port
  */
 export const makeConnection = async (id, info, app) => {
@@ -440,6 +440,7 @@ export const makeConnection = async (id, info, app) => {
   } else if (isString(id)) {
     if (isObjectNotEmpty(info)) {
       if (app) {
+        info.name = id;
         port = await runtime.connectNative(info);
       } else {
         port = await runtime.connect(id, info);
