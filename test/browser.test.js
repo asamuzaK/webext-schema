@@ -1029,7 +1029,7 @@ describe('browser', () => {
 
     it('should get object', async () => {
       browser.tabs.connect.withArgs(1, { foo: 'bar' }).resolves({ bar: 'baz' });
-      const res = await func(1, { foo: 'bar' }, true);
+      const res = await func(1, { foo: 'bar' });
       assert.deepEqual(res, { bar: 'baz' }, 'result');
     });
 
@@ -1047,23 +1047,8 @@ describe('browser', () => {
     });
 
     it('should get object', async () => {
-      browser.runtime.connectNative.withArgs({ name: 'foo' })
-        .resolves({ bar: 'baz' });
+      browser.runtime.connectNative.withArgs('foo').resolves({ bar: 'baz' });
       const res = await func('foo', true);
-      assert.deepEqual(res, { bar: 'baz' }, 'result');
-    });
-
-    it('should get object', async () => {
-      browser.runtime.connectNative.withArgs({ foo: 'bar', name: 'foo' })
-        .resolves({ bar: 'baz' });
-      const res = await func('foo', { foo: 'bar' }, true);
-      assert.deepEqual(res, { bar: 'baz' }, 'result');
-    });
-
-    it('should get object', async () => {
-      browser.runtime.connectNative.withArgs({ foo: 'bar', name: 'foo' })
-        .resolves({ bar: 'baz' });
-      const res = await func('foo', { foo: 'bar' }, !0);
       assert.deepEqual(res, { bar: 'baz' }, 'result');
     });
 
@@ -1074,43 +1059,8 @@ describe('browser', () => {
     });
 
     it('should get object', async () => {
-      browser.runtime.connectNative.withArgs({ foo: 'bar' })
-        .resolves({ bar: 'baz' });
-      const res = await func({ foo: 'bar' }, true);
-      assert.deepEqual(res, { bar: 'baz' }, 'result');
-    });
-
-    it('should get object', async () => {
-      browser.runtime.connectNative.withArgs({ foo: 'bar' })
-        .resolves({ bar: 'baz' });
-      const res = await func({ foo: 'bar' }, !0);
-      assert.deepEqual(res, { bar: 'baz' }, 'result');
-    });
-
-    it('should get object', async () => {
-      browser.runtime.connectNative.withArgs({ foo: 'bar' })
-        .resolves({ bar: 'baz' });
-      const res = await func({ foo: 'bar' }, null, true);
-      assert.deepEqual(res, { bar: 'baz' }, 'result');
-    });
-
-    it('should get object', async () => {
       browser.runtime.connect.withArgs({ foo: 'bar' }).resolves({ bar: 'baz' });
       const res = await func(null, { foo: 'bar' });
-      assert.deepEqual(res, { bar: 'baz' }, 'result');
-    });
-
-    it('should get object', async () => {
-      browser.runtime.connectNative.withArgs({ foo: 'bar' })
-        .resolves({ bar: 'baz' });
-      const res = await func(null, { foo: 'bar' }, true);
-      assert.deepEqual(res, { bar: 'baz' }, 'result');
-    });
-
-    it('should get object', async () => {
-      browser.runtime.connectNative.withArgs({ foo: 'bar' })
-        .resolves({ bar: 'baz' });
-      const res = await func(null, { foo: 'bar' }, !0);
       assert.deepEqual(res, { bar: 'baz' }, 'result');
     });
 
