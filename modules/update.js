@@ -15,7 +15,7 @@ import process from 'process';
 /* constants */
 const DIR_CWD = process.cwd();
 const PERM_FILE = 0o644;
-export const ESR_VER = 91;
+export const ESR_VER = 102;
 
 /**
  * fetch text

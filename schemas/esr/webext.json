@@ -2611,6 +2611,7 @@
                 },
                 "onclick": {
                   "type": "function",
+                  "max_manifest_version": 2,
                   "optional": true,
                   "description": "A function that will be called back when the menu item is clicked. Event pages cannot use this; instead, they should register a listener for $(ref:contextMenus.onClicked).",
                   "parameters": [
@@ -2766,6 +2767,7 @@
                 },
                 "onclick": {
                   "type": "function",
+                  "max_manifest_version": 2,
                   "optional": "omit-key-if-missing",
                   "parameters": [
                     {
@@ -3064,7 +3066,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "PermissionNoPrompt",
+          "$extend": "PermissionPrivileged",
           "choices": [
             {
               "type": "string",
@@ -4343,12 +4345,6 @@
               "optional": true,
               "description": "The ID of the tab that opened this tab, if any. This property is only present if the opener tab still exists."
             },
-            "selected": {
-              "type": "boolean",
-              "description": "Whether the tab is selected.",
-              "deprecated": "Please use $(ref:tabs.Tab.highlighted).",
-              "unsupported": true
-            },
             "highlighted": {
               "type": "boolean",
               "description": "Whether the tab is highlighted. Works as an alias of active"
@@ -4803,36 +4799,6 @@
           }
         },
         {
-          "name": "sendRequest",
-          "deprecated": "Please use $(ref:runtime.sendMessage).",
-          "unsupported": true,
-          "type": "function",
-          "description": "Sends a single request to the content script(s) in the specified tab, with an optional callback to run when a response is sent back.  The $(ref:extension.onRequest) event is fired in each content script running in the specified tab for the current extension.",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "tabId",
-              "minimum": 0
-            },
-            {
-              "type": "any",
-              "name": "request"
-            },
-            {
-              "type": "function",
-              "name": "responseCallback",
-              "optional": true,
-              "parameters": [
-                {
-                  "name": "response",
-                  "type": "any",
-                  "description": "The JSON response object sent by the handler of the request. If an error occurs while connecting to the specified tab, the callback will be called with no arguments and $(ref:runtime.lastError) will be set to the error message."
-                }
-              ]
-            }
-          ]
-        },
-        {
           "name": "sendMessage",
           "type": "function",
           "description": "Sends a single message to the content script(s) in the specified tab, with an optional callback to run when a response is sent back.  The $(ref:runtime.onMessage) event is fired in each content script running in the specified tab for the current extension.",
@@ -4875,63 +4841,6 @@
           ]
         },
         {
-          "name": "getSelected",
-          "deprecated": "Please use $(ref:tabs.query) <code>{active: true}</code>.",
-          "unsupported": true,
-          "type": "function",
-          "description": "Gets the tab that is selected in the specified window.",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "windowId",
-              "minimum": -2,
-              "optional": true,
-              "description": "Defaults to the $(topic:current-window)[current window]."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "tab",
-                  "$ref": "Tab"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "getAllInWindow",
-          "deprecated": "Please use $(ref:tabs.query) <code>{windowId: windowId}</code>.",
-          "unsupported": true,
-          "type": "function",
-          "description": "Gets details about all tabs in the specified window.",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "windowId",
-              "minimum": -2,
-              "optional": true,
-              "description": "Defaults to the $(topic:current-window)[current window]."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "parameters": [
-                {
-                  "name": "tabs",
-                  "type": "array",
-                  "items": {
-                    "$ref": "Tab"
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
           "name": "create",
           "type": "function",
           "description": "Creates a new tab.",
@@ -4963,13 +4872,6 @@
                   "optional": true,
                   "description": "Whether the tab should become the active tab in the window. Does not affect whether the window is focused (see $(ref:windows.update)). Defaults to <var>true</var>."
                 },
-                "selected": {
-                  "deprecated": "Please use <em>active</em>.",
-                  "unsupported": true,
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "Whether the tab should become the selected tab in the window. Defaults to <var>true</var>"
-                },
                 "pinned": {
                   "type": "boolean",
                   "optional": true,
@@ -5000,6 +4902,11 @@
                   "type": "string",
                   "optional": true,
                   "description": "The title used for display if the tab is created in discarded mode."
+                },
+                "muted": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the tab should be muted when created."
                 }
               }
             },
@@ -5165,7 +5072,17 @@
                   "description": "The position of the tabs within their windows."
                 },
                 "cookieStoreId": {
-                  "type": "string",
+                  "choices": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
                   "optional": true,
                   "description": "The CookieStoreId used for the tab."
                 },
@@ -5303,13 +5220,6 @@
                   "type": "boolean",
                   "optional": true,
                   "description": "Adds or removes the tab from the current selection."
-                },
-                "selected": {
-                  "unsupported": true,
-                  "deprecated": "Please use <em>highlighted</em>.",
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "Whether the tab should be selected."
                 },
                 "pinned": {
                   "type": "boolean",
@@ -5624,6 +5534,7 @@
         {
           "name": "executeScript",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Injects JavaScript code into a page. For details, see the $(topic:content_scripts)[programmatic injection] section of the content scripts doc.",
           "async": "callback",
           "parameters": [
@@ -5661,6 +5572,7 @@
         {
           "name": "insertCSS",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Injects CSS into a page. For details, see the $(topic:content_scripts)[programmatic injection] section of the content scripts doc.",
           "async": "callback",
           "parameters": [
@@ -5688,6 +5600,7 @@
         {
           "name": "removeCSS",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Removes injected CSS from a page. For details, see the $(topic:content_scripts)[programmatic injection] section of the content scripts doc.",
           "async": "callback",
           "parameters": [
@@ -6156,58 +6069,6 @@
           ]
         },
         {
-          "name": "onSelectionChanged",
-          "deprecated": "Please use $(ref:tabs.onActivated).",
-          "unsupported": true,
-          "type": "function",
-          "description": "Fires when the selected tab in a window changes.",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "tabId",
-              "minimum": 0,
-              "description": "The ID of the tab that has become active."
-            },
-            {
-              "type": "object",
-              "name": "selectInfo",
-              "properties": {
-                "windowId": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "description": "The ID of the window the selected tab changed inside of."
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "onActiveChanged",
-          "deprecated": "Please use $(ref:tabs.onActivated).",
-          "unsupported": true,
-          "type": "function",
-          "description": "Fires when the selected tab in a window changes. Note that the tab's URL may not be set at the time this event fired, but you can listen to $(ref:tabs.onUpdated) events to be notified when a URL is set.",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "tabId",
-              "minimum": 0,
-              "description": "The ID of the tab that has become active."
-            },
-            {
-              "type": "object",
-              "name": "selectInfo",
-              "properties": {
-                "windowId": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "description": "The ID of the window the selected tab changed inside of."
-                }
-              }
-            }
-          ]
-        },
-        {
           "name": "onActivated",
           "type": "function",
           "description": "Fires when the active tab in a window changes. Note that the tab's URL may not be set at the time this event fired, but you can listen to onUpdated events to be notified when a URL is set.",
@@ -6231,34 +6092,6 @@
                   "type": "integer",
                   "minimum": 0,
                   "description": "The ID of the window the active tab changed inside of."
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "onHighlightChanged",
-          "deprecated": "Please use $(ref:tabs.onHighlighted).",
-          "unsupported": true,
-          "type": "function",
-          "description": "Fired when the highlighted or selected tabs in a window changes.",
-          "parameters": [
-            {
-              "type": "object",
-              "name": "selectInfo",
-              "properties": {
-                "windowId": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "description": "The window whose tabs changed."
-                },
-                "tabIds": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer",
-                    "minimum": 0
-                  },
-                  "description": "All highlighted tabs in the window."
                 }
               }
             }
@@ -6597,7 +6430,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "PermissionNoPrompt",
+          "$extend": "PermissionPrivileged",
           "choices": [
             {
               "type": "string",
@@ -7442,7 +7275,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "PermissionNoPrompt",
+          "$extend": "PermissionPrivileged",
           "choices": [
             {
               "type": "string",
@@ -8376,6 +8209,10 @@
           "$ref": "types.Setting",
           "description": "This setting controls whether the user-chosen colors override the page's colors."
         },
+        "overrideContentColorScheme": {
+          "$ref": "types.Setting",
+          "description": "This setting controls whether a light or dark color scheme overrides the page's preferred color scheme."
+        },
         "useDocumentFonts": {
           "$ref": "types.Setting",
           "description": "This setting controls whether the document's fonts are used."
@@ -8963,6 +8800,7 @@
   "content_scripts.json": [
     {
       "namespace": "contentScripts",
+      "max_manifest_version": 2,
       "types": [
         {
           "id": "RegisteredContentScriptOptions",
@@ -9029,6 +8867,22 @@
               "$ref": "extensionTypes.RunAt",
               "optional": true,
               "description": "The soonest that the JavaScript or CSS will be injected into the tab. Defaults to \"document_idle\"."
+            },
+            "cookieStoreId": {
+              "choices": [
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "optional": true,
+              "description": "limit the set of matched tabs to those that belong to the given cookie store id"
             }
           }
         },
@@ -9322,6 +9176,18 @@
           "description": "A cookie's 'SameSite' state (https://tools.ietf.org/html/draft-west-first-party-cookies). 'no_restriction' corresponds to a cookie set without a 'SameSite' attribute, 'lax' to 'SameSite=Lax', and 'strict' to 'SameSite=Strict'."
         },
         {
+          "id": "PartitionKey",
+          "type": "object",
+          "description": "The description of the storage partition of a cookie. This object may be omitted (null) if a cookie is not partitioned.",
+          "properties": {
+            "topLevelSite": {
+              "type": "string",
+              "optional": true,
+              "description": "The first-party URL of the cookie, if the cookie is in storage partitioned by the top-level site."
+            }
+          }
+        },
+        {
           "id": "Cookie",
           "type": "object",
           "description": "Represents information about an HTTP cookie.",
@@ -9374,6 +9240,11 @@
             "firstPartyDomain": {
               "type": "string",
               "description": "The first-party domain of the cookie."
+            },
+            "partitionKey": {
+              "$ref": "PartitionKey",
+              "optional": true,
+              "description": "The cookie's storage partition, if any. null if not partitioned."
             }
           }
         },
@@ -9441,6 +9312,11 @@
                   "type": "string",
                   "optional": true,
                   "description": "The first-party domain which the cookie to retrieve is associated. This attribute is required if First-Party Isolation is enabled."
+                },
+                "partitionKey": {
+                  "$ref": "PartitionKey",
+                  "optional": true,
+                  "description": "The storage partition, if the cookie is part of partitioned storage. By default, only non-partitioned cookies are returned."
                 }
               }
             },
@@ -9508,6 +9384,11 @@
                   "type": "string",
                   "optional": "omit-key-if-missing",
                   "description": "Restricts the retrieved cookies to those whose first-party domains match this one. This attribute is required if First-Party Isolation is enabled. To not filter by a specific first-party domain, use `null` or `undefined`."
+                },
+                "partitionKey": {
+                  "$ref": "PartitionKey",
+                  "optional": true,
+                  "description": "Selects a specific storage partition to look up cookies. Defaults to null, in which case only non-partitioned cookies are retrieved. If an object iis passed, partitioned cookies are also included, and filtered based on the keys present in the given PartitionKey description. An empty object ({}) returns all cookies (partitioned + unpartitioned), a non-empty object (e.g. {topLevelSite: '...'}) only returns cookies whose partition match all given attributes."
                 }
               }
             },
@@ -9592,6 +9473,11 @@
                   "type": "string",
                   "optional": true,
                   "description": "The first-party domain of the cookie. This attribute is required if First-Party Isolation is enabled."
+                },
+                "partitionKey": {
+                  "$ref": "PartitionKey",
+                  "optional": true,
+                  "description": "The storage partition, if the cookie is part of partitioned storage. By default, non-partitioned storage is used."
                 }
               }
             },
@@ -9638,6 +9524,11 @@
                   "type": "string",
                   "optional": true,
                   "description": "The first-party domain associated with the cookie. This attribute is required if First-Party Isolation is enabled."
+                },
+                "partitionKey": {
+                  "$ref": "PartitionKey",
+                  "optional": true,
+                  "description": "The storage partition, if the cookie is part of partitioned storage. By default, non-partitioned storage is used."
                 }
               }
             },
@@ -9667,6 +9558,11 @@
                     "firstPartyDomain": {
                       "type": "string",
                       "description": "The first-party domain associated with the cookie that's been removed."
+                    },
+                    "partitionKey": {
+                      "$ref": "PartitionKey",
+                      "optional": true,
+                      "description": "The storage partition, if the cookie is part of partitioned storage. null if not partitioned."
                     }
                   }
                 }
@@ -9926,6 +9822,11 @@
               "description": "False if this download is recorded in the history, true if it is not recorded.",
               "type": "boolean"
             },
+            "cookieStoreId": {
+              "type": "string",
+              "optional": true,
+              "description": "The cookie store ID of the contextual identity."
+            },
             "danger": {
               "$ref": "DangerType",
               "description": "Indication of whether this download is thought to be safe or known to be suspicious."
@@ -10124,6 +10025,11 @@
               "optional": true,
               "type": "string"
             },
+            "cookieStoreId": {
+              "type": "string",
+              "optional": true,
+              "description": "The cookie store ID of the contextual identity."
+            },
             "danger": {
               "$ref": "DangerType",
               "description": "Indication of whether this download is thought to be safe or known to be suspicious.",
@@ -10206,6 +10112,11 @@
                   "optional": true,
                   "default": false,
                   "type": "boolean"
+                },
+                "cookieStoreId": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The cookie store ID of the contextual identity; requires \"cookies\" permission."
                 },
                 "conflictAction": {
                   "$ref": "FilenameConflictAction",
@@ -10999,7 +10910,8 @@
               "additionalProperties": {
                 "$ref": "experiments.ExperimentAPI"
               },
-              "optional": true
+              "optional": true,
+              "privileged": true
             }
           }
         }
@@ -11239,7 +11151,6 @@
         {
           "name": "getBackgroundPage",
           "type": "function",
-          "max_manifest_version": 2,
           "description": "Returns the JavaScript 'window' object for the background page running inside the current extension. Returns null if the extension has no background page.",
           "parameters": [],
           "returns": {
@@ -11409,6 +11320,11 @@
               "type": "number",
               "optional": true,
               "description": "The scale of the resulting image.  Defaults to <code>devicePixelRatio</code>."
+            },
+            "resetScrollPosition": {
+              "type": "boolean",
+              "optional": true,
+              "description": "If true, temporarily resets the scroll position of the document to 0. Only takes effect if rect is also specified."
             }
           }
         },
@@ -11665,23 +11581,27 @@
             "js",
             "leaf",
             "mainthreadio",
-            "responsiveness",
-            "screenshots",
-            "seqstyle",
-            "stackwalk",
-            "threads",
-            "jstracer",
-            "jsallocations",
-            "nostacksampling",
-            "nativeallocations",
-            "preferencereads",
-            "ipcmessages",
             "fileio",
             "fileioall",
             "noiostacks",
+            "screenshots",
+            "seqstyle",
+            "stackwalk",
+            "jstracer",
+            "jsallocations",
+            "nostacksampling",
+            "preferencereads",
+            "nativeallocations",
+            "ipcmessages",
             "audiocallbacktracing",
             "cpu",
-            "notimerresolutionchange"
+            "notimerresolutionchange",
+            "cpuallthreads",
+            "samplingallthreads",
+            "markersallthreads",
+            "unregisteredthreads",
+            "processcpu",
+            "responsiveness"
           ]
         },
         {
@@ -11842,7 +11762,8 @@
               "items": {
                 "type": "string"
               },
-              "optional": true
+              "optional": true,
+              "privileged": true
             }
           }
         }
@@ -12691,34 +12612,13 @@
               "postprocess": "manifestVersionCheck"
             },
             "applications": {
-              "type": "object",
-              "optional": true,
-              "properties": {
-                "gecko": {
-                  "$ref": "FirefoxSpecificProperties",
-                  "optional": true
-                }
-              }
+              "$ref": "BrowserSpecificSettings",
+              "description": "The applications property is deprecated, please use 'browser_specific_settings'",
+              "optional": true
             },
             "browser_specific_settings": {
-              "type": "object",
-              "optional": true,
-              "properties": {
-                "gecko": {
-                  "$ref": "FirefoxSpecificProperties",
-                  "optional": true
-                },
-                "edge": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "any"
-                  },
-                  "optional": true
-                }
-              },
-              "additionalProperties": {
-                "$ref": "UnrecognizedProperty"
-              }
+              "$ref": "BrowserSpecificSettings",
+              "optional": true
             },
             "name": {
               "type": "string",
@@ -12750,6 +12650,32 @@
               "format": "url",
               "optional": true,
               "preprocess": "localize"
+            },
+            "install_origins": {
+              "type": "array",
+              "optional": true,
+              "items": {
+                "type": "string",
+                "format": "origin"
+              }
+            },
+            "developer": {
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "url",
+                  "optional": true,
+                  "preprocess": "localize",
+                  "onError": "warn"
+                }
+              }
             }
           }
         },
@@ -12795,7 +12721,9 @@
                     },
                     "persistent": {
                       "optional": true,
-                      "$ref": "PersistentBackgroundProperty"
+                      "type": "boolean",
+                      "max_manifest_version": 2,
+                      "default": true
                     }
                   },
                   "additionalProperties": {
@@ -12813,7 +12741,9 @@
                     },
                     "persistent": {
                       "optional": true,
-                      "$ref": "PersistentBackgroundProperty"
+                      "type": "boolean",
+                      "max_manifest_version": 2,
+                      "default": true
                     }
                   },
                   "additionalProperties": {
@@ -12892,13 +12822,41 @@
               ]
             },
             "permissions": {
-              "type": "array",
               "default": [],
+              "optional": true,
+              "choices": [
+                {
+                  "max_manifest_version": 2,
+                  "type": "array",
+                  "items": {
+                    "$ref": "PermissionOrOrigin",
+                    "onError": "warn"
+                  }
+                },
+                {
+                  "min_manifest_version": 3,
+                  "type": "array",
+                  "items": {
+                    "$ref": "Permission",
+                    "onError": "warn"
+                  }
+                }
+              ]
+            },
+            "granted_host_permissions": {
+              "type": "boolean",
+              "optional": true,
+              "default": false
+            },
+            "host_permissions": {
+              "min_manifest_version": 3,
+              "type": "array",
               "items": {
-                "$ref": "PermissionOrOrigin",
+                "$ref": "MatchPattern",
                 "onError": "warn"
               },
-              "optional": true
+              "optional": true,
+              "default": []
             },
             "optional_permissions": {
               "type": "array",
@@ -12941,22 +12899,6 @@
                   }
                 }
               ]
-            },
-            "developer": {
-              "type": "object",
-              "optional": true,
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "optional": true,
-                  "preprocess": "localize"
-                },
-                "url": {
-                  "type": "string",
-                  "optional": true,
-                  "preprocess": "localize"
-                }
-              }
             },
             "hidden": {
               "type": "boolean",
@@ -13066,6 +13008,30 @@
           }
         },
         {
+          "id": "WebExtensionSitePermissionsManifest",
+          "type": "object",
+          "description": "Represents a WebExtension site permissions manifest.json file",
+          "$import": "ManifestBase",
+          "properties": {
+            "site_permissions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "SitePermission"
+              }
+            },
+            "install_origins": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "items": {
+                "type": "string",
+                "format": "origin"
+              }
+            }
+          }
+        },
+        {
           "id": "ThemeIcons",
           "type": "object",
           "properties": {
@@ -13126,16 +13092,29 @@
           ]
         },
         {
+          "id": "PermissionPrivileged",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "mozillaAddons"
+              ]
+            }
+          ]
+        },
+        {
           "id": "PermissionNoPrompt",
           "choices": [
             {
-              "$ref": "OptionalPermission"
+              "$ref": "OptionalPermissionNoPrompt"
+            },
+            {
+              "$ref": "PermissionPrivileged"
             },
             {
               "type": "string",
               "enum": [
                 "alarms",
-                "mozillaAddons",
                 "storage",
                 "unlimitedStorage"
               ]
@@ -13161,6 +13140,18 @@
             },
             {
               "$ref": "MatchPattern"
+            }
+          ]
+        },
+        {
+          "id": "SitePermission",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "midi",
+                "midi-sysex"
+              ]
             }
           ]
         },
@@ -13221,6 +13212,19 @@
               "type": "string",
               "optional": true
             }
+          }
+        },
+        {
+          "id": "BrowserSpecificSettings",
+          "type": "object",
+          "properties": {
+            "gecko": {
+              "$ref": "FirefoxSpecificProperties",
+              "optional": true
+            }
+          },
+          "additionalProperties": {
+            "type": "any"
           }
         },
         {
@@ -13380,24 +13384,6 @@
           "id": "UnrecognizedProperty",
           "type": "any",
           "deprecated": "An unexpected property was found in the WebExtension manifest."
-        },
-        {
-          "id": "PersistentBackgroundProperty",
-          "choices": [
-            {
-              "type": "boolean",
-              "enum": [
-                true
-              ]
-            },
-            {
-              "type": "boolean",
-              "enum": [
-                false
-              ],
-              "deprecated": "Event pages are not currently supported. This will run as a persistent background page."
-            }
-          ]
         }
       ]
     }
@@ -13472,7 +13458,7 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "PermissionNoPrompt",
+          "$extend": "PermissionPrivileged",
           "choices": [
             {
               "type": "string",
@@ -14350,9 +14336,6 @@
   "permissions.json": [
     {
       "namespace": "permissions",
-      "permissions": [
-        "manifest:optional_permissions"
-      ],
       "types": [
         {
           "id": "Permissions",
@@ -14838,6 +14821,10 @@
         "httpsOnlyMode": {
           "$ref": "types.Setting",
           "description": "Allow users to query the mode for 'HTTPS-Only Mode'. This setting's value is of type HTTPSOnlyModeOption, defaulting to <code>never</code>."
+        },
+        "globalPrivacyControl": {
+          "$ref": "types.Setting",
+          "description": "Allow users to query the status of 'Global Privacy Control'. This setting's value is of type boolean, defaulting to <code>false</code>."
         }
       }
     },
@@ -14893,7 +14880,8 @@
               "type": "boolean",
               "optional": true,
               "default": false,
-              "description": "Whether to create all cookies as nonPersistent (i.e., session) cookies."
+              "description": "Whether to create all cookies as nonPersistent (i.e., session) cookies.",
+              "deprecated": "This property has no effect anymore and its value is always <code>false<code>."
             }
           }
         }
@@ -15059,7 +15047,8 @@
             "s390x",
             "sparc64",
             "x86-32",
-            "x86-64"
+            "x86-64",
+            "noarch"
           ],
           "allowedContexts": [
             "content",
@@ -15189,7 +15178,6 @@
       "functions": [
         {
           "name": "getBackgroundPage",
-          "max_manifest_version": 2,
           "type": "function",
           "description": "Retrieves the JavaScript 'window' object for the background page running inside the current extension/app. If the background page is an event page, the system will ensure it is loaded before calling the callback. If there is no background page, an error is set.",
           "async": "callback",
@@ -15262,6 +15250,27 @@
           "returns": {
             "type": "string",
             "description": "The fully-qualified URL to the resource."
+          }
+        },
+        {
+          "name": "getFrameId",
+          "type": "function",
+          "allowedContexts": [
+            "content",
+            "devtools"
+          ],
+          "description": "Get the frameId of any window global or frame element.",
+          "parameters": [
+            {
+              "type": "any",
+              "name": "target",
+              "description": "A WindowProxy or a Browsing Context container element (IFrame, Frame, Embed, Object) for the target frame."
+            }
+          ],
+          "allowCrossOriginArguments": true,
+          "returns": {
+            "type": "number",
+            "description": "The frameId of the target frame, or -1 if it doesn't exist."
           }
         },
         {
@@ -15579,13 +15588,11 @@
         },
         {
           "name": "onSuspend",
-          "unsupported": true,
           "type": "function",
           "description": "Sent to the event page just before it is unloaded. This gives the extension opportunity to do some clean up. Note that since the page is unloading, any asynchronous operations started while handling this event are not guaranteed to complete. If more activity for the event page occurs before it gets unloaded the onSuspendCanceled event will be sent and the page won't be unloaded. "
         },
         {
           "name": "onSuspendCanceled",
-          "unsupported": true,
           "type": "function",
           "description": "Sent after onSuspend to indicate that the app won't be unloaded after all."
         },
@@ -15712,6 +15719,410 @@
               "$ref": "OnRestartRequiredReason",
               "name": "reason",
               "description": "The reason that the event is being dispatched."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scripting.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "OptionalPermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "scripting"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "scripting",
+      "description": "Use the scripting API to execute script in different contexts.",
+      "permissions": [
+        "scripting"
+      ],
+      "types": [
+        {
+          "id": "ScriptInjection",
+          "type": "object",
+          "description": "Details of a script injection",
+          "properties": {
+            "args": {
+              "type": "array",
+              "optional": true,
+              "description": "The arguments to curry into a provided function. This is only valid if the <code>func</code> parameter is specified. These arguments must be JSON-serializable.",
+              "items": {
+                "type": "any"
+              }
+            },
+            "files": {
+              "type": "array",
+              "optional": true,
+              "description": "The path of the JS files to inject, relative to the extension's root directory. Exactly one of <code>files</code> and <code>func</code> must be specified.",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            },
+            "func": {
+              "type": "function",
+              "optional": true,
+              "description": "A JavaScript function to inject. This function will be serialized, and then deserialized for injection. This means that any bound parameters and execution context will be lost. Exactly one of <code>files</code> and <code>func</code> must be specified."
+            },
+            "target": {
+              "$ref": "InjectionTarget",
+              "description": "Details specifying the target into which to inject the script."
+            },
+            "world": {
+              "$ref": "ExecutionWorld",
+              "optional": true
+            },
+            "injectImmediately": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether the injection should be triggered in the target as soon as possible (but not necessarily prior to page load)."
+            }
+          }
+        },
+        {
+          "id": "InjectionResult",
+          "type": "object",
+          "description": "Result of a script injection.",
+          "properties": {
+            "frameId": {
+              "type": "integer",
+              "description": "The frame ID associated with the injection."
+            },
+            "result": {
+              "type": "any",
+              "optional": true,
+              "description": "The result of the script execution."
+            },
+            "error": {
+              "type": "object",
+              "optional": true,
+              "description": "When the injection has failed, the error is exposed to the caller with this property.",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "A message explaining why the injection has failed."
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "InjectionTarget",
+          "type": "object",
+          "properties": {
+            "frameIds": {
+              "type": "array",
+              "optional": true,
+              "description": "The IDs of specific frames to inject into.",
+              "items": {
+                "type": "number"
+              }
+            },
+            "allFrames": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether the script should inject into all frames within the tab. Defaults to false. This must not be true if <code>frameIds</code> is specified."
+            },
+            "tabId": {
+              "type": "number",
+              "description": "The ID of the tab into which to inject."
+            }
+          }
+        },
+        {
+          "id": "CSSInjection",
+          "type": "object",
+          "properties": {
+            "css": {
+              "type": "string",
+              "optional": true,
+              "description": "A string containing the CSS to inject. Exactly one of <code>files</code> and <code>css</code> must be specified."
+            },
+            "files": {
+              "type": "array",
+              "optional": true,
+              "description": "The path of the CSS files to inject, relative to the extension's root directory. Exactly one of <code>files</code> and <code>css</code> must be specified.",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            },
+            "origin": {
+              "type": "string",
+              "optional": true,
+              "enum": [
+                "USER",
+                "AUTHOR"
+              ],
+              "default": "AUTHOR",
+              "description": "The style origin for the injection. Defaults to <code>'AUTHOR'</code>."
+            },
+            "target": {
+              "$ref": "InjectionTarget",
+              "description": "Details specifying the target into which to inject the CSS."
+            }
+          }
+        },
+        {
+          "id": "ContentScriptFilter",
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "optional": true,
+              "description": "The IDs of specific scripts to retrieve with <code>getRegisteredContentScripts()</code> or to unregister with <code>unregisterContentScripts()</code>.",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "id": "ExecutionWorld",
+          "type": "string",
+          "enum": [
+            "ISOLATED"
+          ],
+          "description": "The JavaScript world for a script to execute within. We currently only support the <code>'ISOLATED'</code> world."
+        },
+        {
+          "id": "RegisteredContentScript",
+          "type": "object",
+          "properties": {
+            "allFrames": {
+              "type": "boolean",
+              "optional": true,
+              "description": "If specified true, it will inject into all frames, even if the frame is not the top-most frame in the tab. Each frame is checked independently for URL requirements; it will not inject into child frames if the URL requirements are not met. Defaults to false, meaning that only the top frame is matched."
+            },
+            "excludeMatches": {
+              "type": "array",
+              "optional": true,
+              "description": "Excludes pages that this content script would otherwise be injected into.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "id": {
+              "type": "string",
+              "description": "The id of the content script, specified in the API call."
+            },
+            "js": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of JavaScript files to be injected into matching pages. These are injected in the order they appear in this array.",
+              "items": {
+                "$ref": "manifest.ExtensionURL"
+              }
+            },
+            "matches": {
+              "type": "array",
+              "optional": true,
+              "description": "Specifies which pages this content script will be injected into. Must be specified for <code>registerContentScripts()</code>.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "runAt": {
+              "$ref": "extensionTypes.RunAt",
+              "optional": true,
+              "description": "Specifies when JavaScript files are injected into the web page. The preferred and default value is <code>document_idle</code>."
+            },
+            "persistAcrossSessions": {
+              "type": "boolean",
+              "enum": [
+                false
+              ],
+              "description": "Specifies if this content script will persist into future sessions. This is currently NOT supported."
+            },
+            "css": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of CSS files to be injected into matching pages. These are injected in the order they appear in this array.",
+              "items": {
+                "$ref": "manifest.ExtensionURL"
+              }
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "executeScript",
+          "type": "function",
+          "description": "Injects a script into a target context. The script will be run at <code>document_idle</code>.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "injection",
+              "$ref": "ScriptInjection",
+              "description": "The details of the script which to inject."
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Invoked upon completion of the injection. The resulting array contains the result of execution for each frame where the injection succeeded.",
+              "parameters": [
+                {
+                  "name": "results",
+                  "type": "array",
+                  "items": {
+                    "$ref": "InjectionResult"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "insertCSS",
+          "type": "function",
+          "description": "Inserts a CSS stylesheet into a target context. If multiple frames are specified, unsuccessful injections are ignored.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "injection",
+              "$ref": "CSSInjection",
+              "description": "The details of the styles to insert."
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Invoked upon completion of the injection.",
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "removeCSS",
+          "type": "function",
+          "description": "Removes a CSS stylesheet that was previously inserted by this extension from a target context.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "injection",
+              "$ref": "CSSInjection",
+              "description": "The details of the styles to remove. Note that the <code>css</code>, <code>files</code>, and <code>origin</code> properties must exactly match the stylesheet inserted through <code>insertCSS</code>. Attempting to remove a non-existent stylesheet is a no-op."
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Invoked upon completion of the injection.",
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "registerContentScripts",
+          "type": "function",
+          "description": "Registers one or more content scripts for this extension.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "scripts",
+              "type": "array",
+              "description": "Contains a list of scripts to be registered. If there are errors during script parsing/file validation, or if the IDs specified already exist, then no scripts are registered.",
+              "items": {
+                "$ref": "RegisteredContentScript"
+              }
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Invoked upon completion of the registration.",
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getRegisteredContentScripts",
+          "type": "function",
+          "description": "Returns all dynamically registered content scripts for this extension that match the given filter.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "filter",
+              "$ref": "ContentScriptFilter",
+              "optional": true,
+              "description": "An object to filter the extension's dynamically registered scripts."
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "The resulting array contains the registered content scripts.",
+              "parameters": [
+                {
+                  "name": "scripts",
+                  "type": "array",
+                  "items": {
+                    "$ref": "RegisteredContentScript"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "unregisterContentScripts",
+          "type": "function",
+          "description": "Unregisters one or more content scripts for this extension.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "filter",
+              "$ref": "ContentScriptFilter",
+              "optional": true,
+              "description": "If specified, only unregisters dynamic content scripts which match the filter. Otherwise, all of the extension's dynamic content scripts are unregistered."
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Invoked upon completion of the unregistration.",
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "updateContentScripts",
+          "type": "function",
+          "description": "Updates one or more content scripts for this extension.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "scripts",
+              "type": "array",
+              "description": "Contains a list of scripts to be updated. If there are errors during script parsing/file validation, or if the IDs specified do not already exist, then no scripts are updated.",
+              "items": {
+                "type": "object",
+                "$import": "RegisteredContentScript",
+                "properties": {
+                  "persistAcrossSessions": {
+                    "type": "boolean",
+                    "optional": true,
+                    "enum": [
+                      false
+                    ],
+                    "description": "Specifies if this content script will persist into future sessions. This is currently NOT supported."
+                  }
+                }
+              }
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Invoked when scripts have been updated.",
+              "parameters": []
             }
           ]
         }
@@ -15905,6 +16316,23 @@
                 }
               ]
             }
+          ],
+          "events": [
+            {
+              "name": "onChanged",
+              "type": "function",
+              "description": "Fired when one or more items change.",
+              "parameters": [
+                {
+                  "name": "changes",
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "StorageChange"
+                  },
+                  "description": "Object mapping each key that changed to its corresponding $(ref:storage.StorageChange) for that item."
+                }
+              ]
+            }
           ]
         },
         {
@@ -16061,6 +16489,23 @@
                 }
               ]
             }
+          ],
+          "events": [
+            {
+              "name": "onChanged",
+              "type": "function",
+              "description": "Fired when one or more items change.",
+              "parameters": [
+                {
+                  "name": "changes",
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "StorageChange"
+                  },
+                  "description": "Object mapping each key that changed to its corresponding $(ref:storage.StorageChange) for that item."
+                }
+              ]
+            }
           ]
         }
       ],
@@ -16204,7 +16649,7 @@
           }
         },
         {
-          "$extend": "PermissionNoPrompt",
+          "$extend": "PermissionPrivileged",
           "choices": [
             {
               "type": "string",
@@ -17211,6 +17656,10 @@
                   "$ref": "ThemeColor",
                   "optional": true
                 },
+                "ntp_card_background": {
+                  "$ref": "ThemeColor",
+                  "optional": true
+                },
                 "ntp_text": {
                   "$ref": "ThemeColor",
                   "optional": true
@@ -17289,6 +17738,26 @@
                   },
                   "maxItems": 15,
                   "optional": true
+                },
+                "color_scheme": {
+                  "optional": true,
+                  "type": "string",
+                  "enum": [
+                    "auto",
+                    "light",
+                    "dark",
+                    "system"
+                  ]
+                },
+                "content_color_scheme": {
+                  "optional": true,
+                  "type": "string",
+                  "enum": [
+                    "auto",
+                    "light",
+                    "dark",
+                    "system"
+                  ]
                 }
               },
               "additionalProperties": {
@@ -17612,6 +18081,7 @@
           "properties": {
             "user_scripts": {
               "type": "object",
+              "max_manifest_version": 2,
               "optional": true,
               "properties": {
                 "api_script": {
@@ -17629,6 +18099,7 @@
     },
     {
       "namespace": "userScripts",
+      "max_manifest_version": 2,
       "permissions": [
         "manifest:user_scripts"
       ],
@@ -17699,6 +18170,22 @@
               "default": "document_idle",
               "optional": true,
               "description": "The soonest that the JavaScript will be injected into the tab. Defaults to \"document_idle\"."
+            },
+            "cookieStoreId": {
+              "choices": [
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "optional": true,
+              "description": "limit the set of matched tabs to those that belong to the given cookie store id"
             }
           }
         },
@@ -17736,6 +18223,7 @@
   "user_scripts_content.json": [
     {
       "namespace": "userScripts",
+      "max_manifest_version": 2,
       "permissions": [
         "manifest:user_scripts"
       ],
@@ -18415,7 +18903,8 @@
               "type": "string",
               "enum": [
                 "webRequest",
-                "webRequestBlocking"
+                "webRequestBlocking",
+                "webRequestFilterResponse.serviceWorkerScript"
               ]
             }
           ]
