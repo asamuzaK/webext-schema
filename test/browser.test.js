@@ -299,7 +299,6 @@ describe('browser', () => {
     });
 
     it('should get true', async () => {
-      browser.permissions.contains.resolves(true);
       const i = browser.browserSettings.contextMenuShowEvent.get.callCount;
       const j = browser.browserSettings.contextMenuShowEvent.set.callCount;
       browser.browserSettings.contextMenuShowEvent.get.resolves({
@@ -318,7 +317,6 @@ describe('browser', () => {
     });
 
     it('should get true', async () => {
-      browser.permissions.contains.resolves(true);
       const i = browser.browserSettings.contextMenuShowEvent.get.callCount;
       const j = browser.browserSettings.contextMenuShowEvent.set.callCount;
       browser.browserSettings.contextMenuShowEvent.get.resolves({
@@ -339,7 +337,6 @@ describe('browser', () => {
     });
 
     it('should get false', async () => {
-      browser.permissions.contains.resolves(true);
       const i = browser.browserSettings.contextMenuShowEvent.get.callCount;
       const j = browser.browserSettings.contextMenuShowEvent.set.callCount;
       browser.browserSettings.contextMenuShowEvent.get.resolves({
@@ -360,7 +357,6 @@ describe('browser', () => {
     });
 
     it('should get false', async () => {
-      browser.permissions.contains.resolves(true);
       const i = browser.browserSettings.contextMenuShowEvent.get.callCount;
       const j = browser.browserSettings.contextMenuShowEvent.set.callCount;
       browser.browserSettings.contextMenuShowEvent.get.resolves({
@@ -395,7 +391,6 @@ describe('browser', () => {
     });
 
     it('should get true', async () => {
-      browser.permissions.contains.resolves(true);
       const i = browser.browserSettings.contextMenuShowEvent.clear.callCount;
       browser.browserSettings.contextMenuShowEvent.clear.resolves(true);
       const res = await func();
@@ -407,7 +402,6 @@ describe('browser', () => {
     });
 
     it('should get false', async () => {
-      browser.permissions.contains.resolves(true);
       const i = browser.browserSettings.contextMenuShowEvent.clear.callCount;
       browser.browserSettings.contextMenuShowEvent.clear.resolves(false);
       const res = await func();
@@ -433,7 +427,6 @@ describe('browser', () => {
     });
 
     it('should get value', async () => {
-      browser.permissions.contains.resolves(true);
       const i = browser.browserSettings.newTabPosition.get.callCount;
       browser.browserSettings.newTabPosition.get.resolves('foo');
       const res = await func();
