@@ -995,6 +995,22 @@ describe('browser', () => {
     });
   });
 
+  describe('get manifest version', () => {
+    const func = mjs.getManifestVersion;
+
+    it('should get result', () => {
+      browser.runtime.getManifest.returns({ manifest_version: 2 });
+      const res = func();
+      assert.strictEqual(res, 2, 'result');
+    });
+
+    it('should get result', () => {
+      browser.runtime.getManifest.returns({ manifest_version: 3 });
+      const res = func();
+      assert.strictEqual(res, 3, 'result');
+    });
+  });
+
   describe('get OS', () => {
     const func = mjs.getOs;
 
