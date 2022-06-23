@@ -1094,7 +1094,7 @@ describe('browser', () => {
     });
 
     it('should call function', async () => {
-      browser.runtime.sendMessage.withArgs(null, 'foo', null).resolves({});
+      browser.runtime.sendMessage.withArgs('foo', null).resolves({});
       const i = browser.runtime.sendMessage.callCount;
       const res = await func(null, 'foo');
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
@@ -1103,7 +1103,7 @@ describe('browser', () => {
     });
 
     it('should call function', async () => {
-      browser.runtime.sendMessage.withArgs(null, 'foo', { bar: 'baz' })
+      browser.runtime.sendMessage.withArgs('foo', { bar: 'baz' })
         .resolves({});
       const i = browser.runtime.sendMessage.callCount;
       const res = await func(null, 'foo', { bar: 'baz' });
