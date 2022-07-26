@@ -3402,7 +3402,7 @@
         {
           "id": "ContactProperties",
           "type": "object",
-          "description": "A set of individual properties for a particular contact and/or its vCard string in the <code>vCard</code> member. The individual properties may either be `legacy properties <https://searchfox.org/comm-central/rev/8a1ae67088acf237dab2fd704db18589e7bf119e/mailnews/addrbook/modules/VCardUtils.jsm#295-334>`__ or custom properties (name may use a to z, A to Z, 1 to 9 and underscores).\n**Note:** Using individual properties is deprecated, get/set the <code>vCard</code> member instead.",
+          "description": "A set of individual properties for a particular contact, and its vCard string. Further information can be found in :ref:`howto_contacts`.",
           "patternProperties": {
             "^\\w+$": {
               "choices": [
@@ -9763,19 +9763,19 @@
           "properties": {
             "key": {
               "type": "string",
-              "description": "Distinct tag identifier – use this string when referring to a tag"
+              "description": "Unique tag identifier."
             },
             "tag": {
               "type": "string",
-              "description": "Human-readable tag name"
+              "description": "Human-readable tag name."
             },
             "color": {
               "type": "string",
-              "description": "Tag color"
+              "description": "Tag color."
             },
             "ordinal": {
               "type": "string",
-              "description": "Custom sort string (usually empty)"
+              "description": "Custom sort string (usually empty)."
             }
           }
         },
@@ -10323,7 +10323,7 @@
         {
           "name": "createTag",
           "type": "function",
-          "description": "Creates a new message tag. Tagging a message will store the tag's key in the user's message.",
+          "description": "Creates a new message tag. Tagging a message will store the tag's key in the user's message. Throws if the specified tag key is used already.",
           "async": true,
           "permissions": [
             "messagesTags"
@@ -10332,15 +10332,18 @@
             {
               "type": "string",
               "name": "key",
+              "description": "Unique tag identifier (must use only alphanumeric characters).",
               "pattern": "^[$a-zA-Z0-9]+$"
             },
             {
               "type": "string",
-              "name": "tag"
+              "name": "tag",
+              "description": "Human-readable tag name."
             },
             {
               "type": "string",
               "name": "color",
+              "description": "Tag color in hex format (i.e.: #000080 for navy blue)",
               "pattern": "^#[0-9a-f]{6}"
             }
           ]
@@ -10357,6 +10360,7 @@
             {
               "type": "string",
               "name": "key",
+              "description": "Unique tag identifier.",
               "pattern": "^[$a-zA-Z0-9]+$"
             },
             {
@@ -10365,11 +10369,13 @@
               "properties": {
                 "tag": {
                   "type": "string",
-                  "optional": "true"
+                  "optional": "true",
+                  "description": "Human-readable tag name."
                 },
                 "color": {
                   "type": "string",
                   "pattern": "^#[0-9a-f]{6}",
+                  "description": "Tag color in hex format (i.e.: #000080 for navy blue).",
                   "optional": "true"
                 }
               }
@@ -10671,7 +10677,6 @@
             "panel",
             "app",
             "devtools",
-            "addressBook",
             "messageCompose",
             "messageDisplay"
           ]
@@ -11503,7 +11508,6 @@
             "panel",
             "app",
             "devtools",
-            "addressBook",
             "messageCompose",
             "messageDisplay"
           ]
