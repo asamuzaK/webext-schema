@@ -7000,14 +7000,12 @@
                   "optional": true,
                   "choices": [
                     {
-                      "type": "string",
-                      "format": "relativeUrl"
+                      "type": "string"
                     },
                     {
                       "type": "array",
                       "items": {
-                        "type": "string",
-                        "format": "relativeUrl"
+                        "type": "string"
                       }
                     }
                   ]
@@ -12880,19 +12878,42 @@
                 {
                   "min_manifest_version": 3,
                   "type": "array",
+                  "postprocess": "webAccessibleMatching",
+                  "minItems": 1,
                   "items": {
                     "type": "object",
                     "properties": {
                       "resources": {
                         "type": "array",
+                        "minItems": 1,
                         "items": {
                           "type": "string"
                         }
                       },
                       "matches": {
+                        "optional": true,
                         "type": "array",
+                        "minItems": 1,
                         "items": {
                           "$ref": "MatchPattern"
+                        }
+                      },
+                      "extension_ids": {
+                        "optional": true,
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "choices": [
+                            {
+                              "$ref": "ExtensionID"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "*"
+                              ]
+                            }
+                          ]
                         }
                       }
                     }
@@ -15941,10 +15962,9 @@
             },
             "persistAcrossSessions": {
               "type": "boolean",
-              "enum": [
-                false
-              ],
-              "description": "Specifies if this content script will persist into future sessions. This is currently NOT supported."
+              "optional": true,
+              "default": true,
+              "description": "Specifies if this content script will persist into future sessions. Defaults to true."
             },
             "css": {
               "type": "array",
@@ -16110,10 +16130,7 @@
                   "persistAcrossSessions": {
                     "type": "boolean",
                     "optional": true,
-                    "enum": [
-                      false
-                    ],
-                    "description": "Specifies if this content script will persist into future sessions. This is currently NOT supported."
+                    "description": "Specifies if this content script will persist into future sessions."
                   }
                 }
               }
