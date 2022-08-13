@@ -1359,16 +1359,72 @@ describe('browser', () => {
     it('should not call function if permission is not granted', async () => {
       browser.permissions.contains.resolves(false);
       const i = browser.storage.local.clear.callCount;
+      const j = browser.storage.managed.clear.callCount;
+      //const k = browser.storage.session.clear.callCount;
+      const l = browser.storage.sync.clear.callCount;
+      await func();
+      assert.strictEqual(browser.storage.local.clear.callCount, i,
+        'not called');
+      assert.strictEqual(browser.storage.managed.clear.callCount, j,
+        'not called');
+      /*
+      assert.strictEqual(browser.storage.session.clear.callCount, k,
+        'not called');
+      */
+      assert.strictEqual(browser.storage.sync.clear.callCount, l, 'not called');
+    });
+
+    it('should not call function', async () => {
+      const i = browser.storage.local.clear.callCount;
+      const j = browser.storage.managed.clear.callCount;
+      //const k = browser.storage.session.clear.callCount;
+      const l = browser.storage.sync.clear.callCount;
       await func('foo');
       assert.strictEqual(browser.storage.local.clear.callCount, i,
         'not called');
+      assert.strictEqual(browser.storage.managed.clear.callCount, j,
+        'not called');
+      /*
+      assert.strictEqual(browser.storage.session.clear.callCount, k,
+        'not called');
+      */
+      assert.strictEqual(browser.storage.sync.clear.callCount, l, 'not called');
     });
 
-    it('should get object', async () => {
+    it('should call function', async () => {
       const i = browser.storage.local.clear.callCount;
       await func();
       assert.strictEqual(browser.storage.local.clear.callCount, i + 1,
         'called');
+    });
+
+    it('should call function', async () => {
+      const i = browser.storage.local.clear.callCount;
+      await func('local');
+      assert.strictEqual(browser.storage.local.clear.callCount, i + 1,
+        'called');
+    });
+
+    it('should not call function', async () => {
+      const i = browser.storage.managed.clear.callCount;
+      await func('managed');
+      assert.strictEqual(browser.storage.managed.clear.callCount, i,
+        'not called');
+    });
+
+    /*
+    it('should call function', async () => {
+      const i = browser.storage.session.clear.callCount;
+      await func('session');
+      assert.strictEqual(browser.storage.session.clear.callCount, i + 1,
+        'called');
+    });
+    */
+
+    it('should call function', async () => {
+      const i = browser.storage.sync.clear.callCount;
+      await func('sync');
+      assert.strictEqual(browser.storage.sync.clear.callCount, i + 1, 'called');
     });
   });
 
@@ -1378,15 +1434,80 @@ describe('browser', () => {
     it('should not call function if permission is not granted', async () => {
       browser.permissions.contains.resolves(false);
       const i = browser.storage.local.get.callCount;
+      const j = browser.storage.managed.get.callCount;
+      //const k = browser.storage.session.get.callCount;
+      const l = browser.storage.sync.get.callCount;
       const res = await func();
       assert.strictEqual(browser.storage.local.get.callCount, i,
         'not called');
+      assert.strictEqual(browser.storage.managed.get.callCount, j,
+        'not called');
+      /*
+      assert.strictEqual(browser.storage.session.get.callCount, k,
+        'not called');
+      */
+      assert.strictEqual(browser.storage.sync.get.callCount, l, 'not called');
       assert.isNull(res, 'result');
     });
 
-    it('should get object', async () => {
+    it('should not call function', async () => {
+      const i = browser.storage.local.get.callCount;
+      const j = browser.storage.managed.get.callCount;
+      //const k = browser.storage.session.get.callCount;
+      const l = browser.storage.sync.get.callCount;
+      const res = await func('foo');
+      assert.strictEqual(browser.storage.local.get.callCount, i, 'not called');
+      assert.strictEqual(browser.storage.managed.get.callCount, j,
+        'not called');
+      /*
+      assert.strictEqual(browser.storage.session.get.callCount, k,
+        'not called');
+      */
+      assert.strictEqual(browser.storage.sync.get.callCount, l, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should call function', async () => {
       browser.storage.local.get.resolves({ foo: 'bar' });
+      const i = browser.storage.local.get.callCount;
       const res = await func();
+      assert.strictEqual(browser.storage.local.get.callCount, i + 1, 'called');
+      assert.deepEqual(res, { foo: 'bar' }, 'result');
+    });
+
+    it('should call function', async () => {
+      browser.storage.local.get.resolves({ foo: 'bar' });
+      const i = browser.storage.local.get.callCount;
+      const res = await func('local');
+      assert.strictEqual(browser.storage.local.get.callCount, i + 1, 'called');
+      assert.deepEqual(res, { foo: 'bar' }, 'result');
+    });
+
+    it('should call function', async () => {
+      browser.storage.managed.get.resolves({ foo: 'bar' });
+      const i = browser.storage.managed.get.callCount;
+      const res = await func('managed');
+      assert.strictEqual(browser.storage.managed.get.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, { foo: 'bar' }, 'result');
+    });
+
+    /*
+    it('should call function', async () => {
+      browser.storage.session.get.resolves({ foo: 'bar' });
+      const i = browser.storage.session.get.callCount;
+      const res = await func('session');
+      assert.strictEqual(browser.storage.session.get.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, { foo: 'bar' }, 'result');
+    });
+    */
+
+    it('should call function', async () => {
+      browser.storage.sync.get.resolves({ foo: 'bar' });
+      const i = browser.storage.sync.get.callCount;
+      const res = await func('sync');
+      assert.strictEqual(browser.storage.sync.get.callCount, i + 1, 'called');
       assert.deepEqual(res, { foo: 'bar' }, 'result');
     });
   });
@@ -1397,15 +1518,79 @@ describe('browser', () => {
     it('should not call function if permission is not granted', async () => {
       browser.permissions.contains.resolves(false);
       const i = browser.storage.local.get.callCount;
+      const j = browser.storage.managed.get.callCount;
+      //const k = browser.storage.session.get.callCount;
+      const l = browser.storage.sync.get.callCount;
       const res = await func('foo');
-      assert.strictEqual(browser.storage.local.get.callCount, i,
+      assert.strictEqual(browser.storage.local.get.callCount, i, 'not called');
+      assert.strictEqual(browser.storage.managed.get.callCount, j,
         'not called');
+      /*
+      assert.strictEqual(browser.storage.session.get.callCount, k,
+        'not called');
+      */
+      assert.strictEqual(browser.storage.sync.get.callCount, l, 'not called');
       assert.isNull(res, 'result');
     });
 
-    it('should get object', async () => {
+    it('should not call function', async () => {
+      const i = browser.storage.local.get.callCount;
+      const j = browser.storage.managed.get.callCount;
+      //const k = browser.storage.session.get.callCount;
+      const l = browser.storage.sync.get.callCount;
+      const res = await func('foo', 'bar');
+      assert.strictEqual(browser.storage.local.get.callCount, i, 'not called');
+      assert.strictEqual(browser.storage.managed.get.callCount, j,
+        'not called');
+      /*
+      assert.strictEqual(browser.storage.session.get.callCount, k,
+        'not called');
+      */
+      assert.strictEqual(browser.storage.sync.get.callCount, l, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should call function', async () => {
       browser.storage.local.get.withArgs('foo').resolves({ foo: 'bar' });
+      const i = browser.storage.local.get.callCount;
       const res = await func('foo');
+      assert.strictEqual(browser.storage.local.get.callCount, i + 1, 'called');
+      assert.deepEqual(res, { foo: 'bar' }, 'result');
+    });
+
+    it('should call function', async () => {
+      browser.storage.local.get.withArgs('foo').resolves({ foo: 'bar' });
+      const i = browser.storage.local.get.callCount;
+      const res = await func('foo', 'local');
+      assert.strictEqual(browser.storage.local.get.callCount, i + 1, 'called');
+      assert.deepEqual(res, { foo: 'bar' }, 'result');
+    });
+
+    it('should call function', async () => {
+      browser.storage.managed.get.withArgs('foo').resolves({ foo: 'bar' });
+      const i = browser.storage.managed.get.callCount;
+      const res = await func('foo', 'managed');
+      assert.strictEqual(browser.storage.managed.get.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, { foo: 'bar' }, 'result');
+    });
+
+    /*
+    it('should call function', async () => {
+      browser.storage.session.get.withArgs('foo').resolves({ foo: 'bar' });
+      const i = browser.storage.session.get.callCount;
+      const res = await func('foo', 'session');
+      assert.strictEqual(browser.storage.session.get.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, { foo: 'bar' }, 'result');
+    });
+    */
+
+    it('should call function', async () => {
+      browser.storage.sync.get.withArgs('foo').resolves({ foo: 'bar' });
+      const i = browser.storage.sync.get.callCount;
+      const res = await func('foo', 'sync');
+      assert.strictEqual(browser.storage.sync.get.callCount, i + 1, 'called');
       assert.deepEqual(res, { foo: 'bar' }, 'result');
     });
   });
@@ -1416,8 +1601,37 @@ describe('browser', () => {
     it('should not call function if permission is not granted', async () => {
       browser.permissions.contains.resolves(false);
       const i = browser.storage.local.remove.callCount;
+      const j = browser.storage.managed.remove.callCount;
+      //const k = browser.storage.session.remove.callCount;
+      const l = browser.storage.sync.remove.callCount;
       await func('foo');
       assert.strictEqual(browser.storage.local.remove.callCount, i,
+        'not called');
+      assert.strictEqual(browser.storage.managed.remove.callCount, j,
+        'not called');
+      /*
+      assert.strictEqual(browser.storage.session.remove.callCount, k,
+        'not called');
+      */
+      assert.strictEqual(browser.storage.sync.remove.callCount, l,
+        'not called');
+    });
+
+    it('should not call function', async () => {
+      const i = browser.storage.local.remove.callCount;
+      const j = browser.storage.managed.remove.callCount;
+      //const k = browser.storage.session.remove.callCount;
+      const l = browser.storage.sync.remove.callCount;
+      await func('foo', 'bar');
+      assert.strictEqual(browser.storage.local.remove.callCount, i,
+        'not called');
+      assert.strictEqual(browser.storage.managed.remove.callCount, j,
+        'not called');
+      /*
+      assert.strictEqual(browser.storage.session.remove.callCount, k,
+        'not called');
+      */
+      assert.strictEqual(browser.storage.sync.remove.callCount, l,
         'not called');
     });
 
@@ -1427,12 +1641,60 @@ describe('browser', () => {
       assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
         'called');
     });
+
+    it('should call function', async () => {
+      const i = browser.storage.local.remove.callCount;
+      await func('foo', 'local');
+      assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
+        'called');
+    });
+
+    it('should not call function', async () => {
+      const i = browser.storage.managed.remove.callCount;
+      await func('foo', 'managed');
+      assert.strictEqual(browser.storage.managed.remove.callCount, i,
+        'not called');
+    });
+
+    /*
+    it('should call function', async () => {
+      const i = browser.storage.session.remove.callCount;
+      await func('foo', 'session');
+      assert.strictEqual(browser.storage.session.remove.callCount, i + 1,
+        'called');
+    });
+    */
+
+    it('should call function', async () => {
+      const i = browser.storage.sync.remove.callCount;
+      await func('foo', 'sync');
+      assert.strictEqual(browser.storage.sync.remove.callCount, i + 1,
+        'called');
+    });
   });
 
   describe('set storage', () => {
     const func = mjs.setStorage;
 
-    it('should not call function if no argument given', async () => {
+    it('should not call function if permission is not granted', async () => {
+      browser.permissions.contains.resolves(false);
+      const i = browser.storage.local.set.callCount;
+      const j = browser.storage.managed.set.callCount;
+      //const k = browser.storage.session.set.callCount;
+      const l = browser.storage.sync.set.callCount;
+      await func('foo');
+      assert.strictEqual(browser.storage.local.set.callCount, i,
+        'not called');
+      assert.strictEqual(browser.storage.managed.set.callCount, j,
+        'not called');
+      /*
+      assert.strictEqual(browser.storage.session.set.callCount, k,
+        'not called');
+      */
+      assert.strictEqual(browser.storage.sync.set.callCount, l, 'not called');
+    });
+
+    it('should not call function if first argument is falsy', async () => {
       const i = browser.storage.local.set.callCount;
       await func();
       assert.strictEqual(browser.storage.local.set.callCount, i, 'not called');
@@ -1442,6 +1704,34 @@ describe('browser', () => {
       const i = browser.storage.local.set.callCount;
       await func('foo');
       assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
+    });
+
+    it('should call function', async () => {
+      const i = browser.storage.local.set.callCount;
+      await func('foo', 'local');
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
+    });
+
+    it('should not call function', async () => {
+      const i = browser.storage.managed.set.callCount;
+      await func('foo', 'managed');
+      assert.strictEqual(browser.storage.managed.set.callCount, i,
+        'not called');
+    });
+
+    /*
+    it('should call function', async () => {
+      const i = browser.storage.session.set.callCount;
+      await func('foo', 'session');
+      assert.strictEqual(browser.storage.session.set.callCount, i + 1,
+        'called');
+    });
+    */
+
+    it('should call function', async () => {
+      const i = browser.storage.sync.set.callCount;
+      await func('foo', 'sync');
+      assert.strictEqual(browser.storage.sync.set.callCount, i + 1, 'called');
     });
   });
 
