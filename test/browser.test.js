@@ -1360,7 +1360,7 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.storage.local.clear.callCount;
       const j = browser.storage.managed.clear.callCount;
-      //const k = browser.storage.session.clear.callCount;
+      // const k = browser.storage.session.clear.callCount;
       const l = browser.storage.sync.clear.callCount;
       await func();
       assert.strictEqual(browser.storage.local.clear.callCount, i,
@@ -1377,7 +1377,7 @@ describe('browser', () => {
     it('should not call function', async () => {
       const i = browser.storage.local.clear.callCount;
       const j = browser.storage.managed.clear.callCount;
-      //const k = browser.storage.session.clear.callCount;
+      // const k = browser.storage.session.clear.callCount;
       const l = browser.storage.sync.clear.callCount;
       await func('foo');
       assert.strictEqual(browser.storage.local.clear.callCount, i,
@@ -1435,7 +1435,7 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.storage.local.get.callCount;
       const j = browser.storage.managed.get.callCount;
-      //const k = browser.storage.session.get.callCount;
+      // const k = browser.storage.session.get.callCount;
       const l = browser.storage.sync.get.callCount;
       const res = await func();
       assert.strictEqual(browser.storage.local.get.callCount, i,
@@ -1453,7 +1453,7 @@ describe('browser', () => {
     it('should not call function', async () => {
       const i = browser.storage.local.get.callCount;
       const j = browser.storage.managed.get.callCount;
-      //const k = browser.storage.session.get.callCount;
+      // const k = browser.storage.session.get.callCount;
       const l = browser.storage.sync.get.callCount;
       const res = await func('foo');
       assert.strictEqual(browser.storage.local.get.callCount, i, 'not called');
@@ -1519,7 +1519,7 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.storage.local.get.callCount;
       const j = browser.storage.managed.get.callCount;
-      //const k = browser.storage.session.get.callCount;
+      // const k = browser.storage.session.get.callCount;
       const l = browser.storage.sync.get.callCount;
       const res = await func('foo');
       assert.strictEqual(browser.storage.local.get.callCount, i, 'not called');
@@ -1536,7 +1536,7 @@ describe('browser', () => {
     it('should not call function', async () => {
       const i = browser.storage.local.get.callCount;
       const j = browser.storage.managed.get.callCount;
-      //const k = browser.storage.session.get.callCount;
+      // const k = browser.storage.session.get.callCount;
       const l = browser.storage.sync.get.callCount;
       const res = await func('foo', 'bar');
       assert.strictEqual(browser.storage.local.get.callCount, i, 'not called');
@@ -1602,7 +1602,7 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.storage.local.remove.callCount;
       const j = browser.storage.managed.remove.callCount;
-      //const k = browser.storage.session.remove.callCount;
+      // const k = browser.storage.session.remove.callCount;
       const l = browser.storage.sync.remove.callCount;
       await func('foo');
       assert.strictEqual(browser.storage.local.remove.callCount, i,
@@ -1620,7 +1620,7 @@ describe('browser', () => {
     it('should not call function', async () => {
       const i = browser.storage.local.remove.callCount;
       const j = browser.storage.managed.remove.callCount;
-      //const k = browser.storage.session.remove.callCount;
+      // const k = browser.storage.session.remove.callCount;
       const l = browser.storage.sync.remove.callCount;
       await func('foo', 'bar');
       assert.strictEqual(browser.storage.local.remove.callCount, i,
@@ -1680,7 +1680,7 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.storage.local.set.callCount;
       const j = browser.storage.managed.set.callCount;
-      //const k = browser.storage.session.set.callCount;
+      // const k = browser.storage.session.set.callCount;
       const l = browser.storage.sync.set.callCount;
       await func('foo');
       assert.strictEqual(browser.storage.local.set.callCount, i,
@@ -2161,6 +2161,16 @@ describe('browser', () => {
       ]);
       const res = await func();
       assert.strictEqual(res, 1, 'result');
+    });
+
+    it('should get number', async () => {
+      browser.tabs.query.resolves([
+        {
+          id: browser.tabs.TAB_ID_NONE
+        }
+      ]);
+      const res = await func();
+      assert.strictEqual(res, browser.tabs.TAB_ID_NONE, 'result');
     });
   });
 

@@ -855,11 +855,11 @@ export const getActiveTabId = async windowId => {
     windowId = windows.WINDOW_ID_CURRENT;
   }
   const tab = await getActiveTab(windowId);
-  let id;
+  let tabId;
   if (tab) {
-    { id } = tab;
+    tabId = tab.id;
   }
-  return id || null;
+  return Number.isInteger(tabId) ? tabId : null;
 };
 
 /**
