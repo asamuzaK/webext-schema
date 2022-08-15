@@ -854,8 +854,12 @@ export const getActiveTabId = async windowId => {
   if (!Number.isInteger(windowId)) {
     windowId = windows.WINDOW_ID_CURRENT;
   }
-  const { id } = await getActiveTab(windowId);
-  return id;
+  const tab = await getActiveTab(windowId);
+  let id;
+  if (tab) {
+    { id } = tab;
+  }
+  return id || null;
 };
 
 /**

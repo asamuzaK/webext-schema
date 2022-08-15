@@ -1843,7 +1843,7 @@ describe('browser', () => {
         file
       }).callCount, i + 1, 'called');
       assert.isTrue(errCalled, 'error called');
-      assert.deepEqual(res, false, 'result');
+      assert.isFalse(res, 'result');
     });
 
     it('should get result', async () => {
@@ -1881,7 +1881,7 @@ describe('browser', () => {
         file
       }).callCount, i + 1, 'called');
       assert.isTrue(errCalled, 'error called');
-      assert.deepEqual(res, false, 'result');
+      assert.isFalse(res, 'result');
     });
 
     it('should get result', async () => {
@@ -1919,7 +1919,7 @@ describe('browser', () => {
         file
       }).callCount, i + 1, 'called');
       assert.isTrue(errCalled, 'error called');
-      assert.deepEqual(res, false, 'result');
+      assert.isFalse(res, 'result');
     });
   });
 
@@ -2137,6 +2137,12 @@ describe('browser', () => {
   describe('get active tab ID', () => {
     const func = mjs.getActiveTabId;
 
+    it('should get null', async () => {
+      browser.tabs.query.resolves([]);
+      const res = await func(1);
+      assert.isNull(res, 'result');
+    });
+
     it('should get number', async () => {
       browser.tabs.query.resolves([
         {
@@ -2144,7 +2150,7 @@ describe('browser', () => {
         }
       ]);
       const res = await func(1);
-      assert.deepEqual(res, 1, 'result');
+      assert.strictEqual(res, 1, 'result');
     });
 
     it('should get number', async () => {
@@ -2154,7 +2160,7 @@ describe('browser', () => {
         }
       ]);
       const res = await func();
-      assert.deepEqual(res, 1, 'result');
+      assert.strictEqual(res, 1, 'result');
     });
   });
 
