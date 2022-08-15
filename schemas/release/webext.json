@@ -11587,7 +11587,6 @@
             "screenshots",
             "seqstyle",
             "stackwalk",
-            "jstracer",
             "jsallocations",
             "nostacksampling",
             "preferencereads",
@@ -11601,6 +11600,7 @@
             "markersallthreads",
             "unregisteredthreads",
             "processcpu",
+            "power",
             "responsiveness"
           ]
         },
@@ -12892,7 +12892,7 @@
                       "matches": {
                         "type": "array",
                         "items": {
-                          "$ref": "MatchPatternRestricted"
+                          "$ref": "MatchPattern"
                         }
                       }
                     }
@@ -19320,6 +19320,8 @@
             "fingerprinting_content",
             "cryptomining",
             "cryptomining_content",
+            "emailtracking",
+            "emailtracking_content",
             "tracking",
             "tracking_ad",
             "tracking_analytics",
