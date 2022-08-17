@@ -576,6 +576,13 @@ describe('browser', () => {
       assert.isNull(res, 'result');
     });
 
+    it('should throw', async () => {
+      browser.contextualIdentities.query.rejects(new Error('error'));
+      await func().catch(e => {
+        assert.instanceOf(e, Error, 'error');
+      });
+    });
+
     it('should get result', async () => {
       browser.contextualIdentities.query.withArgs({}).resolves([
         {
@@ -588,19 +595,6 @@ describe('browser', () => {
       const res = await func();
       assert.isArray(res, 'array');
       assert.deepEqual(res, [{ foo: 'bar' }, { baz: 'qux' }], 'result');
-    });
-
-    it('should log error message', async () => {
-      let msg;
-      const e = new Error('error');
-      const stub = sinon.stub(console, 'error').callsFake(m => {
-        msg = (m && m.message) || m;
-      });
-      browser.contextualIdentities.query.rejects(e);
-      const res = await func();
-      stub.restore();
-      assert.strictEqual(msg, 'error', 'log');
-      assert.isNull(res, 'result');
     });
   });
 
@@ -628,23 +622,18 @@ describe('browser', () => {
       assert.isNull(res, 'result');
     });
 
+    it('should throw', async () => {
+      browser.contextualIdentities.get.withArgs('foo')
+        .rejects(new Error('error'));
+      await func('foo').catch(e => {
+        assert.instanceOf(e, Error, 'error');
+      });
+    });
+
     it('should get result', async () => {
       browser.contextualIdentities.get.withArgs('foo').resolves({});
       const res = await func('foo');
       assert.deepEqual(res, {}, 'result');
-    });
-
-    it('should log error message', async () => {
-      let msg;
-      const e = new Error('error');
-      const stub = sinon.stub(console, 'error').callsFake(m => {
-        msg = (m && m.message) || m;
-      });
-      browser.contextualIdentities.get.withArgs('foo').rejects(e);
-      const res = await func('foo');
-      stub.restore();
-      assert.strictEqual(msg, 'error', 'log');
-      assert.isNull(res, 'result');
     });
   });
 
@@ -664,26 +653,16 @@ describe('browser', () => {
       assert.isNull(res, 'result');
     });
 
-    it('should log error message', async () => {
-      let msg;
-      const e = new Error('error');
-      const stub = sinon.stub(console, 'error').callsFake(m => {
-        msg = (m && m.message) || m;
+    it('should throw', async () => {
+      browser.management.getAll.rejects(new Error('error'));
+      await func().catch(e => {
+        assert.instanceOf(e, Error, 'error');
       });
-      browser.management.getAll.rejects(e);
-      const res = await func();
-      stub.restore();
-      assert.strictEqual(msg, 'error', 'log');
-      assert.isNull(res, 'result');
     });
 
-    it('should not log error', async () => {
+    it('should get null', async () => {
       browser.management.getAll.resolves([]);
-      const stub = sinon.stub(console, 'error');
       const res = await func();
-      const { called } = stub;
-      stub.restore();
-      assert.isFalse(called, 'not logged');
       assert.isNull(res, 'result');
     });
 
@@ -774,26 +753,16 @@ describe('browser', () => {
       assert.isNull(res, 'result');
     });
 
-    it('should log error message', async () => {
-      let msg;
-      const e = new Error('error');
-      const stub = sinon.stub(console, 'error').callsFake(m => {
-        msg = (m && m.message) || m;
+    it('should throw', async () => {
+      browser.management.getAll.rejects(new Error('error'));
+      await func().catch(e => {
+        assert.instanceOf(e, Error, 'error');
       });
-      browser.management.getAll.rejects(e);
-      const res = await func();
-      stub.restore();
-      assert.strictEqual(msg, 'error', 'log');
-      assert.isNull(res, 'result');
     });
 
-    it('should not log error', async () => {
+    it('should get null', async () => {
       browser.management.getAll.resolves([]);
-      const stub = sinon.stub(console, 'error');
       const res = await func();
-      const { called } = stub;
-      stub.restore();
-      assert.isFalse(called, 'not logged');
       assert.isNull(res, 'result');
     });
 
@@ -1137,6 +1106,144 @@ describe('browser', () => {
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
         'not called');
       assert.isNull(res, 'result');
+    });
+  });
+
+  describe('is scripting available', () => {
+    const func = mjs.isScriptingAvailable;
+
+    it('should get false if permission is not granted', async () => {
+      browser.permissions.contains.resolves(false);
+      const res = await func();
+      assert.isFalse(res, 'result');
+    });
+
+    it('should get true', async () => {
+      const res = await func();
+      assert.isTrue(res, 'result');
+    });
+  });
+
+  describe('execute script to tab', () => {
+    const func = mjs.executeScriptToTab;
+
+    it('should not call function if permission is not granted', async () => {
+      browser.permissions.contains.resolves(false);
+      browser.scripting.executeScript.resolves([{}]);
+      const i = browser.scripting.executeScript.callCount;
+      const res = await func();
+      assert.strictEqual(browser.scripting.executeScript.callCount, i,
+        'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should not call function if no tabId in target', async () => {
+      browser.scripting.executeScript.resolves([{}]);
+      const i = browser.scripting.executeScript.callCount;
+      const res = await func({
+        target: {}
+      });
+      assert.strictEqual(browser.scripting.executeScript.callCount, i,
+        'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should not call function if files / func is not included', async () => {
+      browser.scripting.executeScript.resolves([{}]);
+      const i = browser.scripting.executeScript.callCount;
+      const res = await func({
+        target: {
+          tabId: 1
+        }
+      });
+      assert.strictEqual(browser.scripting.executeScript.callCount, i,
+        'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should not call function if files is an empty array', async () => {
+      browser.scripting.executeScript.resolves([{}]);
+      const i = browser.scripting.executeScript.callCount;
+      const res = await func({
+        files: [],
+        target: {
+          tabId: 1
+        }
+      });
+      assert.strictEqual(browser.scripting.executeScript.callCount, i,
+        'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should throw', async () => {
+      browser.scripting.executeScript.rejects(new Error('error'));
+      const stubErr = sinon.stub(console, 'error');
+      await func({
+        files: ['foo/bar'],
+        target: {
+          tabId: 1
+        }
+      }).catch(e => {
+        assert.instanceOf(e, Error, 'error');
+      });
+      stubErr.restore();
+    });
+
+    it('should call function', async () => {
+      browser.scripting.executeScript.resolves([{}]);
+      const i = browser.scripting.executeScript.callCount;
+      const res = await func({
+        files: ['foo/bar'],
+        target: {
+          tabId: 1
+        }
+      });
+      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [{}], 'result');
+    });
+
+    it('should not call function if func is not a function', async () => {
+      browser.scripting.executeScript.resolves([{}]);
+      const i = browser.scripting.executeScript.callCount;
+      const res = await func({
+        func: 'foo',
+        target: {
+          tabId: 1
+        }
+      });
+      assert.strictEqual(browser.scripting.executeScript.callCount, i,
+        'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should call function', async () => {
+      browser.scripting.executeScript.resolves([{}]);
+      const i = browser.scripting.executeScript.callCount;
+      const res = await func({
+        func: () => {},
+        target: {
+          tabId: 1
+        }
+      });
+      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [{}], 'result');
+    });
+
+    it('should call function', async () => {
+      browser.scripting.executeScript.resolves([{}]);
+      const i = browser.scripting.executeScript.callCount;
+      const res = await func({
+        args: ['foo'],
+        func: arg => arg,
+        target: {
+          tabId: 1
+        }
+      });
+      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [{}], 'result');
     });
   });
 
