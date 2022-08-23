@@ -7000,14 +7000,12 @@
                   "optional": true,
                   "choices": [
                     {
-                      "type": "string",
-                      "format": "relativeUrl"
+                      "type": "string"
                     },
                     {
                       "type": "array",
                       "items": {
-                        "type": "string",
-                        "format": "relativeUrl"
+                        "type": "string"
                       }
                     }
                   ]
@@ -9622,6 +9620,154 @@
       ]
     }
   ],
+  "declarative_net_request.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "Permission",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "declarativeNetRequest"
+              ],
+              "min_manifest_version": 3
+            }
+          ]
+        },
+        {
+          "$extend": "PermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "declarativeNetRequestFeedback",
+                "declarativeNetRequestWithHostAccess"
+              ],
+              "min_manifest_version": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "declarativeNetRequest",
+      "description": "Use the declarativeNetRequest API to block or modify network requests by specifying declarative rules.",
+      "permissions": [
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess"
+      ],
+      "types": [
+        {
+          "id": "ResourceType",
+          "type": "string",
+          "description": "How the requested resource will be used. Comparable to the webRequest.ResourceType type.",
+          "enum": [
+            "main_frame",
+            "sub_frame",
+            "stylesheet",
+            "script",
+            "image",
+            "object",
+            "object_subrequest",
+            "xmlhttprequest",
+            "xslt",
+            "ping",
+            "beacon",
+            "xml_dtd",
+            "font",
+            "media",
+            "websocket",
+            "csp_report",
+            "imageset",
+            "web_manifest",
+            "speculative",
+            "other"
+          ]
+        },
+        {
+          "id": "MatchedRule",
+          "type": "object",
+          "properties": {
+            "ruleId": {
+              "type": "integer",
+              "description": "A matching rule's ID."
+            },
+            "rulesetId": {
+              "type": "string",
+              "description": "ID of the Ruleset this rule belongs to."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "testMatchOutcome",
+          "type": "function",
+          "description": "Checks if any of the extension's declarativeNetRequest rules would match a hypothetical request.",
+          "permissions": [
+            "declarativeNetRequestFeedback"
+          ],
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "request",
+              "type": "object",
+              "description": "The details of the request to test.",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "The URL of the hypothetical request."
+                },
+                "initiator": {
+                  "type": "string",
+                  "description": "The initiator URL (if any) for the hypothetical request.",
+                  "optional": true
+                },
+                "method": {
+                  "type": "string",
+                  "description": "Standard HTTP method of the hypothetical request.",
+                  "optional": true,
+                  "default": "get"
+                },
+                "type": {
+                  "$ref": "ResourceType",
+                  "description": "The resource type of the hypothetical request."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "description": "The ID of the tab in which the hypothetical request takes place. Does not need to correspond to a real tab ID. Default is -1, meaning that the request isn't related to a tab.",
+                  "optional": true,
+                  "default": -1
+                }
+              }
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "description": "Called with the details of matched rules.",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "object",
+                  "properties": {
+                    "matchedRules": {
+                      "type": "array",
+                      "description": "The rules (if any) that match the hypothetical request.",
+                      "items": {
+                        "$ref": "MatchedRule"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "dns.json": [
     {
       "namespace": "manifest",
@@ -11579,7 +11725,6 @@
           "enum": [
             "java",
             "js",
-            "leaf",
             "mainthreadio",
             "fileio",
             "fileioall",
@@ -12880,19 +13025,42 @@
                 {
                   "min_manifest_version": 3,
                   "type": "array",
+                  "postprocess": "webAccessibleMatching",
+                  "minItems": 1,
                   "items": {
                     "type": "object",
                     "properties": {
                       "resources": {
                         "type": "array",
+                        "minItems": 1,
                         "items": {
                           "type": "string"
                         }
                       },
                       "matches": {
+                        "optional": true,
                         "type": "array",
+                        "minItems": 1,
                         "items": {
                           "$ref": "MatchPattern"
+                        }
+                      },
+                      "extension_ids": {
+                        "optional": true,
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "choices": [
+                            {
+                              "$ref": "ExtensionID"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "*"
+                              ]
+                            }
+                          ]
                         }
                       }
                     }
@@ -15941,10 +16109,9 @@
             },
             "persistAcrossSessions": {
               "type": "boolean",
-              "enum": [
-                false
-              ],
-              "description": "Specifies if this content script will persist into future sessions. This is currently NOT supported."
+              "optional": true,
+              "default": true,
+              "description": "Specifies if this content script will persist into future sessions. Defaults to true."
             },
             "css": {
               "type": "array",
@@ -16110,10 +16277,7 @@
                   "persistAcrossSessions": {
                     "type": "boolean",
                     "optional": true,
-                    "enum": [
-                      false
-                    ],
-                    "description": "Specifies if this content script will persist into future sessions. This is currently NOT supported."
+                    "description": "Specifies if this content script will persist into future sessions."
                   }
                 }
               }
@@ -17264,9 +17428,8 @@
           ]
         },
         {
-          "name": "checkDeepEq",
+          "name": "assertDeepEq",
           "type": "function",
-          "unsupported": true,
           "allowAmbiguousOptionalArguments": true,
           "parameters": [
             {
@@ -17276,6 +17439,11 @@
             {
               "type": "any",
               "name": "actual"
+            },
+            {
+              "type": "string",
+              "name": "message",
+              "optional": true
             }
           ]
         },
