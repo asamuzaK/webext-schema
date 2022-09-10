@@ -3568,6 +3568,31 @@
           "description": "Gets a single contact."
         },
         {
+          "name": "getPhoto",
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "object",
+                  "optional": true,
+                  "isInstanceOf": "File",
+                  "additionalProperties": true
+                }
+              ]
+            }
+          ],
+          "description": "Gets the photo associated with this contact, if any."
+        },
+        {
           "name": "create",
           "type": "function",
           "async": "callback",
@@ -4043,6 +4068,21 @@
               "enum": [
                 "maintoolbar",
                 "tabstoolbar"
+              ],
+              "optional": true
+            },
+            "default_windows": {
+              "description": "Defines the windows, the action should appear in. Defaults to showing it only in the ``normal`` Thunderbird window, but can also be shown in the ``messageDisplay`` window.",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "normal",
+                  "messageDisplay"
+                ]
+              },
+              "default": [
+                "normal"
               ],
               "optional": true
             }
@@ -5393,7 +5433,7 @@
             "overrideDefaultFcc": {
               "type": "boolean",
               "optional": true,
-              "description": "Indicates whether the default fcc setting (defined by the used identity) is being overridden for this message. Setting ``false`` will clear the override. Setting ``true`` will throw an exception, if ``overrideDefaultFccFolder`` is not set as well."
+              "description": "Indicates whether the default fcc setting (defined by the used identity) is being overridden for this message. Setting ``false`` will clear the override. Setting ``true`` will throw an ``ExtensionError``, if ``overrideDefaultFccFolder`` is not set as well."
             },
             "overrideDefaultFccFolder": {
               "choices": [
@@ -8050,6 +8090,33 @@
           ]
         },
         {
+          "name": "setSelectedMessages",
+          "type": "function",
+          "description": "Selects one or multiple messages.",
+          "permissions": [
+            "messagesRead",
+            "accountsRead"
+          ],
+          "async": true,
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "Defaults to the active tab of the current window.",
+              "optional": true,
+              "minimum": 1
+            },
+            {
+              "name": "messageIds",
+              "type": "array",
+              "description": "The IDs of the messages, which should be selected. The mailTab will switch to the folder of the selected messages. Throws if they belong to different folders. Array can be empty to deselect any currently selected message.",
+              "items": {
+                "type": "integer"
+              }
+            }
+          ]
+        },
+        {
           "name": "setQuickFilter",
           "type": "function",
           "description": "Sets the Quick Filter user interface based on the options specified.",
@@ -9063,12 +9130,12 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 1,
-                  "description": "The id of a message to be opened. Will throw, if the provided ``messageId`` is unknown or invalid."
+                  "description": "The id of a message to be opened. Will throw an ``ExtensionError``, if the provided ``messageId`` is unknown or invalid."
                 },
                 "headerMessageId": {
                   "type": "string",
                   "optional": true,
-                  "description": "The headerMessageId of a message to be opened. Will throw, if the provided ``headerMessageId`` is unknown or invalid."
+                  "description": "The headerMessageId of a message to be opened. Will throw an ``ExtensionError``, if the provided ``headerMessageId`` is unknown or invalid. Not supported for external messages."
                 },
                 "location": {
                   "type": "string",
@@ -9077,7 +9144,7 @@
                     "window"
                   ],
                   "optional": true,
-                  "description": "Where to open the message. If not specified, the users preference is honoured."
+                  "description": "Where to open the message. If not specified, the users preference is honoured. Ignored for external messages, which are always opened in a new window."
                 },
                 "active": {
                   "type": "boolean",
@@ -9678,9 +9745,10 @@
             {
               "type": "string",
               "enum": [
+                "messagesDelete",
+                "messagesImport",
                 "messagesMove",
                 "messagesRead",
-                "messagesDelete",
                 "messagesTags"
               ]
             }
@@ -9719,12 +9787,17 @@
             "date": {
               "$ref": "extensionTypes.Date"
             },
+            "external": {
+              "type": "boolean",
+              "description": "Whether this message is a real message or an external message (opened from a file or from an attachment)."
+            },
             "flagged": {
-              "type": "boolean"
+              "type": "boolean",
+              "description": "Whether this message is flagged (a.k.a. 'starred')."
             },
             "folder": {
               "$ref": "folders.MailFolder",
-              "description": "The <permission>accountsRead</permission> permission is required for this property to be included.",
+              "description": "The <permission>accountsRead</permission> permission is required for this property to be included. Not available for external or attached messages.",
               "optional": true
             },
             "headerMessageId": {
@@ -9740,16 +9813,23 @@
               "minimum": 1
             },
             "junk": {
-              "description": "Not populated for news/nntp messages.",
+              "description": "Whether the message has been marked as junk. Always ``false`` for news/nntp messages and external messages.",
               "type": "boolean"
             },
             "junkScore": {
               "type": "integer",
+              "description": "The junk score associated with the message. Always ``0`` for news/nntp messages and external messages.",
               "minimum": 0,
               "maximum": 100
             },
             "read": {
-              "type": "boolean"
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether the message has been marked as read. Not available for external or attached messages."
+            },
+            "new": {
+              "type": "boolean",
+              "description": "Whether the message has been received recently and is marked as new."
             },
             "recipients": {
               "description": "The To recipients. Not populated for news/nntp messages.",
@@ -9763,13 +9843,15 @@
               "type": "integer"
             },
             "subject": {
-              "type": "string"
+              "type": "string",
+              "description": "The subject of the message."
             },
             "tags": {
               "type": "array",
               "items": {
                 "type": "string"
-              }
+              },
+              "description": "Tags associated with this message. For a list of available tags, call the listTags method."
             }
           }
         },
@@ -9822,7 +9904,8 @@
             },
             "partName": {
               "type": "string",
-              "optional": true
+              "optional": true,
+              "description": "The identifier of this part, used in :ref:`messages.getAttachmentFile"
             },
             "parts": {
               "type": "array",
@@ -9834,28 +9917,34 @@
             },
             "size": {
               "type": "integer",
-              "optional": true
+              "optional": true,
+              "description": "The size of this part. The size of ``message/*`` parts is not the actual message size (on disc), but the total size of its decoded body parts, excluding headers."
             }
           }
         },
         {
-          "id": "MessageChangeProperties",
+          "id": "MessageProperties",
           "type": "object",
-          "description": "Message properties that can be updated by the :ref:`messages.update` and that are monitored by :ref:`messages.onUpdated`.",
+          "description": "Message properties used in :ref:`messages.update` and :ref:`messages.import`. They can also be monitored by :ref:`messages.onUpdated`.",
           "properties": {
-            "read": {
+            "flagged": {
               "type": "boolean",
-              "description": "Message is read.",
+              "description": "Whether the message is flagged (a.k.a 'starred').",
               "optional": true
             },
             "junk": {
               "type": "boolean",
               "optional": true,
-              "description": "Message is junk."
+              "description": "Whether the message is marked as junk. Only supported in :ref:`messages.update`"
             },
-            "flagged": {
+            "new": {
               "type": "boolean",
-              "description": "Message is flagged.",
+              "description": "Whether the message is marked as new. Only supported in :ref:`messages.import`",
+              "optional": true
+            },
+            "read": {
+              "type": "boolean",
+              "description": "Whether the message is marked as read.",
               "optional": true
             },
             "tags": {
@@ -9934,6 +10023,11 @@
             "size": {
               "type": "integer",
               "description": "The size in bytes of this attachment."
+            },
+            "message": {
+              "$ref": "messages.MessageHeader",
+              "optional": true,
+              "description": "A MessageHeader, if this attachment is a message."
             }
           }
         }
@@ -9950,7 +10044,7 @@
             },
             {
               "name": "changedProperties",
-              "$ref": "messages.MessageChangeProperties"
+              "$ref": "messages.MessageProperties"
             }
           ]
         },
@@ -10140,7 +10234,7 @@
         {
           "name": "listAttachments",
           "type": "function",
-          "description": "Lists all of the attachments of a message.",
+          "description": "Lists the attachments of a message.",
           "async": "callback",
           "parameters": [
             {
@@ -10298,7 +10392,7 @@
         {
           "name": "update",
           "type": "function",
-          "description": "Marks or unmarks a message as junk, read, flagged, or tagged.",
+          "description": "Marks or unmarks a message as junk, read, flagged, or tagged. Updating external messages will throw an ``ExtensionError``.",
           "async": true,
           "parameters": [
             {
@@ -10308,14 +10402,14 @@
             },
             {
               "name": "newProperties",
-              "$ref": "MessageChangeProperties"
+              "$ref": "MessageProperties"
             }
           ]
         },
         {
           "name": "move",
           "type": "function",
-          "description": "Moves messages to a specified folder.",
+          "description": "Moves messages to a specified folder. If the messages cannot be removed from the source folder, they will be copied instead of moved. Moving external messages will throw an ``ExtensionError``.",
           "async": true,
           "permissions": [
             "accountsRead",
@@ -10367,7 +10461,7 @@
         {
           "name": "delete",
           "type": "function",
-          "description": "Deletes messages permanently, or moves them to the trash folder (honoring the account's deletion behavior settings). The ``skipTrash`` parameter allows immediate permanent deletion, bypassing the trash folder.\n**Note**: Consider using :ref:`messages.move` to manually move messages to the account's trash folder, instead of requesting the overly powerful permission to actually delete messages. The account's trash folder can be extracted as follows: <literalinclude>includes/messages/getTrash.js<lang>JavaScript</lang></literalinclude>",
+          "description": "Deletes messages permanently, or moves them to the trash folder (honoring the account's deletion behavior settings). Deleting external messages will throw an ``ExtensionError``. The ``skipTrash`` parameter allows immediate permanent deletion, bypassing the trash folder.\n**Note**: Consider using :ref:`messages.move` to manually move messages to the account's trash folder, instead of requesting the overly powerful permission to actually delete messages. The account's trash folder can be extracted as follows: <literalinclude>includes/messages/getTrash.js<lang>JavaScript</lang></literalinclude>",
           "async": true,
           "permissions": [
             "messagesDelete"
@@ -10391,9 +10485,46 @@
           ]
         },
         {
+          "name": "import",
+          "type": "function",
+          "description": "Imports a message into a local Thunderbird folder. To import a message into an IMAP folder, add it to a local folder first and then move it to the IMAP folder.",
+          "async": "callback",
+          "permissions": [
+            "accountsRead",
+            "messagesImport"
+          ],
+          "parameters": [
+            {
+              "type": "object",
+              "isInstanceOf": "File",
+              "additionalProperties": true
+            },
+            {
+              "name": "destination",
+              "$ref": "folders.MailFolder",
+              "description": "The folder to import the messages into."
+            },
+            {
+              "name": "properties",
+              "$ref": "messages.MessageProperties",
+              "optional": true
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "messages.MessageHeader"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "archive",
           "type": "function",
-          "description": "Archives messages using the current settings.",
+          "description": "Archives messages using the current settings. Archiving external messages will throw an ``ExtensionError``.",
           "async": true,
           "permissions": [
             "messagesMove"
