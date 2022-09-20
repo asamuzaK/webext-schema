@@ -8092,7 +8092,7 @@
         {
           "name": "setSelectedMessages",
           "type": "function",
-          "description": "Selects one or multiple messages.",
+          "description": "Selects none, one or multiple messages.",
           "permissions": [
             "messagesRead",
             "accountsRead"
@@ -10495,6 +10495,7 @@
           ],
           "parameters": [
             {
+              "name": "file",
               "type": "object",
               "isInstanceOf": "File",
               "additionalProperties": true
