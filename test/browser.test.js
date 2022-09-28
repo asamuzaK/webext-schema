@@ -2593,6 +2593,14 @@ describe('browser', () => {
       assert.strictEqual(browser.theme.getCurrent.callCount, i + 1, 'called');
       assert.deepEqual(res, {}, 'result');
     });
+
+    it('should get function called and get result', async () => {
+      browser.theme.getCurrent.withArgs(1).resolves({});
+      const i = browser.theme.getCurrent.callCount;
+      const res = await func(1);
+      assert.strictEqual(browser.theme.getCurrent.callCount, i + 1, 'called');
+      assert.deepEqual(res, {}, 'result');
+    });
   });
 
   describe('create new window', () => {
