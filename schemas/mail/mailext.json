@@ -3602,6 +3602,7 @@
               "type": "string"
             },
             {
+              "name": "file",
               "type": "object",
               "isInstanceOf": "File",
               "additionalProperties": true
@@ -4344,19 +4345,12 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either an ImageDataType object defining a single icon used for all sizes or an ImageDataDictionary object defining dedicated icons for different sizes."
+                  "description": "Either an ImageDataType object defining a single icon used for all sizes or an ImageDataDictionary object defining dedicated icons for different sizes. At least the ``16px`` icon should be specified. The ``32px`` icon will be used on screens with a very high pixel density, if specified."
                 },
                 "path": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "$ref": "manifest.IconPath"
-                    }
-                  ],
+                  "$ref": "manifest.IconPath",
                   "optional": true,
-                  "description": "Either a relative image path defining a single icon used for all sizes or an IconPathDictionary object defining dedicated icons for different sizes."
+                  "description": "The icon for the action."
                 }
               }
             },
@@ -6394,7 +6388,7 @@
                 },
                 "default_icon": {
                   "$ref": "IconPath",
-                  "description": "The icon for the messageDisplayAction.",
+                  "description": "The icon for the composeAction.",
                   "optional": true
                 },
                 "theme_icons": {
@@ -6650,19 +6644,12 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either an ImageDataType object defining a single icon used for all sizes or an ImageDataDictionary object defining dedicated icons for different sizes."
+                  "description": "Either an ImageDataType object defining a single icon used for all sizes or an ImageDataDictionary object defining dedicated icons for different sizes. At least the ``16px`` icon should be specified. The ``32px`` icon will be used on screens with a very high pixel density, if specified."
                 },
                 "path": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "$ref": "manifest.IconPath"
-                    }
-                  ],
+                  "$ref": "manifest.IconPath",
                   "optional": true,
-                  "description": "Either a relative image path defining a single icon used for all sizes or an IconPathDictionary object defining dedicated icons for different sizes."
+                  "description": "The icon for the composeAction."
                 }
               }
             },
@@ -8636,13 +8623,9 @@
                   "description": "The unique ID to assign to this item. Mandatory for event pages. Cannot be the same as another ID for this extension."
                 },
                 "icons": {
-                  "type": "object",
+                  "$ref": "manifest.IconPath",
                   "optional": true,
-                  "patternProperties": {
-                    "^[1-9]\\d*$": {
-                      "type": "string"
-                    }
-                  }
+                  "description": "Custom icons to display next to the menu item. Custom icons can only be set for items appearing in submenus."
                 },
                 "title": {
                   "type": "string",
@@ -8771,13 +8754,8 @@
                   "optional": true
                 },
                 "icons": {
-                  "type": "object",
-                  "optional": "omit-key-if-missing",
-                  "patternProperties": {
-                    "^[1-9]\\d*$": {
-                      "type": "string"
-                    }
-                  }
+                  "$ref": "manifest.IconPath",
+                  "optional": "omit-key-if-missing"
                 },
                 "title": {
                   "type": "string",
@@ -9470,19 +9448,12 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either an ImageDataType object defining a single icon used for all sizes or an ImageDataDictionary object defining dedicated icons for different sizes."
+                  "description": "Either an ImageDataType object defining a single icon used for all sizes or an ImageDataDictionary object defining dedicated icons for different sizes. At least the ``16px`` icon should be specified. The ``32px`` icon will be used on screens with a very high pixel density, if specified."
                 },
                 "path": {
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "$ref": "manifest.IconPath"
-                    }
-                  ],
+                  "$ref": "manifest.IconPath",
                   "optional": true,
-                  "description": "Either a relative image path defining a single icon used for all sizes or an IconPathDictionary object defining dedicated icons for different sizes."
+                  "description": "The icon for the messageDisplayAction."
                 }
               }
             },
@@ -10696,7 +10667,7 @@
                 }
               ],
               "optional": true,
-              "description": "Either a relative image path defining a single icon used for all sizes or an IconPathDictionary object defining dedicated icons for different sizes. At least the ``16px`` icon should be specified. The ``32px`` icon will be used on screens with a very high pixel density, if specified. Defaults to the extension icon, if set to an empty string."
+              "description": "The icon for the button in the spaces toolbar. Defaults to the extension icon, if set to an empty string."
             },
             "themeIcons": {
               "type": "array",

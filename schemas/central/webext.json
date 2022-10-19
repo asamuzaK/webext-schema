@@ -13076,7 +13076,8 @@
             },
             "version": {
               "type": "string",
-              "optional": false
+              "optional": false,
+              "format": "versionString"
             },
             "homepage_url": {
               "type": "string",
