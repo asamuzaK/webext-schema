@@ -2419,7 +2419,7 @@
                 "tab_text": {
                   "$ref": "ThemeColor",
                   "optional": true,
-                  "description": "The text color for the selected tab.  Defaults to the color specified by ``toolbar_text``."
+                  "description": "The text color for the selected tab. Defaults to the color specified by ``toolbar_text``."
                 },
                 "tab_line": {
                   "$ref": "ThemeColor",
@@ -4043,19 +4043,19 @@
           "properties": {
             "default_label": {
               "type": "string",
-              "description": "The label of the action, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+              "description": "The label of the action button, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
               "optional": true,
               "preprocess": "localize"
             },
             "default_title": {
               "type": "string",
-              "description": "The title of the action. This shows up in the tooltip and the label. Defaults to the add-on name.",
+              "description": "The title of the action button. This shows up in the tooltip and the label. Defaults to the add-on name.",
               "optional": true,
               "preprocess": "localize"
             },
             "default_icon": {
               "$ref": "IconPath",
-              "description": "The icon for the action.",
+              "description": "The paths to one or more icons for the action button.",
               "optional": true
             },
             "theme_icons": {
@@ -4071,7 +4071,7 @@
               "type": "string",
               "format": "relativeUrl",
               "optional": true,
-              "description": "The html document to be opened as a popup when the user clicks on the action's icon.",
+              "description": "The html document to be opened as a popup when the user clicks on the action button.",
               "preprocess": "localize"
             },
             "browser_style": {
@@ -4081,7 +4081,7 @@
               "default": false
             },
             "default_area": {
-              "description": "Defines the location the action will appear. The default location is ``maintoolbar``.",
+              "description": "Defines the location the action button will appear. The default location is ``maintoolbar``.",
               "type": "string",
               "enum": [
                 "maintoolbar",
@@ -4090,7 +4090,7 @@
               "optional": true
             },
             "default_windows": {
-              "description": "Defines the windows, the action should appear in. Defaults to showing it only in the ``normal`` Thunderbird window, but can also be shown in the ``messageDisplay`` window.",
+              "description": "Defines the windows, the action button should appear in. Defaults to showing it only in the ``normal`` Thunderbird window, but can also be shown in the ``messageDisplay`` window.",
               "type": "array",
               "items": {
                 "type": "string",
@@ -4130,32 +4130,13 @@
     },
     {
       "namespace": "action",
-      "description": "Use an action to put an icon in the mail window toolbar. In addition to its icon, an action can also have a tooltip, a badge, and a popup.",
+      "description": "Use an action to put a button in the mail window toolbar. In addition to its icon, an action button can also have a tooltip, a badge, and a popup.",
       "permissions": [
         "manifest:action",
         "manifest:browser_action"
       ],
       "min_manifest_version": 3,
       "types": [
-        {
-          "id": "Details",
-          "type": "object",
-          "description": "Specifies to which tab or window the value should be set, or from which one it should be retrieved. If no tab nor window is specified, the global value is set or retrieved.",
-          "properties": {
-            "tabId": {
-              "type": "integer",
-              "optional": true,
-              "minimum": 0,
-              "description": "When setting a value, it will be specific to the specified tab, and will automatically reset when the tab navigates. When getting, specifies the tab to get the value from; if there is no tab-specific value, the window one will be inherited."
-            },
-            "windowId": {
-              "type": "integer",
-              "optional": true,
-              "minimum": -2,
-              "description": "When setting a value, it will be specific to the specified window. When getting, specifies the window to get the value from; if there is no window-specific value, the global one will be inherited."
-            }
-          }
-        },
         {
           "id": "ColorArray",
           "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <code>[255, 0, 0, 255]</code>.",
@@ -4181,7 +4162,7 @@
         {
           "id": "ImageDataDictionary",
           "type": "object",
-          "description": "A ``{size: ImageDataType}`` dictionary representing the icon to be set. The actual :ref:`browserAction.ImageDataType` to be used is chosen depending on the screen's pixel density. See the `MDN documentation on browser styles <https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_styles>`__ for more information on this. At least one :ref:`browserAction.ImageDataType` must be specified.",
+          "description": "A ``{size: ImageDataType}`` dictionary representing the icon to be set. The actual :ref:`action.ImageDataType` to be used is chosen depending on the screen's pixel density. See the `MDN documentation on browser styles <https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_styles>`__ for more information on this. At least one :ref:`action.ImageDataType` must be specified.",
           "patternProperties": {
             "^[1-9]\\d*$": {
               "$ref": "ImageDataType"
@@ -4191,7 +4172,7 @@
         {
           "id": "OnClickData",
           "type": "object",
-          "description": "Information sent when a browser action is clicked.",
+          "description": "Information sent when an action button is clicked.",
           "properties": {
             "modifiers": {
               "type": "array",
@@ -4219,13 +4200,12 @@
         {
           "name": "setTitle",
           "type": "function",
-          "description": "Sets the title of the action. This shows up in the tooltip and the label. Defaults to the add-on name.",
+          "description": "Sets the title of the action button. Is used as tooltip and as the label.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "title": {
                   "choices": [
@@ -4236,7 +4216,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the action should display as its label and when moused over."
+                  "description": "The string the action button should display as its label and when moused over. Cleared by setting it to ``null`` or an empty string (title defined the manifest will be used)."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the title only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -4251,12 +4244,27 @@
         {
           "name": "getTitle",
           "type": "function",
-          "description": "Gets the title of the action.",
+          "description": "Gets the title of the action button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the title should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -4273,13 +4281,12 @@
         {
           "name": "setLabel",
           "type": "function",
-          "description": "Sets the label of the action, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+          "description": "Sets the label of the action button. Can be used to set different values for the tooltip (defined by the title) and the label. Additionally, the label can be set to an empty string, not showing any label at all.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "label": {
                   "choices": [
@@ -4290,7 +4297,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the action should use as label. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback."
+                  "description": "The string the action button should use as its label, overriding the defined title. Can be set to an empty string to not display any label at all. If the containing toolbar is configured to display text only, its title will be used. Cleared by setting it to ``null``."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the label only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -4305,12 +4325,27 @@
         {
           "name": "getLabel",
           "type": "function",
-          "description": "Gets the label of the action.",
+          "description": "Gets the label of the action button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the label should be retrieved. If no tab is specified, the global label is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -4327,13 +4362,12 @@
         {
           "name": "setIcon",
           "type": "function",
-          "description": "Sets the icon for the action. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "description": "Sets the icon for the action button. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "imageData": {
                   "choices": [
@@ -4345,12 +4379,25 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either an ImageDataType object defining a single icon used for all sizes or an ImageDataDictionary object defining dedicated icons for different sizes. At least the ``16px`` icon should be specified. The ``32px`` icon will be used on screens with a very high pixel density, if specified."
+                  "description": "The image data for one or more icons for the action button."
                 },
                 "path": {
                   "$ref": "manifest.IconPath",
                   "optional": true,
-                  "description": "The icon for the action."
+                  "description": "The paths to one or more icons for the action button."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the icon only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -4365,13 +4412,12 @@
         {
           "name": "setPopup",
           "type": "function",
-          "description": "Sets the html document to be opened as a popup when the user clicks on the action's icon.",
+          "description": "Sets the html document to be opened as a popup when the user clicks on the action button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "popup": {
                   "choices": [
@@ -4382,7 +4428,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
+                  "description": "The html file to show in a popup. Can be set to an empty string to not open a popup. Cleared by setting it to ``null`` (popup value defined the manifest will be used)."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the popup only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -4397,12 +4456,27 @@
         {
           "name": "getPopup",
           "type": "function",
-          "description": "Gets the html document set as the popup for this action.",
+          "description": "Gets the html document set as the popup for this action button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the popup document should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -4419,13 +4493,12 @@
         {
           "name": "setBadgeText",
           "type": "function",
-          "description": "Sets the badge text for the action. The badge is displayed on top of the icon.",
+          "description": "Sets the badge text for the action button. The badge is displayed on top of the icon.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "text": {
                   "choices": [
@@ -4436,7 +4509,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "Any number of characters can be passed, but only about four can fit in the space."
+                  "description": "Any number of characters can be passed, but only about four can fit in the space. Cleared by setting it to ``null`` or an empty string."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the badge text only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -4451,12 +4537,27 @@
         {
           "name": "getBadgeText",
           "type": "function",
-          "description": "Gets the badge text of the action. If no tab nor window is specified, the global badge text is returned.",
+          "description": "Gets the badge text of the action button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the badge text should be retrieved. If no tab is specified, the global label is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -4479,10 +4580,8 @@
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "color": {
-                  "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>.",
                   "choices": [
                     {
                       "type": "string"
@@ -4493,7 +4592,21 @@
                     {
                       "type": "null"
                     }
-                  ]
+                  ],
+                  "description": "The color to use as background in the badge. Cleared by setting it to ``null`` or an empty string."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the background color for the badge only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -4508,12 +4621,27 @@
         {
           "name": "getBadgeBackgroundColor",
           "type": "function",
-          "description": "Gets the background color of the action.",
+          "description": "Gets the badge background color of the action button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the badge background color should be retrieved. If no tab is specified, the global label is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -4530,7 +4658,7 @@
         {
           "name": "enable",
           "type": "function",
-          "description": "Enables the action for a tab. By default, an action is enabled.",
+          "description": "Enables the action button for a tab. By default, an action button is enabled.",
           "async": "callback",
           "parameters": [
             {
@@ -4538,7 +4666,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the action."
+              "description": "The id of the tab for which you want to modify the action button."
             },
             {
               "type": "function",
@@ -4551,7 +4679,7 @@
         {
           "name": "disable",
           "type": "function",
-          "description": "Disables the action for a tab.",
+          "description": "Disables the action button for a tab.",
           "async": "callback",
           "parameters": [
             {
@@ -4559,7 +4687,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the action."
+              "description": "The id of the tab for which you want to modify the action button."
             },
             {
               "type": "function",
@@ -4572,12 +4700,27 @@
         {
           "name": "isEnabled",
           "type": "function",
-          "description": "Checks whether the action is enabled.",
+          "description": "Checks whether the action button is enabled.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the state should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -4595,7 +4738,7 @@
           "name": "openPopup",
           "type": "function",
           "requireUserInput": true,
-          "description": "Opens the extension popup window in the active window.",
+          "description": "Opens the action's popup window in the active window.",
           "async": true,
           "parameters": []
         }
@@ -4604,7 +4747,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when an action icon is clicked. This event will not fire if the action has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when an action button is clicked. This event will not fire if the action has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -6376,19 +6519,19 @@
               "properties": {
                 "default_label": {
                   "type": "string",
-                  "description": "The label of the composeAction, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+                  "description": "The label of the composeAction button, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
                   "optional": true,
                   "preprocess": "localize"
                 },
                 "default_title": {
                   "type": "string",
-                  "description": "The title of the composeAction. This shows up in the tooltip and the label. Defaults to the add-on name.",
+                  "description": "The title of the composeAction button. This shows up in the tooltip and the label. Defaults to the add-on name.",
                   "optional": true,
                   "preprocess": "localize"
                 },
                 "default_icon": {
                   "$ref": "IconPath",
-                  "description": "The icon for the composeAction.",
+                  "description": "The paths to one or more icons for the composeAction button.",
                   "optional": true
                 },
                 "theme_icons": {
@@ -6404,7 +6547,7 @@
                   "type": "string",
                   "format": "relativeUrl",
                   "optional": true,
-                  "description": "The html document to be opened as a popup when the user clicks on the composeAction's icon.",
+                  "description": "The html document to be opened as a popup when the user clicks on the composeAction button.",
                   "preprocess": "localize"
                 },
                 "browser_style": {
@@ -6414,7 +6557,7 @@
                   "default": false
                 },
                 "default_area": {
-                  "description": "Defines the location the composeAction will appear. The default location is ``maintoolbar``.",
+                  "description": "Defines the location the composeAction button will appear. The default location is ``maintoolbar``.",
                   "type": "string",
                   "enum": [
                     "maintoolbar",
@@ -6431,30 +6574,11 @@
     },
     {
       "namespace": "composeAction",
-      "description": "Use a composeAction to put an icon in the message composition toolbars. In addition to its icon, a composeAction can also have a tooltip, a badge, and a popup.",
+      "description": "Use a composeAction to put a button in the message composition toolbars. In addition to its icon, a composeAction button can also have a tooltip, a badge, and a popup.",
       "permissions": [
         "manifest:compose_action"
       ],
       "types": [
-        {
-          "id": "Details",
-          "type": "object",
-          "description": "Specifies to which tab or window the value should be set, or from which one it should be retrieved. If no tab nor window is specified, the global value is set or retrieved.",
-          "properties": {
-            "tabId": {
-              "type": "integer",
-              "optional": true,
-              "minimum": 0,
-              "description": "When setting a value, it will be specific to the specified tab, and will automatically reset when the tab navigates. When getting, specifies the tab to get the value from; if there is no tab-specific value, the window one will be inherited."
-            },
-            "windowId": {
-              "type": "integer",
-              "optional": true,
-              "minimum": -2,
-              "description": "When setting a value, it will be specific to the specified window. When getting, specifies the window to get the value from; if there is no window-specific value, the global one will be inherited."
-            }
-          }
-        },
         {
           "id": "ColorArray",
           "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <code>[255, 0, 0, 255]</code>.",
@@ -6490,7 +6614,7 @@
         {
           "id": "OnClickData",
           "type": "object",
-          "description": "Information sent when a compose action is clicked.",
+          "description": "Information sent when a composeAction button is clicked.",
           "properties": {
             "modifiers": {
               "type": "array",
@@ -6518,13 +6642,12 @@
         {
           "name": "setTitle",
           "type": "function",
-          "description": "Sets the title of the composeAction. This shows up in the tooltip and the label. Defaults to the add-on name.",
+          "description": "Sets the title of the composeAction button. Is used as tooltip and as the label.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "title": {
                   "choices": [
@@ -6535,7 +6658,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the composeAction should display as its label and when moused over."
+                  "description": "The string the composeAction button should display as its label and when moused over. Cleared by setting it to ``null`` or an empty string (title defined the manifest will be used)."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the title only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -6550,12 +6686,27 @@
         {
           "name": "getTitle",
           "type": "function",
-          "description": "Gets the title of the composeAction.",
+          "description": "Gets the title of the composeAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the title should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -6572,13 +6723,12 @@
         {
           "name": "setLabel",
           "type": "function",
-          "description": "Sets the label of the composeAction, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+          "description": "Sets the label of the composeAction button. Can be used to set different values for the tooltip (defined by the title) and the label. Additionally, the label can be set to an empty string, not showing any label at all.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "label": {
                   "choices": [
@@ -6589,7 +6739,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the composeAction should use as label. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback."
+                  "description": "The string the composeAction button should use as its label, overriding the defined title. Can be set to an empty string to not display any label at all. If the containing toolbar is configured to display text only, its title will be used. Cleared by setting it to ``null``."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the label only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -6604,12 +6767,27 @@
         {
           "name": "getLabel",
           "type": "function",
-          "description": "Gets the label of the composeAction.",
+          "description": "Gets the label of the composeAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the label should be retrieved. If no tab is specified, the global label is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -6626,13 +6804,12 @@
         {
           "name": "setIcon",
           "type": "function",
-          "description": "Sets the icon for the composeAction. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "description": "Sets the icon for the composeAction button. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "imageData": {
                   "choices": [
@@ -6644,12 +6821,25 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either an ImageDataType object defining a single icon used for all sizes or an ImageDataDictionary object defining dedicated icons for different sizes. At least the ``16px`` icon should be specified. The ``32px`` icon will be used on screens with a very high pixel density, if specified."
+                  "description": "The image data for one or more icons for the composeAction button."
                 },
                 "path": {
                   "$ref": "manifest.IconPath",
                   "optional": true,
-                  "description": "The icon for the composeAction."
+                  "description": "The paths to one or more icons for the composeAction button."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the icon only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -6664,13 +6854,12 @@
         {
           "name": "setPopup",
           "type": "function",
-          "description": "Sets the html document to be opened as a popup when the user clicks on the composeAction's icon.",
+          "description": "Sets the html document to be opened as a popup when the user clicks on the composeAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "popup": {
                   "choices": [
@@ -6681,7 +6870,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
+                  "description": "The html file to show in a popup. Can be set to an empty string to not open a popup. Cleared by setting it to ``null`` (action will use the popup value defined in the manifest)."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the popup only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -6696,12 +6898,27 @@
         {
           "name": "getPopup",
           "type": "function",
-          "description": "Gets the html document set as the popup for this composeAction.",
+          "description": "Gets the html document set as the popup for this composeAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the popup document should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -6718,13 +6935,12 @@
         {
           "name": "setBadgeText",
           "type": "function",
-          "description": "Sets the badge text for the composeAction. The badge is displayed on top of the icon.",
+          "description": "Sets the badge text for the composeAction button. The badge is displayed on top of the icon.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "text": {
                   "choices": [
@@ -6735,7 +6951,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "Any number of characters can be passed, but only about four can fit in the space."
+                  "description": "Any number of characters can be passed, but only about four can fit in the space. Cleared by setting it to ``null`` or an empty string."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the badge text only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -6750,12 +6979,27 @@
         {
           "name": "getBadgeText",
           "type": "function",
-          "description": "Gets the badge text of the composeAction. If no tab nor window is specified, the global badge text is returned.",
+          "description": "Gets the badge text of the composeAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the badge text should be retrieved. If no tab is specified, the global label is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -6778,10 +7022,8 @@
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "color": {
-                  "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>.",
                   "choices": [
                     {
                       "type": "string"
@@ -6792,7 +7034,21 @@
                     {
                       "type": "null"
                     }
-                  ]
+                  ],
+                  "description": "The color to use as background in the badge. Cleared by setting it to ``null`` or an empty string."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the background color for the badge only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -6807,12 +7063,27 @@
         {
           "name": "getBadgeBackgroundColor",
           "type": "function",
-          "description": "Gets the background color of the composeAction.",
+          "description": "Gets the badge background color of the composeAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the badge background color should be retrieved. If no tab is specified, the global label is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -6829,7 +7100,7 @@
         {
           "name": "enable",
           "type": "function",
-          "description": "Enables the composeAction for a tab. By default, a composeAction is enabled.",
+          "description": "Enables the composeAction button for a tab. By default, a composeAction button is enabled.",
           "async": "callback",
           "parameters": [
             {
@@ -6837,7 +7108,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the composeAction."
+              "description": "The id of the tab for which you want to modify the composeAction button."
             },
             {
               "type": "function",
@@ -6850,7 +7121,7 @@
         {
           "name": "disable",
           "type": "function",
-          "description": "Disables the composeAction for a tab.",
+          "description": "Disables the composeAction button for a tab.",
           "async": "callback",
           "parameters": [
             {
@@ -6858,7 +7129,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the composeAction."
+              "description": "The id of the tab for which you want to modify the composeAction button."
             },
             {
               "type": "function",
@@ -6871,12 +7142,27 @@
         {
           "name": "isEnabled",
           "type": "function",
-          "description": "Checks whether the composeAction is enabled.",
+          "description": "Checks whether the composeAction button is enabled.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the state should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -6894,7 +7180,7 @@
           "name": "openPopup",
           "type": "function",
           "requireUserInput": true,
-          "description": "Opens the extension popup window in the active window.",
+          "description": "Opens the action's popup window in the active window.",
           "async": true,
           "parameters": []
         }
@@ -6903,7 +7189,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a composeAction icon is clicked. This event will not fire if the composeAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when a composeAction button is clicked. This event will not fire if the composeAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -7252,7 +7538,7 @@
           "permissions": [
             "accountsFolders"
           ],
-          "description": "Copies the given ``sourceFolder`` into the given ``destination``.  Throws if the destination already contains a folder with the name of the source folder.",
+          "description": "Copies the given ``sourceFolder`` into the given ``destination``. Throws if the destination already contains a folder with the name of the source folder.",
           "async": "callback",
           "parameters": [
             {
@@ -8713,7 +8999,7 @@
                 "command": {
                   "type": "string",
                   "optional": true,
-                  "description": "Specifies a command to issue for the context click.  Currently supports internal commands ``_execute_browser_action``, ``_execute_compose_action`` and ``_execute_message_display_action``."
+                  "description": "Specifies a command to issue for the context click. Currently supports internal commands ``_execute_browser_action``, ``_execute_compose_action`` and ``_execute_message_display_action``."
                 }
               }
             },
@@ -9184,19 +9470,19 @@
               "properties": {
                 "default_label": {
                   "type": "string",
-                  "description": "The label of the messageDisplayAction, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+                  "description": "The label of the messageDisplayAction button, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
                   "optional": true,
                   "preprocess": "localize"
                 },
                 "default_title": {
                   "type": "string",
-                  "description": "The title of the messageDisplayAction. This shows up in the tooltip and the label. Defaults to the add-on name.",
+                  "description": "The title of the messageDisplayAction button. This shows up in the tooltip and the label. Defaults to the add-on name.",
                   "optional": true,
                   "preprocess": "localize"
                 },
                 "default_icon": {
                   "$ref": "IconPath",
-                  "description": "The icon for the messageDisplayAction.",
+                  "description": "The paths to one or more icons for the messageDisplayAction button.",
                   "optional": true
                 },
                 "theme_icons": {
@@ -9212,7 +9498,7 @@
                   "type": "string",
                   "format": "relativeUrl",
                   "optional": true,
-                  "description": "The html document to be opened as a popup when the user clicks on the messageDisplayAction's icon.",
+                  "description": "The html document to be opened as a popup when the user clicks on the messageDisplayAction button.",
                   "preprocess": "localize"
                 },
                 "browser_style": {
@@ -9235,34 +9521,15 @@
     },
     {
       "namespace": "messageDisplayAction",
-      "description": "Use a messageDisplayAction to put an icon in the message display toolbar. In addition to its icon, a messageDisplayAction can also have a tooltip, a badge, and a popup.",
+      "description": "Use a messageDisplayAction to put a button in the message display toolbar. In addition to its icon, a messageDisplayAction button can also have a tooltip, a badge, and a popup.",
       "permissions": [
         "manifest:message_display_action"
       ],
       "types": [
         {
-          "id": "Details",
-          "type": "object",
-          "description": "Specifies to which tab or window the value should be set, or from which one it should be retrieved. If no tab nor window is specified, the global value is set or retrieved.",
-          "properties": {
-            "tabId": {
-              "type": "integer",
-              "optional": true,
-              "minimum": 0,
-              "description": "When setting a value, it will be specific to the specified tab, and will automatically reset when the tab navigates. When getting, specifies the tab to get the value from; if there is no tab-specific value, the window one will be inherited."
-            },
-            "windowId": {
-              "type": "integer",
-              "optional": true,
-              "minimum": -2,
-              "description": "When setting a value, it will be specific to the specified window. When getting, specifies the window to get the value from; if there is no window-specific value, the global one will be inherited."
-            }
-          }
-        },
-        {
           "id": "ColorArray",
-          "type": "array",
           "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <code>[255, 0, 0, 255]</code>.",
+          "type": "array",
           "items": {
             "type": "integer",
             "minimum": 0,
@@ -9294,7 +9561,7 @@
         {
           "id": "OnClickData",
           "type": "object",
-          "description": "Information sent when a message display action is clicked.",
+          "description": "Information sent when a messageDisplayAction button is clicked.",
           "properties": {
             "modifiers": {
               "type": "array",
@@ -9322,13 +9589,12 @@
         {
           "name": "setTitle",
           "type": "function",
-          "description": "Sets the title of the messageDisplayAction. This shows up in the tooltip and the label. Defaults to the add-on name.",
+          "description": "Sets the title of the messageDisplayAction button. Is used as tooltip and as the label.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "title": {
                   "choices": [
@@ -9339,7 +9605,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the messageDisplayAction should display as its label and when moused over."
+                  "description": "The string the messageDisplayAction button should display as its label and when moused over. Cleared by setting it to ``null`` or an empty string (title defined the manifest will be used)."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the title only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -9354,12 +9633,27 @@
         {
           "name": "getTitle",
           "type": "function",
-          "description": "Gets the title of the messageDisplayAction.",
+          "description": "Gets the title of the messageDisplayAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the title should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -9376,13 +9670,12 @@
         {
           "name": "setLabel",
           "type": "function",
-          "description": "Sets the label of the messageDisplayAction, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+          "description": "Sets the label of the messageDisplayAction button. Can be used to set different values for the tooltip (defined by the title) and the label. Additionally, the label can be set to an empty string, not showing any label at all.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "label": {
                   "choices": [
@@ -9393,7 +9686,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the messageDisplayAction should use as label. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback."
+                  "description": "The string the messageDisplayAction button should use as its label, overriding the defined title. Can be set to an empty string to not display any label at all. If the containing toolbar is configured to display text only, its title will be used. Cleared by setting it to ``null``."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the label only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -9408,12 +9714,27 @@
         {
           "name": "getLabel",
           "type": "function",
-          "description": "Gets the label of the messageDisplayAction.",
+          "description": "Gets the label of the messageDisplayAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the label should be retrieved. If no tab is specified, the global label is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -9430,13 +9751,12 @@
         {
           "name": "setIcon",
           "type": "function",
-          "description": "Sets the icon for the messageDisplayAction. The icon can be specified either as the path to an image file or as the pixel data from a canvas element, or as dictionary of either one of those. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "description": "Sets the icon for the messageDisplayAction button. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "imageData": {
                   "choices": [
@@ -9448,12 +9768,25 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Either an ImageDataType object defining a single icon used for all sizes or an ImageDataDictionary object defining dedicated icons for different sizes. At least the ``16px`` icon should be specified. The ``32px`` icon will be used on screens with a very high pixel density, if specified."
+                  "description": "The image data for one or more icons for the composeAction button."
                 },
                 "path": {
                   "$ref": "manifest.IconPath",
                   "optional": true,
-                  "description": "The icon for the messageDisplayAction."
+                  "description": "The paths to one or more icons for the messageDisplayAction button."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the icon only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -9468,13 +9801,12 @@
         {
           "name": "setPopup",
           "type": "function",
-          "description": "Sets the html document to be opened as a popup when the user clicks on the messageDisplayAction's icon.",
+          "description": "Sets the html document to be opened as a popup when the user clicks on the messageDisplayAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "popup": {
                   "choices": [
@@ -9485,7 +9817,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The html file to show in a popup.  If set to the empty string (''), no popup is shown."
+                  "description": "The html file to show in a popup. Can be set to an empty string to not open a popup. Cleared by setting it to ``null`` (action will use the popup value defined in the manifest)."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the popup only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -9500,12 +9845,27 @@
         {
           "name": "getPopup",
           "type": "function",
-          "description": "Gets the html document set as the popup for this messageDisplayAction.",
+          "description": "Gets the html document set as the popup for this messageDisplayAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the popup document should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -9522,13 +9882,12 @@
         {
           "name": "setBadgeText",
           "type": "function",
-          "description": "Sets the badge text for the messageDisplayAction. The badge is displayed on top of the icon.",
+          "description": "Sets the badge text for the messageDisplayAction button. The badge is displayed on top of the icon.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "text": {
                   "choices": [
@@ -9539,7 +9898,20 @@
                       "type": "null"
                     }
                   ],
-                  "description": "Any number of characters can be passed, but only about four can fit in the space."
+                  "description": "Any number of characters can be passed, but only about four can fit in the space. Cleared by setting it to ``null`` or an empty string."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the badge text only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -9554,12 +9926,27 @@
         {
           "name": "getBadgeText",
           "type": "function",
-          "description": "Gets the badge text of the messageDisplayAction. If no tab nor window is specified, the global badge text is returned.",
+          "description": "Gets the badge text of the messageDisplayAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the badge text should be retrieved. If no tab is specified, the global label is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -9582,10 +9969,8 @@
             {
               "name": "details",
               "type": "object",
-              "$import": "Details",
               "properties": {
                 "color": {
-                  "description": "An array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with a CSS value, with opaque red being <code>#FF0000</code> or <code>#F00</code>.",
                   "choices": [
                     {
                       "type": "string"
@@ -9596,7 +9981,21 @@
                     {
                       "type": "null"
                     }
-                  ]
+                  ],
+                  "description": "The color to use as background in the badge. Cleared by setting it to ``null`` or an empty string."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the background color for the badge only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
                 }
               }
             },
@@ -9611,12 +10010,27 @@
         {
           "name": "getBadgeBackgroundColor",
           "type": "function",
-          "description": "Gets the background color of the messageDisplayAction.",
+          "description": "Gets the badge background color of the messageDisplayAction button.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the badge background color should be retrieved. If no tab is specified, the global label is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -9633,7 +10047,7 @@
         {
           "name": "enable",
           "type": "function",
-          "description": "Enables the messageDisplayAction for a tab. By default, a messageDisplayAction is enabled.",
+          "description": "Enables the messageDisplayAction button for a tab. By default, a messageDisplayAction button is enabled.",
           "async": "callback",
           "parameters": [
             {
@@ -9641,7 +10055,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the messageDisplayAction."
+              "description": "The id of the tab for which you want to modify the messageDisplayAction button."
             },
             {
               "type": "function",
@@ -9654,7 +10068,7 @@
         {
           "name": "disable",
           "type": "function",
-          "description": "Disables the messageDisplayAction for a tab.",
+          "description": "Disables the messageDisplayAction button for a tab.",
           "async": "callback",
           "parameters": [
             {
@@ -9662,7 +10076,7 @@
               "optional": true,
               "name": "tabId",
               "minimum": 0,
-              "description": "The id of the tab for which you want to modify the messageDisplayAction."
+              "description": "The id of the tab for which you want to modify the messageDisplayAction button."
             },
             {
               "type": "function",
@@ -9675,12 +10089,27 @@
         {
           "name": "isEnabled",
           "type": "function",
-          "description": "Checks whether the messageDisplayAction is enabled.",
+          "description": "Checks whether the messageDisplayAction button is enabled.",
           "async": "callback",
           "parameters": [
             {
               "name": "details",
-              "$ref": "Details"
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the state should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
             },
             {
               "type": "function",
@@ -9698,7 +10127,7 @@
           "name": "openPopup",
           "type": "function",
           "requireUserInput": true,
-          "description": "Opens the extension popup window in the active window.",
+          "description": "Opens the action's popup window in the active window.",
           "async": true,
           "parameters": []
         }
@@ -9707,7 +10136,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a messageDisplayAction icon is clicked. This event will not fire if the messageDisplayAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when a messageDisplayAction button is clicked. This event will not fire if the messageDisplayAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -10667,7 +11096,7 @@
                 }
               ],
               "optional": true,
-              "description": "The icon for the button in the spaces toolbar. Defaults to the extension icon, if set to an empty string."
+              "description": "The paths to one or more icons for the button in the spaces toolbar. Defaults to the extension icon, if set to an empty string."
             },
             "themeIcons": {
               "type": "array",
@@ -10929,7 +11358,7 @@
           "properties": {
             "urls": {
               "type": "array",
-              "description": "A list of URLs or URL patterns. Events that cannot match any of the URLs will be filtered out.  Filtering with urls requires the <permission>tabs</permission> or  <permission>activeTab</permission> permission.",
+              "description": "A list of URLs or URL patterns. Events that cannot match any of the URLs will be filtered out. Filtering with urls requires the <permission>tabs</permission> or  <permission>activeTab</permission> permission.",
               "optional": true,
               "items": {
                 "type": "string"
@@ -11042,7 +11471,7 @@
         {
           "name": "sendMessage",
           "type": "function",
-          "description": "Sends a single message to the content script(s) in the specified tab, with an optional callback to run when a response is sent back.  The `runtime.onMessage <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage>`_ event is fired in each content script running in the specified tab for the current extension.",
+          "description": "Sends a single message to the content script(s) in the specified tab, with an optional callback to run when a response is sent back. The `runtime.onMessage <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage>`_ event is fired in each content script running in the specified tab for the current extension.",
           "async": "responseCallback",
           "parameters": [
             {
@@ -11193,7 +11622,7 @@
                 "highlighted": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Whether the tabs are highlighted.  Works as an alias of active."
+                  "description": "Whether the tabs are highlighted. Works as an alias of active."
                 },
                 "currentWindow": {
                   "type": "boolean",
