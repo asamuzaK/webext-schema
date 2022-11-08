@@ -2281,11 +2281,11 @@
           "choices": [
             {
               "type": "string",
-              "description": "A string containing a valid `CSS color string <https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#color_keywords>`__, including hexadecimal or functional representations. For example the color *crimson* can be specified as: <li>``crimson`` <li>``#dc143c`` <li>``rgb(220, 20, 60)`` (or ``rgba(220, 20, 60, 0.5)`` to set 50% opacity) <li>``hsl(348, 83%, 47%)`` (or ``hsla(348, 83%, 47%, 0.5)`` to set 50% opacity)"
+              "description": "A string containing a valid `CSS color string <|link-css-color-string|>`__, including hexadecimal or functional representations. For example the color *crimson* can be specified as: <li><value>crimson</value> <li><value>#dc143c</value> <li><value>rgb(220, 20, 60)</value> (or <value>rgba(220, 20, 60, 0.5)</value> to set 50% opacity) <li><value>hsl(348, 83%, 47%)</value> (or <value>hsla(348, 83%, 47%, 0.5)</value> to set 50% opacity)"
             },
             {
               "type": "array",
-              "description": "An RGB array of 3 integers. For example ``[220, 20, 60]`` for the color *crimson*.",
+              "description": "An RGB array of 3 integers. For example <value>[220, 20, 60]</value> for the color *crimson*.",
               "minItems": 3,
               "maxItems": 3,
               "items": {
@@ -2296,7 +2296,7 @@
             },
             {
               "type": "array",
-              "description": "An RGBA array of 3 integers and a fractional (a float between 0 and 1). For example ``[220, 20, 60, 0.5]`` for the color *crimson* with 50% opacity.",
+              "description": "An RGBA array of 3 integers and a fractional (a float between 0 and 1). For example <value>[220, 20, 60, 0.5]<value> for the color *crimson* with 50% opacity.",
               "minItems": 4,
               "maxItems": 4,
               "items": {
@@ -2312,11 +2312,13 @@
           "properties": {
             "stylesheet": {
               "optional": true,
+              "description": "URL to a stylesheet introducing additional CSS variables, extending the theme-able areas of Thunderbird. The `theme_experiment add-on in our example repository <https://github.com/thundernest/sample-extensions/tree/master/theme_experiment>`__ is using the stylesheet shown below, to add the <value>--chat-button-color</value> CSS color variable: <literalinclude>includes/theme/theme_experiment_style.css<lang>CSS</lang></literalinclude>The following <em>manifest.json</em> file maps the </value>--chat-button-color</value> CSS color variable to the theme color key <value>exp_chat_button</value> and uses it to set a color for the chat button: <literalinclude>includes/theme/theme_experiment_manifest.json<lang>JSON</lang></literalinclude>",
               "$ref": "ExtensionURL"
             },
             "images": {
               "type": "object",
               "optional": true,
+              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map new theme image keys to internal Thunderbird CSS image variables. The new image key is usable as an image reference in :ref:`theme.ThemeType`. Example: <literalinclude>includes/theme/theme_experiment_image.json<lang>JSON</lang></literalinclude>",
               "additionalProperties": {
                 "type": "string"
               }
@@ -2324,6 +2326,7 @@
             "colors": {
               "type": "object",
               "optional": true,
+              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map new theme color keys to internal Thunderbird CSS color variables. The example shown below maps the theme color key <value>popup_affordance</value> to the CSS color variable </value>--arrowpanel-dimmed</value>. The new color key is usable as a color reference in :ref:`theme.ThemeType`. <literalinclude>includes/theme/theme_experiment_color.json<lang>JSON</lang></literalinclude>",
               "additionalProperties": {
                 "type": "string"
               }
@@ -2331,6 +2334,7 @@
             "properties": {
               "type": "object",
               "optional": true,
+              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map new theme property keys to internal Thunderbird CSS property variables. The new property key is usable as a property reference in :ref:`theme.ThemeType`. Example: <literalinclude>includes/theme/theme_experiment_property.json<lang>JSON</lang></literalinclude>",
               "additionalProperties": {
                 "type": "string"
               }
@@ -2343,7 +2347,7 @@
           "type": "object",
           "properties": {
             "images": {
-              "description": "Object with one or more key-value pairs to map images to theme image keys. The following built-in theme image keys are supported:",
+              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map images to theme image keys. The following built-in theme image keys are supported:",
               "type": "object",
               "optional": true,
               "properties": {
@@ -2354,12 +2358,12 @@
                   },
                   "maxItems": 15,
                   "optional": true,
-                  "description": "Additional images added to the header area and displayed behind the 'theme_frame' image."
+                  "description": "Additional images added to the header area and displayed behind the ``theme_frame`` image."
                 },
                 "headerURL": {
                   "$ref": "ImageDataOrExtensionURL",
                   "optional": true,
-                  "deprecated": "Unsupported images property, use 'theme.images.theme_frame', this alias is ignored in Thunderbird >= 70."
+                  "deprecated": "Unsupported images property, use ``theme.images.theme_frame``, this alias is ignored in Thunderbird >= 70."
                 },
                 "theme_frame": {
                   "$ref": "ImageDataOrExtensionURL",
@@ -2372,7 +2376,7 @@
               }
             },
             "colors": {
-              "description": "Object with one or more key-value pairs to map color values to theme color keys. The following built-in theme color keys are supported:",
+              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map color values to theme color keys. The following built-in theme color keys are supported:",
               "type": "object",
               "optional": true,
               "properties": {
@@ -2384,7 +2388,7 @@
                 "accentcolor": {
                   "$ref": "ThemeColor",
                   "optional": true,
-                  "deprecated": "Unsupported colors property, use 'theme.colors.frame', this alias is ignored in Thunderbird >= 70."
+                  "deprecated": "Unsupported colors property, use ``theme.colors.frame``, this alias is ignored in Thunderbird >= 70."
                 },
                 "frame": {
                   "$ref": "ThemeColor",
@@ -2399,7 +2403,7 @@
                 "textcolor": {
                   "$ref": "ThemeColor",
                   "optional": true,
-                  "deprecated": "Unsupported color property, use 'theme.colors.tab_background_text', this alias is ignored in Thunderbird >= 70."
+                  "deprecated": "Unsupported color property, use ``theme.colors.tab_background_text``, this alias is ignored in Thunderbird >= 70."
                 },
                 "tab_background_text": {
                   "$ref": "ThemeColor",
@@ -2593,7 +2597,7 @@
               }
             },
             "properties": {
-              "description": "Object with one or more key-value pairs to map property values to theme property keys. The following built-in theme property keys are supported:",
+              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map property values to theme property keys. The following built-in theme property keys are supported:",
               "type": "object",
               "optional": true,
               "properties": {
@@ -2636,7 +2640,7 @@
                   "optional": true
                 },
                 "color_scheme": {
-                  "description": "If set, overrides the general 'toolbar theme'.",
+                  "description": "If set, overrides the general theme (context menus, toolbars, content area).",
                   "optional": true,
                   "type": "string",
                   "enum": [
@@ -2705,7 +2709,8 @@
           "properties": {
             "theme_experiment": {
               "$ref": "ThemeExperiment",
-              "optional": true
+              "optional": true,
+              "description": "A theme experiment allows modifying the user interface of Thunderbird beyond what is currently possible using the built-in color, image and property keys of :ref:`theme.ThemeType`. These experiments are a precursor to proposing new theme features for inclusion in Thunderbird. Experimentation is done by mapping internal CSS color, image and property variables to new theme keys and using them in :ref:`theme.ThemeType` and by loading additional style sheets to add new CSS variables, extending the theme-able areas of Thunderbird. Can be used in static and dynamic themes."
             }
           }
         }
@@ -2713,7 +2718,7 @@
     },
     {
       "namespace": "theme",
-      "description": "The theme API allows customizing of visual elements of Thunderbird.",
+      "description": "The theme API allows for customization of Thunderbird's visual elements.",
       "types": [
         {
           "id": "ThemeUpdateInfo",
@@ -2721,7 +2726,7 @@
           "description": "Info provided in the onUpdated listener.",
           "properties": {
             "theme": {
-              "type": "object",
+              "$ref": "ThemeType",
               "description": "The new theme after update"
             },
             "windowId": {
@@ -2851,7 +2856,7 @@
             },
             "type": {
               "type": "string",
-              "description": "What sort of account this is, e.g. ``imap``, ``nntp``, or ``pop3``."
+              "description": "What sort of account this is, e.g. <value>imap</value>, <value>nntp</value>, or <value>pop3</value>."
             },
             "folders": {
               "type": "array",
@@ -2880,7 +2885,7 @@
           "parameters": [
             {
               "name": "includeFolders",
-              "description": "Specifies whether the returned :ref:`accounts.MailAccount` objects should included their account's folders. Defaults to ``true``.",
+              "description": "Specifies whether the returned :ref:`accounts.MailAccount` objects should included their account's folders. Defaults to <value>true</value>.",
               "optional": true,
               "default": true,
               "type": "boolean"
@@ -2903,7 +2908,7 @@
         {
           "name": "get",
           "type": "function",
-          "description": "Returns details of the requested account, or null if it doesn't exist.",
+          "description": "Returns details of the requested account, or <value>null</value> if it doesn't exist.",
           "async": "callback",
           "parameters": [
             {
@@ -2912,7 +2917,7 @@
             },
             {
               "name": "includeFolders",
-              "description": "Specifies whether the returned :ref:`accounts.MailAccount` object should included the account's folders. Defaults to ``true``.",
+              "description": "Specifies whether the returned :ref:`accounts.MailAccount` object should included the account's folders. Defaults to <value>true</value>.",
               "optional": true,
               "default": true,
               "type": "boolean"
@@ -2933,12 +2938,12 @@
         {
           "name": "getDefault",
           "type": "function",
-          "description": "Returns the default account, or null if it is not defined.",
+          "description": "Returns the default account, or <value>null</value> if it is not defined.",
           "async": "callback",
           "parameters": [
             {
               "name": "includeFolders",
-              "description": "Specifies whether the returned :ref:`accounts.MailAccount` object should included the account's folders. Defaults to ``true``.",
+              "description": "Specifies whether the returned :ref:`accounts.MailAccount` object should included the account's folders. Defaults to <value>true</value>.",
               "optional": true,
               "default": true,
               "type": "boolean"
@@ -2976,7 +2981,7 @@
         {
           "name": "getDefaultIdentity",
           "type": "function",
-          "description": "Returns the default identity for an account, or null if it is not defined.",
+          "description": "Returns the default identity for an account, or <value>null</value> if it is not defined.",
           "async": "callback",
           "deprecated": "This will be removed. Use :ref:`identities.getDefault` instead.",
           "parameters": [
@@ -3083,7 +3088,7 @@
             "contact",
             "mailingList"
           ],
-          "description": "Indicates the type of a Node, which can be one of <code>addressBook</code>, <code>contact</code>, or <code>mailingList</code>."
+          "description": "Indicates the type of a Node."
         },
         {
           "id": "AddressBookNode",
@@ -3097,11 +3102,11 @@
             "parentId": {
               "type": "string",
               "optional": true,
-              "description": "The <code>id</code> of the parent object."
+              "description": "The ``id`` of the parent object."
             },
             "type": {
               "$ref": "NodeType",
-              "description": "Always set to <code>addressBook</code>."
+              "description": "Always set to <value>addressBook</value>."
             },
             "readOnly": {
               "type": "boolean",
@@ -3314,7 +3319,7 @@
         {
           "name": "onSearchRequest",
           "type": "function",
-          "description": "Registering this listener will create and list a read-only address book in Thunderbird's address book window, similar to LDAP address books. When selecting this address book, users will first see no contacts, but they can search for them, which will fire this event. Contacts returned by the listener callback will be displayed as contact cards in the address book. Several listeners can be registered, to create multiple address books.\n\nThe event also fires for each registered listener (for each created read-only address book), when users type something into the mail composer's <code>To:</code> field, or into similar fields like the calendar meeting attendees field. Contacts returned by the listener callback will be added to the autocomplete results in the dropdown of that field.\n\nExample: <literalinclude>includes/addressBooks/onSearchRequest.js<lang>JavaScript</lang></literalinclude>",
+          "description": "Registering this listener will create and list a read-only address book in Thunderbird's address book window, similar to LDAP address books. When selecting this address book, users will first see no contacts, but they can search for them, which will fire this event. Contacts returned by the listener callback will be displayed as contact cards in the address book. Several listeners can be registered, to create multiple address books.\n\nThe event also fires for each registered listener (for each created read-only address book), when users type something into the mail composer's <em>To:</em> field, or into similar fields like the calendar meeting attendees field. Contacts returned by the listener callback will be added to the autocomplete results in the dropdown of that field.\n\nExample: <literalinclude>includes/addressBooks/onSearchRequest.js<lang>JavaScript</lang></literalinclude>",
           "parameters": [
             {
               "name": "node",
@@ -3367,6 +3372,42 @@
       ],
       "types": [
         {
+          "id": "QueryInfo",
+          "description": "Object defining a query for :ref:`contacts.quickSearch`.",
+          "type": "object",
+          "properties": {
+            "searchString": {
+              "type": "string",
+              "optional": true,
+              "description": "One or more space-separated terms to search for."
+            },
+            "includeLocal": {
+              "type": "boolean",
+              "optional": true,
+              "default": true,
+              "description": "Whether to include results from local address books. Defaults to true."
+            },
+            "includeRemote": {
+              "type": "boolean",
+              "optional": true,
+              "default": true,
+              "description": "Whether to include results from remote address books. Defaults to true."
+            },
+            "includeReadOnly": {
+              "type": "boolean",
+              "optional": true,
+              "default": true,
+              "description": "Whether to include results from read-only address books. Defaults to true."
+            },
+            "includeReadWrite": {
+              "type": "boolean",
+              "optional": true,
+              "default": true,
+              "description": "Whether to include results from read-write address books. Defaults to true."
+            }
+          }
+        },
+        {
           "id": "ContactNode",
           "type": "object",
           "description": "A node representing a contact in an address book.",
@@ -3378,11 +3419,11 @@
             "parentId": {
               "type": "string",
               "optional": true,
-              "description": "The <code>id</code> of the parent object."
+              "description": "The ``id`` of the parent object."
             },
             "type": {
               "$ref": "addressBooks.NodeType",
-              "description": "Always set to <code>contact</code>."
+              "description": "Always set to <value>contact</value>."
             },
             "readOnly": {
               "type": "boolean",
@@ -3419,7 +3460,7 @@
         {
           "id": "PropertyChange",
           "type": "object",
-          "description": "A dictionary of changed properties. Keys are the property name that changed, values are an object containing ``oldValue`` and ``newValue``. Values can be either a string or null.",
+          "description": "A dictionary of changed properties. Keys are the property name that changed, values are an object containing ``oldValue`` and ``newValue``. Values can be either a string or <value>null</value>.",
           "patternProperties": {
             "^\\w+$": {
               "type": "object",
@@ -3473,7 +3514,7 @@
               ]
             }
           ],
-          "description": "Gets all the contacts in the address book with the id <code>parentId</code>."
+          "description": "Gets all the contacts in the address book with the id ``parentId``."
         },
         {
           "name": "quickSearch",
@@ -3488,44 +3529,13 @@
             },
             {
               "name": "queryInfo",
+              "description": "Either a <em>string</em> with one or more space-separated terms to search for, or a complex :ref:`contacts.QueryInfo` search query.",
               "choices": [
                 {
-                  "type": "string",
-                  "description": "One or more space-separated terms to search for."
+                  "type": "string"
                 },
                 {
-                  "type": "object",
-                  "properties": {
-                    "searchString": {
-                      "type": "string",
-                      "optional": true,
-                      "description": "One or more space-separated terms to search for."
-                    },
-                    "includeLocal": {
-                      "type": "boolean",
-                      "optional": true,
-                      "default": true,
-                      "description": "Whether to include results from local address books. Defaults to true."
-                    },
-                    "includeRemote": {
-                      "type": "boolean",
-                      "optional": true,
-                      "default": true,
-                      "description": "Whether to include results from remote address books. Defaults to true."
-                    },
-                    "includeReadOnly": {
-                      "type": "boolean",
-                      "optional": true,
-                      "default": true,
-                      "description": "Whether to include results from read-only address books. Defaults to true."
-                    },
-                    "includeReadWrite": {
-                      "type": "boolean",
-                      "optional": true,
-                      "default": true,
-                      "description": "Whether to include results from read-write address books. Defaults to true."
-                    }
-                  }
+                  "$ref": "QueryInfo"
                 }
               ]
             },
@@ -3628,7 +3638,7 @@
             {
               "name": "properties",
               "$ref": "ContactProperties",
-              "description": "The properties object for the new contact. If it includes a <code>vCard</code> member, all specified `legacy properties <https://searchfox.org/comm-central/rev/8a1ae67088acf237dab2fd704db18589e7bf119e/mailnews/addrbook/modules/VCardUtils.jsm#295-334>`__ are ignored and the new contact will be based on the provided vCard string. If a UID is specified in the vCard string, which is already used by another contact, an exception is thrown. **Note:** Using individual properties is deprecated, use the <code>vCard</code> member instead."
+              "description": "The properties object for the new contact. If it includes a ``vCard`` member, all specified `legacy properties <|link-legacy-properties|>`__ are ignored and the new contact will be based on the provided vCard string. If a UID is specified in the vCard string, which is already used by another contact, an exception is thrown. **Note:** Using individual properties is deprecated, use the ``vCard`` member instead."
             },
             {
               "type": "function",
@@ -3642,7 +3652,7 @@
               ]
             }
           ],
-          "description": "Adds a new contact to the address book with the id <code>parentId</code>."
+          "description": "Adds a new contact to the address book with the id ``parentId``."
         },
         {
           "name": "update",
@@ -3656,7 +3666,7 @@
             {
               "name": "properties",
               "$ref": "ContactProperties",
-              "description": "An object with properties to update the specified contact. Individual properties are removed, if they are set to <code>null</code>. If the provided object includes a <code>vCard</code> member, all specified `legacy properties <https://searchfox.org/comm-central/rev/8a1ae67088acf237dab2fd704db18589e7bf119e/mailnews/addrbook/modules/VCardUtils.jsm#295-334>`__ are ignored and the details of the contact will be replaced by the provided vCard. Changes to the UID will be ignored. **Note:** Using individual properties is deprecated, use the <code>vCard</code> member instead. "
+              "description": "An object with properties to update the specified contact. Individual properties are removed, if they are set to <value>null</value>. If the provided object includes a ``vCard`` member, all specified `legacy properties <|link-legacy-properties|>`__ are ignored and the details of the contact will be replaced by the provided vCard. Changes to the UID will be ignored. **Note:** Using individual properties is deprecated, use the ``vCard`` member instead. "
             }
           ],
           "description": "Updates a contact."
@@ -3740,11 +3750,11 @@
             "parentId": {
               "type": "string",
               "optional": true,
-              "description": "The <code>id</code> of the parent object."
+              "description": "The ``id`` of the parent object."
             },
             "type": {
               "$ref": "addressBooks.NodeType",
-              "description": "Always set to <code>mailingList</code>."
+              "description": "Always set to <value>mailingList</value>."
             },
             "readOnly": {
               "type": "boolean",
@@ -3800,7 +3810,7 @@
               ]
             }
           ],
-          "description": "Gets all the mailing lists in the address book with id <code>parentId</code>."
+          "description": "Gets all the mailing lists in the address book with id ``parentId``."
         },
         {
           "name": "get",
@@ -3862,7 +3872,7 @@
               ]
             }
           ],
-          "description": "Creates a new mailing list in the address book with id <code>parentId</code>."
+          "description": "Creates a new mailing list in the address book with id ``parentId``."
         },
         {
           "name": "update",
@@ -3919,7 +3929,7 @@
               "type": "string"
             }
           ],
-          "description": "Adds a contact to the mailing list with id <code>id</code>. If the contact and mailing list are in different address books, the contact will also be copied to the list's address book."
+          "description": "Adds a contact to the mailing list with id ``id``. If the contact and mailing list are in different address books, the contact will also be copied to the list's address book."
         },
         {
           "name": "listMembers",
@@ -3944,7 +3954,7 @@
               ]
             }
           ],
-          "description": "Gets all contacts that are members of the mailing list with id <code>id</code>."
+          "description": "Gets all contacts that are members of the mailing list with id ``id``."
         },
         {
           "name": "removeMember",
@@ -3960,7 +3970,7 @@
               "type": "string"
             }
           ],
-          "description": "Removes a contact from the mailing list with id <code>id</code>. This does not delete the contact from the address book."
+          "description": "Removes a contact from the mailing list with id ``id``. This does not delete the contact from the address book."
         }
       ],
       "events": [
@@ -4077,11 +4087,11 @@
             "browser_style": {
               "type": "boolean",
               "optional": true,
-              "description": "Enable browser styles. See the `MDN documentation on browser styles <https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_styles>`__ for more information.",
+              "description": "Enable browser styles. See the `MDN documentation on browser styles <|link-mdn-browser-styles|>`__ for more information.",
               "default": false
             },
             "default_area": {
-              "description": "Defines the location the action button will appear. The default location is ``maintoolbar``.",
+              "description": "Defines the location the action button will appear. The default location is <value>maintoolbar</value>.",
               "type": "string",
               "enum": [
                 "maintoolbar",
@@ -4090,7 +4100,7 @@
               "optional": true
             },
             "default_windows": {
-              "description": "Defines the windows, the action button should appear in. Defaults to showing it only in the ``normal`` Thunderbird window, but can also be shown in the ``messageDisplay`` window.",
+              "description": "Defines the windows, the action button should appear in. Defaults to showing it only in the <value>normal</value> Thunderbird window, but can also be shown in the <value>messageDisplay</value> window.",
               "type": "array",
               "items": {
                 "type": "string",
@@ -4139,7 +4149,7 @@
       "types": [
         {
           "id": "ColorArray",
-          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <code>[255, 0, 0, 255]</code>.",
+          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <value>[255, 0, 0, 255]</value>.",
           "type": "array",
           "items": {
             "type": "integer",
@@ -4157,12 +4167,12 @@
             "type": "any"
           },
           "postprocess": "convertImageDataToURL",
-          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
+          "description": "Pixel data for an image. Must be an |ImageData| object (for example, from a |Canvas| element)."
         },
         {
           "id": "ImageDataDictionary",
           "type": "object",
-          "description": "A ``{size: ImageDataType}`` dictionary representing the icon to be set. The actual :ref:`action.ImageDataType` to be used is chosen depending on the screen's pixel density. See the `MDN documentation on browser styles <https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_styles>`__ for more information on this. At least one :ref:`action.ImageDataType` must be specified.",
+          "description": "A <em>dictionary object</em> to specify multiple |ImageData| objects in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>value</em> being an |ImageData| object, and <em>name</em> its size. Example: <literalinclude>includes/ImageDataDictionary.json<lang>JavaScript</lang></literalinclude>See the `MDN documentation about choosing icon sizes <|link-mdn-icon-size|>`__ for more information on this.",
           "patternProperties": {
             "^[1-9]\\d*$": {
               "$ref": "ImageDataType"
@@ -4216,7 +4226,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the action button should display as its label and when moused over. Cleared by setting it to ``null`` or an empty string (title defined the manifest will be used)."
+                  "description": "A string the action button should display as its label and when moused over. Cleared by setting it to <value>null</value> or an empty string (title defined the manifest will be used)."
                 },
                 "tabId": {
                   "type": "integer",
@@ -4297,7 +4307,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the action button should use as its label, overriding the defined title. Can be set to an empty string to not display any label at all. If the containing toolbar is configured to display text only, its title will be used. Cleared by setting it to ``null``."
+                  "description": "A string the action button should use as its label, overriding the defined title. Can be set to an empty string to not display any label at all. If the containing toolbar is configured to display text only, its title will be used. Cleared by setting it to <value>null</value>."
                 },
                 "tabId": {
                   "type": "integer",
@@ -4362,7 +4372,7 @@
         {
           "name": "setIcon",
           "type": "function",
-          "description": "Sets the icon for the action button. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "description": "Sets the icon for the action button. Either the ``path`` or the ``imageData`` property must be specified.",
           "async": "callback",
           "parameters": [
             {
@@ -4428,7 +4438,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The html file to show in a popup. Can be set to an empty string to not open a popup. Cleared by setting it to ``null`` (popup value defined the manifest will be used)."
+                  "description": "The html file to show in a popup. Can be set to an empty string to not open a popup. Cleared by setting it to <value>null</value> (popup value defined the manifest will be used)."
                 },
                 "tabId": {
                   "type": "integer",
@@ -4509,7 +4519,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "Any number of characters can be passed, but only about four can fit in the space. Cleared by setting it to ``null`` or an empty string."
+                  "description": "Any number of characters can be passed, but only about four can fit in the space. Cleared by setting it to <value>null</value> or an empty string."
                 },
                 "tabId": {
                   "type": "integer",
@@ -4593,7 +4603,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The color to use as background in the badge. Cleared by setting it to ``null`` or an empty string."
+                  "description": "The color to use as background in the badge. Cleared by setting it to <value>null</value> or an empty string."
                 },
                 "tabId": {
                   "type": "integer",
@@ -4747,7 +4757,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when an action button is clicked. This event will not fire if the action has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when an action button is clicked. This event will not fire if the action has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <|link-user-input-restrictions|>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -4984,7 +4994,7 @@
               "properties": {
                 "browser_style": {
                   "type": "boolean",
-                  "description": "Enable browser styles in the ``management_url`` page. See the `MDN documentation <https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_styles>`__ for more information.",
+                  "description": "Enable browser styles in the ``management_url`` page. See the `MDN documentation on browser styles <|link-mdn-browser-styles|>`__ for more information.",
                   "optional": true,
                   "default": false
                 },
@@ -4992,10 +5002,10 @@
                   "type": "string",
                   "optional": true,
                   "deprecated": true,
-                  "description": "This property is no longer used. The only supported data format for the ``data`` argument in ``onFileUpload`` is `File <https://developer.mozilla.org/docs/Web/API/File>`__."
+                  "description": "This property is no longer used. The only supported data format for the ``data`` argument in :ref:`cloudFile.onFileUpload` is |File|."
                 },
                 "reuse_uploads": {
-                  "description": "If a previously uploaded cloud file attachment is reused at a later time in a different message, Thunderbird may use the already known ``url`` and ``templateInfo`` values without triggering the registered :ref:`cloudFile.onFileUpload` listener again. Setting this option to false will always trigger the registered listener, providing the already known values through the ``relatedFileInfo`` parameter of the :ref:`cloudFile.onFileUpload` event, to let the provider decide how to handle these cases.",
+                  "description": "If a previously uploaded cloud file attachment is reused at a later time in a different message, Thunderbird may use the already known ``url`` and ``templateInfo`` values without triggering the registered :ref:`cloudFile.onFileUpload` listener again. Setting this option to <value>false</value> will always trigger the registered listener, providing the already known values through the ``relatedFileInfo`` parameter of the :ref:`cloudFile.onFileUpload` event, to let the provider decide how to handle these cases.",
                   "type": "boolean",
                   "optional": true,
                   "default": true
@@ -5021,7 +5031,7 @@
                   "type": "string",
                   "optional": true,
                   "deprecated": true,
-                  "description": "This property is no longer used. The ``service_url`` property of the :ref:`cloudFile.CloudFileTemplateInfo` object returned by the :ref:`cloudFile.onFileUpload` event can be used to add a ``Learn more about`` link to the footer of the cloud file attachment element."
+                  "description": "This property is no longer used. The ``service_url`` property of the :ref:`cloudFile.CloudFileTemplateInfo` object returned by the :ref:`cloudFile.onFileUpload` event can be used to add a <em>Learn more about</em> link to the footer of the cloud file attachment element."
                 }
               },
               "optional": true
@@ -5071,7 +5081,7 @@
             "properties": {
               "aborted": {
                 "type": "boolean",
-                "description": "Set this to true if the file upload was aborted by the user and an :ref:`cloudFile.onFileUploadAbort` event has been received. No error message will be shown to the user.",
+                "description": "Set this to <value>true</value> if the file upload was aborted by the user and an :ref:`cloudFile.onFileUploadAbort` event has been received. No error message will be shown to the user.",
                 "optional": true
               },
               "error": {
@@ -5083,7 +5093,7 @@
                     "type": "string"
                   }
                 ],
-                "description": "Report an error to the user. Set this to true for showing a generic error message, or set a specific error message.",
+                "description": "Report an error to the user. Set this to <value>true</value> for showing a generic error message, or set a specific error message.",
                 "optional": true
               },
               "url": {
@@ -5160,7 +5170,7 @@
                     "type": "string"
                   }
                 ],
-                "description": "Report an error to the user. Set this to true for showing a generic error message, or set a specific error message.",
+                "description": "Report an error to the user. Set this to <value>true</value> for showing a generic error message, or set a specific error message.",
                 "optional": true
               },
               "url": {
@@ -5241,19 +5251,19 @@
               "type": "integer",
               "minimum": -1,
               "optional": true,
-              "description": "The maximum size in bytes for a single file to upload. Set to -1 if unlimited."
+              "description": "The maximum size in bytes for a single file to upload. Set to <value>-1</value> if unlimited."
             },
             "spaceRemaining": {
               "type": "integer",
               "minimum": -1,
               "optional": true,
-              "description": "The amount of remaining space on the cloud provider, in bytes. Set to -1 if unsupported."
+              "description": "The amount of remaining space on the cloud provider, in bytes. Set to <value>-1</value> if unsupported."
             },
             "spaceUsed": {
               "type": "integer",
               "minimum": -1,
               "optional": true,
-              "description": "The amount of space already used on the cloud provider, in bytes. Set to -1 if unsupported."
+              "description": "The amount of space already used on the cloud provider, in bytes. Set to <value>-1</value> if unsupported."
             },
             "managementUrl": {
               "type": "string",
@@ -5280,7 +5290,7 @@
             "service_url": {
               "type": "string",
               "optional": true,
-              "description": "A URL pointing to a web page of the used cloud file service. Will be used in a ``Learn more about`` link in the footer of the cloud file attachment element."
+              "description": "A URL pointing to a web page of the used cloud file service. Will be used in a <em>Learn more about</em> link in the footer of the cloud file attachment element."
             },
             "download_password_protected": {
               "type": "boolean",
@@ -5303,7 +5313,7 @@
                 },
                 "format": {
                   "optional": true,
-                  "description": "A format options object as used by `Intl.DateTimeFormat <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat>`__. Defaults to: <literalinclude>includes/cloudFile/defaultDateFormat.js<lang>JavaScript</lang></literalinclude>",
+                  "description": "A format options object as used by |DateTimeFormat|. Defaults to: <literalinclude>includes/cloudFile/defaultDateFormat.js<lang>JavaScript</lang></literalinclude>",
                   "type": "object",
                   "additionalProperties": true
                 }
@@ -5336,7 +5346,7 @@
         {
           "id": "RelatedCloudFile",
           "type": "object",
-          "description": "Information about an already uploaded cloud file, which is related to a new upload. For example if the content of a cloud attachment is updated, if a repeatedly used cloud attachment is renamed (and therefore should be re-uploaded to not invalidate existing links) or if the provider has its manifest property ``reuse_uploads`` set to ``false``.",
+          "description": "Information about an already uploaded cloud file, which is related to a new upload. For example if the content of a cloud attachment is updated, if a repeatedly used cloud attachment is renamed (and therefore should be re-uploaded to not invalidate existing links) or if the provider has its manifest property ``reuse_uploads`` set to <value>false</value>.",
           "properties": {
             "id": {
               "type": "integer",
@@ -5443,19 +5453,19 @@
                   "type": "integer",
                   "minimum": -1,
                   "optional": true,
-                  "description": "The maximum size in bytes for a single file to upload. Set to -1 if unlimited."
+                  "description": "The maximum size in bytes for a single file to upload. Set to <value>-1</value> if unlimited."
                 },
                 "spaceRemaining": {
                   "type": "integer",
                   "minimum": -1,
                   "optional": true,
-                  "description": "The amount of remaining space on the cloud provider, in bytes. Set to -1 if unsupported."
+                  "description": "The amount of remaining space on the cloud provider, in bytes. Set to <value>-1</value> if unsupported."
                 },
                 "spaceUsed": {
                   "type": "integer",
                   "minimum": -1,
                   "optional": true,
-                  "description": "The amount of space already used on the cloud provider, in bytes. Set to -1 if unsupported."
+                  "description": "The amount of space already used on the cloud provider, in bytes. Set to <value>-1</value> if unsupported."
                 },
                 "managementUrl": {
                   "type": "string",
@@ -5507,7 +5517,7 @@
           "choices": [
             {
               "type": "string",
-              "description": "A name and email address in the format \"Name <email@example.com>\", or just an email address."
+              "description": "A name and email address in the format <value>Name <email@example.com></value>, or just an email address."
             },
             {
               "type": "object",
@@ -5587,7 +5597,7 @@
             "overrideDefaultFcc": {
               "type": "boolean",
               "optional": true,
-              "description": "Indicates whether the default fcc setting (defined by the used identity) is being overridden for this message. Setting ``false`` will clear the override. Setting ``true`` will throw an ``ExtensionError``, if ``overrideDefaultFccFolder`` is not set as well."
+              "description": "Indicates whether the default fcc setting (defined by the used identity) is being overridden for this message. Setting <value>false</value> will clear the override. Setting <value>true</value> will throw an <em>ExtensionError</em>, if ``overrideDefaultFccFolder`` is not set as well."
             },
             "overrideDefaultFccFolder": {
               "choices": [
@@ -5602,7 +5612,7 @@
                 }
               ],
               "optional": true,
-              "description": " This value overrides the default fcc setting (defined by the used identity) for this message only. Either a :ref:`folders.MailFolder` specifying the folder for the copy of the sent message, or ``\"\"`` to not save a copy at all."
+              "description": " This value overrides the default fcc setting (defined by the used identity) for this message only. Either a :ref:`folders.MailFolder` specifying the folder for the copy of the sent message, or an empty string to not save a copy at all."
             },
             "additionalFccFolder": {
               "choices": [
@@ -5616,7 +5626,7 @@
                   ]
                 }
               ],
-              "description": "An additional fcc folder which can be selected while composing the message, ``\"\"`` if not used.",
+              "description": "An additional fcc folder which can be selected while composing the message, an empty string if not used.",
               "optional": true
             },
             "replyTo": {
@@ -5644,7 +5654,7 @@
               "optional": true
             },
             "relatedMessageId": {
-              "description": "The id of the original message (in case of draft, template, forward or reply). Read-only. Is <code>null</code> in all other cases or if the original message was opened from file.",
+              "description": "The id of the original message (in case of draft, template, forward or reply). Read-only. Is <value>null</value> in all other cases or if the original message was opened from file.",
               "type": "integer",
               "optional": true
             },
@@ -5687,7 +5697,7 @@
                 "html",
                 "both"
               ],
-              "description": "Defines the mime format of the sent message (ignored on plain text messages). Defaults to ``auto``, which will send html messages as plain text, if they do not include any formatting, and as ``both`` otherwise (a multipart/mixed message).",
+              "description": "Defines the mime format of the sent message (ignored on plain text messages). Defaults to <value>auto</value>, which will send html messages as plain text, if they do not include any formatting, and as <value>both</value> otherwise (a multipart/mixed message).",
               "optional": true
             },
             "customHeaders": {
@@ -5695,7 +5705,7 @@
               "items": {
                 "$ref": "CustomHeader"
               },
-              "description": "Array of custom headers. Headers will be returned in ``Http-Header-Case`` (a.k.a. ``Train-Case``). Set an empty array to clear all custom headers.",
+              "description": "Array of custom headers. Headers will be returned in <em>Http-Header-Case</em> (a.k.a. <em>Train-Case</em>). Set an empty array to clear all custom headers.",
               "optional": true
             },
             "priority": {
@@ -5713,7 +5723,7 @@
             "returnReceipt": {
               "type": "boolean",
               "optional": true,
-              "description": "Add the ``Disposition-Notification-To`` header to the message to requests the recipients email client to send a reply once the message has been received. Recipient server may strip the header and the recipient might ignore the request."
+              "description": "Add the <em>Disposition-Notification-To</em> header to the message to requests the recipients email client to send a reply once the message has been received. Recipient server may strip the header and the recipient might ignore the request."
             },
             "deliveryStatusNotification": {
               "type": "boolean",
@@ -5789,7 +5799,7 @@
           "properties": {
             "name": {
               "type": "string",
-              "description": "Name of a custom header, must have a ``X-`` prefix.",
+              "description": "Name of a custom header, must have a <value>X-</value> prefix.",
               "pattern": "^X-.*$"
             },
             "value": {
@@ -5803,14 +5813,14 @@
           "additionalProperties": {
             "type": "boolean"
           },
-          "description": "Object with language identifiers of all installed dictionaries as keys (for example ``en-US``) and a boolean value, indicating whether that dictionary is enabled for spellchecking or not."
+          "description": "A <em>dictionary object</em> with entries for all installed dictionaries, having a language identifier as <em>key</em> (for example <value>en-US</value>) and a boolean expression as <em>value</em>, indicating whether that dictionary is enabled for spellchecking or not."
         }
       ],
       "events": [
         {
           "name": "onBeforeSend",
           "type": "function",
-          "description": "Fired when a message is about to be sent from the compose window. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when a message is about to be sent from the compose window. This is a user input event handler. For asynchronous listeners some `restrictions <|link-user-input-restrictions|>`__ apply.",
           "permissions": [
             "compose"
           ],
@@ -6172,7 +6182,7 @@
           "name": "getActiveDictionaries",
           "type": "function",
           "async": "callback",
-          "description": "Returns a :ref:`ComposeDictionaries` object, listing all installed dictionaries, including the information whether they are currently enabled or not.",
+          "description": "Returns a :ref:`compose.ComposeDictionaries` object, listing all installed dictionaries, including the information whether they are currently enabled or not.",
           "permissions": [
             "compose"
           ],
@@ -6248,7 +6258,7 @@
         {
           "name": "getAttachmentFile",
           "type": "function",
-          "description": "Gets the content of a :ref:`compose.ComposeAttachment` as a DOM <code>File</code> object.",
+          "description": "Gets the content of a :ref:`compose.ComposeAttachment` as a |File| object.",
           "async": "callback",
           "parameters": [
             {
@@ -6309,7 +6319,7 @@
         {
           "name": "updateAttachment",
           "type": "function",
-          "description": "Updates the name and/or the content of an attachment in the message being composed in the specified tab. If the specified attachment is a cloud file attachment and the associated provider failed to update the attachment, the function will throw an ``ExtensionError``.",
+          "description": "Updates the name and/or the content of an attachment in the message being composed in the specified tab. If the specified attachment is a cloud file attachment and the associated provider failed to update the attachment, the function will throw an <em>ExtensionError</em>.",
           "permissions": [
             "compose"
           ],
@@ -6364,7 +6374,7 @@
             "compose.send"
           ],
           "type": "function",
-          "description": "Sends the message currently being composed. If the send mode is not specified or set to ``default``, the message will be send directly if the user is online and placed in the users outbox otherwise. The returned Promise fulfills once the message has been successfully sent or placed in the user's outbox. Throws when the send process has been aborted by the user, by an :ref:`onBeforeSend` event or if there has been an error while sending the message to the outgoing mail server.",
+          "description": "Sends the message currently being composed. If the send mode is not specified or set to <value>default</value>, the message will be send directly if the user is online and placed in the users outbox otherwise. The returned Promise fulfills once the message has been successfully sent or placed in the user's outbox. Throws when the send process has been aborted by the user, by an :ref:`compose.onBeforeSend` event or if there has been an error while sending the message to the outgoing mail server.",
           "async": "callback",
           "parameters": [
             {
@@ -6553,11 +6563,11 @@
                 "browser_style": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Enable browser styles. See the `MDN documentation on browser styles <https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_styles>`__ for more information.",
+                  "description": "Enable browser styles. See the `MDN documentation on browser styles <|link-mdn-browser-styles|>`__ for more information.",
                   "default": false
                 },
                 "default_area": {
-                  "description": "Defines the location the composeAction button will appear. The default location is ``maintoolbar``.",
+                  "description": "Defines the location the composeAction button will appear. The default location is <value>maintoolbar</value>.",
                   "type": "string",
                   "enum": [
                     "maintoolbar",
@@ -6581,7 +6591,7 @@
       "types": [
         {
           "id": "ColorArray",
-          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <code>[255, 0, 0, 255]</code>.",
+          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <value>[255, 0, 0, 255]</value>.",
           "type": "array",
           "items": {
             "type": "integer",
@@ -6599,12 +6609,12 @@
             "type": "any"
           },
           "postprocess": "convertImageDataToURL",
-          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
+          "description": "Pixel data for an image. Must be an |ImageData| object (for example, from a |Canvas| element)."
         },
         {
           "id": "ImageDataDictionary",
           "type": "object",
-          "description": "A ``{size: ImageDataType}`` dictionary representing the icon to be set. The actual :ref:`composeAction.ImageDataType` to be used is chosen depending on the screen's pixel density. See the `MDN documentation on browser styles <https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_styles>`__ for more information on this. At least one :ref:`composeAction.ImageDataType` must be specified.",
+          "description": "A <em>dictionary object</em> to specify multiple |ImageData| objects in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>value</em> being an |ImageData| object, and <em>name</em> its size. Example: <literalinclude>includes/ImageDataDictionary.json<lang>JavaScript</lang></literalinclude>See the `MDN documentation about choosing icon sizes <|link-mdn-icon-size|>`__ for more information on this.",
           "patternProperties": {
             "^[1-9]\\d*$": {
               "$ref": "ImageDataType"
@@ -6658,7 +6668,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the composeAction button should display as its label and when moused over. Cleared by setting it to ``null`` or an empty string (title defined the manifest will be used)."
+                  "description": "A string the composeAction button should display as its label and when moused over. Cleared by setting it to <value>null</value> or an empty string (title defined the manifest will be used)."
                 },
                 "tabId": {
                   "type": "integer",
@@ -6739,7 +6749,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the composeAction button should use as its label, overriding the defined title. Can be set to an empty string to not display any label at all. If the containing toolbar is configured to display text only, its title will be used. Cleared by setting it to ``null``."
+                  "description": "A string the composeAction button should use as its label, overriding the defined title. Can be set to an empty string to not display any label at all. If the containing toolbar is configured to display text only, its title will be used. Cleared by setting it to <value>null</value>."
                 },
                 "tabId": {
                   "type": "integer",
@@ -6804,7 +6814,7 @@
         {
           "name": "setIcon",
           "type": "function",
-          "description": "Sets the icon for the composeAction button. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "description": "Sets the icon for the composeAction button. Either the ``path`` or the ``imageData`` property must be specified.",
           "async": "callback",
           "parameters": [
             {
@@ -6870,7 +6880,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The html file to show in a popup. Can be set to an empty string to not open a popup. Cleared by setting it to ``null`` (action will use the popup value defined in the manifest)."
+                  "description": "The html file to show in a popup. Can be set to an empty string to not open a popup. Cleared by setting it to <value>null</value> (action will use the popup value defined in the manifest)."
                 },
                 "tabId": {
                   "type": "integer",
@@ -6951,7 +6961,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "Any number of characters can be passed, but only about four can fit in the space. Cleared by setting it to ``null`` or an empty string."
+                  "description": "Any number of characters can be passed, but only about four can fit in the space. Cleared by setting it to <value>null</value> or an empty string."
                 },
                 "tabId": {
                   "type": "integer",
@@ -7035,7 +7045,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The color to use as background in the badge. Cleared by setting it to ``null`` or an empty string."
+                  "description": "The color to use as background in the badge. Cleared by setting it to <value>null</value> or an empty string."
                 },
                 "tabId": {
                   "type": "integer",
@@ -7189,7 +7199,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a composeAction button is clicked. This event will not fire if the composeAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when a composeAction button is clicked. This event will not fire if the composeAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <|link-user-input-restrictions|>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -7618,7 +7628,7 @@
             },
             {
               "name": "includeSubFolders",
-              "description": "Specifies whether the returned :ref:`folders.MailFolder` object for each parent folder should include its nested subfolders . Defaults to ``false``.",
+              "description": "Specifies whether the returned :ref:`folders.MailFolder` object for each parent folder should include its nested subfolders . Defaults to <value>false</value>.",
               "optional": true,
               "default": false,
               "type": "boolean"
@@ -7657,7 +7667,7 @@
             },
             {
               "name": "includeSubFolders",
-              "description": "Specifies whether the returned :ref:`folders.MailFolder` object for each direct subfolder should also include all its nested subfolders . Defaults to ``true``.",
+              "description": "Specifies whether the returned :ref:`folders.MailFolder` object for each direct subfolder should also include all its nested subfolders . Defaults to <value>true</value>.",
               "optional": true,
               "default": true,
               "type": "boolean"
@@ -7874,7 +7884,7 @@
         {
           "name": "get",
           "type": "function",
-          "description": "Returns details of the requested identity, or null if it doesn't exist.",
+          "description": "Returns details of the requested identity, or <value>null</value> if it doesn't exist.",
           "async": "callback",
           "parameters": [
             {
@@ -7970,7 +7980,7 @@
         {
           "name": "getDefault",
           "type": "function",
-          "description": "Returns the default identity for the requested account, or null if it is not defined.",
+          "description": "Returns the default identity for the requested account, or <value>null</value> if it is not defined.",
           "async": "callback",
           "parameters": [
             {
@@ -8143,26 +8153,26 @@
           "properties": {
             "text": {
               "type": "string",
-              "description": "String to match against the <var>recipients</var>, <var>author</var>, <var>subject</var>, or <var>body</var>."
+              "description": "String to match against the ``recipients``, ``author``, ``subject``, or ``body``."
             },
             "recipients": {
               "type": "boolean",
-              "description": "Shows messages where <var>text</var> matches the recipients.",
+              "description": "Shows messages where ``text`` matches the recipients.",
               "optional": true
             },
             "author": {
               "type": "boolean",
-              "description": "Shows messages where <var>text</var> matches the author.",
+              "description": "Shows messages where ``text`` matches the author.",
               "optional": true
             },
             "subject": {
               "type": "boolean",
-              "description": "Shows messages where <var>text</var> matches the subject.",
+              "description": "Shows messages where ``text`` matches the subject.",
               "optional": true
             },
             "body": {
               "type": "boolean",
-              "description": "Shows messages where <var>text</var> matches the message body.",
+              "description": "Shows messages where ``text`` matches the message body.",
               "optional": true
             }
           }
@@ -8262,7 +8272,7 @@
         {
           "name": "update",
           "type": "function",
-          "description": "Modifies the properties of a mail tab. Properties that are not specified in <var>updateProperties</var> are not modified.",
+          "description": "Modifies the properties of a mail tab. Properties that are not specified in ``updateProperties`` are not modified.",
           "async": true,
           "parameters": [
             {
@@ -8283,7 +8293,7 @@
                 },
                 "sortType": {
                   "type": "string",
-                  "description": "Sorts the list of messages. <var>sortOrder</var> must also be given.",
+                  "description": "Sorts the list of messages. ``sortOrder`` must also be given.",
                   "optional": true,
                   "enum": [
                     "none",
@@ -8310,7 +8320,7 @@
                 },
                 "sortOrder": {
                   "type": "string",
-                  "description": "Sorts the list of messages. <var>sortType</var> must also be given.",
+                  "description": "Sorts the list of messages. ``sortType`` must also be given.",
                   "optional": true,
                   "enum": [
                     "none",
@@ -8543,7 +8553,7 @@
       "permissions": [
         "menus"
       ],
-      "description": "Use the browser.menus API to add items to the browser's menus. You can choose what types of objects your context menu additions apply to, such as images, hyperlinks, and pages.",
+      "description": "The menus API allows to add items to Thunderbirds menus. You can choose what types of objects your context menu additions apply to, such as images, hyperlinks, and pages.",
       "properties": {
         "ACTION_MENU_TOP_LEVEL_LIMIT": {
           "value": 6,
@@ -8576,7 +8586,7 @@
             "all_message_attachments",
             "tools_menu"
           ],
-          "description": "The different contexts a menu can appear in. Specifying <code>all</code> is equivalent to the combination of all other contexts excluding <code>tab</code> and <code>tools_menu</code>. More information about each context can be found in the `Supported UI Elements <https://developer.thunderbird.net/add-ons/mailextensions/supported-ui-elements#menu-items>`__ article on developer.thunderbird.net."
+          "description": "The different contexts a menu can appear in. Specifying <value>all</value> is equivalent to the combination of all other contexts excluding <value>tab</value> and <value>tools_menu</value>. More information about each context can be found in the `Supported UI Elements <|link-ui-elements|>`__ article on developer.thunderbird.net."
         },
         {
           "id": "ItemType",
@@ -8622,7 +8632,7 @@
             "mediaType": {
               "type": "string",
               "optional": true,
-              "description": "One of 'image', 'video', or 'audio' if the context menu was activated on one of these types of elements."
+              "description": "One of <value>image</value>, <value>video</value>, or <value>audio</value> if the context menu was activated on one of these types of elements."
             },
             "viewType": {
               "$ref": "extension.ViewType",
@@ -8641,7 +8651,7 @@
             },
             "srcUrl": {
               "type": "string",
-              "description": "Will be present for elements with a 'src' URL. **Note:** Host permission is required.",
+              "description": "Will be present for elements with a <em>src</em> URL. **Note:** Host permission is required.",
               "optional": true
             },
             "pageUrl": {
@@ -8662,7 +8672,7 @@
             "targetElementId": {
               "type": "integer",
               "optional": true,
-              "description": "An identifier of the clicked content element, if any. Use menus.getTargetElement in the page to find the corresponding element."
+              "description": "An identifier of the clicked content element, if any. Use :ref:`menus.getTargetElement` in the page to find the corresponding element."
             },
             "fieldId": {
               "type": "string",
@@ -8749,7 +8759,7 @@
             "mediaType": {
               "type": "string",
               "optional": true,
-              "description": "One of 'image', 'video', or 'audio' if the context menu was activated on one of these types of elements."
+              "description": "One of <value>image</value>, <value>video</value>, or <value>audio</value> if the context menu was activated on one of these types of elements."
             },
             "viewType": {
               "$ref": "extension.ViewType",
@@ -8769,7 +8779,7 @@
             "srcUrl": {
               "type": "string",
               "optional": true,
-              "description": "Will be present for elements with a 'src' URL."
+              "description": "Will be present for elements with a <em>src</em> URL."
             },
             "pageUrl": {
               "type": "string",
@@ -8824,7 +8834,7 @@
             "targetElementId": {
               "type": "integer",
               "optional": true,
-              "description": "An identifier of the clicked content element, if any. Use menus.getTargetElement in the page to find the corresponding element."
+              "description": "An identifier of the clicked content element, if any. Use :ref:`menus.getTargetElement` in the page to find the corresponding element."
             },
             "fieldId": {
               "type": "string",
@@ -8881,7 +8891,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates a new context menu item. Note that if an error occurs during creation, you may not find out until the creation callback fires (the details will be in `runtime.lastError <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/lastError>`_).",
+          "description": "Creates a new context menu item. Note that if an error occurs during creation, you may not find out until the creation callback fires (the details will be in `runtime.lastError <|link-runtime-last-error|>`__).",
           "returns": {
             "choices": [
               {
@@ -8901,7 +8911,7 @@
                 "type": {
                   "$ref": "ItemType",
                   "optional": true,
-                  "description": "The type of menu item. Defaults to 'normal' if not specified."
+                  "description": "The type of menu item. Defaults to <value>normal</value> if not specified."
                 },
                 "id": {
                   "type": "string",
@@ -8916,12 +8926,12 @@
                 "title": {
                   "type": "string",
                   "optional": true,
-                  "description": "The text to be displayed in the item; this is <em>required</em> unless <code>type</code> is 'separator'. When the context is 'selection', you can use <code>%s</code> within the string to show the selected text. For example, if this parameter's value is \"Translate '%s' to Pig Latin\" and the user selects the word \"cool\", the context menu item for the selection is \"Translate 'cool' to Pig Latin\". To specify an access key for the new menu entry, include a <code>&</code> before the desired letter in the title. For example \"&Help\"."
+                  "description": "The text to be displayed in the item; this is <em>required</em> unless ``type`` is <value>separator</value>. When the context is <value>selection</value>, you can use <value>%s</value> within the string to show the selected text. For example, if this parameter's value is <value>Translate '%s' to Latin</value> and the user selects the word <value>cool</value>, the context menu item for the selection is <value>Translate 'cool' to Latin</value>. To specify an access key for the new menu entry, include a <value>&</value> before the desired letter in the title. For example <value>&Help</value>."
                 },
                 "checked": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "The initial state of a checkbox or radio item: true for selected and false for unselected. Only one radio item can be selected at a time in a given group of radio items."
+                  "description": "The initial state of a checkbox or radio item: <value>true</value> for selected and <value>false</value> for unselected. Only one radio item can be selected at a time in a given group of radio items."
                 },
                 "contexts": {
                   "type": "array",
@@ -8930,7 +8940,7 @@
                   },
                   "minItems": 1,
                   "optional": true,
-                  "description": "List of contexts this menu item will appear in. Defaults to ['page'] if not specified."
+                  "description": "List of contexts this menu item will appear in. Defaults to <value>['page']</value> if not specified."
                 },
                 "viewTypes": {
                   "type": "array",
@@ -8959,7 +8969,7 @@
                     {
                       "name": "tab",
                       "$ref": "tabs.Tab",
-                      "description": "The details of the tab where the click took place. **Note:** this parameter only present for extensions."
+                      "description": "The details of the tab where the click took place."
                     }
                   ]
                 },
@@ -8981,7 +8991,7 @@
                     "type": "string"
                   },
                   "optional": true,
-                  "description": "Lets you restrict the item to apply only to documents whose URL matches one of the given patterns. (This applies to frames as well.) For details on the format of a pattern, see `Match Patterns <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns>`_."
+                  "description": "Lets you restrict the item to apply only to documents whose URL matches one of the given patterns. (This applies to frames as well.) For details on the format of a pattern, see `Match Patterns <|link-match-patterns|>`__."
                 },
                 "targetUrlPatterns": {
                   "type": "array",
@@ -8999,7 +9009,7 @@
                 "command": {
                   "type": "string",
                   "optional": true,
-                  "description": "Specifies a command to issue for the context click. Currently supports internal commands ``_execute_browser_action``, ``_execute_compose_action`` and ``_execute_message_display_action``."
+                  "description": "Specifies a command to issue for the context click. Currently supports internal commands <value>_execute_browser_action</value>, <value>_execute_compose_action</value> and <value>_execute_message_display_action</value>."
                 }
               }
             },
@@ -9007,7 +9017,7 @@
               "type": "function",
               "name": "callback",
               "optional": true,
-              "description": "Called when the item has been created in the browser. If there were any problems creating the item, details will be available in `runtime.lastError <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/lastError>`_.",
+              "description": "Called when the item has been created in the browser. If there were any problems creating the item, details will be available in `runtime.lastError <|link-runtime-last-error|>`__.",
               "parameters": []
             }
           ]
@@ -9176,7 +9186,7 @@
             "menus.overrideContext"
           ],
           "type": "function",
-          "description": "Show the matching menu items from this extension instead of the default menu. This should be called during a 'contextmenu' DOM event handler, and only applies to the menu that opens after this event.",
+          "description": "Show the matching menu items from this extension instead of the default menu. This should be called during a `contextmenu <|link-contextmenu-event|>`__ event handler, and only applies to the menu that opens after this event.",
           "parameters": [
             {
               "name": "contextOptions",
@@ -9194,13 +9204,13 @@
                     "tab"
                   ],
                   "optional": true,
-                  "description": "ContextType to override, to allow menu items from other extensions in the menu. Currently only 'tab' is supported. showDefaults cannot be used with this option."
+                  "description": "ContextType to override, to allow menu items from other extensions in the menu. Currently only <value>tab</value> is supported. ``contextOptions.showDefaults`` cannot be used with this option."
                 },
                 "tabId": {
                   "type": "integer",
                   "minimum": 0,
                   "optional": true,
-                  "description": "Required when context is 'tab'. Requires the <permission>tabs</permission> permission."
+                  "description": "Required when context is <value>tab</value>. Requires the <permission>tabs</permission> permission."
                 }
               }
             }
@@ -9218,7 +9228,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a context menu item is clicked. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when a context menu item is clicked. This is a user input event handler. For asynchronous listeners some `restrictions <|link-user-input-restrictions|>`__ apply.",
           "parameters": [
             {
               "name": "info",
@@ -9236,7 +9246,7 @@
         {
           "name": "onShown",
           "type": "function",
-          "description": "Fired when a menu is shown. The extension can add, modify or remove menu items and call ``menus.refresh()`` to update the menu.",
+          "description": "Fired when a menu is shown. The extension can add, modify or remove menu items and call :ref:`menus.refresh` to update the menu.",
           "parameters": [
             {
               "name": "info",
@@ -9278,11 +9288,11 @@
             "content",
             "devtools"
           ],
-          "description": "Retrieve the element that was associated with a recent contextmenu event.",
+          "description": "Retrieve the element that was associated with a recent `contextmenu <|link-contextmenu-event|>`__ event.",
           "parameters": [
             {
               "type": "integer",
-              "description": "The identifier of the clicked element, available as info.targetElementId in the menus.onShown, onClicked or onclick event.",
+              "description": "The identifier of the clicked element, available as ``info.targetElementId`` in the :ref:`menus.onShown` and :ref:`menus.onClicked` events.",
               "name": "targetElementId"
             }
           ],
@@ -9343,7 +9353,7 @@
         {
           "name": "getDisplayedMessage",
           "type": "function",
-          "description": "Gets the currently displayed message in the specified tab (even if the tab itself is currently not visible). It returns null if no messages are displayed, or if multiple messages are displayed.",
+          "description": "Gets the currently displayed message in the specified tab (even if the tab itself is currently not visible). It returns <value>null</value> if no messages are displayed, or if multiple messages are displayed.",
           "async": "callback",
           "parameters": [
             {
@@ -9411,12 +9421,12 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 1,
-                  "description": "The id of a message to be opened. Will throw an ``ExtensionError``, if the provided ``messageId`` is unknown or invalid."
+                  "description": "The id of a message to be opened. Will throw an <em>ExtensionError</em>, if the provided ``messageId`` is unknown or invalid."
                 },
                 "headerMessageId": {
                   "type": "string",
                   "optional": true,
-                  "description": "The headerMessageId of a message to be opened. Will throw an ``ExtensionError``, if the provided ``headerMessageId`` is unknown or invalid. Not supported for external messages."
+                  "description": "The headerMessageId of a message to be opened. Will throw an <em>ExtensionError</em>, if the provided ``headerMessageId`` is unknown or invalid. Not supported for external messages."
                 },
                 "location": {
                   "type": "string",
@@ -9504,7 +9514,7 @@
                 "browser_style": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Enable browser styles. See the `MDN documentation on browser styles <https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_styles>`__ for more information.",
+                  "description": "Enable browser styles. See the `MDN documentation on browser styles <|link-mdn-browser-styles|>`__ for more information.",
                   "default": false
                 },
                 "default_area": {
@@ -9528,7 +9538,7 @@
       "types": [
         {
           "id": "ColorArray",
-          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <code>[255, 0, 0, 255]</code>.",
+          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <value>[255, 0, 0, 255]</value>.",
           "type": "array",
           "items": {
             "type": "integer",
@@ -9546,12 +9556,12 @@
             "type": "any"
           },
           "postprocess": "convertImageDataToURL",
-          "description": "Pixel data for an image. Must be an ImageData object (for example, from a <code>canvas</code> element)."
+          "description": "Pixel data for an image. Must be an |ImageData| object (for example, from a |Canvas| element)."
         },
         {
           "id": "ImageDataDictionary",
           "type": "object",
-          "description": "A ``{size: ImageDataType}`` dictionary representing the icon to be set. The actual :ref:`messageDisplayAction.ImageDataType` to be used is chosen depending on the screen's pixel density. See the `MDN documentation on browser styles <https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/user_interface/Browser_styles>`__ for more information on this. At least one :ref:`messageDisplayAction.ImageDataType` must be specified.",
+          "description": "A <em>dictionary object</em> to specify multiple |ImageData| objects in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>value</em> being an |ImageData| object, and <em>name</em> its size. Example: <literalinclude>includes/ImageDataDictionary.json<lang>JavaScript</lang></literalinclude>See the `MDN documentation about choosing icon sizes <|link-mdn-icon-size|>`__ for more information on this.",
           "patternProperties": {
             "^[1-9]\\d*$": {
               "$ref": "ImageDataType"
@@ -9605,7 +9615,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the messageDisplayAction button should display as its label and when moused over. Cleared by setting it to ``null`` or an empty string (title defined the manifest will be used)."
+                  "description": "A string the messageDisplayAction button should display as its label and when moused over. Cleared by setting it to <value>null</value> or an empty string (title defined the manifest will be used)."
                 },
                 "tabId": {
                   "type": "integer",
@@ -9686,7 +9696,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The string the messageDisplayAction button should use as its label, overriding the defined title. Can be set to an empty string to not display any label at all. If the containing toolbar is configured to display text only, its title will be used. Cleared by setting it to ``null``."
+                  "description": "A string the messageDisplayAction button should use as its label, overriding the defined title. Can be set to an empty string to not display any label at all. If the containing toolbar is configured to display text only, its title will be used. Cleared by setting it to <value>null</value>."
                 },
                 "tabId": {
                   "type": "integer",
@@ -9751,7 +9761,7 @@
         {
           "name": "setIcon",
           "type": "function",
-          "description": "Sets the icon for the messageDisplayAction button. Either the <b>path</b> or the <b>imageData</b> property must be specified.",
+          "description": "Sets the icon for the messageDisplayAction button. Either the ``path`` or the ``imageData`` property must be specified.",
           "async": "callback",
           "parameters": [
             {
@@ -9817,7 +9827,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The html file to show in a popup. Can be set to an empty string to not open a popup. Cleared by setting it to ``null`` (action will use the popup value defined in the manifest)."
+                  "description": "The html file to show in a popup. Can be set to an empty string to not open a popup. Cleared by setting it to <value>null</value> (action will use the popup value defined in the manifest)."
                 },
                 "tabId": {
                   "type": "integer",
@@ -9898,7 +9908,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "Any number of characters can be passed, but only about four can fit in the space. Cleared by setting it to ``null`` or an empty string."
+                  "description": "Any number of characters can be passed, but only about four can fit in the space. Cleared by setting it to <value>null</value> or an empty string."
                 },
                 "tabId": {
                   "type": "integer",
@@ -9982,7 +9992,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The color to use as background in the badge. Cleared by setting it to ``null`` or an empty string."
+                  "description": "The color to use as background in the badge. Cleared by setting it to <value>null</value> or an empty string."
                 },
                 "tabId": {
                   "type": "integer",
@@ -10136,7 +10146,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a messageDisplayAction button is clicked. This event will not fire if the messageDisplayAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions>`__ apply.",
+          "description": "Fired when a messageDisplayAction button is clicked. This event will not fire if the messageDisplayAction has a popup. This is a user input event handler. For asynchronous listeners some `restrictions <|link-user-input-restrictions|>`__ apply.",
           "parameters": [
             {
               "name": "tab",
@@ -10210,7 +10220,7 @@
             },
             "flagged": {
               "type": "boolean",
-              "description": "Whether this message is flagged (a.k.a. 'starred')."
+              "description": "Whether this message is flagged (a.k.a. starred)."
             },
             "folder": {
               "$ref": "folders.MailFolder",
@@ -10222,7 +10232,7 @@
               "description": "The message-id header of the message."
             },
             "headersOnly": {
-              "description": "Some account types (for example POP) allow to download only the headers of the message, but not its body. The body of such messages will not be available.",
+              "description": "Some account types (for example <value>pop3</value>) allow to download only the headers of the message, but not its body. The body of such messages will not be available.",
               "type": "boolean"
             },
             "id": {
@@ -10230,12 +10240,12 @@
               "minimum": 1
             },
             "junk": {
-              "description": "Whether the message has been marked as junk. Always ``false`` for news/nntp messages and external messages.",
+              "description": "Whether the message has been marked as junk. Always <value>false</value> for news/nntp messages and external messages.",
               "type": "boolean"
             },
             "junkScore": {
               "type": "integer",
-              "description": "The junk score associated with the message. Always ``0`` for news/nntp messages and external messages.",
+              "description": "The junk score associated with the message. Always <value>0</value> for news/nntp messages and external messages.",
               "minimum": 0,
               "maximum": 100
             },
@@ -10305,7 +10315,7 @@
             },
             "headers": {
               "type": "object",
-              "description": "An object of part headers, with the header name as key, and an array of header values as value",
+              "description": "A <em>dictionary object</em> of part headers as <em>key-value</em> pairs, with the header name as <em>key</em>, and an array of headers as <em>value</em>",
               "optional": true,
               "additionalProperties": {
                 "type": "array",
@@ -10322,7 +10332,7 @@
             "partName": {
               "type": "string",
               "optional": true,
-              "description": "The identifier of this part, used in :ref:`messages.getAttachmentFile"
+              "description": "The identifier of this part, used in :ref:`messages.getAttachmentFile`"
             },
             "parts": {
               "type": "array",
@@ -10335,7 +10345,7 @@
             "size": {
               "type": "integer",
               "optional": true,
-              "description": "The size of this part. The size of ``message/*`` parts is not the actual message size (on disc), but the total size of its decoded body parts, excluding headers."
+              "description": "The size of this part. The size of <em>message/*</em> parts is not the actual message size (on disc), but the total size of its decoded body parts, excluding headers."
             }
           }
         },
@@ -10346,7 +10356,7 @@
           "properties": {
             "flagged": {
               "type": "boolean",
-              "description": "Whether the message is flagged (a.k.a 'starred').",
+              "description": "Whether the message is flagged (a.k.a starred).",
               "optional": true
             },
             "junk": {
@@ -10403,7 +10413,7 @@
           "properties": {
             "tags": {
               "type": "object",
-              "description": "Object keys are tags to filter on, values are <code>true</code> if the message must have the tag, or <code>false</code> if it must not have the tag. For a list of available tags, call the :ref:`messages.listTags` method.",
+              "description": "A <em>dictionary object</em> with one or more filter condition as <em>key-value</em> pairs, the <em>key</em> being the tag to filter on, and the <em>value</em> being a boolean expression, requesting whether a message must include (<value>true</value>) or exclude (<value>false</value>) the tag. For a list of available tags, call the :ref:`messages.listTags` method.",
               "patternProperties": {
                 ".*": {
                   "type": "boolean"
@@ -10629,7 +10639,7 @@
         {
           "name": "getRaw",
           "type": "function",
-          "description": "Returns the unmodified source of a message as a `binary string <https://developer.mozilla.org/en-US/docs/Web/API/DOMString/Binary>`__, which is a simple series of 8-bit values. Throws if the message could not be read, for example due to network issues. If the message contains non-ASCII characters, the body parts in the binary string cannot be read directly and must be decoded according to their character sets. Use :ref:`messages.getFull` to get the correctly decoded parts. Manually decoding the raw message is probably too error-prone, especially if the message contains MIME parts with different character set encodings or attachments.\n\nTo get a readable version of the raw message as it appears in Thunderbird's message source view, it may be sufficient to decode the message according to the character set specified in its main ``content-type`` header (example: `text/html; charset=UTF-8`) using the following function (see MDN for `supported input encodings <https://developer.mozilla.org/en-US/docs/Web/API/Encoding_API/Encodings>`__): <literalinclude>includes/messages/decodeBinaryString.js<lang>JavaScript</lang></literalinclude>",
+          "description": "Returns the unmodified source of a message as a `binary string <|link-binary-string|>`__, which is a simple series of 8-bit values. Throws if the message could not be read, for example due to network issues. If the message contains non-ASCII characters, the body parts in the binary string cannot be read directly and must be decoded according to their character sets. Use :ref:`messages.getFull` to get the correctly decoded parts. Manually decoding the raw message is probably too error-prone, especially if the message contains MIME parts with different character set encodings or attachments.\n\nTo get a readable version of the raw message as it appears in Thunderbird's message source view, it may be sufficient to decode the message according to the character set specified in its main `content-type <|link-content-type|>`__ header (example: <value>text/html; charset=UTF-8</value>) using the following function (see MDN for `supported input encodings <|link-input-encoding|>`__): <literalinclude>includes/messages/decodeBinaryString.js<lang>JavaScript</lang></literalinclude>",
           "async": "callback",
           "parameters": [
             {
@@ -10676,7 +10686,7 @@
         {
           "name": "getAttachmentFile",
           "type": "function",
-          "description": "Gets the content of a :ref:`messages.MessageAttachment` as a DOM <code>File</code> object.",
+          "description": "Gets the content of a :ref:`messages.MessageAttachment` as a |File| object.",
           "async": "callback",
           "parameters": [
             {
@@ -10720,7 +10730,7 @@
                 "author": {
                   "type": "string",
                   "optional": true,
-                  "description": "Returns only messages with this value matching the author. The search value is a single email address, a name or a combination (e.g.: ``Name <user@domain.org>``). The address part of the search value (if provided) must match the author's address completely. The name part of the search value (if provided) must match the author's name partially. All matches are done case-insensitive."
+                  "description": "Returns only messages with this value matching the author. The search value is a single email address, a name or a combination (e.g.: <value>Name <user@domain.org></value>). The address part of the search value (if provided) must match the author's address completely. The name part of the search value (if provided) must match the author's name partially. All matches are done case-insensitive."
                 },
                 "body": {
                   "type": "string",
@@ -10765,7 +10775,7 @@
                 "recipients": {
                   "type": "string",
                   "optional": true,
-                  "description": "Returns only messages whose recipients match all specified addresses. The search value is a semicolon separated list of email addresses, names or combinations (e.g.: ``Name <user@domain.org>``). For a match, all specified addresses must equal a recipient's address completely and all specified names must match a recipient's name partially. All matches are done case-insensitive."
+                  "description": "Returns only messages whose recipients match all specified addresses. The search value is a semicolon separated list of email addresses, names or combinations (e.g.: <value>Name <user@domain.org></value>). For a match, all specified addresses must equal a recipient's address completely and all specified names must match a recipient's name partially. All matches are done case-insensitive."
                 },
                 "subject": {
                   "type": "string",
@@ -10809,7 +10819,7 @@
         {
           "name": "update",
           "type": "function",
-          "description": "Marks or unmarks a message as junk, read, flagged, or tagged. Updating external messages will throw an ``ExtensionError``.",
+          "description": "Marks or unmarks a message as junk, read, flagged, or tagged. Updating external messages will throw an <em>ExtensionError</em>.",
           "async": true,
           "parameters": [
             {
@@ -10826,7 +10836,7 @@
         {
           "name": "move",
           "type": "function",
-          "description": "Moves messages to a specified folder. If the messages cannot be removed from the source folder, they will be copied instead of moved. Moving external messages will throw an ``ExtensionError``.",
+          "description": "Moves messages to a specified folder. If the messages cannot be removed from the source folder, they will be copied instead of moved. Moving external messages will throw an <em>ExtensionError</em>.",
           "async": true,
           "permissions": [
             "accountsRead",
@@ -10878,7 +10888,7 @@
         {
           "name": "delete",
           "type": "function",
-          "description": "Deletes messages permanently, or moves them to the trash folder (honoring the account's deletion behavior settings). Deleting external messages will throw an ``ExtensionError``. The ``skipTrash`` parameter allows immediate permanent deletion, bypassing the trash folder.\n**Note**: Consider using :ref:`messages.move` to manually move messages to the account's trash folder, instead of requesting the overly powerful permission to actually delete messages. The account's trash folder can be extracted as follows: <literalinclude>includes/messages/getTrash.js<lang>JavaScript</lang></literalinclude>",
+          "description": "Deletes messages permanently, or moves them to the trash folder (honoring the account's deletion behavior settings). Deleting external messages will throw an <em>ExtensionError</em>. The ``skipTrash`` parameter allows immediate permanent deletion, bypassing the trash folder.\n**Note**: Consider using :ref:`messages.move` to manually move messages to the account's trash folder, instead of requesting the overly powerful permission to actually delete messages. The account's trash folder can be extracted as follows: <literalinclude>includes/messages/getTrash.js<lang>JavaScript</lang></literalinclude>",
           "async": true,
           "permissions": [
             "messagesDelete"
@@ -10942,7 +10952,7 @@
         {
           "name": "archive",
           "type": "function",
-          "description": "Archives messages using the current settings. Archiving external messages will throw an ``ExtensionError``.",
+          "description": "Archives messages using the current settings. Archiving external messages will throw an <em>ExtensionError</em>.",
           "async": true,
           "permissions": [
             "messagesMove"
@@ -11079,7 +11089,7 @@
                 }
               ],
               "optional": true,
-              "description": "Sets the background color of the badge. Can be specified as an array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <code>[255, 0, 0, 255]</code>. Can also be a string with an HTML color name (<code>red</code>) or a HEX color value (<code>#FF0000</code> or <code>#F00</code>). Reset when set to an empty string."
+              "description": "Sets the background color of the badge. Can be specified as an array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <value>[255, 0, 0, 255]</value>. Can also be a string with an HTML color name (<value>red</value>) or a HEX color value (<value>#FF0000</value> or <value>#F00</value>). Reset when set to an empty string."
             },
             "badgeText": {
               "type": "string",
@@ -11104,7 +11114,7 @@
               "items": {
                 "$ref": "manifest.ThemeIcons"
               },
-              "description": "Specifies dark and light icons for the spaces toolbar button to be used with themes: The ``light`` icons will be used on dark backgrounds and vice versa. At least the set for ``16px`` icons should be specified. The set for ``32px`` icons will be used on screens with a very high pixel density, if specified."
+              "description": "Specifies dark and light icons for the spaces toolbar button to be used with themes: The ``light`` icons will be used on dark backgrounds and vice versa. At least the set for <em>16px</em> icons should be specified. The set for <em>32px</em> icons will be used on screens with a very high pixel density, if specified."
             },
             "title": {
               "type": "string",
@@ -11114,13 +11124,13 @@
             "url": {
               "type": "string",
               "optional": true,
-              "description": "The page url, loaded into a tab when the button is clicked. Supported are ``https://`` and ``http://`` links, as well as links to WebExtension pages."
+              "description": "The page url, loaded into a tab when the button is clicked. Supported are <value>https://</value> and <value>http://</value> links, as well as links to WebExtension pages."
             }
           }
         },
         {
           "id": "ColorArray",
-          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <code>[255, 0, 0, 255]</code>.",
+          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <value>[255, 0, 0, 255]</value>.",
           "type": "array",
           "items": {
             "type": "integer",
@@ -11218,7 +11228,7 @@
     },
     {
       "namespace": "tabs",
-      "description": "Use the <code>browser.tabs</code> API to interact with the browser's tab system. You can use this API to create, modify, and rearrange tabs in the browser.",
+      "description": "The tabs API supports creating, modifying and interacting with tabs in Thunderbird windows.",
       "types": [
         {
           "id": "Tab",
@@ -11228,7 +11238,7 @@
               "type": "integer",
               "minimum": -1,
               "optional": true,
-              "description": "The ID of the tab. Tab IDs are unique within a browser session. Under some circumstances a Tab may not be assigned an ID. Tab ID can also be set to :ref:`tabs.TAB_ID_NONE` for apps and devtools windows."
+              "description": "The ID of the tab. Tab IDs are unique within a session. Under some circumstances a Tab may not be assigned an ID. Tab ID can also be set to :ref:`tabs.TAB_ID_NONE` for apps and devtools windows."
             },
             "index": {
               "type": "integer",
@@ -11282,7 +11292,7 @@
             "status": {
               "type": "string",
               "optional": true,
-              "description": "Either <em>loading</em> or <em>complete</em>."
+              "description": "Either <value>loading</value> or <value>complete</value>."
             },
             "width": {
               "type": "integer",
@@ -11358,7 +11368,7 @@
           "properties": {
             "urls": {
               "type": "array",
-              "description": "A list of URLs or URL patterns. Events that cannot match any of the URLs will be filtered out. Filtering with urls requires the <permission>tabs</permission> or  <permission>activeTab</permission> permission.",
+              "description": "A list of URLs or URL patterns. Events that cannot match any of the URLs will be filtered out. Filtering with urls requires the <permission>tabs</permission> or <permission>activeTab</permission> permission.",
               "optional": true,
               "items": {
                 "type": "string"
@@ -11388,7 +11398,7 @@
       "properties": {
         "TAB_ID_NONE": {
           "value": -1,
-          "description": "An ID which represents the absence of a browser tab."
+          "description": "An ID which represents the absence of a tab."
         }
       },
       "functions": [
@@ -11437,7 +11447,7 @@
         {
           "name": "connect",
           "type": "function",
-          "description": "Connects to the content script(s) in the specified tab. The `runtime.onConnect <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onConnect>`_ event is fired in each content script running in the specified tab for the current extension. For more details, see `Content Script Messaging <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts>`_.",
+          "description": "Connects to the content script(s) in the specified tab. The `runtime.onConnect <|link-runtime-on-connect|>`__ event is fired in each content script running in the specified tab for the current extension. For more details, see `Content Script Messaging <|link-content-scripts|>`__.",
           "parameters": [
             {
               "type": "integer",
@@ -11457,7 +11467,7 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Open a port to a specific frame identified by <code>frameId</code> instead of all frames in the tab."
+                  "description": "Open a port to a specific frame identified by ``frameId`` instead of all frames in the tab."
                 }
               },
               "optional": true
@@ -11471,7 +11481,7 @@
         {
           "name": "sendMessage",
           "type": "function",
-          "description": "Sends a single message to the content script(s) in the specified tab, with an optional callback to run when a response is sent back. The `runtime.onMessage <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage>`_ event is fired in each content script running in the specified tab for the current extension.",
+          "description": "Sends a single message to the content script(s) in the specified tab, with an optional callback to run when a response is sent back. The `runtime.onMessage <|link-runtime-on-message|>`__ event is fired in each content script running in the specified tab for the current extension.",
           "async": "responseCallback",
           "parameters": [
             {
@@ -11491,7 +11501,7 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Send a message to a specific frame identified by <code>frameId</code> instead of all frames in the tab."
+                  "description": "Send a message to a specific frame identified by ``frameId`` instead of all frames in the tab."
                 }
               },
               "optional": true
@@ -11504,7 +11514,7 @@
                 {
                   "name": "response",
                   "type": "any",
-                  "description": "The JSON response object sent by the handler of the message. If an error occurs while connecting to the specified tab, the callback will be called with no arguments and `runtime.lastError <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/lastError>`_ will be set to the error message."
+                  "description": "The JSON response object sent by the handler of the message. If an error occurs while connecting to the specified tab, the callback will be called with no arguments and `runtime.lastError <|link-runtime-last-error|>`__ will be set to the error message."
                 }
               ]
             }
@@ -11513,7 +11523,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates a new content tab. Use the :ref:`messageDisplay_api` to open messages.",
+          "description": "Creates a new content tab. Use the :ref:`messageDisplay_api` to open messages. Only supported in <value>normal</value> windows.",
           "async": "callback",
           "parameters": [
             {
@@ -11536,19 +11546,19 @@
                 "url": {
                   "type": "string",
                   "optional": true,
-                  "description": "The URL to navigate the tab to initially. Fully-qualified URLs must include a scheme (i.e. 'http://www.google.com', not 'www.google.com'). Relative URLs will be relative to the current page within the extension."
+                  "description": "The URL to navigate the tab to initially. Fully-qualified URLs must include a scheme (i.e. <value>http://www.google.com</value>, not <value>www.google.com</value>). Relative URLs will be relative to the current page within the extension."
                 },
                 "active": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Whether the tab should become the active tab in the window. Does not affect whether the window is focused (see :ref:`windows.update`). Defaults to <var>true</var>."
+                  "description": "Whether the tab should become the active tab in the window. Does not affect whether the window is focused (see :ref:`windows.update`). Defaults to <value>true</value>."
                 },
                 "selected": {
-                  "deprecated": "Please use <em>active</em>.",
+                  "deprecated": "Please use ``createProperties.active``.",
                   "unsupported": true,
                   "type": "boolean",
                   "optional": true,
-                  "description": "Whether the tab should become the selected tab in the window. Defaults to <var>true</var>"
+                  "description": "Whether the tab should become the selected tab in the window. Defaults to <value>true</value>"
                 }
               }
             },
@@ -11587,7 +11597,7 @@
                 {
                   "name": "tab",
                   "optional": true,
-                  "description": "Details about the duplicated tab. The :ref:`tabs.Tab` object doesn't contain <code>url</code>, <code>title</code> and <code>favIconUrl</code> if the <permission>tabs</permission> permission has not been requested.",
+                  "description": "Details about the duplicated tab. The :ref:`tabs.Tab` object doesn't contain ``url``, ``title`` and ``favIconUrl`` if the <permission>tabs</permission> permission has not been requested.",
                   "$ref": "Tab"
                 }
               ]
@@ -11657,7 +11667,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Match tabs against one or more `URL Patterns <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns>`_. Note that fragment identifiers are not matched."
+                  "description": "Match tabs against one or more `URL Patterns <|link-match-patterns|>`__. Note that fragment identifiers are not matched."
                 },
                 "windowId": {
                   "type": "integer",
@@ -11696,7 +11706,7 @@
         {
           "name": "update",
           "type": "function",
-          "description": "Modifies the properties of a tab. Properties that are not specified in <var>updateProperties</var> are not modified.",
+          "description": "Modifies the properties of a tab. Properties that are not specified in ``updateProperties`` are not modified.",
           "async": "callback",
           "parameters": [
             {
@@ -11714,12 +11724,12 @@
                 "url": {
                   "type": "string",
                   "optional": true,
-                  "description": "A URL to navigate the tab to. Only applicable for ``content`` tabs and active ``mail`` tabs."
+                  "description": "A URL to navigate the tab to. Only applicable for <value>content</value> tabs and active <value>mail</value> tabs."
                 },
                 "active": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Set this to true, if the tab should be active. Does not affect whether the window is focused (see :ref:`windows.update`). Setting this to false has no effect."
+                  "description": "Set this to <value>true</value>, if the tab should be active. Does not affect whether the window is focused (see :ref:`windows.update`). Setting this to <value>false</value> has no effect."
                 }
               }
             },
@@ -11732,7 +11742,7 @@
                   "name": "tab",
                   "$ref": "Tab",
                   "optional": true,
-                  "description": "Details about the updated tab. The :ref:`tabs.Tab` object doesn't contain <code>url</code>, <code>title</code> and <code>favIconUrl</code> if the <permission>tabs</permission> permission has not been requested."
+                  "description": "Details about the updated tab. The :ref:`tabs.Tab` object doesn't contain ``url``, ``title`` and ``favIconUrl`` if the <permission>tabs</permission> permission has not been requested."
                 }
               ]
             }
@@ -11741,7 +11751,7 @@
         {
           "name": "move",
           "type": "function",
-          "description": "Moves one or more tabs to a new position within its window, or to a new window. Note that tabs can only be moved to and from normal windows (<code>window.type === \"normal\"</code>).",
+          "description": "Moves one or more tabs to a new position within its window, or to a new window. Note that tabs can only be moved to and from windows of type <value>normal</value>.",
           "async": "callback",
           "parameters": [
             {
@@ -11774,7 +11784,7 @@
                 "index": {
                   "type": "integer",
                   "minimum": -1,
-                  "description": "The position to move the window to. -1 will place the tab at the end of the window."
+                  "description": "The position to move the window to. <value>-1</value> will place the tab at the end of the window."
                 }
               }
             },
@@ -11869,7 +11879,7 @@
         {
           "name": "executeScript",
           "type": "function",
-          "description": "Injects JavaScript code into a page. For details, see the `programmatic injection <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts>`_ section of the content scripts doc.",
+          "description": "Injects JavaScript code into a page. For details, see the `programmatic injection <|link-content-scripts|>`__ section of the content scripts doc.",
           "async": "callback",
           "parameters": [
             {
@@ -11906,7 +11916,7 @@
         {
           "name": "insertCSS",
           "type": "function",
-          "description": "Injects CSS into a page. For details, see the `programmatic injection <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts>`_ section of the content scripts doc.",
+          "description": "Injects CSS into a page. For details, see the `programmatic injection <|link-content-scripts|>`__ section of the content scripts doc.",
           "async": "callback",
           "parameters": [
             {
@@ -11933,7 +11943,7 @@
         {
           "name": "removeCSS",
           "type": "function",
-          "description": "Removes injected CSS from a page. For details, see the `programmatic injection <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts>`_ section of the content scripts doc.",
+          "description": "Removes injected CSS from a page. For details, see the `programmatic injection <|link-content-scripts|>`__ section of the content scripts doc.",
           "async": "callback",
           "parameters": [
             {
@@ -11989,7 +11999,7 @@
                 "status": {
                   "type": "string",
                   "optional": true,
-                  "description": "The status of the tab. Can be either <em>loading</em> or <em>complete</em>."
+                  "description": "The status of the tab. Can be either <value>loading</value> or <value>complete</value>."
                 },
                 "url": {
                   "type": "string",
@@ -12144,7 +12154,7 @@
                 },
                 "isWindowClosing": {
                   "type": "boolean",
-                  "description": "True when the tab is being closed because its window is being closed."
+                  "description": "Is <value>true</value> when the tab is being closed because its window is being closed."
                 }
               }
             }
@@ -12156,12 +12166,12 @@
   "windows.json": [
     {
       "namespace": "windows",
-      "description": "Use the <code>browser.windows</code> API to interact with Thunderbird. You can use this API to create, modify, and rearrange windows.",
+      "description": "The windows API supports creating, modifying and interacting with Thunderbird windows.",
       "types": [
         {
           "id": "WindowType",
           "type": "string",
-          "description": "The type of a window. Under some circumstances a Window may not be assigned a type property.",
+          "description": "The type of a window. Under some circumstances a window may not be assigned a type property.",
           "enum": [
             "normal",
             "popup",
@@ -12224,21 +12234,21 @@
                 "$ref": "tabs.Tab"
               },
               "optional": true,
-              "description": "Array of :ref:`tabs.Tab` objects representing the current tabs in the window. Only included if requested by :ref:`windows.get`, :ref:`windows.getCurrent`, :ref:`windows.getAll` or :ref:`windows.getLastFocused` and the optional :ref:`windows.GetInfo` parameter has ``populate`` set to ``true``."
+              "description": "Array of :ref:`tabs.Tab` objects representing the current tabs in the window. Only included if requested by :ref:`windows.get`, :ref:`windows.getCurrent`, :ref:`windows.getAll` or :ref:`windows.getLastFocused`, and the optional :ref:`windows.GetInfo` parameter has its ``populate`` member set to <value>true</value>."
             },
             "incognito": {
               "type": "boolean",
-              "description": "Whether the window is incognito."
+              "description": "Whether the window is incognito. Since Thunderbird does not support the incognito mode, this is always <value>false</value>."
             },
             "type": {
               "$ref": "WindowType",
               "optional": true,
-              "description": "The type of browser window this is."
+              "description": "The type of window this is."
             },
             "state": {
               "$ref": "WindowState",
               "optional": true,
-              "description": "The state of this browser window."
+              "description": "The state of this window."
             },
             "alwaysOnTop": {
               "type": "boolean",
@@ -12254,7 +12264,7 @@
         {
           "id": "CreateType",
           "type": "string",
-          "description": "Specifies what type of browser window to create. The 'panel' and 'detached_panel' types create a popup unless the '--enable-panels' flag is set.",
+          "description": "Specifies what type of window to create. Thunderbird does not support <value>panel</value> and <value>detached_panel</value>, they are interpreted as <value>popup</value>.",
           "enum": [
             "normal",
             "popup",
@@ -12270,7 +12280,7 @@
             "populate": {
               "type": "boolean",
               "optional": true,
-              "description": "If true, the :ref:`windows.Window` returned will have a <var>tabs</var> property that contains an array of :ref:`tabs.Tab` objects representing the tabs inside the window. The :ref:`tabs.Tab` objects only contain the <code>url</code>, <code>title</code> and <code>favIconUrl</code> properties if the extension's manifest file includes the <permission>tabs</permission> permission."
+              "description": "If true, the :ref:`windows.Window` returned will have a ``tabs`` property that contains an array of :ref:`tabs.Tab` objects representing the tabs inside the window. The :ref:`tabs.Tab` objects only contain the ``url``, ``title`` and ``favIconUrl`` properties if the extension's manifest file includes the <permission>tabs</permission> permission."
             },
             "windowTypes": {
               "type": "array",
@@ -12325,7 +12335,7 @@
         {
           "name": "getCurrent",
           "type": "function",
-          "description": "Gets the current window.",
+          "description": "Gets the active or topmost window.",
           "async": "callback",
           "parameters": [
             {
@@ -12397,7 +12407,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates (opens) a new browser with any optional sizing, position or default URL provided.",
+          "description": "Creates (opens) a new window with any optional sizing, position or default URL provided.",
           "async": "callback",
           "parameters": [
             {
@@ -12407,7 +12417,7 @@
               "default": {},
               "properties": {
                 "url": {
-                  "description": "A URL or array of URLs to open as tabs in the window. Fully-qualified URLs must include a scheme (i.e. 'http://www.google.com', not 'www.google.com'). Relative URLs will be relative to the current page within the extension. Defaults to the New Tab Page.",
+                  "description": "A URL or array of URLs to open as tabs in the window. Fully-qualified URLs must include a scheme (i.e. <value>http://www.google.com</value>, not <value>www.google.com</value>). Relative URLs will be relative to the current page within the extension. Defaults to the New Tab Page.",
                   "optional": true,
                   "choices": [
                     {
@@ -12432,12 +12442,12 @@
                 "left": {
                   "type": "integer",
                   "optional": true,
-                  "description": "The number of pixels to position the new window from the left edge of the screen. If not specified, the new window is offset naturally from the last focused window. This value is ignored for panels."
+                  "description": "The number of pixels to position the new window from the left edge of the screen. If not specified, the new window is offset naturally from the last focused window."
                 },
                 "top": {
                   "type": "integer",
                   "optional": true,
-                  "description": "The number of pixels to position the new window from the top edge of the screen. If not specified, the new window is offset naturally from the last focused window. This value is ignored for panels."
+                  "description": "The number of pixels to position the new window from the top edge of the screen. If not specified, the new window is offset naturally from the last focused window."
                 },
                 "width": {
                   "type": "integer",
@@ -12458,24 +12468,24 @@
                   "description": "If true, opens an active window. If false, opens an inactive window."
                 },
                 "incognito": {
+                  "unsupported": true,
                   "type": "boolean",
-                  "optional": true,
-                  "description": "Whether the new window should be an incognito window."
+                  "optional": true
                 },
                 "type": {
                   "$ref": "CreateType",
                   "optional": true,
-                  "description": "Specifies what type of browser window to create. The 'panel' and 'detached_panel' types create a popup unless the '--enable-panels' flag is set."
+                  "description": "Specifies what type of window to create. Thunderbird does not support <value>panel</value> and <value>detached_panel</value>, they are interpreted as <value>popup</value>."
                 },
                 "state": {
                   "$ref": "WindowState",
                   "optional": true,
-                  "description": "The initial state of the window. The 'minimized', 'maximized' and 'fullscreen' states cannot be combined with 'left', 'top', 'width' or 'height'."
+                  "description": "The initial state of the window. The ``minimized``, ``maximized`` and ``fullscreen`` states cannot be combined with ``left``, ``top``, ``width`` or ``height``."
                 },
                 "allowScriptsToClose": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Allow scripts to close the window."
+                  "description": "Allow scripts running inside the window to close the window by calling <code>window.close()</code>."
                 },
                 "titlePreface": {
                   "type": "string",
@@ -12528,13 +12538,13 @@
                   "type": "integer",
                   "minimum": 0,
                   "optional": true,
-                  "description": "The width to resize the window to in pixels. This value is ignored for panels."
+                  "description": "The width to resize the window to in pixels."
                 },
                 "height": {
                   "type": "integer",
                   "minimum": 0,
                   "optional": true,
-                  "description": "The height to resize the window to in pixels. This value is ignored for panels."
+                  "description": "The height to resize the window to in pixels."
                 },
                 "focused": {
                   "type": "boolean",
@@ -12544,12 +12554,12 @@
                 "drawAttention": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "If true, causes the window to be displayed in a manner that draws the user's attention to the window, without changing the focused window. The effect lasts until the user changes focus to the window. This option has no effect if the window already has focus. Set to false to cancel a previous draw attention request."
+                  "description": "Setting this to <value>true</value> will cause the window to be displayed in a manner that draws the user's attention to the window, without changing the focused window. The effect lasts until the user changes focus to the window. This option has no effect if the window already has focus."
                 },
                 "state": {
                   "$ref": "WindowState",
                   "optional": true,
-                  "description": "The new state of the window. The 'minimized', 'maximized' and 'fullscreen' states cannot be combined with 'left', 'top', 'width' or 'height'."
+                  "description": "The new state of the window. The ``minimized``, ``maximized`` and ``fullscreen`` states cannot be combined with ``left``, ``top``, ``width`` or ``height``."
                 },
                 "titlePreface": {
                   "type": "string",
@@ -12615,7 +12625,7 @@
               "items": {
                 "$ref": "WindowType"
               },
-              "description": "Conditions that the window's type being created must satisfy. By default it will satisfy <code>['app', 'normal', 'panel', 'popup']</code>, with <code>'app'</code> and <code>'panel'</code> window types limited to the extension's own windows."
+              "description": "Conditions that the window's type being created must satisfy. By default it will satisfy <value>['app', 'normal', 'panel', 'popup']</value>, with <value>app</value> and <value>panel</value> window types limited to the extension's own windows."
             }
           ],
           "parameters": [
@@ -12637,7 +12647,7 @@
               "items": {
                 "$ref": "WindowType"
               },
-              "description": "Conditions that the window's type being removed must satisfy. By default it will satisfy <code>['app', 'normal', 'panel', 'popup']</code>, with <code>'app'</code> and <code>'panel'</code> window types limited to the extension's own windows."
+              "description": "Conditions that the window's type being removed must satisfy. By default it will satisfy <value>['app', 'normal', 'panel', 'popup']</value>, with <value>app</value> and <value>panel</value> window types limited to the extension's own windows."
             }
           ],
           "parameters": [
@@ -12652,7 +12662,7 @@
         {
           "name": "onFocusChanged",
           "type": "function",
-          "description": "Fired when the currently focused window changes. Will be :ref:`windows.WINDOW_ID_NONE`) if all browser windows have lost focus. **Note:** On some Linux window managers, WINDOW_ID_NONE will always be sent immediately preceding a switch from one browser window to another.",
+          "description": "Fired when the currently focused window changes. Will be :ref:`windows.WINDOW_ID_NONE`, if all windows have lost focus. **Note:** On some Linux window managers, WINDOW_ID_NONE will always be sent immediately preceding a switch from one window to another.",
           "filters": [
             {
               "name": "windowTypes",
@@ -12660,7 +12670,7 @@
               "items": {
                 "$ref": "WindowType"
               },
-              "description": "Conditions that the window's type being removed must satisfy. By default it will satisfy <code>['app', 'normal', 'panel', 'popup']</code>, with <code>'app'</code> and <code>'panel'</code> window types limited to the extension's own windows."
+              "description": "Conditions that the window's type being focused must satisfy. By default it will satisfy <value>['app', 'normal', 'panel', 'popup']</value>, with <value>app</value> and <value>panel</value> window types limited to the extension's own windows."
             }
           ],
           "parameters": [
