@@ -3267,6 +3267,11 @@
               "minLength": 1,
               "description": "The text that is displayed in the URL dropdown. Can contain XML-style markup for styling. The supported tags are 'url' (for a literal URL), 'match' (for highlighting text that matched what the user's query), and 'dim' (for dim helper text). The styles can be nested, eg. <dim><match>dimmed match</match></dim>. You must escape the five predefined entities to display them as text: stackoverflow.com/a/1091953/89484 "
             },
+            "deletable": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether the suggest result can be deleted by the user."
+            },
             "descriptionStyles": {
               "optional": true,
               "unsupported": true,
@@ -3431,6 +3436,17 @@
           "type": "function",
           "description": "User has ended the keyword input session without accepting the input.",
           "parameters": []
+        },
+        {
+          "name": "onDeleteSuggestion",
+          "type": "function",
+          "description": "User has deleted a suggested result.",
+          "parameters": [
+            {
+              "type": "string",
+              "name": "text"
+            }
+          ]
         }
       ]
     }
@@ -9662,6 +9678,46 @@
               "min_manifest_version": 3
             }
           ]
+        },
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "declarative_net_request": {
+              "type": "object",
+              "min_manifest_version": 3,
+              "optional": true,
+              "additionalProperties": {
+                "$ref": "UnrecognizedProperty"
+              },
+              "properties": {
+                "rule_resources": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "UnrecognizedProperty"
+                    },
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[^_]",
+                        "description": "A non-empty string uniquely identifying the ruleset. IDs beginning with '_' are reserved for internal use."
+                      },
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether the ruleset is enabled by default."
+                      },
+                      "path": {
+                        "$ref": "manifest.ExtensionURL",
+                        "description": "The path of the JSON ruleset relative to the extension directory."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       ]
     },
@@ -9716,6 +9772,95 @@
               "type": "string",
               "description": "ID of the extension, if this rule belongs to a different extension.",
               "optional": true
+            }
+          }
+        },
+        {
+          "id": "URLTransform",
+          "type": "object",
+          "description": "Describes the type of the Rule.action.redirect.transform property.",
+          "properties": {
+            "scheme": {
+              "type": "string",
+              "optional": true,
+              "description": "The new scheme for the request.",
+              "enum": [
+                "http",
+                "https",
+                "moz-extension"
+              ]
+            },
+            "username": {
+              "type": "string",
+              "optional": true,
+              "description": "The new username for the request."
+            },
+            "password": {
+              "type": "string",
+              "optional": true,
+              "description": "The new password for the request."
+            },
+            "host": {
+              "type": "string",
+              "optional": true,
+              "description": "The new host name for the request."
+            },
+            "port": {
+              "type": "string",
+              "optional": true,
+              "description": "The new port for the request. If empty, the existing port is cleared."
+            },
+            "path": {
+              "type": "string",
+              "optional": true,
+              "description": "The new path for the request. If empty, the existing path is cleared."
+            },
+            "query": {
+              "type": "string",
+              "optional": true,
+              "description": "The new query for the request. Should be either empty, in which case the existing query is cleared; or should begin with '?'. Cannot be specified if 'queryTransform' is specified."
+            },
+            "queryTransform": {
+              "type": "object",
+              "optional": true,
+              "description": "Add, remove or replace query key-value pairs. Cannot be specified if 'query' is specified.",
+              "properties": {
+                "removeParams": {
+                  "type": "array",
+                  "optional": true,
+                  "description": "The list of query keys to be removed.",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "addOrReplaceParams": {
+                  "type": "array",
+                  "optional": true,
+                  "description": "The list of query key-value pairs to be added or replaced.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "replaceOnly": {
+                        "type": "boolean",
+                        "optional": true,
+                        "description": "If true, the query key is replaced only if it's already present. Otherwise, the key is also added if it's missing.",
+                        "default": false
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "fragment": {
+              "type": "string",
+              "optional": true,
+              "description": "The new fragment for the request. Should be either empty, in which case the existing fragment is cleared; or should begin with '#'."
             }
           }
         },
@@ -9880,9 +10025,9 @@
                       "description": "Path relative to the extension directory. Should start with '/'."
                     },
                     "transform": {
-                      "type": "object",
+                      "$ref": "URLTransform",
                       "optional": true,
-                      "description": "TODO: URLTransform - Url transformations to perform."
+                      "description": "Url transformations to perform."
                     },
                     "url": {
                       "type": "string",
@@ -9911,8 +10056,9 @@
                       },
                       "operation": {
                         "type": "string",
-                        "description": "The operation to be performed on a header. The 'append' operation is not supported for request headers.",
+                        "description": "The operation to be performed on a header.",
                         "enum": [
+                          "append",
                           "set",
                           "remove"
                         ]
@@ -9920,7 +10066,7 @@
                       "value": {
                         "type": "string",
                         "optional": true,
-                        "description": "The new value for the header. Must be specified for the 'set' operation."
+                        "description": "The new value for the header. Must be specified for the 'append' and 'set' operations."
                       }
                     }
                   }
@@ -9993,6 +10139,80 @@
               "type": "function",
               "description": "Called when the session rules have been updated",
               "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getEnabledRulesets",
+          "type": "function",
+          "description": "Returns the ids for the current set of enabled static rulesets.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "callback",
+              "type": "function",
+              "parameters": [
+                {
+                  "type": "array",
+                  "name": "rulesetIds",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "updateEnabledRulesets",
+          "type": "function",
+          "description": "Returns the ids for the current set of enabled static rulesets.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "updateRulesetOptions",
+              "type": "object",
+              "properties": {
+                "disableRulesetIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "optional": true,
+                  "default": []
+                },
+                "enableRulesetIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "optional": true,
+                  "default": []
+                }
+              }
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "getAvailableStaticRuleCount",
+          "type": "function",
+          "description": "Returns the remaining number of static rules an extension can enable",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "callback",
+              "type": "function",
+              "parameters": [
+                {
+                  "name": "count",
+                  "type": "integer"
+                }
+              ]
             }
           ]
         },
@@ -19728,6 +19948,11 @@
             "keaGroupName": {
               "type": "string",
               "description": "The key exchange algorithm used in this request if state is \"secure\".",
+              "optional": true
+            },
+            "secretKeyLength": {
+              "type": "number",
+              "description": "The length (in bits) of the secret key.",
               "optional": true
             },
             "signatureSchemeName": {
