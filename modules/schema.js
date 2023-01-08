@@ -8,8 +8,8 @@ import { convertUriToFilePath } from './file-util.js';
 import { getType, isObjectNotEmpty, isString } from './common.js';
 import camelize from 'camelize';
 import decamelize from 'decamelize';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import sinon from 'sinon';
 
 export class Schema {

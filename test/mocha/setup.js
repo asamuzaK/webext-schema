@@ -3,7 +3,7 @@
  */
 
 import { Schema } from '../../index.js';
-import process from 'process';
+import process from 'node:process';
 
 /**
  * get channel

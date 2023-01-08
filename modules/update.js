@@ -9,8 +9,8 @@ import { createFile } from './file-util.js';
 import { getType, isString } from './common.js';
 import { program as commander } from 'commander';
 import fetch from 'node-fetch';
-import path from 'path';
-import process from 'process';
+import path from 'node:path';
+import process from 'node:process';
 
 /* constants */
 const DIR_CWD = process.cwd();

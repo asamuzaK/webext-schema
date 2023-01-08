@@ -3,7 +3,7 @@
  */
 
 /* api */
-import os from 'os';
+import os from 'node:os';
 
 /* constants */
 export const CHAR = 'utf8';
