@@ -1,8 +1,8 @@
 /* api */
+import { MockAgent, getGlobalDispatcher, setGlobalDispatcher } from 'undici';
 import { assert } from 'chai';
-import { describe, it } from 'mocha';
+import { afterEach, beforeEach, describe, it } from 'mocha';
 import fs from 'node:fs';
-import nock from 'nock';
 import path from 'node:path';
 import process from 'node:process';
 import sinon from 'sinon';
@@ -16,6 +16,17 @@ import {
 } from '../modules/update.js';
 
 describe('fetch text', () => {
+  const globalDispatcher = getGlobalDispatcher();
+  const mockAgent = new MockAgent();
+  beforeEach(() => {
+    setGlobalDispatcher(mockAgent);
+    mockAgent.disableNetConnect();
+  });
+  afterEach(() => {
+    mockAgent.enableNetConnect();
+    setGlobalDispatcher(globalDispatcher);
+  });
+
   it('should throw', async () => {
     await fetchText().catch(e => {
       assert.instanceOf(e, TypeError, 'error');
@@ -24,30 +35,22 @@ describe('fetch text', () => {
   });
 
   it('should throw', async () => {
-    nock('https://example.com').get('/').reply(undefined);
-    await fetchText('https://example.com').catch(e => {
-      assert.instanceOf(e, Error, 'error');
-      assert.strictEqual(e.message,
-        'Network response was not ok. status: undefined');
-    });
-    nock.cleanAll();
-  });
-
-  it('should throw', async () => {
-    nock('https://example.com').get('/').reply(404);
+    const url = new URL('https://example.com');
+    mockAgent.get(url.origin).intercept({ path: url.pathname, method: 'GET' })
+      .reply(404);
     await fetchText('https://example.com').catch(e => {
       assert.instanceOf(e, Error, 'error');
       assert.strictEqual(e.message,
         'Network response was not ok. status: 404');
     });
-    nock.cleanAll();
   });
 
   it('should get result', async () => {
-    nock('https://example.com').get('/').reply(200, 'foo');
+    const url = new URL('https://example.com');
+    mockAgent.get(url.origin).intercept({ path: url.pathname, method: 'GET' })
+      .reply(200, 'foo');
     const res = await fetchText('https://example.com');
     assert.strictEqual(res, 'foo', 'result');
-    nock.cleanAll();
   });
 });
 
@@ -103,6 +106,17 @@ describe('get channel url', () => {
 });
 
 describe('get schema data', () => {
+  const globalDispatcher = getGlobalDispatcher();
+  const mockAgent = new MockAgent();
+  beforeEach(() => {
+    setGlobalDispatcher(mockAgent);
+    mockAgent.disableNetConnect();
+  });
+  afterEach(() => {
+    mockAgent.enableNetConnect();
+    setGlobalDispatcher(globalDispatcher);
+  });
+
   it('should throw', async () => {
     await getSchemaData().catch(e => {
       assert.instanceOf(e, TypeError, 'error');
@@ -118,9 +132,9 @@ describe('get schema data', () => {
   });
 
   it('should get object', async () => {
-    nock('https://example.com').get('/foo.json').reply(200, {
-      foo: ['bar']
-    });
+    const url = new URL('https://example.com/foo.json');
+    mockAgent.get(url.origin).intercept({ path: url.pathname, method: 'GET' })
+      .reply(200, '{ "foo": [ "bar" ] }');
     const res = await getSchemaData('foo.json', 'https://example.com');
     assert.deepEqual(res, {
       file: 'foo.json',
@@ -128,11 +142,21 @@ describe('get schema data', () => {
         foo: ['bar']
       }
     }, 'result');
-    nock.cleanAll();
   });
 });
 
 describe('get schema file list from jar manifest', () => {
+  const globalDispatcher = getGlobalDispatcher();
+  const mockAgent = new MockAgent();
+  beforeEach(() => {
+    setGlobalDispatcher(mockAgent);
+    mockAgent.disableNetConnect();
+  });
+  afterEach(() => {
+    mockAgent.enableNetConnect();
+    setGlobalDispatcher(globalDispatcher);
+  });
+
   it('should throw', async () => {
     await getFileList().catch(e => {
       assert.instanceOf(e, TypeError, 'error');
@@ -141,7 +165,9 @@ describe('get schema file list from jar manifest', () => {
   });
 
   it('should get array', async () => {
-    nock('https://example.com').get('/jar.mn').reply(200, '# comment\n\ntoolkit.jar:\n% content extensions %content/extensions/\n    content/extensions/schemas/alarms.json\n    content/extensions/schemas/browser_settings.json\n#ifndef ANDROID\n    content/extensions/schemas/geckoProfiler.json\n#endif\n    content/extensions/schemas/i18n.json\n');
+    const url = new URL('https://example.com/jar.mn');
+    mockAgent.get(url.origin).intercept({ path: url.pathname, method: 'GET' })
+      .reply(200, '# comment\n\ntoolkit.jar:\n% content extensions %content/extensions/\n    content/extensions/schemas/alarms.json\n    content/extensions/schemas/browser_settings.json\n#ifndef ANDROID\n    content/extensions/schemas/geckoProfiler.json\n#endif\n    content/extensions/schemas/i18n.json\n');
     const res = await getFileList('https://example.com');
     assert.deepEqual(res, [
       'alarms.json',
@@ -149,11 +175,21 @@ describe('get schema file list from jar manifest', () => {
       'geckoProfiler.json',
       'i18n.json'
     ], 'result');
-    nock.cleanAll();
   });
 });
 
 describe('get all schema data', () => {
+  const globalDispatcher = getGlobalDispatcher();
+  const mockAgent = new MockAgent();
+  beforeEach(() => {
+    setGlobalDispatcher(mockAgent);
+    mockAgent.disableNetConnect();
+  });
+  afterEach(() => {
+    mockAgent.enableNetConnect();
+    setGlobalDispatcher(globalDispatcher);
+  });
+
   it('should throw', async () => {
     await getAllSchemaData().catch(e => {
       assert.instanceOf(e, TypeError, 'error');
@@ -162,14 +198,14 @@ describe('get all schema data', () => {
   });
 
   it('should get array', async () => {
-    nock('https://example.com').get('/jar.mn')
-      .reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n')
-      .get('/foo.json').reply(200, {
-        foo: 'foobar'
-      })
-      .get('/bar.json').reply(200, {
-        baz: 'qux'
-      });
+    const url = new URL('https://example.com');
+    const mockPool = mockAgent.get(url.origin);
+    mockPool.intercept({ path: '/jar.mn', method: 'GET' })
+      .reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+    mockPool.intercept({ path: '/foo.json', method: 'GET' })
+      .reply(200, '{ "foo": "foobar" }');
+    mockPool.intercept({ path: '/bar.json', method: 'GET' })
+      .reply(200, '{ "baz": "qux" }');
     const res = await getAllSchemaData('https://example.com/');
     assert.deepEqual(res, [
       {
@@ -185,11 +221,21 @@ describe('get all schema data', () => {
         }
       }
     ], 'result');
-    nock.cleanAll();
   });
 });
 
 describe('get listed schema data', () => {
+  const globalDispatcher = getGlobalDispatcher();
+  const mockAgent = new MockAgent();
+  beforeEach(() => {
+    setGlobalDispatcher(mockAgent);
+    mockAgent.disableNetConnect();
+  });
+  afterEach(() => {
+    mockAgent.enableNetConnect();
+    setGlobalDispatcher(globalDispatcher);
+  });
+
   it('should throw', async () => {
     await getListedSchemaData().catch(e => {
       assert.instanceOf(e, TypeError, 'error');
@@ -205,11 +251,12 @@ describe('get listed schema data', () => {
   });
 
   it('should get array', async () => {
-    nock('https://example.com').get('/foo.json').reply(200, {
-      foo: 'foobar'
-    }).get('/bar.json').reply(200, {
-      baz: 'qux'
-    });
+    const url = new URL('https://example.com');
+    const mockPool = mockAgent.get(url.origin);
+    mockPool.intercept({ path: '/foo.json', method: 'GET' })
+      .reply(200, '{ "foo": "foobar" }');
+    mockPool.intercept({ path: '/bar.json', method: 'GET' })
+      .reply(200, '{ "baz": "qux" }');
     const res = await getListedSchemaData('https://example.com/',
       ['foo.json', 'bar.json']);
     assert.deepEqual(res, [
@@ -226,11 +273,21 @@ describe('get listed schema data', () => {
         }
       }
     ], 'result');
-    nock.cleanAll();
   });
 });
 
 describe('get MailExtensions schema data', () => {
+  const globalDispatcher = getGlobalDispatcher();
+  const mockAgent = new MockAgent();
+  beforeEach(() => {
+    setGlobalDispatcher(mockAgent);
+    mockAgent.disableNetConnect();
+  });
+  afterEach(() => {
+    mockAgent.enableNetConnect();
+    setGlobalDispatcher(globalDispatcher);
+  });
+
   it('should throw', async () => {
     await getMailExtSchemaData().catch(e => {
       assert.instanceOf(e, TypeError, 'error');
@@ -239,14 +296,14 @@ describe('get MailExtensions schema data', () => {
   });
 
   it('should get array', async () => {
-    nock('https://example.com').get('/jar.mn')
-      .reply(200, '# comment\n\nmessenger.jar:\n% content/messenger/ext-mail.json\n    content/messenger/schemas/accounts.json\n    content/messenger/schemas/browserAction.json\n    content/messenger/schemas/commands.json\n    content/messenger/schemas/pkcs11.json\n')
-      .get('/schemas/accounts.json').reply(200, {
-        foo: 'foobar'
-      })
-      .get('/schemas/browserAction.json').reply(200, {
-        bar: 'baz'
-      });
+    const url = new URL('https://example.com');
+    const mockPool = mockAgent.get(url.origin);
+    mockPool.intercept({ path: '/jar.mn', method: 'GET' })
+      .reply(200, '# comment\n\nmessenger.jar:\n% content/messenger/ext-mail.json\n    content/messenger/schemas/accounts.json\n    content/messenger/schemas/browserAction.json\n    content/messenger/schemas/commands.json\n    content/messenger/schemas/pkcs11.json\n');
+    mockPool.intercept({ path: '/schemas/accounts.json', method: 'GET' })
+      .reply(200, '{ "foo": "foobar" }');
+    mockPool.intercept({ path: '/schemas/browserAction.json', method: 'GET' })
+      .reply(200, '{ "bar": "baz" }');
     const res = await getMailExtSchemaData('https://example.com/');
     assert.deepEqual(res, [
       {
@@ -262,7 +319,6 @@ describe('get MailExtensions schema data', () => {
         }
       }
     ], 'result');
-    nock.cleanAll();
   });
 });
 

@@ -8,7 +8,6 @@ import JSON5 from 'json5';
 import { createFile } from './file-util.js';
 import { getType, isString } from './common.js';
 import { program as commander } from 'commander';
-import fetch from 'node-fetch';
 import path from 'node:path';
 import process from 'node:process';
 
