@@ -2,15 +2,36 @@
   "name": "webext-schema",
   "description": "WebExtensions schemas fetched from hg.mozilla.org",
   "author": "asamuzaK",
+  "license": "MPL-2.0",
   "homepage": "https://github.com/asamuzaK/webext-schema",
   "bugs": "https://github.com/asamuzaK/webext-schema/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/asamuzaK/webext-schema.git"
   },
-  "license": "MPL-2.0",
-  "main": "index.js",
   "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "camelize": "^1.0.1",
+    "commander": "^10.0.0",
+    "decamelize": "^6.0.0",
+    "json5": "^2.2.3",
+    "sinon": "^15.0.1"
+  },
+  "devDependencies": {
+    "c8": "^7.12.0",
+    "chai": "^4.3.7",
+    "eslint": "^8.34.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsdoc": "^40.0.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-unicorn": "^45.0.2",
+    "mocha": "^10.2.0",
+    "npm-run-all": "^4.1.5",
+    "undici": "^5.18.0"
+  },
   "scripts": {
     "lint": "eslint --fix .",
     "start": "node index",
@@ -27,26 +48,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "dependencies": {
-    "camelize": "^1.0.1",
-    "commander": "^10.0.0",
-    "decamelize": "^6.0.0",
-    "json5": "^2.2.3",
-    "sinon": "^15.0.1"
-  },
-  "devDependencies": {
-    "c8": "^7.12.0",
-    "chai": "^4.3.7",
-    "eslint": "^8.32.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.27.4",
-    "eslint-plugin-jsdoc": "^39.6.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-unicorn": "^45.0.2",
-    "mocha": "^10.2.0",
-    "npm-run-all": "^4.1.5",
-    "undici": "^5.15.0"
-  },
-  "version": "5.1.0"
+  "version": "5.1.1"
 }
