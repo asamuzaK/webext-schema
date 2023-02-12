@@ -1,14 +1,10 @@
 [![build](https://github.com/asamuzaK/webext-schema/workflows/build/badge.svg)](https://github.com/asamuzaK/webext-schema/actions?query=workflow%3Abuild)
 [![CodeQL](https://github.com/asamuzaK/webext-schema/workflows/CodeQL/badge.svg)](https://github.com/asamuzaK/webext-schema/actions?query=workflow%3ACodeQL)
-<!--
-[![dependencies Status](https://david-dm.org/asamuzaK/webext-schema/status.svg)](https://david-dm.org/asamuzaK/webext-schema)
-[![devDependencies Status](https://david-dm.org/asamuzaK/webext-schema/dev-status.svg)](https://david-dm.org/asamuzaK/webext-schema?type=dev)
--->
-[![npm version](https://badge.fury.io/js/webext-schema.svg)](https://badge.fury.io/js/webext-schema)
+[![npm](https://img.shields.io/npm/v/webext-schema)](https://www.npmjs.com/package/webext-schema)
 
 # webext-schema
 
-WebExtensions schemas and MailExtensions schemas fetched from [hg.mozilla.org](https://hg.mozilla.org/).
+[WebExtentions](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions "Browser Extensions - Mozilla | MDN") schemas and [MailExtensions](https://developer.thunderbird.net/add-ons/mailextensions "A Guide to Extensions - Thunderbird") schemas fetched from [hg.mozilla.org](https://hg.mozilla.org/).
 Stubbed browser API is also available.
 
 ## Install
