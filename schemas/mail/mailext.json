@@ -8564,24 +8564,25 @@
               "type": "string",
               "enum": [
                 "all",
-                "page",
-                "frame",
-                "selection",
-                "link",
-                "editable",
-                "password",
-                "image",
-                "video",
+                "all_message_attachments",
                 "audio",
                 "compose_action",
-                "message_display_action",
-                "tab",
-                "message_list",
-                "folder_pane",
                 "compose_attachments",
+                "compose_body",
+                "editable",
+                "folder_pane",
+                "frame",
+                "image",
+                "link",
                 "message_attachments",
-                "all_message_attachments",
-                "tools_menu"
+                "message_display_action",
+                "message_list",
+                "page",
+                "password",
+                "selection",
+                "tab",
+                "tools_menu",
+                "video"
               ]
             },
             {
@@ -11536,7 +11537,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates a new content tab. Use the :ref:`messageDisplay_api` to open messages. Only supported in <value>normal</value> windows.",
+          "description": "Creates a new content tab. Use the :ref:`messageDisplay_api` to open messages. Only supported in <value>normal</value> windows. Same-site links in the loaded page are opened within Thunderbird, all other links are opened in the user's default browser. To override this behavior, add-ons have to register a `content script <https://bugzilla.mozilla.org/show_bug.cgi?id=1618828#c3>`__ , capture click events and handle them manually.",
           "async": "callback",
           "parameters": [
             {
@@ -12420,7 +12421,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates (opens) a new window with any optional sizing, position or default URL provided.",
+          "description": "Creates (opens) a new window with any optional sizing, position or default URL provided. When loading a page into a popup window, same-site links are opened within the same window, all other links are opened in the user's default browser. To override this behavior, add-ons have to register a `content script <https://bugzilla.mozilla.org/show_bug.cgi?id=1618828#c3>`__ , capture click events and handle them manually. Same-site links with targets other than <value>_self</value> are opened in a new tab in the most recent ``normal`` Thunderbird window.",
           "async": "callback",
           "parameters": [
             {

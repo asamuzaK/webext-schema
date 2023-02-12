@@ -3582,6 +3582,16 @@
               "format": "url"
             }
           }
+        },
+        {
+          "id": "Disposition",
+          "type": "string",
+          "description": "Location where search results should be displayed.",
+          "enum": [
+            "CURRENT_TAB",
+            "NEW_TAB",
+            "NEW_WINDOW"
+          ]
         }
       ],
       "functions": [
@@ -3611,12 +3621,51 @@
                   "optional": true,
                   "description": "Search engine to use. Uses the default if not specified."
                 },
+                "disposition": {
+                  "$ref": "Disposition",
+                  "optional": true,
+                  "description": "Location where search results should be displayed. NEW_TAB is the default."
+                },
                 "tabId": {
                   "type": "integer",
                   "optional": true,
-                  "description": "The ID of the tab for the search results. If not specified, a new tab is created."
+                  "description": "The ID of the tab for the search results. If not specified, a new tab is created, unless disposition is set. tabId cannot be used with disposition."
                 }
               }
+            }
+          ]
+        },
+        {
+          "name": "query",
+          "type": "function",
+          "async": "callback",
+          "description": "Use the chrome.search API to search via the default provider.",
+          "parameters": [
+            {
+              "type": "object",
+              "name": "queryInfo",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "description": "String to query with the default search provider."
+                },
+                "disposition": {
+                  "$ref": "Disposition",
+                  "optional": true,
+                  "description": "Location where search results should be displayed. CURRENT_TAB is the default."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "description": "Location where search results should be displayed. tabId cannot be used with disposition."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
             }
           ]
         }
@@ -9903,7 +9952,7 @@
                 "isUrlFilterCaseSensitive": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Whether 'urlFilter' or 'regexFilter' is case-sensitive. Defaults to true."
+                  "description": "Whether 'urlFilter' or 'regexFilter' is case-sensitive."
                 },
                 "initiatorDomains": {
                   "type": "array",
@@ -10375,7 +10424,25 @@
             }
           ]
         }
-      ]
+      ],
+      "properties": {
+        "GUARANTEED_MINIMUM_STATIC_RULES": {
+          "type": "number",
+          "description": "The minimum number of static rules guaranteed to an extension across its enabled static rulesets. Any rules above this limit will count towards the global static rule limit."
+        },
+        "MAX_NUMBER_OF_STATIC_RULESETS": {
+          "type": "number",
+          "description": "The maximum number of static Rulesets an extension can specify as part of the rule_resources manifest key."
+        },
+        "MAX_NUMBER_OF_ENABLED_STATIC_RULESETS": {
+          "type": "number",
+          "description": "The maximum number of static Rulesets an extension can enable at any one time."
+        },
+        "MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES": {
+          "type": "number",
+          "description": "The maximum number of dynamic and session rules an extension can add. NOTE: in the Firefox we are enforcing this limit to the session and dynamic rules count separately, instead of enforcing it to the rules count for both combined as the Chrome implementation does."
+        }
+      }
     }
   ],
   "dns.json": [
@@ -12344,7 +12411,6 @@
             "stackwalk",
             "jsallocations",
             "nostacksampling",
-            "preferencereads",
             "nativeallocations",
             "ipcmessages",
             "audiocallbacktracing",
@@ -13695,12 +13761,6 @@
           "description": "Represents a WebExtension language pack manifest.json file",
           "$import": "ManifestBase",
           "properties": {
-            "homepage_url": {
-              "type": "string",
-              "format": "url",
-              "optional": true,
-              "preprocess": "localize"
-            },
             "langpack_id": {
               "type": "string",
               "pattern": "^[a-zA-Z][a-zA-Z-]+$"
@@ -13768,12 +13828,6 @@
           "description": "Represents a WebExtension dictionary manifest.json file",
           "$import": "ManifestBase",
           "properties": {
-            "homepage_url": {
-              "type": "string",
-              "format": "url",
-              "optional": true,
-              "preprocess": "localize"
-            },
             "dictionaries": {
               "type": "object",
               "patternProperties": {
