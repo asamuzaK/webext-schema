@@ -3,14 +3,14 @@
  */
 
 /* api */
-import { CHAR } from './constant.js';
-import { convertUriToFilePath } from './file-util.js';
-import { getType, isObjectNotEmpty, isString } from './common.js';
-import camelize from 'camelize';
-import decamelize from 'decamelize';
 import fs from 'node:fs';
 import path from 'node:path';
+import camelize from 'camelize';
+import decamelize from 'decamelize';
 import sinon from 'sinon';
+import { getType, isObjectNotEmpty, isString } from './common.js';
+import { convertUriToFilePath } from './file-util.js';
+import { CHAR } from './constant.js';
 
 export class Schema {
   /**

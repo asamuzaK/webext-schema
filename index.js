@@ -7,9 +7,9 @@
  */
 
 /* api */
+import process from 'node:process';
 import { logErr, throwErr } from './modules/common.js';
 import { parseCommand } from './modules/update.js';
-import process from 'node:process';
 export { Schema } from './modules/schema.js';
 
 /* process */

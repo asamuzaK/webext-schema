@@ -2,8 +2,8 @@
  * setup.js
  */
 
-import { Schema } from '../../index.js';
 import process from 'node:process';
+import { Schema } from '../../index.js';
 
 /**
  * get channel

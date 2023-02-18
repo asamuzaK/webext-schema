@@ -3,13 +3,13 @@
  */
 
 /* api */
-import { CHAR, INDENT } from './constant.js';
-import JSON5 from 'json5';
-import { createFile } from './file-util.js';
-import { getType, isString } from './common.js';
-import { program as commander } from 'commander';
 import path from 'node:path';
 import process from 'node:process';
+import JSON5 from 'json5';
+import { program as commander } from 'commander';
+import { getType, isString } from './common.js';
+import { createFile } from './file-util.js';
+import { CHAR, INDENT } from './constant.js';
 
 /* constants */
 const DIR_CWD = process.cwd();
