@@ -13,6 +13,9 @@ import { convertUriToFilePath } from './file-util.js';
 import { CHAR } from './constant.js';
 
 export class Schema {
+  /* private */
+  #channel;
+
   /**
    * construct
    *
@@ -24,7 +27,7 @@ export class Schema {
    */
   constructor(...args) {
     const [arg1, arg2] = args;
-    this._channel =
+    this.#channel =
       isString(arg1) && /(?:(?:centra|mai)l|beta|esr|release)/.test(arg1)
         ? arg1
         : 'beta';
@@ -40,12 +43,12 @@ export class Schema {
 
   /* getter / setter */
   get channel() {
-    return this._channel;
+    return this.#channel;
   }
 
   set channel(ch) {
     if (isString(ch) && /(?:(?:centra|mai)l|beta|esr|release)/.test(ch)) {
-      this._channel = ch;
+      this.#channel = ch;
     }
   }
 
@@ -264,9 +267,9 @@ export class Schema {
    * @returns {object} - schema
    */
   _parseSchemaContent() {
-    const fileName = this._channel === 'mail' ? 'mailext.json' : 'webext.json';
+    const fileName = this.#channel === 'mail' ? 'mailext.json' : 'webext.json';
     const dirName = path.dirname(convertUriToFilePath(import.meta.url));
-    const file = path.join(dirName, '../', 'schemas', this._channel, fileName);
+    const file = path.join(dirName, '../', 'schemas', this.#channel, fileName);
     const content = fs.readFileSync(file, {
       encoding: CHAR,
       flag: 'r'
