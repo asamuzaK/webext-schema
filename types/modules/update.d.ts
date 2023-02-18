@@ -1,0 +1,14 @@
+export const ESR_VER: 102;
+export function fetchText(url: string): string;
+export function getChannelUrl(channel: string): string;
+export function getSchemaData(file: string, baseUrl: string): object;
+export function getFileList(baseUrl: string): any[];
+export function getAllSchemaData(baseUrl: string): Promise<any[]>;
+export function getListedSchemaData(baseUrl: string, arr: any[]): Promise<any[]>;
+export function getMailExtSchemaData(baseUrl: string): Promise<any[]>;
+export function createUnifiedSchema(channel: string): object;
+export function saveSchemaFile(channel: string, info: boolean): string;
+export function updateSchemas(cmdOpts?: object): void;
+export function parseCommand(args: any[]): void;
+export { commander };
+import { program as commander } from "commander";
