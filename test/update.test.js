@@ -10,9 +10,9 @@ import { MockAgent, getGlobalDispatcher, setGlobalDispatcher } from 'undici';
 /* test */
 import {
   ESR_VER,
-  commander, createUnifiedSchema, fetchText, getAllSchemaData, getChannelUrl,
-  getFileList, getListedSchemaData, getMailExtSchemaData, getSchemaData,
-  parseCommand, saveSchemaFile, updateSchemas
+  createUnifiedSchema, fetchText, getAllSchemaData, getChannelUrl, getFileList,
+  getListedSchemaData, getMailExtSchemaData, getSchemaData, saveSchemaFile,
+  updateSchemas
 } from '../modules/update.js';
 
 describe('fetch text', () => {
@@ -583,43 +583,5 @@ describe('update schemas files', () => {
     stubAll.restore();
     stubTrace.restore();
     assert.strictEqual(traceCallCount, i, 'trace');
-  });
-});
-
-describe('parse command', () => {
-  it('should not parse', () => {
-    const stubParse = sinon.stub(commander, 'parse');
-    const i = stubParse.callCount;
-    parseCommand();
-    assert.strictEqual(stubParse.callCount, i, 'not called');
-    stubParse.restore();
-  });
-
-  it('should not parse', () => {
-    const stubParse = sinon.stub(commander, 'parse');
-    const i = stubParse.callCount;
-    parseCommand([]);
-    assert.strictEqual(stubParse.callCount, i, 'not called');
-    stubParse.restore();
-  });
-
-  it('should not parse', () => {
-    const stubParse = sinon.stub(commander, 'parse');
-    const i = stubParse.callCount;
-    parseCommand(['foo', 'bar', 'baz']);
-    assert.strictEqual(stubParse.callCount, i, 'not called');
-    stubParse.restore();
-  });
-
-  it('should parse', () => {
-    const stubParse = sinon.stub(commander, 'parse');
-    const stubVer = sinon.stub(commander, 'version');
-    const i = stubParse.callCount;
-    const j = stubVer.callCount;
-    parseCommand(['foo', 'bar', '-v']);
-    assert.strictEqual(stubParse.callCount, i + 1, 'called');
-    assert.strictEqual(stubVer.callCount, j + 1, 'called');
-    stubParse.restore();
-    stubVer.restore();
   });
 });

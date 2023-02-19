@@ -6,7 +6,6 @@
 import path from 'node:path';
 import process from 'node:process';
 import JSON5 from 'json5';
-import { program as commander } from 'commander';
 import { getType, isString } from './common.js';
 import { createFile } from './file-util.js';
 import { CHAR, INDENT } from './constant.js';
@@ -267,27 +266,4 @@ export const updateSchemas = async (cmdOpts = {}) => {
       console.trace(reason);
     }
   }
-};
-
-/**
- * parse command
- *
- * @param {Array} args - process.argv
- * @returns {void}
- */
-export const parseCommand = args => {
-  const reg = /^(?:(?:--)?help|-[h|v]|--version|u(?:pdate)?)$/;
-  if (Array.isArray(args) && args.some(arg => reg.test(arg))) {
-    commander.exitOverride();
-    commander.version(process.env.npm_package_version, '-v, --version');
-    commander.command('update').alias('u').description('update schemas')
-      .option('-c, --channel <name>', 'specify the release channel')
-      .option('-i, --info', 'console info')
-      .action(updateSchemas);
-    commander.parse(args);
-  }
-};
-
-export {
-  commander
 };

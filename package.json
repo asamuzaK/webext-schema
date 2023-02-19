@@ -46,7 +46,7 @@
     "test-esr": "c8 mocha --require=test/mocha/setup.js --channel=esr --exit test/*.test.js",
     "test-release": "c8 mocha --require=test/mocha/setup.js --channel=release --exit test/*.test.js",
     "test_all": "npm-run-all -s test-*",
-    "tsc": "node -e \"fs.rmSync('types',{recursive:true,force:true})\" && npx tsc",
+    "tsc": "node index clean --dir=types -i && npx tsc",
     "update": "node index update -i",
     "update-beta": "node index update --channel=beta -i",
     "update-central": "node index update --channel=central -i",

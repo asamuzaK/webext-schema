@@ -9,6 +9,3 @@ export function getMailExtSchemaData(baseUrl: string): Promise<any[]>;
 export function createUnifiedSchema(channel: string): object;
 export function saveSchemaFile(channel: string, info: boolean): string;
 export function updateSchemas(cmdOpts?: object): void;
-export function parseCommand(args: any[]): void;
-export { commander };
-import { program as commander } from "commander";
