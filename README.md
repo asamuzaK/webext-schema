@@ -16,7 +16,7 @@ npm i webext-schema
 ## Usage
 
 ```
-const {Schema} = require("webext-schema");
+import { Schema } from 'webext-schema';
 
 const schema = new Schema();
 ```
