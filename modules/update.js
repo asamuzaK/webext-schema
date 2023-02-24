@@ -19,7 +19,7 @@ export const ESR_VER = 102;
  * fetch text
  *
  * @param {string} url - URL
- * @returns {string} - content text
+ * @returns {Promise.<string>} - content text
  */
 export const fetchText = async url => {
   if (!isString(url)) {
@@ -66,7 +66,7 @@ export const getChannelUrl = channel => {
  *
  * @param {string} file - file name
  * @param {string} baseUrl - base URL
- * @returns {object} - schema data
+ * @returns {Promise.<object>} - schema data
  */
 export const getSchemaData = async (file, baseUrl) => {
   if (!isString(file)) {
@@ -87,7 +87,7 @@ export const getSchemaData = async (file, baseUrl) => {
  * get schema file list from jar manifest
  *
  * @param {string} baseUrl - base URL
- * @returns {Array} - schema file list
+ * @returns {Promise.<Array.<string>>} - schema file list
  */
 export const getFileList = async baseUrl => {
   if (!isString(baseUrl)) {
@@ -175,7 +175,7 @@ export const getMailExtSchemaData = async baseUrl => {
  * create unified schema
  *
  * @param {string} channel - release channel
- * @returns {object} - schema
+ * @returns {Promise.<object>} - schema
  */
 export const createUnifiedSchema = async channel => {
   const channelUrl = getChannelUrl(channel);
@@ -219,7 +219,7 @@ export const createUnifiedSchema = async channel => {
  *
  * @param {string} channel - release channel
  * @param {boolean} info - console info
- * @returns {string} - file path
+ * @returns {Promise.<string>} - file path
  */
 export const saveSchemaFile = async (channel, info) => {
   if (!isString(channel)) {
@@ -243,7 +243,7 @@ export const saveSchemaFile = async (channel, info) => {
  * update schemas files
  *
  * @param {object} cmdOpts - command options
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const updateSchemas = async (cmdOpts = {}) => {
   const { channel, info } = cmdOpts;

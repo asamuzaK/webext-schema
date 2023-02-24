@@ -1,11 +1,11 @@
 export const ESR_VER: 102;
-export function fetchText(url: string): string;
+export function fetchText(url: string): Promise<string>;
 export function getChannelUrl(channel: string): string;
-export function getSchemaData(file: string, baseUrl: string): object;
-export function getFileList(baseUrl: string): any[];
+export function getSchemaData(file: string, baseUrl: string): Promise<object>;
+export function getFileList(baseUrl: string): Promise<Array<string>>;
 export function getAllSchemaData(baseUrl: string): Promise<any[]>;
 export function getListedSchemaData(baseUrl: string, arr: any[]): Promise<any[]>;
 export function getMailExtSchemaData(baseUrl: string): Promise<any[]>;
-export function createUnifiedSchema(channel: string): object;
-export function saveSchemaFile(channel: string, info: boolean): string;
-export function updateSchemas(cmdOpts?: object): void;
+export function createUnifiedSchema(channel: string): Promise<object>;
+export function saveSchemaFile(channel: string, info: boolean): Promise<string>;
+export function updateSchemas(cmdOpts?: object): Promise<void>;
