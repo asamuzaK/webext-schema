@@ -13,6 +13,7 @@
   "main": "index.js",
   "types": "types/index.d.ts",
   "dependencies": {
+    "@types/firefox-webext-browser": "^109.0.0",
     "@types/node": "^18.14.1",
     "@types/sinon": "^10.0.13",
     "camelize": "^1.0.1",
