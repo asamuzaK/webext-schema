@@ -546,7 +546,7 @@ export const searchWithSearchEngine = async (query, opt = {}) => {
 /**
  * get recently closed tab
  *
- * @param {number} windowId - window ID
+ * @param {number} [windowId] - window ID
  * @returns {Promise.<object>} - tabs.Tab
  */
 export const getRecentlyClosedTab = async windowId => {
@@ -580,7 +580,7 @@ export const getRecentlyClosedTab = async windowId => {
  * get session window value
  *
  * @param {string} key - key
- * @param {number} windowId - window ID
+ * @param {number} [windowId] - window ID
  * @returns {Promise.<?string>} - value
  */
 export const getSessionWindowValue = async (key, windowId) => {
@@ -627,7 +627,7 @@ export const restoreSession = async sessionId => {
  *
  * @param {string} key - key
  * @param {string|object} value - value
- * @param {number} windowId - window ID
+ * @param {number} [windowId] - window ID
  * @returns {Promise.<void>} - void
  */
 export const setSessionWindowValue = async (key, value, windowId) => {
@@ -859,7 +859,7 @@ export const execScriptsToTabInOrder = async (tabId, opts = []) => {
 /**
  * get active tab
  *
- * @param {number} windowId - window ID
+ * @param {number} [windowId] - window ID
  * @returns {Promise.<object>} - tabs.Tab
  */
 export const getActiveTab = async windowId => {
@@ -877,7 +877,7 @@ export const getActiveTab = async windowId => {
 /**
  * get active tab ID
  *
- * @param {number} windowId - window ID
+ * @param {number} [windowId] - window ID
  * @returns {Promise.<?number>} - tab ID
  */
 export const getActiveTabId = async windowId => {
@@ -895,7 +895,7 @@ export const getActiveTabId = async windowId => {
 /**
  * get all tabs in window
  *
- * @param {number} windowId - window ID
+ * @param {number} [windowId] - window ID
  * @returns {Promise.<?Array>} - array of tabs.Tab
  */
 export const getAllTabsInWindow = async windowId => {
@@ -912,7 +912,7 @@ export const getAllTabsInWindow = async windowId => {
 /**
  * get highlighted tab
  *
- * @param {number} windowId - window ID
+ * @param {number} [windowId] - window ID
  * @returns {Promise.<?Array>} - array of tabs.Tab
  */
 export const getHighlightedTab = async windowId => {
@@ -945,7 +945,7 @@ export const getTab = async tabId => {
  * highlight tab
  *
  * @param {number|Array} index - tab index
- * @param {number} windowId - window ID
+ * @param {number} [windowId] - window ID
  * @returns {Promise.<object>} - windows.Window
  */
 export const highlightTab = async (index, windowId) => {
@@ -1066,7 +1066,7 @@ export const isTab = async tabId => {
 /**
  * get current theme
  *
- * @param {number} windowId - window ID
+ * @param {number} [windowId] - window ID
  * @returns {Promise.<object>} - theme.Theme
  */
 export const getCurrentTheme = async windowId => {
