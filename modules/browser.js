@@ -967,7 +967,7 @@ export const highlightTab = async (index, windowId) => {
  * move tab
  *
  * @param {number|Array} tabId - tab ID
- * @param {object} opt - options
+ * @param {object} [opt] - options
  * @returns {Promise.<?Array>} - array of tabs.Tab
  */
 export const moveTab = async (tabId, opt) => {
@@ -978,7 +978,7 @@ export const moveTab = async (tabId, opt) => {
   if (arr && !Array.isArray(arr)) {
     arr = [arr];
   }
-  return arr ?? null;
+  return arr || null;
 };
 
 /**

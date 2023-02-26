@@ -45,7 +45,7 @@ export function getAllTabsInWindow(windowId?: number): Promise<any[] | null>;
 export function getHighlightedTab(windowId?: number): Promise<any[] | null>;
 export function getTab(tabId: number): Promise<object>;
 export function highlightTab(index: number | any[], windowId?: number): Promise<object>;
-export function moveTab(tabId: number | any[], opt: object): Promise<any[] | null>;
+export function moveTab(tabId: number | any[], opt?: object): Promise<any[] | null>;
 export function reloadTab(tabId: number, opt: object): Promise<void>;
 export function removeTab(arg: number | any[]): Promise<void>;
 export function updateTab(tabId: number, opt: object): Promise<object>;
