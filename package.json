@@ -14,7 +14,7 @@
   "types": "types/index.d.ts",
   "dependencies": {
     "@types/firefox-webext-browser": "^109.0.0",
-    "@types/node": "^18.14.1",
+    "@types/node": "^18.14.2",
     "@types/sinon": "^10.0.13",
     "camelize": "^1.0.1",
     "commander": "^10.0.0",
@@ -56,5 +56,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "version": "5.1.6"
+  "version": "5.1.7"
 }
