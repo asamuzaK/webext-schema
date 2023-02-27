@@ -38,7 +38,7 @@ describe('browser', () => {
           const [...origs] = origins;
           // match pattern: '*://*.example.com/*'
           const grantedOrigsReg =
-            /^(http|ws)s?:\/\/(?:[a-zA-Z0-9]+\.)*example\.com\/.*$/;
+            /^(?:http|ws)s?:\/\/(?:[a-zA-Z\d]+\.)*example\.com\/.*$/;
           for (const orig of origs) {
             res = grantedOrigsReg.test(orig);
             if (res === false) {
