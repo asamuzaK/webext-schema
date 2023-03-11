@@ -9,13 +9,13 @@ Stubbed browser API is also available.
 
 ## Install
 
-```
+```console
 npm i webext-schema
 ```
 
 ## Usage
 
-```
+```javascript
 import { Schema } from 'webext-schema';
 
 const schema = new Schema();
@@ -28,7 +28,7 @@ const schema = new Schema();
 
 Both arguments are optional.
 
-```
+```javascript
 const schema = new Schema("central", {
   useFakeTimers: true,
   useFakeServer: true,
@@ -40,13 +40,13 @@ const schema = new Schema("central", {
 "central", "beta", "release", "esr" for WebExtensions, and "mail" for MailExtensions are available.
 Channel defaults to "beta".
 
-```
+```javascript
 const schema = new Schema("central");
 ```
 
 Also, you can set it afterwards.
 
-```
+```javascript
 const schema = new Schema();
 schema.channel = "central";
 ```
@@ -59,12 +59,12 @@ schema.channel = "central";
 Get the schema for the specific API.
 Argument can be either an API name or a file name.
 
-```
+```javascript
 const schema = new Schema().get("browserAction");
 // [{namespace: "browserAction", events: [...], ...}]
 ```
 
-```
+```javascript
 const schema = new Schema().get("browser_action.json");
 // [{namespace: "browserAction", events: [...], ...}]
 ```
@@ -76,7 +76,7 @@ const schema = new Schema().get("browser_action.json");
 Get all schemas as a single object.
 Note that the key of the object is the file name and the value is the schema.
 
-```
+```javascript
 const schema = new Schema().getAll();
 // {"alarms.json": [{...}], "bookmarks.json": [{...}], ...}
 ```
@@ -87,7 +87,7 @@ const schema = new Schema().getAll();
 
 Get the list of schema files.
 
-```
+```javascript
 const list = new Schema().list();
 // ["alarms.json", "bookmarks.json", ...]
 ```
@@ -105,18 +105,18 @@ Creates stubbed browser API.
 
 See [Sinon.JS](https://sinonjs.org/) for details of sinon.sandbox.
 
-```
+```javascript
 const browser = new Schema().mock();
 
 // example of mocking runtime.connect()
-const mockConnect = browser.runtime.connect.callsFake(({name}) => {
+const mockConnect = browser.runtime.connect.callsFake(({ name }) => {
   const port = Object.assign({}, browser.runtime.Port);
   port.name = name;
   return port;
 });
 
-const port1 = mockConnect({name: "foo"});
-const port2 = mockConnect({name: "bar"});
+const port1 = mockConnect({ name: "foo" });
+const port2 = mockConnect({ name: "bar" });
 assert.strictEqual(port1.name, "foo");
 assert.isFunction(port1.onDisconnect.addListener);
 assert.strictEqual(port2.name, "bar");
