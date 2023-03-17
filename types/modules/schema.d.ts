@@ -23,4 +23,4 @@ export class Schema {
     mock(): object;
     #private;
 }
-import sinon from "sinon";
+import sinon from 'sinon';
