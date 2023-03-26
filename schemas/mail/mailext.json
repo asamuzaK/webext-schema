@@ -4087,7 +4087,7 @@
               "default": false
             },
             "default_area": {
-              "description": "Defines the location the action button will appear. The default location is <value>maintoolbar</value>.",
+              "description": "Defines the location the action button will appear. This will always behave like <value>maintoolbar</value>. The <value>tabstoolbar</value> area should no longer be used.",
               "type": "string",
               "enum": [
                 "maintoolbar",
@@ -4107,6 +4107,26 @@
               },
               "default": [
                 "normal"
+              ],
+              "optional": true
+            },
+            "allowed_spaces": {
+              "description": "Defines the spaces, in which the action button can appear in the toolbar of the normal Thunderbird window. Defaults to only allowing the action in the <value>mail</value> space. The <value>default</value> space is for tabs that don't belong to any space. If this is an empty array, the action button is shown in all spaces.",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "mail",
+                  "addressbook",
+                  "calendar",
+                  "tasks",
+                  "chat",
+                  "settings",
+                  "default"
+                ]
+              },
+              "default": [
+                "mail"
               ],
               "optional": true
             }
@@ -4359,7 +4379,8 @@
               "parameters": [
                 {
                   "name": "result",
-                  "type": "string"
+                  "type": "string",
+                  "optional": true
                 }
               ]
             }
@@ -4664,7 +4685,7 @@
         {
           "name": "enable",
           "type": "function",
-          "description": "Enables the action button for a tab. By default, an action button is enabled.",
+          "description": "Enables the action button for a specific tab (if a ``tabId`` is provided), or for all tabs which do not have a custom enable state. Once the enable state of a tab has been updated individually, all further changes to its state have to be done individually as well. By default, an action button is enabled.",
           "async": "callback",
           "parameters": [
             {
@@ -4685,7 +4706,7 @@
         {
           "name": "disable",
           "type": "function",
-          "description": "Disables the action button for a tab.",
+          "description": "Disables the action button for a specific tab (if a ``tabId`` is provided), or for all tabs which do not have a custom enable state. Once the enable state of a tab has been updated individually, all further changes to its state have to be done individually as well.",
           "async": "callback",
           "parameters": [
             {
@@ -4743,7 +4764,6 @@
         {
           "name": "openPopup",
           "type": "function",
-          "requireUserInput": true,
           "description": "Opens the action's popup window in the active window.",
           "async": true,
           "parameters": []
@@ -6801,7 +6821,8 @@
               "parameters": [
                 {
                   "name": "result",
-                  "type": "string"
+                  "type": "string",
+                  "optional": true
                 }
               ]
             }
@@ -9449,7 +9470,7 @@
                     "window"
                   ],
                   "optional": true,
-                  "description": "Where to open the message. If not specified, the users preference is honoured. Ignored for external messages, which are always opened in a new window."
+                  "description": "Where to open the message. If not specified, the users preference is honoured."
                 },
                 "active": {
                   "type": "boolean",
@@ -9766,7 +9787,8 @@
               "parameters": [
                 {
                   "name": "result",
-                  "type": "string"
+                  "type": "string",
+                  "optional": true
                 }
               ]
             }
