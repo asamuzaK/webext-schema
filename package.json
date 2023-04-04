@@ -13,8 +13,8 @@
   "main": "index.js",
   "types": "types/index.d.ts",
   "dependencies": {
-    "@types/firefox-webext-browser": "^111.0.0",
-    "@types/node": "^18.15.10",
+    "@types/firefox-webext-browser": "^111.0.1",
+    "@types/node": "^18.15.11",
     "@types/sinon": "^10.0.13",
     "camelize": "^1.0.1",
     "commander": "^10.0.0",
@@ -25,17 +25,17 @@
   "devDependencies": {
     "c8": "^7.13.0",
     "chai": "^4.3.7",
-    "eslint": "^8.36.0",
+    "eslint": "^8.37.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsdoc": "^40.1.0",
+    "eslint-plugin-jsdoc": "^40.1.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-regexp": "^1.13.0",
+    "eslint-plugin-regexp": "^1.14.0",
     "eslint-plugin-unicorn": "^46.0.0",
     "mocha": "^10.2.0",
     "npm-run-all": "^4.1.5",
-    "typescript": "^5.0.2",
+    "typescript": "^5.0.3",
     "undici": "^5.21.0"
   },
   "scripts": {
@@ -56,5 +56,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "version": "5.1.11"
+  "version": "5.1.12"
 }
