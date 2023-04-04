@@ -4764,9 +4764,34 @@
         {
           "name": "openPopup",
           "type": "function",
-          "description": "Opens the action's popup window in the active window.",
-          "async": true,
-          "parameters": []
+          "description": "Opens the action's popup window in the specified window. Defaults to the current window. Returns false if the popup could not be opened because the action is disabled or has been removed from the toolbar.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "options",
+              "optional": true,
+              "type": "object",
+              "description": "An object with information about the popup to open.",
+              "properties": {
+                "windowId": {
+                  "type": "integer",
+                  "minimum": -2,
+                  "optional": true,
+                  "description": "Defaults to the current window."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          ]
         }
       ],
       "events": [
@@ -6178,7 +6203,7 @@
           "name": "setComposeDetails",
           "type": "function",
           "async": true,
-          "description": "Updates the compose window. Only fields that are to be changed should be specified. Currently only a limited amount of information can be set, more will be added in later versions.\n\n**Note:** The compose format of an existing compose window cannot be changed. Since Thunderbird 98, setting conflicting values for ``details.body``, ``details.plainTextBody`` or ``details.isPlaintext`` no longer throw an exception, instead the compose window chooses the matching ``details.body`` or ``details.plainTextBody`` value and ignores the other.",
+          "description": "Updates the compose window. The properties of the given :ref:`compose.ComposeDetails` object will be used to overwrite the current values of the specified compose window, so only properties that are to be changed should be included.\n\nWhen updating any of the array properties (``customHeaders`` and most address fields), make sure to first get the current values to not accidentally remove all existing entries when setting the new value.\n\n**Note:** The compose format of an existing compose window cannot be changed. Since Thunderbird 98, setting conflicting values for ``details.body``, ``details.plainTextBody`` or ``details.isPlaintext`` no longer throws an exception, instead the compose window chooses the matching ``details.body`` or ``details.plainTextBody`` value and ignores the other.",
           "permissions": [
             "compose"
           ],
@@ -7206,10 +7231,34 @@
         {
           "name": "openPopup",
           "type": "function",
-          "requireUserInput": true,
-          "description": "Opens the action's popup window in the active window.",
-          "async": true,
-          "parameters": []
+          "description": "Opens the action's popup window in the specified window. Defaults to the current window. Returns false if the popup could not be opened because the action is disabled or has been removed from the toolbar.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "options",
+              "optional": true,
+              "type": "object",
+              "description": "An object with information about the popup to open.",
+              "properties": {
+                "windowId": {
+                  "type": "integer",
+                  "minimum": -2,
+                  "optional": true,
+                  "description": "Defaults to the current window."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          ]
         }
       ],
       "events": [
@@ -10172,10 +10221,34 @@
         {
           "name": "openPopup",
           "type": "function",
-          "requireUserInput": true,
-          "description": "Opens the action's popup window in the active window.",
-          "async": true,
-          "parameters": []
+          "description": "Opens the action's popup window in the specified window. Defaults to the current window. Returns false if the popup could not be opened because the action is disabled or has been removed from the toolbar.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "options",
+              "optional": true,
+              "type": "object",
+              "description": "An object with information about the popup to open.",
+              "properties": {
+                "windowId": {
+                  "type": "integer",
+                  "minimum": -2,
+                  "optional": true,
+                  "description": "Defaults to the current window."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          ]
         }
       ],
       "events": [
