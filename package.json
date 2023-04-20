@@ -14,13 +14,13 @@
   "types": "types/index.d.ts",
   "dependencies": {
     "@types/firefox-webext-browser": "^111.0.1",
-    "@types/node": "^18.15.11",
-    "@types/sinon": "^10.0.13",
+    "@types/node": "^18.15.12",
+    "@types/sinon": "^10.0.14",
     "camelize": "^1.0.1",
-    "commander": "^10.0.0",
+    "commander": "^10.0.1",
     "decamelize": "^6.0.0",
     "json5": "^2.2.3",
-    "sinon": "^15.0.3"
+    "sinon": "^15.0.4"
   },
   "devDependencies": {
     "c8": "^7.13.0",
@@ -28,7 +28,7 @@
     "eslint": "^8.38.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsdoc": "^41.1.1",
+    "eslint-plugin-jsdoc": "^43.0.6",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-regexp": "^1.14.0",
