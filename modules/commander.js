@@ -14,7 +14,6 @@ const DIR_CWD = process.cwd();
 
 /**
  * clean directory
- *
  * @param {object} cmdOpts - command options
  * @returns {void}
  */
@@ -30,7 +29,6 @@ export const cleanDirectory = (cmdOpts = {}) => {
 
 /**
  * parse command
- *
  * @param {Array} args - process.argv
  * @returns {void}
  */

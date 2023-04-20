@@ -18,7 +18,6 @@ export class Schema {
 
   /**
    * construct
-   *
    * @param {...(string|object)} [args] - optional arguments
    *                                      {string} - release channel.
    *                                                 one of "beta", "central",
@@ -54,7 +53,6 @@ export class Schema {
 
   /**
    * get target from namespace key
-   *
    * @param {string} key - namespace key
    * @returns {object} - target object
    */
@@ -81,7 +79,6 @@ export class Schema {
 
   /**
    * assign imported values
-   *
    * @returns {void}
    */
   _assignImportMap() {
@@ -108,7 +105,6 @@ export class Schema {
 
   /**
    * assign referred values
-   *
    * @returns {void}
    */
   _assignRefMap() {
@@ -135,7 +131,6 @@ export class Schema {
 
   /**
    * mock events
-   *
    * @param {object} target - target object
    * @param {Array} events - events
    * @returns {object} - target object
@@ -161,7 +156,6 @@ export class Schema {
 
   /**
    * mock functions
-   *
    * @param {object} target - target object
    * @param {Array} funcs - functions
    * @returns {object} - target object
@@ -184,7 +178,6 @@ export class Schema {
 
   /**
    * mock properties
-   *
    * @param {object} target - target object
    * @param {object} props - properties
    * @param {string} namespace - namespace
@@ -225,7 +218,6 @@ export class Schema {
 
   /**
    * mock types
-   *
    * @param {object} target - target object
    * @param {Array} types - types
    * @param {string} namespace - namespace
@@ -263,7 +255,6 @@ export class Schema {
 
   /**
    * parse schema content
-   *
    * @returns {object} - schema
    */
   _parseSchemaContent() {
@@ -280,7 +271,6 @@ export class Schema {
 
   /**
    * get schema
-   *
    * @param {string} name - API name or file name
    * @returns {Array} - schema
    */
@@ -303,7 +293,6 @@ export class Schema {
 
   /**
    * get all schemas
-   *
    * @returns {object} - schemas
    */
   getAll() {
@@ -313,7 +302,6 @@ export class Schema {
 
   /**
    * list schemas
-   *
    * @returns {Array} - file list
    */
   list() {
@@ -328,7 +316,6 @@ export class Schema {
 
   /**
    * mock browser api
-   *
    * @returns {object} - stubbed browser api
    */
   mock() {

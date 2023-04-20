@@ -7,7 +7,6 @@ import { Schema } from '../../index.js';
 
 /**
  * get channel
- *
  * @returns {string} - channel
  */
 const getChannel = () => {

@@ -17,7 +17,6 @@ export const ESR_VER = 102;
 
 /**
  * fetch text
- *
  * @param {string} url - URL
  * @returns {Promise.<string>} - content text
  */
@@ -36,7 +35,6 @@ export const fetchText = async url => {
 
 /**
  * get channel url
- *
  * @param {string} channel - release channel
  * @returns {string} - channel URL
  */
@@ -63,7 +61,6 @@ export const getChannelUrl = channel => {
 
 /**
  * get schema data
- *
  * @param {string} file - file name
  * @param {string} baseUrl - base URL
  * @returns {Promise.<object>} - schema data
@@ -85,7 +82,6 @@ export const getSchemaData = async (file, baseUrl) => {
 
 /**
  * get schema file list from jar manifest
- *
  * @param {string} baseUrl - base URL
  * @returns {Promise.<Array.<string>>} - schema file list
  */
@@ -111,7 +107,6 @@ export const getFileList = async baseUrl => {
 
 /**
  * get all schema data
- *
  * @param {string} baseUrl - base URL
  * @returns {Promise.<Array>} - schemas data in array
  */
@@ -129,7 +124,6 @@ export const getAllSchemaData = async baseUrl => {
 
 /**
  * get listed schema data
- *
  * @param {string} baseUrl - base URL
  * @param {Array} arr - array of schema file names
  * @returns {Promise.<Array>} - schema data in array
@@ -150,7 +144,6 @@ export const getListedSchemaData = async (baseUrl, arr) => {
 
 /**
  * get MailExtensions schema data
- *
  * @param {string} baseUrl - base URL
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -173,7 +166,6 @@ export const getMailExtSchemaData = async baseUrl => {
 
 /**
  * create unified schema
- *
  * @param {string} channel - release channel
  * @returns {Promise.<object>} - schema
  */
@@ -216,7 +208,6 @@ export const createUnifiedSchema = async channel => {
 
 /**
  * save schema file
- *
  * @param {string} channel - release channel
  * @param {boolean} info - console info
  * @returns {Promise.<string>} - file path
@@ -241,7 +232,6 @@ export const saveSchemaFile = async (channel, info) => {
 
 /**
  * update schemas files
- *
  * @param {object} cmdOpts - command options
  * @returns {Promise.<void>} - void
  */

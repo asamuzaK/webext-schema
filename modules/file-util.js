@@ -17,7 +17,6 @@ const SUBST = 'index';
 
 /**
  * convert URI to native file path
- *
  * @param {string} uri - URI
  * @returns {?string} - file path
  */
@@ -35,7 +34,6 @@ export const convertUriToFilePath = uri => {
 
 /**
  * get absolute path
- *
  * @param {string} file - file path
  * @returns {?string} - absolute file path
  */
@@ -49,7 +47,6 @@ export const getAbsPath = file => {
 
 /**
  * get stat
- *
  * @param {string} file - file path
  * @returns {object} - file stat
  */
@@ -58,7 +55,6 @@ export const getStat = file =>
 
 /**
  * the directory is a directory
- *
  * @param {string} dir - directory path
  * @returns {boolean} - result
  */
@@ -69,7 +65,6 @@ export const isDir = dir => {
 
 /**
  * the directory is a subdirectory of a certain directory
- *
  * @param {string} dir - directory path
  * @param {string} baseDir - base directory path
  * @returns {boolean} - result
@@ -79,7 +74,6 @@ export const isSubDir = (dir, baseDir) =>
 
 /**
  * the file is a file
- *
  * @param {string} file - file path
  * @returns {boolean} - result
  */
@@ -92,7 +86,6 @@ export const isFile = file => {
  * the file is executable
  * NOTE: On Windows, fs.statSync(file).mode returns 33206 for executable
  * files like `.exe`, which is 100666 in octal.
- *
  * @param {string} file - file path
  * @param {number} [mask] - mask bit
  * @returns {boolean} - result
@@ -109,7 +102,6 @@ export const isExecutable = (file, mask = MASK_BIT) => {
 
 /**
  * get file timestamp
- *
  * @param {string} file - file path
  * @returns {number} - timestamp
  */
@@ -120,7 +112,6 @@ export const getFileTimestamp = file => {
 
 /**
  * get file name from native file path
- *
  * @param {string} file - file path
  * @param {string} [subst] - substitute file name
  * @returns {string} - file name
@@ -136,7 +127,6 @@ export const getFileNameFromFilePath = (file, subst = SUBST) => {
 
 /**
  * remove the directory and it's files synchronously
- *
  * @param {string} dir - directory path
  * @param {string} baseDir - base directory path
  * @returns {void}
@@ -155,7 +145,6 @@ export const removeDir = (dir, baseDir) => {
 
 /**
  * remove the directory and it's files
- *
  * @param {string} dir - directory path
  * @param {string} baseDir - base directory path
  * @returns {Promise.<void>} - void
@@ -174,7 +163,6 @@ export const removeDirectory = async (dir, baseDir) => {
 
 /**
  * create a directory
- *
  * @param {string} dir - directory path to create
  * @param {number} [mode] - permission
  * @returns {Promise.<string>} - directory path
@@ -197,7 +185,6 @@ export const createDirectory = async (dir, mode = PERM_DIR) => {
 
 /**
  * create a file
- *
  * @param {string} file - file path to create
  * @param {string|Buffer|Uint8Array} value - value to write
  * @param {object} [opt] - options
@@ -225,7 +212,6 @@ export const createFile = async (file, value, opt = {
 
 /**
  * read a file
- *
  * @param {string} file - file path
  * @param {object} [opt] - options
  * @param {string} [opt.encoding] - encoding
