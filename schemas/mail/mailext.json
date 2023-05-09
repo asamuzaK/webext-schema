@@ -8266,6 +8266,8 @@
             {
               "type": "object",
               "name": "queryInfo",
+              "optional": true,
+              "default": {},
               "properties": {
                 "active": {
                   "type": "boolean",
@@ -9511,8 +9513,15 @@
             {
               "name": "openProperties",
               "type": "object",
-              "description": "Settings for opening the message. Exactly one of messageId or headerMessageId must be specified.",
+              "description": "Settings for opening the message. Exactly one of messageId, headerMessageId or file must be specified.",
               "properties": {
+                "file": {
+                  "type": "object",
+                  "optional": true,
+                  "isInstanceOf": "File",
+                  "additionalProperties": true,
+                  "description": "The DOM file object of a message to be opened."
+                },
                 "messageId": {
                   "type": "integer",
                   "optional": true,
@@ -10834,6 +10843,28 @@
           ]
         },
         {
+          "name": "openAttachment",
+          "type": "function",
+          "description": "Opens the specified attachment",
+          "async": true,
+          "parameters": [
+            {
+              "name": "messageId",
+              "type": "integer"
+            },
+            {
+              "name": "partName",
+              "type": "string",
+              "pattern": "^\\d+(\\.\\d+)*$"
+            },
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "The ID of the tab associated with the message opening."
+            }
+          ]
+        },
+        {
           "name": "query",
           "type": "function",
           "description": "Gets all messages that have the specified properties, or all messages if no properties are specified.",
@@ -10842,6 +10873,8 @@
             {
               "type": "object",
               "name": "queryInfo",
+              "optional": true,
+              "default": {},
               "properties": {
                 "attachment": {
                   "type": "boolean",
@@ -11192,9 +11225,180 @@
       ]
     }
   ],
+  "spaces.json": [
+    {
+      "namespace": "spaces",
+      "min_manifest_version": 3,
+      "types": [
+        {
+          "id": "SpaceButtonProperties",
+          "type": "object",
+          "properties": {
+            "badgeBackgroundColor": {
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "ColorArray"
+                }
+              ],
+              "optional": true,
+              "description": "Sets the background color of the badge. Can be specified as an array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <value>[255, 0, 0, 255]</value>. Can also be a string with an HTML color name (<value>red</value>) or a HEX color value (<value>#FF0000</value> or <value>#F00</value>). Reset when set to an empty string."
+            },
+            "badgeText": {
+              "type": "string",
+              "optional": true,
+              "description": "Sets the badge text for the button in the spaces toolbar. The badge is displayed on top of the icon. Any number of characters can be set, but only about four can fit in the space. Removed when set to an empty string."
+            },
+            "defaultIcons": {
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "manifest.IconPath"
+                }
+              ],
+              "optional": true,
+              "description": "The paths to one or more icons for the button in the spaces toolbar. Defaults to the extension icon, if set to an empty string."
+            },
+            "themeIcons": {
+              "type": "array",
+              "optional": true,
+              "items": {
+                "$ref": "manifest.ThemeIcons"
+              },
+              "description": "Specifies dark and light icons for the button in the spaces toolbar to be used with themes: The ``light`` icons will be used on dark backgrounds and vice versa. At least the set for <em>16px</em> icons should be specified. The set for <em>32px</em> icons will be used on screens with a very high pixel density, if specified."
+            },
+            "title": {
+              "type": "string",
+              "optional": true,
+              "description": "The title for the button in the spaces toolbar, used in the tooltip of the button and as the displayed name in the overflow menu. Defaults to the name of the extension, if set to an empty string."
+            }
+          }
+        },
+        {
+          "id": "ColorArray",
+          "description": "An array of four integers in the range [0,255] that make up the RGBA color. For example, opaque red is <value>[255, 0, 0, 255]</value>.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "minItems": 4,
+          "maxItems": 4
+        }
+      ],
+      "functions": [
+        {
+          "name": "create",
+          "type": "function",
+          "description": "Creates a new space and adds its button to the spaces toolbar.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "spaceId",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_]+$",
+              "description": "The unique id to assign to this space. May only contain alphanumeric characters and underscores."
+            },
+            {
+              "name": "defaultUrl",
+              "type": "string",
+              "description": "The default space url, loaded into a tab when the button in the spaces toolbar is clicked. Supported are <value>https://</value> and <value>http://</value> links, as well as links to WebExtension pages."
+            },
+            {
+              "name": "buttonProperties",
+              "description": "Properties of the button for the new space.",
+              "$ref": "spaces.SpaceButtonProperties",
+              "optional": true,
+              "default": {}
+            }
+          ]
+        },
+        {
+          "name": "remove",
+          "type": "function",
+          "description": "Removes the specified space, closes all its tabs and removes its button from the spaces toolbar. Throws an exception if the requested space does not exist or was not created by this extension.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_]+$",
+              "description": "The name of the space which is to be removed. May only contain alphanumeric characters and underscores."
+            }
+          ]
+        },
+        {
+          "name": "update",
+          "type": "function",
+          "description": "Updates the specified space. Throws an exception if the requested space does not exist or was not created by this extension.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "spaceId",
+              "type": "string",
+              "description": "The id of the space whose button is to be updated. May only contain alphanumeric characters and underscores.",
+              "pattern": "^[a-zA-Z0-9_]+$"
+            },
+            {
+              "name": "defaultUrl",
+              "type": "string",
+              "description": "The default space url, loaded into a tab when the button in the spaces toolbar is clicked. Supported are <value>https://</value> and <value>http://</value> links, as well as links to WebExtension pages.",
+              "optional": true
+            },
+            {
+              "name": "buttonProperties",
+              "description": "Only specified button properties will be updated.",
+              "$ref": "spaces.SpaceButtonProperties",
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "open",
+          "type": "function",
+          "description": "Opens or switches to the specified space. Throws an exception if the requested space does not exist or was not created by this extension.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "spaceId",
+              "type": "string",
+              "description": "The id of the space. May only contain alphanumeric characters and underscores.",
+              "pattern": "^[a-zA-Z0-9_]+$"
+            },
+            {
+              "name": "windowId",
+              "type": "integer",
+              "minimum": -2,
+              "optional": true,
+              "description": "The id of the normal window, where the space should be opened. Defaults to the most recent normal window."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "tab",
+                  "$ref": "Tab",
+                  "optional": true,
+                  "description": "Details about the opened or activated space tab."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "spacesToolbar.json": [
     {
       "namespace": "spacesToolbar",
+      "max_manifest_version": 2,
       "types": [
         {
           "id": "ButtonProperties",
@@ -11285,33 +11489,67 @@
         {
           "name": "removeButton",
           "type": "function",
-          "description": "Removes the specified button from the spaces toolbar. Throws an exception if the requested spaces toolbar button does not exist. If the tab of this button is currently open, it will be closed.",
+          "description": "Removes the specified button from the spaces toolbar. Throws an exception if the requested spaces toolbar button does not exist or was not created by this extension. If the tab of this button is currently open, it will be closed.",
           "async": true,
           "parameters": [
             {
               "name": "id",
               "type": "string",
               "pattern": "^[a-zA-Z0-9_]+$",
-              "description": "The id of the button which is to be removed. May only contain alphanumeric characters and underscores."
+              "description": "The id of the spaces toolbar button, which is to be removed. May only contain alphanumeric characters and underscores."
             }
           ]
         },
         {
           "name": "updateButton",
           "type": "function",
-          "description": "Updates properties of the specified spaces toolbar button. Throws an exception if the requested spaces toolbar button does not exist.",
+          "description": "Updates properties of the specified spaces toolbar button. Throws an exception if the requested spaces toolbar button does not exist or was not created by this extension.",
           "async": true,
           "parameters": [
             {
               "name": "id",
               "type": "string",
-              "description": "The id of the button which is to be updated. May only contain alphanumeric characters and underscores.",
+              "description": "The id of the spaces toolbar button, which is to be updated. May only contain alphanumeric characters and underscores.",
               "pattern": "^[a-zA-Z0-9_]+$"
             },
             {
               "name": "properties",
               "description": "Only specified properties will be updated.",
               "$ref": "spacesToolbar.ButtonProperties"
+            }
+          ]
+        },
+        {
+          "name": "clickButton",
+          "type": "function",
+          "description": "Trigger a click on the specified spaces toolbar button. Throws an exception if the requested spaces toolbar button does not exist or was not created by this extension.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "id",
+              "type": "string",
+              "description": "The id of the spaces toolbar button. May only contain alphanumeric characters and underscores.",
+              "pattern": "^[a-zA-Z0-9_]+$"
+            },
+            {
+              "name": "windowId",
+              "type": "integer",
+              "minimum": -2,
+              "optional": true,
+              "description": "The id of the normal window, where the spaces toolbar button should be clicked. Defaults to the most recent normal window."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "tab",
+                  "$ref": "Tab",
+                  "optional": true,
+                  "description": "Details about the opened or activated tab."
+                }
+              ]
             }
           ]
         }
@@ -11734,6 +11972,8 @@
             {
               "type": "object",
               "name": "queryInfo",
+              "optional": true,
+              "default": {},
               "properties": {
                 "mailTab": {
                   "type": "boolean",
@@ -11845,12 +12085,12 @@
                 "url": {
                   "type": "string",
                   "optional": true,
-                  "description": "A URL to navigate the tab to. Only applicable for <value>content</value> tabs and active <value>mail</value> tabs."
+                  "description": "A URL of a page to load. If the URL points to a content page (a web page, an extension page or a registered WebExtension protocol handler page), the tab will navigate to the requested page. All other URLs will be opened externally without changing the tab. Note: This function will throw an error, if a content page is loaded into a non-content tab (its type must be either <value>content</value> or <value>mail</value>)."
                 },
                 "active": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Set this to <value>true</value>, if the tab should be active. Does not affect whether the window is focused (see :ref:`windows.update`). Setting this to <value>false</value> has no effect."
+                  "description": "Set this to <value>true</value>, if the tab should become active. Does not affect whether the window is focused (see :ref:`windows.update`). Setting this to <value>false</value> has no effect."
                 }
               }
             },
@@ -11872,7 +12112,7 @@
         {
           "name": "move",
           "type": "function",
-          "description": "Moves one or more tabs to a new position within its window, or to a new window. Note that tabs can only be moved to and from windows of type <value>normal</value>.",
+          "description": "Moves one or more tabs to a new position within its current window, or to a different window. Note that tabs can only be moved to and from windows of type <value>normal</value>.",
           "async": "callback",
           "parameters": [
             {
@@ -11905,7 +12145,7 @@
                 "index": {
                   "type": "integer",
                   "minimum": -1,
-                  "description": "The position to move the window to. <value>-1</value> will place the tab at the end of the window."
+                  "description": "The position to move the tab to. <value>-1</value> will place the tab at the end of the window."
                 }
               }
             },
@@ -11917,17 +12157,10 @@
                 {
                   "name": "tabs",
                   "description": "Details about the moved tabs.",
-                  "choices": [
-                    {
-                      "$ref": "Tab"
-                    },
-                    {
-                      "type": "array",
-                      "items": {
-                        "$ref": "Tab"
-                      }
-                    }
-                  ]
+                  "type": "array",
+                  "items": {
+                    "$ref": "Tab"
+                  }
                 }
               ]
             }
@@ -11936,7 +12169,7 @@
         {
           "name": "reload",
           "type": "function",
-          "description": "Reload a tab.",
+          "description": "Reload a tab. Only applicable for tabs which display a content page.",
           "async": "callback",
           "parameters": [
             {
