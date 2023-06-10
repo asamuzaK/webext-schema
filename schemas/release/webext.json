@@ -4029,7 +4029,7 @@
                 "browser_style": {
                   "type": "boolean",
                   "optional": true,
-                  "default": true
+                  "description": "Defaults to true in Manifest V2; Deprecated in Manifest V3."
                 },
                 "default_panel": {
                   "type": "string",
@@ -7652,7 +7652,7 @@
             "browser_style": {
               "type": "boolean",
               "optional": true,
-              "default": false
+              "description": "Deprecated in Manifest V3."
             },
             "default_area": {
               "description": "Defines the location the browserAction will appear by default.  The default location is navbar.",
@@ -13684,11 +13684,13 @@
                 "browser_style": {
                   "type": "boolean",
                   "optional": true,
-                  "default": true
+                  "description": "Defaults to true in Manifest V2; Deprecated in Manifest V3."
                 },
                 "chrome_style": {
                   "type": "boolean",
-                  "optional": true
+                  "optional": true,
+                  "max_manifest_version": 2,
+                  "description": "chrome_style is ignored in Firefox. Its replacement (browser_style) has been deprecated."
                 },
                 "open_in_tab": {
                   "type": "boolean",
@@ -13696,8 +13698,7 @@
                 }
               },
               "additionalProperties": {
-                "type": "any",
-                "deprecated": "An unexpected property was found in the WebExtension manifest"
+                "$ref": "UnrecognizedProperty"
               }
             },
             "content_scripts": {
@@ -13793,13 +13794,11 @@
                   "min_manifest_version": 3,
                   "type": "array",
                   "postprocess": "webAccessibleMatching",
-                  "minItems": 1,
                   "items": {
                     "type": "object",
                     "properties": {
                       "resources": {
                         "type": "array",
-                        "minItems": 1,
                         "items": {
                           "type": "string"
                         }
@@ -13807,7 +13806,6 @@
                       "matches": {
                         "optional": true,
                         "type": "array",
-                        "minItems": 1,
                         "items": {
                           "$ref": "MatchPattern"
                         }
@@ -13829,6 +13827,9 @@
                           ]
                         }
                       }
+                    },
+                    "additionalProperties": {
+                      "$ref": "UnrecognizedProperty"
                     }
                   }
                 }
@@ -14958,7 +14959,7 @@
                 "browser_style": {
                   "type": "boolean",
                   "optional": true,
-                  "default": false
+                  "description": "Deprecated in Manifest V3."
                 },
                 "show_matches": {
                   "type": "array",

@@ -111,6 +111,31 @@
               "type": "string"
             }
           ]
+        },
+        {
+          "name": "onChanged",
+          "description": "Fired when a registered command's shortcut is changed.",
+          "type": "function",
+          "parameters": [
+            {
+              "type": "object",
+              "name": "changeInfo",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the shortcut."
+                },
+                "newShortcut": {
+                  "type": "string",
+                  "description": "The new shortcut active for this command, or blank if not active."
+                },
+                "oldShortcut": {
+                  "type": "string",
+                  "description": "The old shortcut which is no longer active for this command, or blank if the shortcut was previously inactive."
+                }
+              }
+            }
+          ]
         }
       ],
       "functions": [
@@ -3067,7 +3092,8 @@
             {
               "type": "string",
               "enum": [
-                "addressBooks"
+                "addressBooks",
+                "sensitiveDataUpload"
               ]
             }
           ]
@@ -4053,103 +4079,90 @@
       "namespace": "manifest",
       "types": [
         {
-          "id": "ActionManifest",
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "UnrecognizedProperty"
-          },
-          "properties": {
-            "default_label": {
-              "type": "string",
-              "description": "The label of the action button, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
-              "optional": true,
-              "preprocess": "localize"
-            },
-            "default_title": {
-              "type": "string",
-              "description": "The title of the action button. This shows up in the tooltip and the label. Defaults to the add-on name.",
-              "optional": true,
-              "preprocess": "localize"
-            },
-            "default_icon": {
-              "$ref": "IconPath",
-              "description": "The paths to one or more icons for the action button.",
-              "optional": true
-            },
-            "theme_icons": {
-              "type": "array",
-              "optional": true,
-              "minItems": 1,
-              "items": {
-                "$ref": "ThemeIcons"
-              },
-              "description": "Specifies dark and light icons to be used with themes. The ``light`` icon is used on dark backgrounds and vice versa. **Note:** The default theme uses the ``default_icon`` for light backgrounds (if specified)."
-            },
-            "default_popup": {
-              "type": "string",
-              "format": "relativeUrl",
-              "optional": true,
-              "description": "The html document to be opened as a popup when the user clicks on the action button.",
-              "preprocess": "localize"
-            },
-            "browser_style": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Enable browser styles. See the `MDN documentation on browser styles <|link-mdn-browser-styles|>`__ for more information.",
-              "default": false
-            },
-            "default_area": {
-              "description": "Defines the location the action button will appear. This will always behave like <value>maintoolbar</value>. The <value>tabstoolbar</value> area should no longer be used.",
-              "type": "string",
-              "enum": [
-                "maintoolbar",
-                "tabstoolbar"
-              ],
-              "optional": true
-            },
-            "default_windows": {
-              "description": "Defines the windows, the action button should appear in. Defaults to showing it only in the <value>normal</value> Thunderbird window, but can also be shown in the <value>messageDisplay</value> window.",
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "normal",
-                  "messageDisplay"
-                ]
-              },
-              "default": [
-                "normal"
-              ],
-              "optional": true
-            },
-            "allowed_spaces": {
-              "description": "Defines the spaces, in which the action button can appear in the toolbar of the normal Thunderbird window. Defaults to only allowing the action in the <value>mail</value> space. The <value>default</value> space is for tabs that don't belong to any space. If this is an empty array, the action button is shown in all spaces.",
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "mail",
-                  "addressbook",
-                  "calendar",
-                  "tasks",
-                  "chat",
-                  "settings",
-                  "default"
-                ]
-              },
-              "default": [
-                "mail"
-              ],
-              "optional": true
-            }
-          }
-        },
-        {
           "$extend": "WebExtensionManifest",
           "properties": {
             "action": {
               "min_manifest_version": 3,
-              "$ref": "ActionManifest",
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "UnrecognizedProperty"
+              },
+              "properties": {
+                "default_label": {
+                  "type": "string",
+                  "description": "The label of the action button, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "default_title": {
+                  "type": "string",
+                  "description": "The title of the action button. This shows up in the tooltip and the label. Defaults to the add-on name.",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "default_icon": {
+                  "$ref": "IconPath",
+                  "description": "The paths to one or more icons for the action button.",
+                  "optional": true
+                },
+                "theme_icons": {
+                  "type": "array",
+                  "optional": true,
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "ThemeIcons"
+                  },
+                  "description": "Specifies dark and light icons to be used with themes. The ``light`` icon is used on dark backgrounds and vice versa. **Note:** The default theme uses the ``default_icon`` for light backgrounds (if specified)."
+                },
+                "default_popup": {
+                  "type": "string",
+                  "format": "relativeUrl",
+                  "optional": true,
+                  "description": "The html document to be opened as a popup when the user clicks on the action button.",
+                  "preprocess": "localize"
+                },
+                "browser_style": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Enable browser styles. See the `MDN documentation on browser styles <|link-mdn-browser-styles|>`__ for more information.",
+                  "default": false
+                },
+                "default_windows": {
+                  "description": "Defines the windows, the action button should appear in. Defaults to showing it only in the <value>normal</value> Thunderbird window, but can also be shown in the <value>messageDisplay</value> window.",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "normal",
+                      "messageDisplay"
+                    ]
+                  },
+                  "default": [
+                    "normal"
+                  ],
+                  "optional": true
+                },
+                "allowed_spaces": {
+                  "description": "Defines for which spaces the action button will be added to Thunderbird's unified toolbar. Defaults to only allowing the action in the <value>mail</value> space. The <value>default</value> space is for tabs that don't belong to any space. If this is an empty array, the action button is shown in all spaces.",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "mail",
+                      "addressbook",
+                      "calendar",
+                      "tasks",
+                      "chat",
+                      "settings",
+                      "default"
+                    ]
+                  },
+                  "default": [
+                    "mail"
+                  ],
+                  "optional": true
+                }
+              },
               "optional": true
             }
           }
@@ -4159,7 +4172,95 @@
           "properties": {
             "browser_action": {
               "max_manifest_version": 2,
-              "$ref": "ActionManifest",
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "UnrecognizedProperty"
+              },
+              "properties": {
+                "default_label": {
+                  "type": "string",
+                  "description": "The label of the browserAction button, defaults to its title. Can be set to an empty string to not display any label. If the containing toolbar is configured to display text only, the title will be used as fallback.",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "default_title": {
+                  "type": "string",
+                  "description": "The title of the browserAction button. This shows up in the tooltip and the label. Defaults to the add-on name.",
+                  "optional": true,
+                  "preprocess": "localize"
+                },
+                "default_icon": {
+                  "$ref": "IconPath",
+                  "description": "The paths to one or more icons for the browserAction button.",
+                  "optional": true
+                },
+                "theme_icons": {
+                  "type": "array",
+                  "optional": true,
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "ThemeIcons"
+                  },
+                  "description": "Specifies dark and light icons to be used with themes. The ``light`` icon is used on dark backgrounds and vice versa. **Note:** The default theme uses the ``default_icon`` for light backgrounds (if specified)."
+                },
+                "default_popup": {
+                  "type": "string",
+                  "format": "relativeUrl",
+                  "optional": true,
+                  "description": "The html document to be opened as a popup when the user clicks on the browserAction button.",
+                  "preprocess": "localize"
+                },
+                "browser_style": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Enable browser styles. See the `MDN documentation on browser styles <|link-mdn-browser-styles|>`__ for more information.",
+                  "default": false
+                },
+                "default_area": {
+                  "description": "Defines the location the browserAction button will appear. Deprecated and ignored. Replaced by ``allowed_spaces``",
+                  "type": "string",
+                  "enum": [
+                    "maintoolbar",
+                    "tabstoolbar"
+                  ],
+                  "optional": true
+                },
+                "default_windows": {
+                  "description": "Defines the windows, the browserAction button should appear in. Defaults to showing it only in the <value>normal</value> Thunderbird window, but can also be shown in the <value>messageDisplay</value> window.",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "normal",
+                      "messageDisplay"
+                    ]
+                  },
+                  "default": [
+                    "normal"
+                  ],
+                  "optional": true
+                },
+                "allowed_spaces": {
+                  "description": "Defines for which spaces the browserAction button will be added to Thunderbird's unified toolbar. Defaults to only allowing the browserAction in the <value>mail</value> space. The <value>default</value> space is for tabs that don't belong to any space. If this is an empty array, the browserAction button is shown in all spaces.",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "mail",
+                      "addressbook",
+                      "calendar",
+                      "tasks",
+                      "chat",
+                      "settings",
+                      "default"
+                    ]
+                  },
+                  "default": [
+                    "mail"
+                  ],
+                  "optional": true
+                }
+              },
               "optional": true
             }
           }
@@ -4168,7 +4269,7 @@
     },
     {
       "namespace": "action",
-      "description": "Use an action to put a button in the mail window toolbar. In addition to its icon, an action button can also have a tooltip, a badge, and a popup.",
+      "description": "Use the action API to add a button to Thunderbird's unified toolbar. In addition to its icon, an action button can also have a tooltip, a badge, and a popup.",
       "permissions": [
         "manifest:action",
         "manifest:browser_action"
@@ -4827,6 +4928,7 @@
     },
     {
       "namespace": "browserAction",
+      "description": "Use the browserAction API to add a button to Thunderbird's unified toolbar. In addition to its icon, a browserAction button can also have a tooltip, a badge, and a popup.",
       "permissions": [
         "manifest:action",
         "manifest:browser_action"
@@ -5691,17 +5793,16 @@
               "optional": true
             },
             "newsgroups": {
+              "description": "A single newsgroup name or an array of newsgroup names.",
               "choices": [
                 {
-                  "type": "string",
-                  "description": "A newsgroup name."
+                  "type": "string"
                 },
                 {
                   "type": "array",
                   "items": {
                     "type": "string"
-                  },
-                  "description": "An array of newsgroup names."
+                  }
                 }
               ],
               "optional": true
@@ -7164,7 +7265,7 @@
         {
           "name": "enable",
           "type": "function",
-          "description": "Enables the composeAction button for a tab. By default, a composeAction button is enabled.",
+          "description": "Enables the composeAction button for a specific tab (if a ``tabId`` is provided), or for all tabs which do not have a custom enable state. Once the enable state of a tab has been updated individually, all further changes to its state have to be done individually as well. By default, a composeAction button is enabled.",
           "async": "callback",
           "parameters": [
             {
@@ -7185,7 +7286,7 @@
         {
           "name": "disable",
           "type": "function",
-          "description": "Disables the composeAction button for a tab.",
+          "description": "Disables the composeAction button for a specific tab (if a ``tabId`` is provided), or for all tabs which do not have a custom enable state. Once the enable state of a tab has been updated individually, all further changes to its state have to be done individually as well.",
           "async": "callback",
           "parameters": [
             {
@@ -7303,7 +7404,8 @@
             {
               "type": "string",
               "enum": [
-                "messagesModify"
+                "messagesModify",
+                "sensitiveDataUpload"
               ]
             }
           ]
@@ -8368,7 +8470,7 @@
               "properties": {
                 "displayedFolder": {
                   "$ref": "folders.MailFolder",
-                  "description": "Sets the folder displayed in the tab. The extension must have the <permission>accountsRead</permission> permission to do this.",
+                  "description": "Sets the folder displayed in the tab. The extension must have the <permission>accountsRead</permission> permission to do this. The previous message selection in the given folder will be restored.",
                   "optional": true
                 },
                 "sortType": {
@@ -8633,7 +8735,7 @@
       "permissions": [
         "menus"
       ],
-      "description": "The menus API allows to add items to Thunderbirds menus. You can choose what types of objects your context menu additions apply to, such as images, hyperlinks, and pages.",
+      "description": "The menus API allows to add items to Thunderbird's menus. You can choose what types of objects your context menu additions apply to, such as images, hyperlinks, and pages.",
       "properties": {
         "ACTION_MENU_TOP_LEVEL_LIMIT": {
           "value": 6,
@@ -9105,9 +9207,19 @@
                   "description": "Whether this context menu item is enabled or disabled. Defaults to true."
                 },
                 "command": {
-                  "type": "string",
                   "optional": true,
-                  "description": "Specifies a command to issue for the context click. Currently supports internal commands <value>_execute_action</value>, <value>_execute_compose_action</value> and <value>_execute_message_display_action</value>."
+                  "choices": [
+                    {
+                      "type": "string",
+                      "max_manifest_version": 2,
+                      "description": "Specifies a command to issue for the context click. Currently supports internal commands <value>_execute_browser_action</value>, <value>_execute_compose_action</value> and <value>_execute_message_display_action</value>."
+                    },
+                    {
+                      "type": "string",
+                      "min_manifest_version": 3,
+                      "description": "Specifies a command to issue for the context click. Currently supports internal commands <value>_execute_action</value>, <value>_execute_compose_action</value> and <value>_execute_message_display_action</value>."
+                    }
+                  ]
                 }
               }
             },
@@ -10163,7 +10275,7 @@
         {
           "name": "enable",
           "type": "function",
-          "description": "Enables the messageDisplayAction button for a tab. By default, a messageDisplayAction button is enabled.",
+          "description": "Enables the messageDisplayAction button for a specific tab (if a ``tabId`` is provided), or for all tabs which do not have a custom enable state. Once the enable state of a tab has been updated individually, all further changes to its state have to be done individually as well. By default, a messageDisplayAction button is enabled.",
           "async": "callback",
           "parameters": [
             {
@@ -10184,7 +10296,7 @@
         {
           "name": "disable",
           "type": "function",
-          "description": "Disables the messageDisplayAction button for a tab.",
+          "description": "Disables the messageDisplayAction button for a specific tab (if a ``tabId`` is provided), or for all tabs which do not have a custom enable state. Once the enable state of a tab has been updated individually, all further changes to its state have to be done individually as well.",
           "async": "callback",
           "parameters": [
             {
@@ -10306,7 +10418,8 @@
                 "messagesImport",
                 "messagesMove",
                 "messagesRead",
-                "messagesTags"
+                "messagesTags",
+                "sensitiveDataUpload"
               ]
             }
           ]
@@ -11228,7 +11341,6 @@
   "spaces.json": [
     {
       "namespace": "spaces",
-      "min_manifest_version": 3,
       "types": [
         {
           "id": "SpaceButtonProperties",
@@ -11289,6 +11401,35 @@
           },
           "minItems": 4,
           "maxItems": 4
+        },
+        {
+          "id": "Space",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "The id of the space.",
+              "minimum": 1
+            },
+            "name": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_]+$",
+              "description": "The name of the space. Names are unique for a single extension, but different extensions may use the same name."
+            },
+            "isBuiltIn": {
+              "type": "boolean",
+              "description": "Whether this space is one of the default Thunderbird spaces, or an extension space."
+            },
+            "isSelfOwned": {
+              "type": "boolean",
+              "description": "Whether this space was created by this extension."
+            },
+            "extensionId": {
+              "type": "string",
+              "optional": true,
+              "description": "The id of the extension which owns the space. The <permission>management</permission> permission is required to include this property."
+            }
+          }
         }
       ],
       "functions": [
@@ -11296,13 +11437,13 @@
           "name": "create",
           "type": "function",
           "description": "Creates a new space and adds its button to the spaces toolbar.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
-              "name": "spaceId",
+              "name": "name",
               "type": "string",
               "pattern": "^[a-zA-Z0-9_]+$",
-              "description": "The unique id to assign to this space. May only contain alphanumeric characters and underscores."
+              "description": "The name to assign to this space. May only contain alphanumeric characters and underscores. Must be unique for this extension."
             },
             {
               "name": "defaultUrl",
@@ -11315,6 +11456,98 @@
               "$ref": "spaces.SpaceButtonProperties",
               "optional": true,
               "default": {}
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "space",
+                  "$ref": "spaces.Space"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "type": "function",
+          "description": "Retrieves details about the specified space.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "spaceId",
+              "type": "integer",
+              "description": "The id of the space.",
+              "minimum": 1
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "space",
+                  "$ref": "spaces.Space"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "query",
+          "type": "function",
+          "description": "Gets all spaces that have the specified properties, or all spaces if no properties are specified.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "object",
+              "name": "queryInfo",
+              "optional": true,
+              "default": {},
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "The id of the space.",
+                  "optional": true,
+                  "minimum": 1
+                },
+                "name": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_]+$",
+                  "optional": true,
+                  "description": "The name of the spaces (names are not unique)."
+                },
+                "isBuiltIn": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Spaces should be default Thunderbird spaces."
+                },
+                "isSelfOwned": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Spaces should have been created by this extension."
+                },
+                "extensionId": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "Id of the extension which should own the spaces. The <permission>management</permission> permission is required to be able to match against extension ids."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "array",
+                  "items": {
+                    "$ref": "spaces.Space"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -11325,10 +11558,10 @@
           "async": true,
           "parameters": [
             {
-              "name": "name",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9_]+$",
-              "description": "The name of the space which is to be removed. May only contain alphanumeric characters and underscores."
+              "name": "spaceId",
+              "type": "integer",
+              "description": "The id of the space.",
+              "minimum": 1
             }
           ]
         },
@@ -11340,9 +11573,9 @@
           "parameters": [
             {
               "name": "spaceId",
-              "type": "string",
-              "description": "The id of the space whose button is to be updated. May only contain alphanumeric characters and underscores.",
-              "pattern": "^[a-zA-Z0-9_]+$"
+              "type": "integer",
+              "description": "The id of the space.",
+              "minimum": 1
             },
             {
               "name": "defaultUrl",
@@ -11366,9 +11599,9 @@
           "parameters": [
             {
               "name": "spaceId",
-              "type": "string",
-              "description": "The id of the space. May only contain alphanumeric characters and underscores.",
-              "pattern": "^[a-zA-Z0-9_]+$"
+              "type": "integer",
+              "description": "The id of the space.",
+              "minimum": 1
             },
             {
               "name": "windowId",
@@ -11384,7 +11617,7 @@
               "parameters": [
                 {
                   "name": "tab",
-                  "$ref": "Tab",
+                  "$ref": "tabs.Tab",
                   "optional": true,
                   "description": "Details about the opened or activated space tab."
                 }
@@ -11471,7 +11704,7 @@
           "name": "addButton",
           "type": "function",
           "description": "Adds a new button to the spaces toolbar. Throws an exception, if the used ``id`` is not unique within the extension.",
-          "async": true,
+          "async": "callback",
           "parameters": [
             {
               "name": "id",
@@ -11483,6 +11716,20 @@
               "name": "properties",
               "description": "Properties of the new button. The ``url`` is mandatory.",
               "$ref": "spacesToolbar.ButtonProperties"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "spaceId",
+                  "type": "integer",
+                  "description": "The id of the space belonging to the newly created button, as used by the tabs API.",
+                  "minimum": 1,
+                  "optional": true
+                }
+              ]
             }
           ]
         },
@@ -11545,7 +11792,7 @@
               "parameters": [
                 {
                   "name": "tab",
-                  "$ref": "Tab",
+                  "$ref": "tabs.Tab",
                   "optional": true,
                   "description": "Details about the opened or activated tab."
                 }
@@ -11663,6 +11910,11 @@
               "optional": true,
               "description": "The height of the tab in pixels."
             },
+            "cookieStoreId": {
+              "type": "string",
+              "optional": true,
+              "description": "The `CookieStore <|link-cookieStore|>`__ id used by the tab. Either a custom id created using the `contextualIdentities API <|link-contextualIdentity|>`__, or a built-in one: <value>firefox-default</value>, <value>firefox-container-1</value>, <value>firefox-container-2</value>, <value>firefox-container-3</value>, <value>firefox-container-4</value>, <value>firefox-container-5</value>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons."
+            },
             "type": {
               "type": "string",
               "enum": [
@@ -11684,6 +11936,12 @@
               "type": "boolean",
               "optional": true,
               "description": "Whether the tab is a 3-pane tab."
+            },
+            "spaceId": {
+              "type": "integer",
+              "description": "The id of the space.",
+              "minimum": 1,
+              "optional": true
             }
           }
         },
@@ -11912,6 +12170,11 @@
                   "optional": true,
                   "description": "Whether the tab should become the active tab in the window. Does not affect whether the window is focused (see :ref:`windows.update`). Defaults to <value>true</value>."
                 },
+                "cookieStoreId": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The `CookieStore <|link-cookieStore|>`__ id the new tab should use. Either a custom id created using the `contextualIdentities API <|link-contextualIdentity|>`__, or a built-in one: <value>firefox-default</value>, <value>firefox-container-1</value>, <value>firefox-container-2</value>, <value>firefox-container-3</value>, <value>firefox-container-4</value>, <value>firefox-container-5</value>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons."
+                },
                 "selected": {
                   "deprecated": "Please use ``createProperties.active``.",
                   "unsupported": true,
@@ -11980,6 +12243,12 @@
                   "optional": true,
                   "description": "Whether the tab is a Thunderbird 3-pane tab."
                 },
+                "spaceId": {
+                  "type": "integer",
+                  "description": "The id of the space the tabs should belong to.",
+                  "minimum": 1,
+                  "optional": true
+                },
                 "type": {
                   "type": "string",
                   "optional": true,
@@ -12046,6 +12315,21 @@
                   "optional": true,
                   "minimum": 0,
                   "description": "The position of the tabs within their windows."
+                },
+                "cookieStoreId": {
+                  "choices": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "optional": true,
+                  "description": "The `CookieStore <|link-cookieStore|>`__ id(s) used by the tabs. Either custom ids created using the `contextualIdentities API <|link-contextualIdentity|>`__, or built-in ones: <value>firefox-default</value>, <value>firefox-container-1</value>, <value>firefox-container-2</value>, <value>firefox-container-3</value>, <value>firefox-container-4</value>, <value>firefox-container-5</value>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons."
                 }
               }
             },
@@ -12846,6 +13130,11 @@
                   "type": "boolean",
                   "optional": true,
                   "description": "Allow scripts running inside the window to close the window by calling <code>window.close()</code>."
+                },
+                "cookieStoreId": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The CookieStoreId to use for all tabs that were created when the window is opened."
                 },
                 "titlePreface": {
                   "type": "string",
