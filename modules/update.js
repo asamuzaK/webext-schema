@@ -13,7 +13,7 @@ import { CHAR, INDENT } from './constant.js';
 /* constants */
 const DIR_CWD = process.cwd();
 const PERM_FILE = 0o644;
-export const ESR_VER = 102;
+export const ESR_VER = 115;
 
 /**
  * fetch text
