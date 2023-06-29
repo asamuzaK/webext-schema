@@ -916,6 +916,31 @@
               "type": "string"
             }
           ]
+        },
+        {
+          "name": "onChanged",
+          "description": "Fired when a registered command's shortcut is changed.",
+          "type": "function",
+          "parameters": [
+            {
+              "type": "object",
+              "name": "changeInfo",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the shortcut."
+                },
+                "newShortcut": {
+                  "type": "string",
+                  "description": "The new shortcut active for this command, or blank if not active."
+                },
+                "oldShortcut": {
+                  "type": "string",
+                  "description": "The old shortcut which is no longer active for this command, or blank if the shortcut was previously inactive."
+                }
+              }
+            }
+          ]
         }
       ],
       "functions": [
@@ -17534,6 +17559,13 @@
               "description": "The maximum size (in bytes) of the managed storage JSON manifest file. Files larger than this limit will fail to load."
             }
           }
+        },
+        "session": {
+          "allowedContexts": [
+            "devtools"
+          ],
+          "$ref": "StorageArea",
+          "description": "Items in the <code>session</code> storage area are kept in memory, and only until the either browser or extension is closed or reloaded."
         }
       }
     }

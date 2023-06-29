@@ -1836,14 +1836,14 @@
         {
           "name": "setUninstallURL",
           "type": "function",
-          "description": "Sets the URL to be visited upon uninstallation. This may be used to clean up server-side data, do analytics, and implement surveys. Maximum 255 characters.",
+          "description": "Sets the URL to be visited upon uninstallation. This may be used to clean up server-side data, do analytics, and implement surveys. Maximum 1023 characters.",
           "async": "callback",
           "parameters": [
             {
               "type": "string",
               "name": "url",
               "optional": true,
-              "maxLength": 255,
+              "maxLength": 1023,
               "description": "URL to be opened after the extension is uninstalled. This URL must have an http: or https: scheme. Set an empty string to not open a new tab upon uninstallation."
             },
             {
@@ -4118,7 +4118,7 @@
                   "type": "string",
                   "format": "relativeUrl",
                   "optional": true,
-                  "description": "The html document to be opened as a popup when the user clicks on the action button.",
+                  "description": "The html document to be opened as a popup when the user clicks on the action button. Ignored for action buttons with type <value>menu</value>.",
                   "preprocess": "localize"
                 },
                 "browser_style": {
@@ -4161,6 +4161,16 @@
                     "mail"
                   ],
                   "optional": true
+                },
+                "type": {
+                  "description": "Specifies the type of the button. Default type is <code>button</code>.",
+                  "type": "string",
+                  "enum": [
+                    "button",
+                    "menu"
+                  ],
+                  "optional": true,
+                  "default": "button"
                 }
               },
               "optional": true
@@ -4207,7 +4217,7 @@
                   "type": "string",
                   "format": "relativeUrl",
                   "optional": true,
-                  "description": "The html document to be opened as a popup when the user clicks on the browserAction button.",
+                  "description": "The html document to be opened as a popup when the user clicks on the browserAction button. Ignored for action buttons with type <value>menu</value>.",
                   "preprocess": "localize"
                 },
                 "browser_style": {
@@ -4259,6 +4269,16 @@
                     "mail"
                   ],
                   "optional": true
+                },
+                "type": {
+                  "description": "Specifies the type of the button. Default type is <code>button</code>.",
+                  "type": "string",
+                  "enum": [
+                    "button",
+                    "menu"
+                  ],
+                  "optional": true,
+                  "default": "button"
                 }
               },
               "optional": true
@@ -4877,7 +4897,7 @@
         {
           "name": "openPopup",
           "type": "function",
-          "description": "Opens the action's popup window in the specified window. Defaults to the current window. Returns false if the popup could not be opened because the action is disabled or has been removed from the toolbar.",
+          "description": "Opens the action's popup window in the specified window. Defaults to the current window. Returns false if the popup could not be opened because the action has no popup, is of type <value>menu</value>, is disabled or has been removed from the toolbar.",
           "async": "callback",
           "parameters": [
             {
@@ -6711,7 +6731,7 @@
                   "type": "string",
                   "format": "relativeUrl",
                   "optional": true,
-                  "description": "The html document to be opened as a popup when the user clicks on the composeAction button.",
+                  "description": "The html document to be opened as a popup when the user clicks on the composeAction button. Ignored for action buttons with type <value>menu</value>.",
                   "preprocess": "localize"
                 },
                 "browser_style": {
@@ -6728,6 +6748,16 @@
                     "formattoolbar"
                   ],
                   "optional": true
+                },
+                "type": {
+                  "description": "Specifies the type of the button. Default type is <code>button</code>.",
+                  "type": "string",
+                  "enum": [
+                    "button",
+                    "menu"
+                  ],
+                  "optional": true,
+                  "default": "button"
                 }
               },
               "optional": true
@@ -7344,7 +7374,7 @@
         {
           "name": "openPopup",
           "type": "function",
-          "description": "Opens the action's popup window in the specified window. Defaults to the current window. Returns false if the popup could not be opened because the action is disabled or has been removed from the toolbar.",
+          "description": "Opens the action's popup window in the specified window. Defaults to the current window. Returns false if the popup could not be opened because the action has no popup, is of type <value>menu</value>, is disabled or has been removed from the toolbar.",
           "async": "callback",
           "parameters": [
             {
@@ -8753,6 +8783,7 @@
                 "all_message_attachments",
                 "audio",
                 "compose_action",
+                "compose_action_menu",
                 "compose_attachments",
                 "compose_body",
                 "editable",
@@ -8762,6 +8793,7 @@
                 "link",
                 "message_attachments",
                 "message_display_action",
+                "message_display_action_menu",
                 "message_list",
                 "page",
                 "password",
@@ -8775,14 +8807,16 @@
               "type": "string",
               "max_manifest_version": 2,
               "enum": [
-                "browser_action"
+                "browser_action",
+                "browser_action_menu"
               ]
             },
             {
               "type": "string",
               "min_manifest_version": 3,
               "enum": [
-                "action"
+                "action",
+                "action_menu"
               ]
             }
           ],
@@ -9725,7 +9759,7 @@
                   "type": "string",
                   "format": "relativeUrl",
                   "optional": true,
-                  "description": "The html document to be opened as a popup when the user clicks on the messageDisplayAction button.",
+                  "description": "The html document to be opened as a popup when the user clicks on the messageDisplayAction button. Ignored for action buttons with type <value>menu</value>.",
                   "preprocess": "localize"
                 },
                 "browser_style": {
@@ -9738,6 +9772,16 @@
                   "description": "Currently unused.",
                   "type": "string",
                   "optional": true
+                },
+                "type": {
+                  "description": "Specifies the type of the button. Default type is <code>button</code>.",
+                  "type": "string",
+                  "enum": [
+                    "button",
+                    "menu"
+                  ],
+                  "optional": true,
+                  "default": "button"
                 }
               },
               "optional": true
@@ -10354,7 +10398,7 @@
         {
           "name": "openPopup",
           "type": "function",
-          "description": "Opens the action's popup window in the specified window. Defaults to the current window. Returns false if the popup could not be opened because the action is disabled or has been removed from the toolbar.",
+          "description": "Opens the action's popup window in the specified window. Defaults to the current window. Returns false if the popup could not be opened because the action has no popup, is of type <value>menu</value>, is disabled or has been removed from the toolbar.",
           "async": "callback",
           "parameters": [
             {
@@ -11332,6 +11376,82 @@
               "type": "string",
               "name": "key",
               "pattern": "^[$a-zA-Z0-9]+$"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sessions.json": [
+    {
+      "namespace": "sessions",
+      "functions": [
+        {
+          "name": "setTabValue",
+          "type": "function",
+          "description": "Store a key/value pair associated with a given tab.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "ID of the tab with which you want to associate the data. Error is thrown if ID is invalid."
+            },
+            {
+              "name": "key",
+              "type": "string",
+              "description": "Key that you can later use to retrieve this particular data value."
+            },
+            {
+              "name": "value",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "getTabValue",
+          "type": "function",
+          "description": "Retrieve a previously stored value for a given tab, given its key.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "ID of the tab whose data you are trying to retrieve. Error is thrown if ID is invalid."
+            },
+            {
+              "name": "key",
+              "type": "string",
+              "description": "Key identifying the particular value to retrieve."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "removeTabValue",
+          "type": "function",
+          "description": "Remove a key/value pair from a given tab.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "ID of the tab whose data you are trying to remove. Error is thrown if ID is invalid."
+            },
+            {
+              "name": "key",
+              "type": "string",
+              "description": "Key identifying the particular value to remove."
             }
           ]
         }
@@ -12819,9 +12939,6 @@
           "enum": [
             "normal",
             "popup",
-            "panel",
-            "app",
-            "devtools",
             "messageCompose",
             "messageDisplay"
           ]
