@@ -4463,6 +4463,11 @@
               "optional": true,
               "description": "Whether the tab has produced sound over the past couple of seconds (but it might not be heard if also muted). Equivalent to whether the speaker audio indicator is showing."
             },
+            "autoDiscardable": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether the tab can be discarded automatically by the browser when resources are low."
+            },
             "mutedInfo": {
               "$ref": "MutedInfo",
               "optional": true,
@@ -4764,6 +4769,7 @@
           "enum": [
             "attention",
             "audible",
+            "autoDiscardable",
             "discarded",
             "favIconUrl",
             "hidden",
@@ -5095,6 +5101,11 @@
                   "optional": true,
                   "description": "Whether the tabs are audible."
                 },
+                "autoDiscardable": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the tab can be discarded automatically by the browser when resources are low."
+                },
                 "muted": {
                   "type": "boolean",
                   "optional": true,
@@ -5311,6 +5322,11 @@
                   "type": "boolean",
                   "optional": true,
                   "description": "Whether the tab should be active. Does not affect whether the window is focused (see $(ref:windows.update))."
+                },
+                "autoDiscardable": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the tab can be discarded automatically by the browser when resources are low."
                 },
                 "highlighted": {
                   "type": "boolean",
@@ -6057,6 +6073,11 @@
                   "type": "boolean",
                   "optional": true,
                   "description": "The tab's new audible state."
+                },
+                "autoDiscardable": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "The tab's new autoDiscardable state."
                 },
                 "discarded": {
                   "type": "boolean",
@@ -7855,6 +7876,32 @@
                 {
                   "name": "result",
                   "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getUserSettings",
+          "type": "function",
+          "description": "Returns the user-specified settings relating to an extension's action.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "userSettings",
+                  "type": "object",
+                  "properties": {
+                    "isOnToolbar": {
+                      "type": "boolean",
+                      "optional": true,
+                      "description": "Whether the extension's action icon is visible on browser windows' top-level toolbar (i.e., whether the extension has been 'pinned' by the user)."
+                    }
+                  },
+                  "description": "The collection of user-specified settings relating to an extension's action."
                 }
               ]
             }
@@ -16263,14 +16310,14 @@
         {
           "name": "setUninstallURL",
           "type": "function",
-          "description": "Sets the URL to be visited upon uninstallation. This may be used to clean up server-side data, do analytics, and implement surveys. Maximum 255 characters.",
+          "description": "Sets the URL to be visited upon uninstallation. This may be used to clean up server-side data, do analytics, and implement surveys. Maximum 1023 characters.",
           "async": "callback",
           "parameters": [
             {
               "type": "string",
               "name": "url",
               "optional": true,
-              "maxLength": 255,
+              "maxLength": 1023,
               "description": "URL to be opened after the extension is uninstalled. This URL must have an http: or https: scheme. Set an empty string to not open a new tab upon uninstallation."
             },
             {
@@ -19543,12 +19590,10 @@
                   "description": "0 indicates the navigation happens in the tab content window; a positive value indicates navigation in a subframe. Frame IDs are unique within a tab."
                 },
                 "transitionType": {
-                  "unsupported": true,
                   "$ref": "TransitionType",
                   "description": "Cause of the navigation."
                 },
                 "transitionQualifiers": {
-                  "unsupported": true,
                   "type": "array",
                   "description": "A list of transition qualifiers.",
                   "items": {
@@ -19770,12 +19815,10 @@
                   "description": "0 indicates the navigation happens in the tab content window; a positive value indicates navigation in a subframe. Frame IDs are unique within a tab."
                 },
                 "transitionType": {
-                  "unsupported": true,
                   "$ref": "TransitionType",
                   "description": "Cause of the navigation."
                 },
                 "transitionQualifiers": {
-                  "unsupported": true,
                   "type": "array",
                   "description": "A list of transition qualifiers.",
                   "items": {
@@ -19849,12 +19892,10 @@
                   "description": "0 indicates the navigation happens in the tab content window; a positive value indicates navigation in a subframe. Frame IDs are unique within a tab."
                 },
                 "transitionType": {
-                  "unsupported": true,
                   "$ref": "TransitionType",
                   "description": "Cause of the navigation."
                 },
                 "transitionQualifiers": {
-                  "unsupported": true,
                   "type": "array",
                   "description": "A list of transition qualifiers.",
                   "items": {
