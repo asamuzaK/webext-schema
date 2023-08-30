@@ -21,14 +21,14 @@
   },
   "devDependencies": {
     "@types/firefox-webext-browser": "^111.0.1",
-    "@types/node": "^20.5.6",
+    "@types/node": "^20.5.7",
     "@types/sinon": "^10.0.16",
     "c8": "^8.0.1",
     "chai": "^4.3.8",
     "eslint": "^8.48.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-jsdoc": "^46.5.0",
+    "eslint-plugin-jsdoc": "^46.5.1",
     "eslint-plugin-regexp": "^1.15.0",
     "eslint-plugin-unicorn": "^48.0.1",
     "mocha": "^10.2.0",
@@ -54,5 +54,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "version": "5.2.1"
+  "version": "5.2.2"
 }
