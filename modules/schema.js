@@ -10,6 +10,8 @@ import decamelize from 'decamelize';
 import sinon from 'sinon';
 import { getType, isObjectNotEmpty, isString } from './common.js';
 import { convertUriToFilePath } from './file-util.js';
+
+/* constants */
 import { CHAR } from './constant.js';
 
 export class Schema {

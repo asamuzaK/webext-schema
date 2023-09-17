@@ -8,9 +8,9 @@ import process from 'node:process';
 import JSON5 from 'json5';
 import { getType, isString } from './common.js';
 import { createFile } from './file-util.js';
-import { CHAR, INDENT } from './constant.js';
 
 /* constants */
+import { CHAR, INDENT } from './constant.js';
 const DIR_CWD = process.cwd();
 const PERM_FILE = 0o644;
 export const ESR_VER = 115;
