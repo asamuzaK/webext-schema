@@ -12575,7 +12575,8 @@
             "unregisteredthreads",
             "processcpu",
             "power",
-            "responsiveness"
+            "responsiveness",
+            "cpufreq"
           ]
         },
         {
