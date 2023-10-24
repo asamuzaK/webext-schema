@@ -7,7 +7,7 @@
   "bugs": "https://github.com/asamuzaK/webext-schema/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/asamuzaK/webext-schema.git"
+    "url": "git+https://github.com/asamuzaK/webext-schema.git"
   },
   "type": "module",
   "main": "index.js",
@@ -54,5 +54,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "version": "5.2.4"
+  "version": "5.2.5"
 }
