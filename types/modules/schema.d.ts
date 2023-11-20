@@ -7,7 +7,7 @@ export class Schema {
         _sandbox: sinon.SinonSandbox;
     };
     _schema: any;
-    set channel(arg: any);
+    set channel(ch: any);
     get channel(): any;
     _getTargetFromNamespace(key: string): object;
     _assignImportMap(): void;
