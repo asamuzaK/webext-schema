@@ -4114,7 +4114,7 @@
                   "preprocess": "localize"
                 },
                 "default_icon": {
-                  "$ref": "IconPath",
+                  "$ref": "manifest.IconPath",
                   "description": "The paths to one or more icons for the action button.",
                   "optional": true
                 },
@@ -4213,7 +4213,7 @@
                   "preprocess": "localize"
                 },
                 "default_icon": {
-                  "$ref": "IconPath",
+                  "$ref": "manifest.IconPath",
                   "description": "The paths to one or more icons for the browserAction button.",
                   "optional": true
                 },
@@ -5848,7 +5848,7 @@
             },
             "relatedMessageId": {
               "description": "The id of the original message (in case of draft, template, forward or reply). Read-only. Is <value>null</value> in all other cases or if the original message was opened from file.",
-              "type": "integer",
+              "$ref": "messages.MessageId",
               "optional": true
             },
             "subject": {
@@ -6224,9 +6224,8 @@
             {
               "name": "messageId",
               "description": "If specified, the message or template to edit as a new message.",
-              "type": "integer",
-              "optional": true,
-              "minimum": 1
+              "$ref": "messages.MessageId",
+              "optional": true
             },
             {
               "name": "details",
@@ -6255,8 +6254,7 @@
             {
               "name": "messageId",
               "description": "The message to reply to, as retrieved using other APIs.",
-              "type": "integer",
-              "minimum": 1
+              "$ref": "messages.MessageId"
             },
             {
               "name": "replyType",
@@ -6295,8 +6293,7 @@
             {
               "name": "messageId",
               "description": "The message to forward, as retrieved using other APIs.",
-              "type": "integer",
-              "minimum": 1
+              "$ref": "messages.MessageId"
             },
             {
               "name": "forwardType",
@@ -6733,7 +6730,7 @@
                   "preprocess": "localize"
                 },
                 "default_icon": {
-                  "$ref": "IconPath",
+                  "$ref": "manifest.IconPath",
                   "description": "The paths to one or more icons for the composeAction button.",
                   "optional": true
                 },
@@ -7819,6 +7816,12 @@
           }
         }
       ],
+      "properties": {
+        "DEFAULT_MOST_RECENT_LIMIT": {
+          "value": -1,
+          "description": "The number of most recent folders used in Thunderbird's UI. Controled by the <value>mail.folder_widget.max_recent</value> preference."
+        }
+      },
       "functions": [
         {
           "name": "query",
@@ -7930,10 +7933,10 @@
                   "optional": true,
                   "description": "Whether the folder is a root folder, or not."
                 },
-                "mostRecent": {
-                  "type": "boolean",
+                "limit": {
+                  "type": "integer",
                   "optional": true,
-                  "description": "Whether the folder (excluding subfolders) has been used within the last month. The returned folders will be sorted by their recentness and limited to the most recent ones, which is controlled by the <value>mail.folder_widget.max_recent</value> preference. A value of <value>false</value> is ignored."
+                  "description": "Limits the number of returned folders. If used together with <value>recent</value>, supports being set to :ref:`folders.DEFAULT_MOST_RECENT_LIMIT`"
                 },
                 "name": {
                   "choices": [
@@ -7962,7 +7965,7 @@
                 "recent": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Whether the folder (excluding subfolders) has been used within the last month, or not. The returned folders will be sorted by their recentness. Ignored if <value>mostRecent</value> is specified."
+                  "description": "Whether the folder (excluding subfolders) has been used within the last month, or not. The returned folders will be sorted by their recentness."
                 },
                 "specialUse": {
                   "type": "array",
@@ -9266,7 +9269,7 @@
               "type": "array",
               "description": "The IDs of the messages, which should be selected. The mail tab will switch to the folder of the selected messages. Throws if they belong to different folders. Array can be empty to deselect any currently selected message.",
               "items": {
-                "type": "integer"
+                "$ref": "messages.MessageId"
               }
             }
           ]
@@ -9762,6 +9765,37 @@
               }
             }
           }
+        },
+        {
+          "id": "SingleMenuIconPath",
+          "choices": [
+            {
+              "type": "string",
+              "format": "imageDataOrStrictRelativeUrl"
+            },
+            {
+              "type": "string",
+              "pattern": "^(moz-extension|blob):.*$"
+            }
+          ],
+          "description": "The provided path may be a relative path to an icon file, an image <value>data:</value> URL, a <value>blob:</value> URL or a <value>moz-extension:<value> URL. The <value>data:</value> or <value>blob:</value> URLs can be retrieved as follows: <literalinclude>includes/DataBlobUrls.js<lang>JavaScript</lang></literalinclude>,"
+        },
+        {
+          "id": "MenuIconPath",
+          "choices": [
+            {
+              "$ref": "SingleMenuIconPath"
+            },
+            {
+              "type": "object",
+              "patternProperties": {
+                "^[1-9]\\d*$": {
+                  "$ref": "SingleMenuIconPath"
+                }
+              }
+            }
+          ],
+          "description": "Either a <em>string</em> to specify a single icon path to be used for all sizes, or a <em>dictionary object</em> to specify paths for multiple icons in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>name</em> being a size and <em>value</em> being a path to the icon for the specified size. Example: <literalinclude>includes/MenuIconPath.json<lang>JSON</lang></literalinclude>See the `MDN documentation about choosing icon sizes <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/browser_action#choosing_icon_sizes>`__ for more information on this. "
         }
       ],
       "functions": [
@@ -9796,7 +9830,7 @@
                   "description": "The unique ID to assign to this item. Mandatory for event pages. Cannot be the same as another ID for this extension."
                 },
                 "icons": {
-                  "$ref": "manifest.IconPath",
+                  "$ref": "MenuIconPath",
                   "optional": true,
                   "description": "Custom icons to display next to the menu item. Custom icons can only be set for items appearing in submenus."
                 },
@@ -9937,7 +9971,7 @@
                   "optional": true
                 },
                 "icons": {
-                  "$ref": "manifest.IconPath",
+                  "$ref": "MenuIconPath",
                   "optional": "omit-key-if-missing"
                 },
                 "title": {
@@ -10312,9 +10346,8 @@
                   "description": "The DOM file object of a message to be opened."
                 },
                 "messageId": {
-                  "type": "integer",
+                  "$ref": "messages.MessageId",
                   "optional": true,
-                  "minimum": 1,
                   "description": "The id of a message to be opened. Will throw an <em>ExtensionError</em>, if the provided ``messageId`` is unknown or invalid."
                 },
                 "headerMessageId": {
@@ -10385,7 +10418,7 @@
                   "preprocess": "localize"
                 },
                 "default_icon": {
-                  "$ref": "IconPath",
+                  "$ref": "manifest.IconPath",
                   "description": "The paths to one or more icons for the messageDisplayAction button.",
                   "optional": true
                 },
@@ -11106,6 +11139,8 @@
                 "messagesMove",
                 "messagesRead",
                 "messagesTags",
+                "messagesTagsList",
+                "messagesUpdate",
                 "sensitiveDataUpload"
               ]
             }
@@ -11119,6 +11154,12 @@
         "messagesRead"
       ],
       "types": [
+        {
+          "id": "MessageId",
+          "type": "integer",
+          "minimum": 1,
+          "description": "A unique id representing a :ref:`messages.MessageHeader` and the associated message. This id doesn’t refer to the Message-ID email header. It is an internal tracking number that does not remain after a restart. Nor does it follow an email that has been moved to a different folder."
+        },
         {
           "id": "MessageHeader",
           "type": "object",
@@ -11166,8 +11207,7 @@
               "type": "boolean"
             },
             "id": {
-              "type": "integer",
-              "minimum": 1
+              "$ref": "messages.MessageId"
             },
             "junk": {
               "description": "Whether the message has been marked as junk. Always <value>false</value> for news/nntp messages and external messages.",
@@ -11306,7 +11346,7 @@
             },
             "tags": {
               "type": "array",
-              "description": "Tags associated with this message. For a list of available tags, call the listTags method.",
+              "description": "Tags associated with this message. For a list of available tags, call the :ref:`messages.tags.list` method.",
               "optional": true,
               "items": {
                 "type": "string"
@@ -11530,7 +11570,7 @@
           "parameters": [
             {
               "name": "messageId",
-              "type": "integer"
+              "$ref": "messages.MessageId"
             },
             {
               "type": "function",
@@ -11552,7 +11592,7 @@
           "parameters": [
             {
               "name": "messageId",
-              "type": "integer"
+              "$ref": "messages.MessageId"
             },
             {
               "type": "function",
@@ -11574,7 +11614,7 @@
           "parameters": [
             {
               "name": "messageId",
-              "type": "integer"
+              "$ref": "messages.MessageId"
             },
             {
               "name": "options",
@@ -11634,7 +11674,7 @@
           "parameters": [
             {
               "name": "messageId",
-              "type": "integer"
+              "$ref": "messages.MessageId"
             },
             {
               "type": "function",
@@ -11659,7 +11699,7 @@
           "parameters": [
             {
               "name": "messageId",
-              "type": "integer"
+              "$ref": "messages.MessageId"
             },
             {
               "name": "partName",
@@ -11688,7 +11728,7 @@
           "parameters": [
             {
               "name": "messageId",
-              "type": "integer"
+              "$ref": "messages.MessageId"
             },
             {
               "name": "partName",
@@ -11801,7 +11841,7 @@
                 "tags": {
                   "$ref": "messages.tags.TagsDetail",
                   "optional": true,
-                  "description": "Returns only messages with the specified tags. For a list of available tags, call the :ref:`messages.listTags` method."
+                  "description": "Returns only messages with the specified tags. For a list of available tags, call the :ref:`messages.tags.list` method."
                 },
                 "toDate": {
                   "$ref": "extensionTypes.Date",
@@ -11879,13 +11919,15 @@
         {
           "name": "update",
           "type": "function",
-          "description": "Marks or unmarks a message as junk, read, flagged, or tagged. Updating external messages will throw an <em>ExtensionError</em>.",
+          "description": "Updates message properties and tags. Updating external messages will throw an <em>ExtensionError</em>.",
           "async": true,
+          "permissions": [
+            "messagesUpdate"
+          ],
           "parameters": [
             {
               "name": "messageId",
-              "type": "integer",
-              "minimum": 1
+              "$ref": "messages.MessageId"
             },
             {
               "name": "newProperties",
@@ -11908,8 +11950,7 @@
               "type": "array",
               "description": "The IDs of the messages to move.",
               "items": {
-                "type": "integer",
-                "minimum": 1
+                "$ref": "messages.MessageId"
               }
             },
             {
@@ -11943,8 +11984,7 @@
               "type": "array",
               "description": "The IDs of the messages to copy.",
               "items": {
-                "type": "integer",
-                "minimum": 1
+                "$ref": "messages.MessageId"
               }
             },
             {
@@ -11977,8 +12017,7 @@
               "type": "array",
               "description": "The IDs of the messages to delete.",
               "items": {
-                "type": "integer",
-                "minimum": 1
+                "$ref": "messages.MessageId"
               }
             },
             {
@@ -12050,8 +12089,7 @@
               "type": "array",
               "description": "The IDs of the messages to archive.",
               "items": {
-                "type": "integer",
-                "minimum": 1
+                "$ref": "messages.MessageId"
               }
             }
           ]
@@ -12168,9 +12206,6 @@
     },
     {
       "namespace": "messages.tags",
-      "permissions": [
-        "messagesRead"
-      ],
       "types": [
         {
           "id": "MessageTag",
@@ -12201,7 +12236,7 @@
           "properties": {
             "tags": {
               "type": "object",
-              "description": "A <em>dictionary object</em> with one or more filter condition as <em>key-value</em> pairs, the <em>key</em> being the tag to filter on, and the <em>value</em> being a boolean expression, requesting whether a message must include (<value>true</value>) or exclude (<value>false</value>) the tag. For a list of available tags, call the :ref:`messages.listTags` method.",
+              "description": "A <em>dictionary object</em> with one or more filter condition as <em>key-value</em> pairs, the <em>key</em> being the tag to filter on, and the <em>value</em> being a boolean expression, requesting whether a message must include (<value>true</value>) or exclude (<value>false</value>) the tag. For a list of available tags, call the :ref:`messages.tags.list` method.",
               "patternProperties": {
                 ".*": {
                   "type": "boolean"
@@ -12225,6 +12260,9 @@
           "type": "function",
           "description": "Returns a list of tags that can be set on messages, and their human-friendly name, colour, and sort order.",
           "async": "callback",
+          "permissions": [
+            "messagesTagsList"
+          ],
           "parameters": [
             {
               "type": "function",
