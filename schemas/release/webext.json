@@ -750,6 +750,7 @@
                     },
                     "params": {
                       "optional": true,
+                      "max_manifest_version": 2,
                       "type": "array",
                       "items": {
                         "type": "object",

@@ -2337,7 +2337,7 @@
           "properties": {
             "stylesheet": {
               "optional": true,
-              "description": "URL to a stylesheet introducing additional CSS variables, extending the theme-able areas of Thunderbird. The `theme_experiment add-on in our example repository <https://github.com/thunderbird/sample-extensions/tree/master/theme_experiment>`__ is using the stylesheet shown below, to add the <value>--chat-button-color</value> CSS color variable: <literalinclude>includes/theme/theme_experiment_style.css<lang>CSS</lang></literalinclude>The following <em>manifest.json</em> file maps the </value>--chat-button-color</value> CSS color variable to the theme color key <value>exp_chat_button</value> and uses it to set a color for the chat button: <literalinclude>includes/theme/theme_experiment_manifest.json<lang>JSON</lang></literalinclude>",
+              "description": "URL to a stylesheet introducing additional CSS variables, extending the theme-able areas of Thunderbird. The `theme_experiment add-on in our example repository <https://github.com/thunderbird/sample-extensions/tree/master/manifest_v2/theme_experiment>`__ is using the stylesheet shown below, to add the <value>--chat-button-color</value> CSS color variable: <literalinclude>includes/theme/theme_experiment_style.css<lang>CSS</lang></literalinclude>The following <em>manifest.json</em> file maps the </value>--chat-button-color</value> CSS color variable to the theme color key <value>exp_chat_button</value> and uses it to set a color for the chat button: <literalinclude>includes/theme/theme_experiment_manifest.json<lang>JSON</lang></literalinclude>",
               "$ref": "ExtensionURL"
             },
             "images": {
@@ -3494,7 +3494,7 @@
         {
           "id": "ContactProperties",
           "type": "object",
-          "description": "A set of individual properties for a particular contact, and its vCard string. Further information can be found in :ref:`howto_contacts`.",
+          "description": "A set of individual properties for a particular contact, and its vCard string. Further information can be found in :doc:`examples/vcard`.",
           "patternProperties": {
             "^\\w+$": {
               "choices": [
@@ -5712,7 +5712,7 @@
               "properties": {
                 "id": {
                   "type": "string",
-                  "description": "The ID of a contact or mailing list from the :doc:`contacts` and :doc:`mailingLists` APIs."
+                  "description": "The ID of a contact or mailing list from the :doc:`contacts` and :doc:`mailingLists`."
                 },
                 "type": {
                   "type": "string",
@@ -5762,7 +5762,7 @@
           "properties": {
             "identityId": {
               "type": "string",
-              "description": "The ID of an identity from the :doc:`accounts` API. The settings from the identity will be used in the composed message. If ``replyTo`` is also specified, the ``replyTo`` property of the identity is overridden. The permission <permission>accountsRead</permission> is required to include the ``identityId``.",
+              "description": "The ID of an identity from the :doc:`accounts`. The settings from the identity will be used in the composed message. If ``replyTo`` is also specified, the ``replyTo`` property of the identity is overridden. The permission <permission>accountsRead</permission> is required to include the ``identityId``.",
               "optional": true
             },
             "from": {
@@ -9795,7 +9795,7 @@
               }
             }
           ],
-          "description": "Either a <em>string</em> to specify a single icon path to be used for all sizes, or a <em>dictionary object</em> to specify paths for multiple icons in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>name</em> being a size and <em>value</em> being a path to the icon for the specified size. Example: <literalinclude>includes/MenuIconPath.json<lang>JSON</lang></literalinclude>See the `MDN documentation about choosing icon sizes <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/browser_action#choosing_icon_sizes>`__ for more information on this. "
+          "description": "Either a <em>string</em> to specify a single icon path to be used for all sizes, or a <em>dictionary object</em> to specify paths for multiple icons in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>name</em> being a size and <em>value</em> being a path to the icon for the specified size. Example: <literalinclude>includes/IconPath.json<lang>JSON</lang></literalinclude>See the `MDN documentation about choosing icon sizes <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/browser_action#choosing_icon_sizes>`__ for more information on this. "
         }
       ],
       "functions": [
@@ -11141,6 +11141,7 @@
                 "messagesTags",
                 "messagesTagsList",
                 "messagesUpdate",
+                "messagesModifyPermanent",
                 "sensitiveDataUpload"
               ]
             }
@@ -11255,7 +11256,7 @@
         {
           "id": "MessageList",
           "type": "object",
-          "description": "See :doc:`how-to/messageLists` for more information.",
+          "description": "See :doc:`examples/messageLists` for more information.",
           "properties": {
             "id": {
               "type": "string",
@@ -11361,7 +11362,7 @@
           "properties": {
             "contentType": {
               "type": "string",
-              "description": "The content type of the attachment."
+              "description": "The content type of the attachment. A value of <value>text/x-moz-deleted</value> indicates that the original attachment was permanently deleted and replaced by a placeholder text attachment with some meta information about the original attachment."
             },
             "name": {
               "type": "string",
@@ -11531,7 +11532,7 @@
         {
           "name": "continueList",
           "type": "function",
-          "description": "Returns the next chunk of messages in a list. See :doc:`how-to/messageLists` for more information.",
+          "description": "Returns the next chunk of messages in a list. See :doc:`examples/messageLists` for more information.",
           "async": "callback",
           "parameters": [
             {
@@ -11717,6 +11718,31 @@
                   "additionalProperties": true
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "deleteAttachments",
+          "type": "function",
+          "description": "Deletes the specified attachments and replaces them by placeholder text attachments with meta information about the original attachments and a <value>text/x-moz-deleted</value> content type. This permanently modifies the message.",
+          "permissions": [
+            "messagesModifyPermanent"
+          ],
+          "async": true,
+          "parameters": [
+            {
+              "name": "messageId",
+              "type": "integer"
+            },
+            {
+              "name": "partNames",
+              "type": "array",
+              "description": "An array of attachments, identifiying the to be detached attachments by their <value>partName</value>.",
+              "items": {
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d+)*$"
+              },
+              "minItems": 1
             }
           ]
         },
