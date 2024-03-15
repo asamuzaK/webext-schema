@@ -5808,26 +5808,118 @@
           "type": "object",
           "description": "Used by various functions to represent the state of a message being composed. Note that functions using this type may have a partial implementation.",
           "properties": {
-            "identityId": {
-              "type": "string",
-              "description": "The ID of an identity from the :doc:`accounts`. The settings from the identity will be used in the composed message. If ``replyTo`` is also specified, the ``replyTo`` property of the identity is overridden. The permission <permission>accountsRead</permission> is required to include the ``identityId``.",
+            "additionalFccFolder": {
+              "choices": [
+                {
+                  "$ref": "folders.MailFolderId"
+                },
+                {
+                  "$ref": "folders.MailFolder"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    ""
+                  ]
+                }
+              ],
+              "description": "An additional fcc folder which can be selected while composing the message, an empty string if not used.",
               "optional": true
             },
-            "from": {
-              "$ref": "ComposeRecipient",
-              "description": "*Caution*: Setting a value for ``from`` does not change the used identity, it overrides the FROM header. Many email servers do not accept emails where the FROM header does not match the sender identity. Must be set to exactly one valid email address.",
+            "attachVCard": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether or not the vCard of the used identity will be attached to the message during send. **Note:** If the value has not been modified, selecting a different identity will load the default value of the new identity."
+            },
+            "attachments": {
+              "type": "array",
+              "items": {
+                "choices": [
+                  {
+                    "$ref": "FileAttachment"
+                  },
+                  {
+                    "$ref": "ComposeAttachment"
+                  }
+                ]
+              },
+              "description": "Only used in the begin* functions. Attachments to add to the message.",
               "optional": true
             },
-            "to": {
+            "bcc": {
               "$ref": "ComposeRecipientList",
+              "optional": true
+            },
+            "body": {
+              "type": "string",
+              "description": "The HTML content of the message.",
               "optional": true
             },
             "cc": {
               "$ref": "ComposeRecipientList",
               "optional": true
             },
-            "bcc": {
+            "customHeaders": {
+              "type": "array",
+              "items": {
+                "$ref": "CustomHeader"
+              },
+              "description": "Array of custom headers. Headers will be returned in <em>Http-Header-Case</em> (a.k.a. <em>Train-Case</em>). Set an empty array to clear all custom headers.",
+              "optional": true
+            },
+            "deliveryFormat": {
+              "type": "string",
+              "enum": [
+                "auto",
+                "plaintext",
+                "html",
+                "both"
+              ],
+              "description": "Defines the MIME format of the sent message (ignored on plain text messages). Defaults to <value>auto</value>, which will send html messages as plain text, if they do not include any formatting, and as <value>both</value> otherwise (a multipart/mixed message).",
+              "optional": true
+            },
+            "deliveryStatusNotification": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Let the sender know when the recipient's server received the message. Not supported by all servers."
+            },
+            "followupTo": {
               "$ref": "ComposeRecipientList",
+              "optional": true
+            },
+            "from": {
+              "$ref": "ComposeRecipient",
+              "description": "*Caution*: Setting a value for ``from`` does not change the used identity, it overrides the <value>From</value> header. Many email servers do not accept emails where the <value>From</value> header does not match the sender identity. Must be set to exactly one valid email address.",
+              "optional": true
+            },
+            "identityId": {
+              "type": "string",
+              "description": "The ID of an identity from the :doc:`accounts`. The settings from the identity will be used in the composed message. If ``replyTo`` is also specified, the ``replyTo`` property of the identity is overridden. The permission <permission>accountsRead</permission> is required to include the ``identityId``.",
+              "optional": true
+            },
+            "isModified": {
+              "type": "boolean",
+              "description": "Whether the composer is considered modified by the user. A modified composer asks for confirmation, when it is closed.",
+              "optional": true
+            },
+            "isPlainText": {
+              "type": "boolean",
+              "description": "Whether the message is an HTML message or a plain text message.",
+              "optional": true
+            },
+            "newsgroups": {
+              "description": "A single newsgroup name or an array of newsgroup names.",
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ],
               "optional": true
             },
             "overrideDefaultFcc": {
@@ -5853,100 +5945,9 @@
               "optional": true,
               "description": " This value overrides the default fcc setting (defined by the used identity) for this message only. Either a :ref:`folders.MailFolder` specifying the folder for the copy of the sent message, or an empty string to not save a copy at all."
             },
-            "additionalFccFolder": {
-              "choices": [
-                {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
-                  "$ref": "folders.MailFolder"
-                },
-                {
-                  "type": "string",
-                  "enum": [
-                    ""
-                  ]
-                }
-              ],
-              "description": "An additional fcc folder which can be selected while composing the message, an empty string if not used.",
-              "optional": true
-            },
-            "replyTo": {
-              "$ref": "ComposeRecipientList",
-              "optional": true
-            },
-            "followupTo": {
-              "$ref": "ComposeRecipientList",
-              "optional": true
-            },
-            "newsgroups": {
-              "description": "A single newsgroup name or an array of newsgroup names.",
-              "choices": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ],
-              "optional": true
-            },
-            "relatedMessageId": {
-              "description": "The id of the original message (in case of draft, template, forward or reply). Read-only. Is <value>null</value> in all other cases or if the original message was opened from file.",
-              "$ref": "messages.MessageId",
-              "optional": true
-            },
-            "subject": {
-              "type": "string",
-              "optional": true
-            },
-            "type": {
-              "type": "string",
-              "description": "Read-only. The type of the message being composed, depending on how the compose window was opened by the user.",
-              "enum": [
-                "draft",
-                "new",
-                "redirect",
-                "reply",
-                "forward"
-              ],
-              "optional": true
-            },
-            "body": {
-              "type": "string",
-              "description": "The HTML content of the message.",
-              "optional": true
-            },
             "plainTextBody": {
               "type": "string",
               "description": "The plain text content of the message.",
-              "optional": true
-            },
-            "isPlainText": {
-              "type": "boolean",
-              "description": "Whether the message is an HTML message or a plain text message.",
-              "optional": true
-            },
-            "deliveryFormat": {
-              "type": "string",
-              "enum": [
-                "auto",
-                "plaintext",
-                "html",
-                "both"
-              ],
-              "description": "Defines the mime format of the sent message (ignored on plain text messages). Defaults to <value>auto</value>, which will send html messages as plain text, if they do not include any formatting, and as <value>both</value> otherwise (a multipart/mixed message).",
-              "optional": true
-            },
-            "customHeaders": {
-              "type": "array",
-              "items": {
-                "$ref": "CustomHeader"
-              },
-              "description": "Array of custom headers. Headers will be returned in <em>Http-Header-Case</em> (a.k.a. <em>Train-Case</em>). Set an empty array to clear all custom headers.",
               "optional": true
             },
             "priority": {
@@ -5961,34 +5962,38 @@
               "description": "The priority of the message.",
               "optional": true
             },
+            "relatedMessageId": {
+              "description": "The id of the original message (in case of draft, template, forward or reply). Read-only. Is <value>null</value> in all other cases or if the original message was opened from file.",
+              "$ref": "messages.MessageId",
+              "optional": true
+            },
+            "replyTo": {
+              "$ref": "ComposeRecipientList",
+              "optional": true
+            },
             "returnReceipt": {
               "type": "boolean",
               "optional": true,
               "description": "Add the <em>Disposition-Notification-To</em> header to the message to requests the recipients email client to send a reply once the message has been received. Recipient server may strip the header and the recipient might ignore the request."
             },
-            "deliveryStatusNotification": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Let the sender know when the recipient's server received the message. Not supported by all servers."
+            "subject": {
+              "type": "string",
+              "optional": true
             },
-            "attachVCard": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Whether or not the vCard of the used identity will be attached to the message during send. **Note:** If the value has not been modified, selecting a different identity will load the default value of the new identity."
+            "to": {
+              "$ref": "ComposeRecipientList",
+              "optional": true
             },
-            "attachments": {
-              "type": "array",
-              "items": {
-                "choices": [
-                  {
-                    "$ref": "FileAttachment"
-                  },
-                  {
-                    "$ref": "ComposeAttachment"
-                  }
-                ]
-              },
-              "description": "Only used in the begin* functions. Attachments to add to the message.",
+            "type": {
+              "type": "string",
+              "description": "Read-only. The type of the message being composed, depending on how the compose window was opened by the user.",
+              "enum": [
+                "draft",
+                "new",
+                "redirect",
+                "reply",
+                "forward"
+              ],
               "optional": true
             }
           }
@@ -6040,8 +6045,7 @@
           "properties": {
             "name": {
               "type": "string",
-              "description": "Name of a custom header, must have a <value>X-</value> prefix.",
-              "pattern": "^X-.*$"
+              "description": "Name of a custom header, must be prefixed by <value>X-</value> (but not by <value>X-Mozilla-</value>) or be one of the explicitly allowed headers (<value>MSIP_Labels</value>)"
             },
             "value": {
               "type": "string"
@@ -6157,6 +6161,7 @@
                   "type": "string",
                   "description": "The used save mode.",
                   "enum": [
+                    "autoSave",
                     "draft",
                     "template"
                   ]
@@ -11339,9 +11344,20 @@
               "type": "string",
               "optional": true
             },
+            "decryptionStatus": {
+              "type": "string",
+              "optional": true,
+              "description": "The decryption status, only available for the root part.",
+              "enum": [
+                "none",
+                "skipped",
+                "success",
+                "fail"
+              ]
+            },
             "headers": {
               "type": "object",
-              "description": "A <em>dictionary object</em> of part headers as <em>key-value</em> pairs, with the header name as <em>key</em>, and an array of headers as <em>value</em>",
+              "description": "A <em>dictionary object</em> of part headers as <em>key-value</em> pairs, with the header name as <em>key</em>, and an array of headers as <em>value</em>.",
               "optional": true,
               "additionalProperties": {
                 "type": "array",
@@ -11651,6 +11667,18 @@
               "$ref": "messages.MessageId"
             },
             {
+              "name": "options",
+              "type": "object",
+              "properties": {
+                "decrypt": {
+                  "type": "boolean",
+                  "description": "Whether the message should be decrypted. If the message could not be decrypted, its parts are omitted. Defaults to true.",
+                  "optional": true
+                }
+              },
+              "optional": true
+            },
+            {
               "type": "function",
               "name": "callback",
               "optional": true,
@@ -11676,6 +11704,11 @@
               "name": "options",
               "type": "object",
               "properties": {
+                "decrypt": {
+                  "type": "boolean",
+                  "description": "Whether the message should be decrypted. Throws, if the message could not be decrypted.",
+                  "optional": true
+                },
                 "data_format": {
                   "choices": [
                     {
@@ -11696,7 +11729,8 @@
                         "BinaryString"
                       ]
                     }
-                  ]
+                  ],
+                  "optional": true
                 }
               },
               "optional": true
@@ -12087,7 +12121,7 @@
         {
           "name": "delete",
           "type": "function",
-          "description": "Deletes messages permanently, or moves them to the trash folder (honoring the account's deletion behavior settings). Deleting external messages will throw an <em>ExtensionError</em>. The ``skipTrash`` parameter allows immediate permanent deletion, bypassing the trash folder.\n**Note**: Consider using :ref:`messages.move` to manually move messages to the account's trash folder, instead of requesting the overly powerful permission to actually delete messages. The account's trash folder can be extracted as follows: <literalinclude>includes/messages/getTrash.js<lang>JavaScript</lang></literalinclude>",
+          "description": "Deletes messages permanently, or moves them to the trash folder (honoring the account's deletion behavior settings). Deleting external messages will throw an <em>ExtensionError</em>. The ``skipTrash`` parameter allows immediate permanent deletion, bypassing the trash folder.",
           "async": true,
           "permissions": [
             "messagesDelete"
@@ -13996,6 +14030,94 @@
                   "description": "Is <value>true</value> when the tab is being closed because its window is being closed."
                 }
               }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "utilities.json": [
+    {
+      "namespace": "messengerUtilities",
+      "types": [
+        {
+          "id": "ParsedMailbox",
+          "type": "object",
+          "description": "Representation of a parsed mailbox string (see RFC 5322, section 3.4).",
+          "properties": {
+            "name": {
+              "type": "string",
+              "optional": true,
+              "description": "The <value>display-name</value> associated with the provided address or group, if available."
+            },
+            "email": {
+              "type": "string",
+              "optional": true,
+              "description": "The <value>addr-spec</value> associated with the provided address, if available."
+            },
+            "group": {
+              "type": "array",
+              "items": {
+                "$ref": "messengerUtilities.ParsedMailbox"
+              },
+              "description": "The members of the group, if available."
+            }
+          }
+        }
+      ],
+      "functions": [
+        {
+          "name": "formatFileSize",
+          "type": "function",
+          "description": "Returns the provided file size in a human readable format (e.g. <value>12 bytes</value> or <value>11,4 GB</value>).",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "sizeInBytes",
+              "description": "The size in bytes."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "parseMailboxString",
+          "type": "function",
+          "description": "Parse a mailbox string containing one or more email addresses (see RFC 5322, section 3.4).",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "string",
+              "name": "mailboxString",
+              "description": "The string to be parsed (e.g. <value>User <user@example.com>, other-user@example.com</value>)"
+            },
+            {
+              "type": "boolean",
+              "name": "preserveGroups",
+              "optional": true,
+              "description": "Keep grouped hierachies. Groups may be specified in a mailbox string as follows: <value>GroupName : user1 <user1@example.com>, user2@example,com ;</value>."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "messengerUtilities.ParsedMailbox"
+                  }
+                }
+              ]
             }
           ]
         }
