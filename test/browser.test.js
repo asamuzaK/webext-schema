@@ -2517,7 +2517,6 @@ describe('browser', () => {
     });
   });
 
-  // NOTE: implemented in Firefox 79
   describe('warmup tab', () => {
     const func = mjs.warmupTab;
 
@@ -2539,6 +2538,46 @@ describe('browser', () => {
         await func(1);
         assert.strictEqual(browser.tabs.warmup.callCount, i + 1, 'called');
       }
+    });
+  });
+
+  describe('capture visible tab', () => {
+    const func = mjs.captureVisibleTab;
+
+    it('should not call function if permission is not granted', async () => {
+      browser.permissions.contains.resolves(false);
+      const i = browser.tabs.captureVisibleTab.callCount;
+      await func();
+      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
+        'not called');
+    });
+
+    it('should call function', async () => {
+      const i = browser.tabs.captureVisibleTab.callCount;
+      const windowId = browser.windows.WINDOW_ID_CURRENT;
+      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+      browser.tabs.captureVisibleTab.withArgs(windowId, {
+        format: 'png'
+      }).resolves(url);
+      const res = await func();
+      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
+        'called');
+      assert.strictEqual(res, url, 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.tabs.captureVisibleTab.callCount;
+      const windowId = browser.windows.WINDOW_ID_CURRENT;
+      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+      browser.tabs.captureVisibleTab.withArgs(windowId, {
+        format: 'png'
+      }).resolves(url);
+      const res = await func(windowId, {
+        format: 'png'
+      });
+      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
+        'called');
+      assert.strictEqual(res, url, 'result');
     });
   });
 
