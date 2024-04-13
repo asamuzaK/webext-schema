@@ -996,7 +996,11 @@ export const warmupTab = async tabId => {
  * @returns {Promise.<?string>} - data URL
  */
 export const captureVisibleTab = async (windowId, opt) => {
-  const isGranted = await isPermissionGranted({
+  const info = await runtime.getBrowserInfo();
+  const version = parseFloat(info.version);
+  const isGranted = (version >= 126 && await isPermissionGranted({
+    permissions: ['activeTab']
+  })) || await isPermissionGranted({
     permissions: ['<all_urls>']
   });
   let url;
