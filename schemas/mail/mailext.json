@@ -109,6 +109,12 @@
             {
               "name": "command",
               "type": "string"
+            },
+            {
+              "name": "tab",
+              "$ref": "tags.Tab",
+              "optional": true,
+              "description": "Details of the $(ref:tabs.Tab) where the command was activated."
             }
           ]
         },
@@ -7596,6 +7602,17 @@
               "items": {
                 "$ref": "extensionTypes.ExtensionFileOrCode"
               }
+            },
+            "runAt": {
+              "type": "string",
+              "optional": true,
+              "default": "document_idle",
+              "enum": [
+                "document_start",
+                "document_end",
+                "document_idle"
+              ],
+              "description": "Determines when the files specified in css and js are injected. The states directly correspond to <code>Document.readyState</code>: <value>loading</value>, <value>interactive</value> and <value>complete</value>"
             }
           }
         },
