@@ -2553,9 +2553,10 @@ describe('browser', () => {
         origins: ['<all_urls>']
       }).resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
-      await func();
+      const res = await func();
       assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
         'not called');
+      assert.isNull(res, 'result');
     });
 
     it('should call function', async () => {
@@ -2568,7 +2569,7 @@ describe('browser', () => {
       }).resolves(true);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
       browser.tabs.captureVisibleTab.withArgs(windowId, {
         format: 'png'
       }).resolves(url);
@@ -2590,9 +2591,10 @@ describe('browser', () => {
         origins: ['<all_urls>']
       }).resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
-      await func();
+      const res = await func();
       assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
         'not called');
+      assert.isNull(res, 'result');
     });
 
     it('should call function', async () => {
@@ -2608,7 +2610,7 @@ describe('browser', () => {
       }).resolves(true);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
       browser.tabs.captureVisibleTab.withArgs(windowId, {
         format: 'png'
       }).resolves(url);
@@ -2631,7 +2633,7 @@ describe('browser', () => {
       }).resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
       browser.tabs.captureVisibleTab.withArgs(windowId, {
         format: 'png'
       }).resolves(url);
@@ -2653,7 +2655,7 @@ describe('browser', () => {
         origins: ['<all_urls>']
       }).resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
-      await func();
+      const res = await func();
       assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
         'not called');
     });
@@ -2671,7 +2673,7 @@ describe('browser', () => {
       }).resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
       browser.tabs.captureVisibleTab.withArgs(windowId, {
         format: 'png'
       }).resolves(url);
@@ -2694,7 +2696,7 @@ describe('browser', () => {
       }).resolves(true);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
       browser.tabs.captureVisibleTab.withArgs(windowId, {
         format: 'png'
       }).resolves(url);
