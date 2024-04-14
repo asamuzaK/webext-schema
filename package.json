@@ -54,5 +54,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "version": "5.2.10"
+  "version": "5.3.0"
 }
