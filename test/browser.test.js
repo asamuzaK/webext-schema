@@ -2658,6 +2658,7 @@ describe('browser', () => {
       const res = await func();
       assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
         'not called');
+      assert.isNull(res, 'result');
     });
 
     it('should call function', async () => {
