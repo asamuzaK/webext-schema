@@ -1010,7 +1010,7 @@ export const captureVisibleTab = async (windowId, opt) => {
       permissions: ['activeTab']
     }) || await isPermissionGranted({
       origins: ['<all_urls>']
-    })
+    });
   }
   let url;
   if (isGranted) {
