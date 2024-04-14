@@ -2546,21 +2546,48 @@ describe('browser', () => {
 
     it('should not call function if permission is not granted', async () => {
       browser.runtime.getBrowserInfo.resolves({
+        vender: 'Mozilla',
         version: '125.0.1'
       });
-      browser.permissions.contains.resolves(false);
+      browser.permissions.contains.withArgs({
+        origins: ['<all_urls>']
+      }).resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
       await func();
       assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
         'not called');
+    });
+
+    it('should call function', async () => {
+      browser.runtime.getBrowserInfo.resolves({
+        vender: 'Mozilla',
+        version: '125.0.1'
+      });
+      browser.permissions.contains.withArgs({
+        origins: ['<all_urls>']
+      }).resolves(true);
+      const i = browser.tabs.captureVisibleTab.callCount;
+      const windowId = browser.windows.WINDOW_ID_CURRENT;
+      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+      browser.tabs.captureVisibleTab.withArgs(windowId, {
+        format: 'png'
+      }).resolves(url);
+      const res = await func();
+      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
+        'called');
+      assert.strictEqual(res, url, 'result');
     });
 
     it('should not call function if permission is not granted', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        version: '125.0.1'
+        vender: 'Mozilla',
+        version: '126.0.a1'
       });
       browser.permissions.contains.withArgs({
-        permissions: ['<all_urls>']
+        permissions: ['activeTab']
+      }).resolves(false);
+      browser.permissions.contains.withArgs({
+        origins: ['<all_urls>']
       }).resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
       await func();
@@ -2570,35 +2597,14 @@ describe('browser', () => {
 
     it('should call function', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        version: '125.0.1'
-      });
-      browser.permissions.contains.withArgs({
-        permissions: ['activeTab']
-      }).resolves(false);
-      browser.permissions.contains.withArgs({
-        permissions: ['<all_urls>']
-      }).resolves(true);
-      const i = browser.tabs.captureVisibleTab.callCount;
-      const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
-      browser.tabs.captureVisibleTab.withArgs(windowId, {
-        format: 'png'
-      }).resolves(url);
-      const res = await func();
-      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
-        'called');
-      assert.strictEqual(res, url, 'result');
-    });
-
-    it('should call function', async () => {
-      browser.runtime.getBrowserInfo.resolves({
+        vender: 'Mozilla',
         version: '126.0a1'
       });
       browser.permissions.contains.withArgs({
         permissions: ['activeTab']
       }).resolves(false);
       browser.permissions.contains.withArgs({
-        permissions: ['<all_urls>']
+        origins: ['<all_urls>']
       }).resolves(true);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
@@ -2614,11 +2620,55 @@ describe('browser', () => {
 
     it('should call function', async () => {
       browser.runtime.getBrowserInfo.resolves({
+        vender: 'Mozilla',
         version: '126.0a1'
       });
       browser.permissions.contains.withArgs({
         permissions: ['activeTab']
       }).resolves(true);
+      browser.permissions.contains.withArgs({
+        origins: ['<all_urls>']
+      }).resolves(false);
+      const i = browser.tabs.captureVisibleTab.callCount;
+      const windowId = browser.windows.WINDOW_ID_CURRENT;
+      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+      browser.tabs.captureVisibleTab.withArgs(windowId, {
+        format: 'png'
+      }).resolves(url);
+      const res = await func();
+      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
+        'called');
+      assert.strictEqual(res, url, 'result');
+    });
+
+    it('should not call function if permission is not granted', async () => {
+      browser.runtime.getBrowserInfo.resolves({
+        vender: 'Foo',
+        version: '126.0.1'
+      });
+      browser.permissions.contains.withArgs({
+        permissions: ['activeTab']
+      }).resolves(false);
+      browser.permissions.contains.withArgs({
+        origins: ['<all_urls>']
+      }).resolves(false);
+      const i = browser.tabs.captureVisibleTab.callCount;
+      await func();
+      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
+        'not called');
+    });
+
+    it('should call function', async () => {
+      browser.runtime.getBrowserInfo.resolves({
+        vender: 'Foo',
+        version: '126.0.1'
+      });
+      browser.permissions.contains.withArgs({
+        permissions: ['activeTab']
+      }).resolves(true);
+      browser.permissions.contains.withArgs({
+        origins: ['<all_urls>']
+      }).resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
       const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
@@ -2633,24 +2683,15 @@ describe('browser', () => {
 
     it('should call function', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        version: '126.0a1'
+        vender: 'Foo',
+        version: '126.0.1'
       });
-      const i = browser.tabs.captureVisibleTab.callCount;
-      const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
-      browser.tabs.captureVisibleTab.withArgs(windowId, {
-        format: 'png'
-      }).resolves(url);
-      const res = await func();
-      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
-        'called');
-      assert.strictEqual(res, url, 'result');
-    });
-
-    it('should call function', async () => {
-      browser.runtime.getBrowserInfo.resolves({
-        version: '126.0a1'
-      });
+      browser.permissions.contains.withArgs({
+        permissions: ['activeTab']
+      }).resolves(false);
+      browser.permissions.contains.withArgs({
+        origins: ['<all_urls>']
+      }).resolves(true);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
       const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
