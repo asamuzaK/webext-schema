@@ -993,12 +993,13 @@
         },
         {
           "id": "ExtensionInstallType",
-          "description": "How the extension was installed. One of<br><var>development</var>: The extension was loaded unpacked in developer mode,<br><var>normal</var>: The extension was installed normally via an .xpi file,<br><var>sideload</var>: The extension was installed by other software on the machine,<br><var>other</var>: The extension was installed by other means.",
+          "description": "How the extension was installed. One of<br><var>development</var>: The extension was loaded unpacked in developer mode,<br><var>normal</var>: The extension was installed normally via an .xpi file,<br><var>sideload</var>: The extension was installed by other software on the machine,<br><var>admin</var>: The extension was installed by policy,<br><var>other</var>: The extension was installed by other means.",
           "type": "string",
           "enum": [
             "development",
             "normal",
             "sideload",
+            "admin",
             "other"
           ]
         },
@@ -1516,6 +1517,132 @@
       "description": "Use the <code>browser.runtime</code> API to retrieve the background page, return details about the manifest, and listen for and respond to events in the app or extension lifecycle. You can also use this API to convert the relative path of URLs to fully-qualified URLs.",
       "types": [
         {
+          "id": "ContextFilter",
+          "min_manifest_version": 3,
+          "type": "object",
+          "description": "A filter to match against existing extension context. Matching contexts must match all specified filters.",
+          "properties": {
+            "contextIds": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "contextTypes": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "$ref": "ContextType"
+              }
+            },
+            "documentIds": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "documentOrigins": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "documentUrls": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "frameIds": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "tabIds": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "windowIds": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "incognito": {
+              "optional": true,
+              "type": "boolean"
+            }
+          }
+        },
+        {
+          "id": "ContextType",
+          "type": "string",
+          "enum": [
+            "BACKGROUND",
+            "POPUP",
+            "SIDE_PANEL",
+            "TAB"
+          ],
+          "description": "The type of extension view."
+        },
+        {
+          "id": "ExtensionContext",
+          "type": "object",
+          "description": "A context hosting extension content",
+          "properties": {
+            "contextId": {
+              "type": "string",
+              "description": "An unique identifier associated to this context"
+            },
+            "contextType": {
+              "$ref": "ContextType",
+              "description": "The type of the context"
+            },
+            "documentId": {
+              "type": "string",
+              "unsupported": true,
+              "optional": true,
+              "description": "An UUID for the document associated with this context, or undefined if it is not hosted in a document"
+            },
+            "documentOrigin": {
+              "type": "string",
+              "optional": true,
+              "description": "The origin of the document associated with this context, or undefined if it is not hosted in a document"
+            },
+            "documentUrl": {
+              "type": "string",
+              "optional": true,
+              "description": "The URL of the document associated with this context, or undefined if it is not hosted in a document"
+            },
+            "incognito": {
+              "type": "boolean",
+              "description": "Whether the context is associated with an private browsing context."
+            },
+            "frameId": {
+              "type": "integer",
+              "description": "The frame ID for this context, or -1 if it is not hosted in a frame."
+            },
+            "tabId": {
+              "type": "integer",
+              "description": "The tab ID for this context, or -1 if it is not hosted in a tab."
+            },
+            "windowId": {
+              "type": "integer",
+              "description": "The window ID for this context, or -1 if it is not hosted in a window."
+            }
+          }
+        },
+        {
           "id": "Port",
           "type": "object",
           "allowedContexts": [
@@ -1779,6 +1906,33 @@
                     "type": "any"
                   },
                   "description": "The JavaScript 'window' object for the background page."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getContexts",
+          "type": "function",
+          "description": "Fetches information about active contexts associated with this extension",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "filter",
+              "$ref": "ContextFilter",
+              "description": "A filter to find matching context."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "contexts",
+                  "type": "array",
+                  "items": {
+                    "$ref": "ExtensionContext"
+                  },
+                  "description": "The matching contexts, if any."
                 }
               ]
             }
@@ -2922,7 +3076,7 @@
       "types": [
         {
           "id": "MailAccount",
-          "description": "An object describing a mail account, as returned for example by the :ref:`accounts.list` and :ref:`accounts.get` methods. The ``folders`` property is only included if requested.",
+          "description": "An object describing a mail account, as returned for example by the :ref:`accounts.list` and :ref:`accounts.get` methods.",
           "type": "object",
           "properties": {
             "id": {
@@ -2939,16 +3093,21 @@
             },
             "folders": {
               "max_manifest_version": 2,
-              "type": "array",
-              "optional": true,
-              "description": "The folders for this account are only included if requested.",
-              "items": {
-                "$ref": "folders.MailFolder"
-              }
+              "description": "The folders for this account. The property may be <value>null</value>, if inclusion of folders had not been requested.",
+              "choices": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "folders.MailFolder"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
             },
             "rootFolder": {
               "$ref": "folders.MailFolder",
-              "optional": true,
               "description": "The root folder associated with this account."
             },
             "identities": {
@@ -2964,6 +3123,32 @@
           "id": "MailAccountId",
           "type": "string",
           "description": "A unique id representing a :ref:`accounts.MailAccount`."
+        },
+        {
+          "id": "MailAccountType",
+          "description": "The type of an account.",
+          "choices": [
+            {
+              "max_manifest_version": 2,
+              "type": "string",
+              "enum": [
+                "imap",
+                "pop3",
+                "nntp",
+                "none"
+              ]
+            },
+            {
+              "min_manifest_version": 3,
+              "type": "string",
+              "enum": [
+                "imap",
+                "pop3",
+                "nntp",
+                "local"
+              ]
+            }
+          ]
         }
       ],
       "functions": [
@@ -3018,8 +3203,14 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "accounts.MailAccount",
-                  "optional": true
+                  "choices": [
+                    {
+                      "$ref": "accounts.MailAccount"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ]
             }
@@ -3044,8 +3235,14 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "accounts.MailAccount",
-                  "optional": true
+                  "choices": [
+                    {
+                      "$ref": "accounts.MailAccount"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ]
             }
@@ -3087,7 +3284,14 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "identities.MailIdentity"
+                  "choices": [
+                    {
+                      "$ref": "identities.MailIdentity"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ]
             }
@@ -3471,7 +3675,18 @@
       ]
     },
     {
+      "namespace": "addressBooks.contacts",
+      "min_manifest_version": 3,
+      "$import": "contacts"
+    },
+    {
+      "namespace": "addressBooks.mailingLists",
+      "min_manifest_version": 3,
+      "$import": "mailingLists"
+    },
+    {
       "namespace": "contacts",
+      "max_manifest_version": 2,
       "permissions": [
         "addressBooks"
       ],
@@ -3481,10 +3696,16 @@
           "description": "Object defining a query for :ref:`contacts.quickSearch`.",
           "type": "object",
           "properties": {
+            "parentId": {
+              "type": "string",
+              "min_manifest_version": 3,
+              "optional": true,
+              "description": "The id of the address book to search. If not specified, all address books are searched."
+            },
             "searchString": {
               "type": "string",
               "optional": true,
-              "description": "One or more space-separated terms to search for."
+              "description": "One or more space-separated terms to search for in predefined contact fields (defined by the preference <value>mail.addr_book.quicksearchquery.format</value>)."
             },
             "includeLocal": {
               "type": "boolean",
@@ -3623,6 +3844,7 @@
         },
         {
           "name": "quickSearch",
+          "max_manifest_version": 2,
           "type": "function",
           "async": "callback",
           "parameters": [
@@ -3661,6 +3883,32 @@
           "description": "Gets all contacts matching ``queryInfo`` in the address book with the id ``parentId``."
         },
         {
+          "name": "query",
+          "min_manifest_version": 3,
+          "type": "function",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "queryInfo",
+              "$ref": "QueryInfo"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "ContactNode"
+                  }
+                }
+              ]
+            }
+          ],
+          "description": "Gets all contacts matching ``queryInfo``."
+        },
+        {
           "name": "get",
           "type": "function",
           "async": "callback",
@@ -3697,15 +3945,21 @@
               "optional": true,
               "parameters": [
                 {
-                  "type": "object",
-                  "optional": true,
-                  "isInstanceOf": "File",
-                  "additionalProperties": true
+                  "choices": [
+                    {
+                      "type": "object",
+                      "isInstanceOf": "File",
+                      "additionalProperties": true
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ]
             }
           ],
-          "description": "Gets the photo associated with this contact, if any."
+          "description": "Gets the photo associated with this contact. Returns <value>null</value>, if no photo is available."
         },
         {
           "name": "setPhoto",
@@ -3835,6 +4089,7 @@
     },
     {
       "namespace": "mailingLists",
+      "max_manifest_version": 2,
       "permissions": [
         "addressBooks"
       ],
@@ -4495,6 +4750,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -4551,7 +4807,7 @@
         {
           "name": "getLabel",
           "type": "function",
-          "description": "Gets the label of the action button.",
+          "description": "Gets the label of the action button. Returns <value>null</value>, if no label has been set and the title is used.",
           "async": "callback",
           "parameters": [
             {
@@ -4576,11 +4832,18 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
-                  "type": "string",
-                  "optional": true
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ]
             }
@@ -4708,6 +4971,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -4789,6 +5053,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -4873,6 +5138,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -5621,7 +5887,7 @@
         {
           "name": "getAccount",
           "type": "function",
-          "description": "Retrieve information about a single cloud file account.",
+          "description": "Retrieve information about a single cloud file account, or <value>undefined</value> if it does not exists",
           "allowedContexts": [
             "content"
           ],
@@ -5638,7 +5904,9 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "CloudFileAccount"
+                  "optional": true,
+                  "$ref": "CloudFileAccount",
+                  "description": "This may return undefined"
                 }
               ]
             }
@@ -5723,7 +5991,9 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "CloudFileAccount"
+                  "optional": true,
+                  "$ref": "CloudFileAccount",
+                  "description": "This may return undefined"
                 }
               ]
             }
@@ -5814,7 +6084,14 @@
           "type": "object",
           "description": "Used by various functions to represent the state of a message being composed. Note that functions using this type may have a partial implementation.",
           "properties": {
+            "additionalFccFolderId": {
+              "min_manifest_version": 3,
+              "$ref": "folders.MailFolderId",
+              "description": "An additional fcc folder which can be selected while composing the message. Cleared when set to <value>null</value>.",
+              "optional": "omit-key-if-missing"
+            },
             "additionalFccFolder": {
+              "max_manifest_version": 2,
               "choices": [
                 {
                   "$ref": "folders.MailFolderId"
@@ -5929,11 +6206,13 @@
               "optional": true
             },
             "overrideDefaultFcc": {
+              "max_manifest_version": 2,
               "type": "boolean",
               "optional": true,
               "description": "Indicates whether the default fcc setting (defined by the used identity) is being overridden for this message. Setting <value>false</value> will clear the override. Setting <value>true</value> will throw an <em>ExtensionError</em>, if ``overrideDefaultFccFolder`` is not set as well."
             },
             "overrideDefaultFccFolder": {
+              "max_manifest_version": 2,
               "choices": [
                 {
                   "$ref": "folders.MailFolderId"
@@ -5950,6 +6229,12 @@
               ],
               "optional": true,
               "description": " This value overrides the default fcc setting (defined by the used identity) for this message only. Either a :ref:`folders.MailFolder` specifying the folder for the copy of the sent message, or an empty string to not save a copy at all."
+            },
+            "overrideDefaultFccFolderId": {
+              "min_manifest_version": 3,
+              "$ref": "folders.MailFolderId",
+              "description": " This value overrides the default fcc setting (defined by the used identity) for this message only. Either a :ref:`folders.MailFolderId` specifying the folder for the copy of the sent message, or an empty string to not save a copy at all. Reset when set to <value>null</value>.",
+              "optional": "omit-key-if-missing"
             },
             "plainTextBody": {
               "type": "string",
@@ -6980,6 +7265,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -7036,7 +7322,7 @@
         {
           "name": "getLabel",
           "type": "function",
-          "description": "Gets the label of the composeAction button.",
+          "description": "Gets the label of the composeAction button. Returns <value>null</value>, if no label has been set and the title is used.",
           "async": "callback",
           "parameters": [
             {
@@ -7061,11 +7347,18 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
-                  "type": "string",
-                  "optional": true
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ]
             }
@@ -7193,6 +7486,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -7274,6 +7568,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -7358,6 +7653,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -7673,10 +7969,11 @@
         {
           "id": "MailFolder",
           "type": "object",
-          "description": "An object describing a folder. The ``subFolders`` property is only included if requested.",
+          "description": "An object describing a folder.",
           "properties": {
             "accountId": {
               "$ref": "accounts.MailAccountId",
+              "optional": true,
               "description": "The id of the account this folder belongs to."
             },
             "id": {
@@ -7693,6 +7990,16 @@
               "type": "boolean",
               "optional": true,
               "description": "Whether this folder is a root folder."
+            },
+            "isTag": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether this folder is a virtual tag folder."
+            },
+            "isUnified": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether this folder is a unified mailbox folder."
             },
             "isVirtual": {
               "type": "boolean",
@@ -7717,11 +8024,19 @@
               "description": "The special use of this folder. A folder can have multiple special uses."
             },
             "subFolders": {
-              "type": "array",
-              "description": "Subfolders are only included if requested. They will be returned in the same order as used in Thunderbird's folder pane.",
-              "items": {
-                "$ref": "folders.MailFolder"
-              },
+              "description": "Subfolders of this folder. The property may be <value>null</value>, if inclusion of folders had not been requested. The folders will be returned in the same order as used in Thunderbird's folder pane.",
+              "choices": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "folders.MailFolder"
+                  }
+                },
+                {
+                  "max_manifest_version": 2,
+                  "type": "null"
+                }
+              ],
               "optional": true
             },
             "type": {
@@ -7993,15 +8308,25 @@
                   "optional": true,
                   "description": "Whether the folder is a favorite folder, or not."
                 },
-                "isVirtual": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "Whether this folder is a virtual search folder, or not."
-                },
                 "isRoot": {
                   "type": "boolean",
                   "optional": true,
                   "description": "Whether the folder is a root folder, or not."
+                },
+                "isTag": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the folder is a virtual tag folder, or not. Note: Virtual tag folders are always skipped, unless this property is set to <value>true</value>"
+                },
+                "isUnified": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the folder is a unified mailbox folder, or not. Note: Unified mailbox folders are always skipped, unless this property is set to <value>true</value>"
+                },
+                "isVirtual": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the folder is a virtual search folder, or not."
                 },
                 "limit": {
                   "type": "integer",
@@ -8494,6 +8819,66 @@
           ]
         },
         {
+          "name": "getUnifiedFolder",
+          "type": "function",
+          "description": "Get one of the special unified mailbox folders, which are virtual search folders and return the content from all mail accounts.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "string",
+              "description": "The requested unified mailbox folder type.",
+              "enum": [
+                "inbox",
+                "drafts",
+                "sent",
+                "trash",
+                "templates",
+                "archives",
+                "junk"
+              ]
+            },
+            {
+              "name": "includeSubFolders",
+              "description": "Specifies whether the returned :ref:`folders.MailFolder` object should include all its nested subfolders . Defaults to <value>false</value>.",
+              "optional": true,
+              "default": false,
+              "type": "boolean"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "folders.MailFolder"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getTagFolder",
+          "type": "function",
+          "description": "Get one of the special unified mailbox tag folders, which are virtual search folders and group messages from all mail accounts based on their tags.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "string",
+              "description": "The tag key of the requested folder. See :ref:`messages.tags.list()` for the available tags. Throws when specifying an invalid tag key."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "folders.MailFolder"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "markAsRead",
           "permissions": [
             "accountsFolders"
@@ -8742,8 +9127,14 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "identities.MailIdentity",
-                  "optional": true
+                  "choices": [
+                    {
+                      "$ref": "identities.MailIdentity"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ]
             }
@@ -8838,7 +9229,14 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "identities.MailIdentity"
+                  "choices": [
+                    {
+                      "$ref": "identities.MailIdentity"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ]
             }
@@ -8911,6 +9309,19 @@
       "namespace": "mailTabs",
       "types": [
         {
+          "id": "FolderMode",
+          "description": "A supported folder mode in the folder pane.",
+          "type": "string",
+          "enum": [
+            "all",
+            "unified",
+            "tags",
+            "unread",
+            "favorite",
+            "recent"
+          ]
+        },
+        {
           "id": "MailTab",
           "type": "object",
           "properties": {
@@ -8925,7 +9336,7 @@
             },
             "sortType": {
               "type": "string",
-              "description": "**Note:** ``sortType`` and ``sortOrder`` depend on each other, so both should be present, or neither.",
+              "description": "The primary sort column of the message list.",
               "optional": true,
               "enum": [
                 "none",
@@ -8952,7 +9363,7 @@
             },
             "sortOrder": {
               "type": "string",
-              "description": "**Note:** ``sortType`` and ``sortOrder`` depend on each other, so both should be present, or neither.",
+              "description": "The sort order of the message list.",
               "optional": true,
               "enum": [
                 "none",
@@ -8962,6 +9373,7 @@
             },
             "viewType": {
               "type": "string",
+              "description": "Group mode of the message list.",
               "optional": true,
               "enum": [
                 "ungrouped",
@@ -8971,24 +9383,41 @@
             },
             "layout": {
               "type": "string",
+              "description": "The arrangement of the folder pane, message list pane, and message display pane.",
               "enum": [
                 "standard",
                 "wide",
                 "vertical"
               ]
             },
+            "folderMode": {
+              "description": "The folder mode of the currently displayed folder.",
+              "$ref": "mailTabs.FolderMode",
+              "optional": true
+            },
+            "folderModesEnabled": {
+              "type": "array",
+              "description": "The enabled folder modes in the folder pane, and their sort order.",
+              "minItems": 1,
+              "optional": true,
+              "items": {
+                "$ref": "mailTabs.FolderMode"
+              }
+            },
             "folderPaneVisible": {
               "type": "boolean",
+              "description": "Whether the folder pane is visible or not.",
               "optional": true
             },
             "messagePaneVisible": {
               "type": "boolean",
+              "description": "Whether the message pane is visible or not.",
               "optional": true
             },
             "displayedFolder": {
               "$ref": "folders.MailFolder",
-              "optional": true,
-              "description": "The <permission>accountsRead</permission> permission is required for this property to be included."
+              "description": "The folder displayed in the mail tab. The <permission>accountsRead</permission> permission is required for this property to be included.",
+              "optional": true
             }
           }
         },
@@ -9035,6 +9464,7 @@
             },
             "viewType": {
               "type": "string",
+              "description": "Sets the group mode of displayed messages.",
               "optional": true,
               "enum": [
                 "ungrouped",
@@ -9057,9 +9487,29 @@
               "description": "Shows or hides the folder pane.",
               "optional": true
             },
+            "folderMode": {
+              "description": "Sets the currently used folder mode, enabling it if required. If used without also specifying <value>displayedFolder</value>, the currently selected folder is re-selected in the new folder mode, if possible.",
+              "$ref": "mailTabs.FolderMode",
+              "optional": true
+            },
+            "folderModesEnabled": {
+              "type": "array",
+              "description": "Set the enabled folder modes in the folder pane, and their sort order.",
+              "minItems": 1,
+              "optional": true,
+              "items": {
+                "$ref": "mailTabs.FolderMode"
+              }
+            },
             "messagePaneVisible": {
               "type": "boolean",
               "description": "Shows or hides the message display pane.",
+              "optional": true
+            },
+            "displayedFolderId": {
+              "$ref": "folders.MailFolderId",
+              "min_manifest_version": 3,
+              "description": "Sets the folder displayed in the mail tab. Requires the <permission>accountsRead</permission> permission. The previous message selection in the given folder will be restored, if any. This property is ignored, if <value>selectedMessages</value> is specified.",
               "optional": true
             },
             "displayedFolder": {
@@ -9068,11 +9518,11 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: MailTabProperties.displayedFolder needs to be specified as a MailFolderId instead of as a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
               ],
+              "max_manifest_version": 2,
               "description": "Sets the folder displayed in the mail tab. Requires the <permission>accountsRead</permission> permission. The previous message selection in the given folder will be restored, if any. This property is ignored, if <value>selectedMessages</value> is specified.",
               "optional": true
             }
@@ -9186,7 +9636,7 @@
         {
           "name": "getCurrent",
           "type": "function",
-          "description": "Get the properties of the active mail tab, if the active tab is a mail tab. Returns undefined otherwise.",
+          "description": "Get the properties of the active mail tab, if the active tab is a mail tab. Returns <value>undefined</value> otherwise.",
           "async": "callback",
           "parameters": [
             {
@@ -9196,7 +9646,8 @@
               "parameters": [
                 {
                   "$ref": "MailTab",
-                  "optional": true
+                  "optional": true,
+                  "description": "This may return undefined"
                 }
               ]
             }
@@ -9222,7 +9673,6 @@
                 {
                   "name": "mailTab",
                   "$ref": "MailTab",
-                  "optional": true,
                   "description": "Details about the created mail tab. Will contain the ID of the new tab."
                 }
               ]
@@ -9254,7 +9704,6 @@
                 {
                   "name": "mailTab",
                   "$ref": "MailTab",
-                  "optional": true,
                   "description": "Details about the updated mail tab."
                 }
               ]
@@ -10351,12 +10800,13 @@
         {
           "name": "getDisplayedMessage",
           "type": "function",
-          "description": "Gets the currently displayed message in the specified tab (even if the tab itself is currently not visible). It returns <value>null</value> if no messages are displayed, or if multiple messages are displayed.",
+          "description": "Gets the currently displayed message in the specified tab (even if the tab itself is currently not visible), or the currently active tab. It returns <value>null</value> if no messages are displayed, or if multiple messages are displayed.",
           "async": "callback",
           "parameters": [
             {
               "name": "tabId",
               "type": "integer",
+              "optional": true,
               "minimum": 1
             },
             {
@@ -10381,12 +10831,13 @@
         {
           "name": "getDisplayedMessages",
           "type": "function",
-          "description": "Gets an array of the currently displayed messages in the specified tab (even if the tab itself is currently not visible). The array is empty if no messages are displayed.",
+          "description": "Gets an array of the currently displayed messages in the specified tab (even if the tab itself is currently not visible), or the currently active tab. The array is empty if no messages are displayed.",
           "async": "callback",
           "parameters": [
             {
               "name": "tabId",
               "type": "integer",
+              "optional": true,
               "minimum": 1
             },
             {
@@ -10457,6 +10908,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "tab",
@@ -10682,6 +11134,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -10738,7 +11191,7 @@
         {
           "name": "getLabel",
           "type": "function",
-          "description": "Gets the label of the messageDisplayAction button.",
+          "description": "Gets the label of the messageDisplayAction button. Returns <value>null</value>, if no label has been set and the title is used.",
           "async": "callback",
           "parameters": [
             {
@@ -10763,11 +11216,18 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
-                  "type": "string",
-                  "optional": true
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ]
             }
@@ -10895,6 +11355,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -10976,6 +11437,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -11060,6 +11522,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -11336,8 +11799,15 @@
           "description": "See :doc:`examples/messageLists` for more information.",
           "properties": {
             "id": {
-              "type": "string",
-              "optional": true
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Id of the message list, to be used with :ref:`messages.continueList` or :ref:`messages.abortList`."
             },
             "messages": {
               "type": "array",
@@ -11350,11 +11820,11 @@
         {
           "id": "MessagePart",
           "type": "object",
-          "description": "Represents an email message \"part\", which could be the whole message",
+          "description": "Represents an email message \"part\", which could be the whole message.",
           "properties": {
             "body": {
               "type": "string",
-              "description": "The content of the part",
+              "description": "The content of the part.",
               "optional": true
             },
             "contentType": {
@@ -11385,20 +11855,20 @@
             },
             "name": {
               "type": "string",
-              "description": "Name of the part, if it is a file",
+              "description": "Name of the part, if it is a file.",
               "optional": true
             },
             "partName": {
               "type": "string",
               "optional": true,
-              "description": "The identifier of this part, used in :ref:`messages.getAttachmentFile`"
+              "description": "The identifier of this part, used in :ref:`messages.getAttachmentFile`."
             },
             "parts": {
               "type": "array",
               "items": {
                 "$ref": "MessagePart"
               },
-              "description": "Any sub-parts of this part",
+              "description": "Any sub-parts of this part.",
               "optional": true
             },
             "size": {
@@ -11421,11 +11891,11 @@
             "junk": {
               "type": "boolean",
               "optional": true,
-              "description": "Whether the message is marked as junk. Only supported in :ref:`messages.update`"
+              "description": "Whether the message is marked as junk. Only supported in :ref:`messages.update`."
             },
             "new": {
               "type": "boolean",
-              "description": "Whether the message is marked as new. Only supported in :ref:`messages.import`",
+              "description": "Whether the message is marked as new. Only supported in :ref:`messages.import`.",
               "optional": true
             },
             "read": {
@@ -11855,7 +12325,7 @@
         {
           "name": "openAttachment",
           "type": "function",
-          "description": "Opens the specified attachment",
+          "description": "Opens the specified attachment.",
           "async": true,
           "parameters": [
             {
@@ -11877,7 +12347,7 @@
         {
           "name": "query",
           "type": "function",
-          "description": "Gets all messages that have the specified properties, or all messages if no properties are specified.",
+          "description": "Gets all messages that have the specified properties, or all messages if no properties are specified. Messages of unified mailbox folders are not included by default (as that could double the amount of returned messages), but explicitly specifying a unified mailbox folder is supported.",
           "async": "callback",
           "parameters": [
             {
@@ -12302,14 +12772,14 @@
               "properties": {
                 "tag": {
                   "type": "string",
-                  "optional": "true",
+                  "optional": true,
                   "description": "Human-readable tag name."
                 },
                 "color": {
                   "type": "string",
                   "pattern": "^#[0-9a-fA-F]{6}",
                   "description": "Tag color in hex format (i.e.: #000080 for navy blue). Value will be stored as upper case.",
-                  "optional": "true"
+                  "optional": true
                 }
               }
             }
@@ -12460,14 +12930,14 @@
               "properties": {
                 "tag": {
                   "type": "string",
-                  "optional": "true",
+                  "optional": true,
                   "description": "Human-readable tag name."
                 },
                 "color": {
                   "type": "string",
                   "pattern": "^#[0-9a-fA-F]{6}",
                   "description": "Tag color in hex format (i.e.: #000080 for navy blue). Value will be stored as upper case.",
-                  "optional": "true"
+                  "optional": true
                 }
               }
             }
@@ -12522,7 +12992,7 @@
         {
           "name": "getTabValue",
           "type": "function",
-          "description": "Retrieve a previously stored value for a given tab, given its key.",
+          "description": "Retrieve a previously stored value for a given tab, given its key. Returns <value>undefined</value> if the key does not exist.",
           "async": "callback",
           "parameters": [
             {
@@ -12542,7 +13012,8 @@
               "parameters": [
                 {
                   "type": "string",
-                  "optional": true
+                  "optional": true,
+                  "description": "This may return undefined"
                 }
               ]
             }
@@ -12574,7 +13045,7 @@
       "namespace": "spaces",
       "types": [
         {
-          "id": "SpaceButtonProperties",
+          "id": "SpaceButtonProperties_MV2",
           "type": "object",
           "properties": {
             "badgeBackgroundColor": {
@@ -12604,7 +13075,7 @@
                 }
               ],
               "optional": true,
-              "description": "The paths to one or more icons for the button in the spaces toolbar. Defaults to the extension icon, if set to an empty string."
+              "description": "The paths to one or more icons for the button in the spaces toolbar. Reset to the extension icon, when set to an empty string."
             },
             "themeIcons": {
               "type": "array",
@@ -12612,12 +13083,53 @@
               "items": {
                 "$ref": "manifest.ThemeIcons"
               },
-              "description": "Specifies dark and light icons for the button in the spaces toolbar to be used with themes: The ``light`` icons will be used on dark backgrounds and vice versa. At least the set for <em>16px</em> icons should be specified. The set for <em>32px</em> icons will be used on screens with a very high pixel density, if specified."
+              "description": "Specifies dark and light icons for the button in the spaces toolbar to be used with themes: The ``light`` icons will be used on dark backgrounds and vice versa. At least the set for <em>16px</em> icons should be specified. The set for <em>32px</em> icons will be used on screens with a very high pixel density, if specified. Reset when set to an empty array."
             },
             "title": {
               "type": "string",
               "optional": true,
-              "description": "The title for the button in the spaces toolbar, used in the tooltip of the button and as the displayed name in the overflow menu. Defaults to the name of the extension, if set to an empty string."
+              "description": "The title for the button in the spaces toolbar, used in the tooltip of the button and as the displayed name in the overflow menu. Reset to the name of the extension, when set to an empty string."
+            }
+          }
+        },
+        {
+          "id": "SpaceButtonProperties_MV3",
+          "type": "object",
+          "properties": {
+            "badgeBackgroundColor": {
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "ColorArray"
+                }
+              ],
+              "optional": "omit-key-if-missing",
+              "description": "Sets the background color of the badge. Can be specified as an array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <value>[255, 0, 0, 255]</value>. Can also be a string with an HTML color name (<value>red</value>) or a HEX color value (<value>#FF0000</value> or <value>#F00</value>). Reset when set to <value>null</value>."
+            },
+            "badgeText": {
+              "type": "string",
+              "optional": "omit-key-if-missing",
+              "description": "Sets the badge text for the button in the spaces toolbar. The badge is displayed on top of the icon. Any number of characters can be set, but only about four can fit in the space. Removed when set to <value>null</value>."
+            },
+            "defaultIcons": {
+              "$ref": "manifest.IconPath",
+              "optional": "omit-key-if-missing",
+              "description": "The paths to one or more icons for the button in the spaces toolbar. Reset to the extension icon, when set to <value>null</value>."
+            },
+            "themeIcons": {
+              "type": "array",
+              "optional": "omit-key-if-missing",
+              "items": {
+                "$ref": "manifest.ThemeIcons"
+              },
+              "description": "Specifies dark and light icons for the button in the spaces toolbar to be used with themes: The ``light`` icons will be used on dark backgrounds and vice versa. At least the set for <em>16px</em> icons should be specified. The set for <em>32px</em> icons will be used on screens with a very high pixel density, if specified. Reset when set to <value>null</value>."
+            },
+            "title": {
+              "type": "string",
+              "optional": "omit-key-if-missing",
+              "description": "The title for the button in the spaces toolbar, used in the tooltip of the button and as the displayed name in the overflow menu. Reset to the name of the extension, when set to <value>null</value>."
             }
           }
         },
@@ -12684,7 +13196,16 @@
             {
               "name": "buttonProperties",
               "description": "Properties of the button for the new space.",
-              "$ref": "spaces.SpaceButtonProperties",
+              "choices": [
+                {
+                  "$ref": "spaces.SpaceButtonProperties_MV3",
+                  "min_manifest_version": 3
+                },
+                {
+                  "$ref": "spaces.SpaceButtonProperties_MV2",
+                  "max_manifest_version": 2
+                }
+              ],
               "optional": true,
               "default": {}
             },
@@ -12770,6 +13291,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -12817,7 +13339,16 @@
             {
               "name": "buttonProperties",
               "description": "Only specified button properties will be updated.",
-              "$ref": "spaces.SpaceButtonProperties",
+              "choices": [
+                {
+                  "$ref": "spaces.SpaceButtonProperties_MV3",
+                  "min_manifest_version": 3
+                },
+                {
+                  "$ref": "spaces.SpaceButtonProperties_MV2",
+                  "max_manifest_version": 2
+                }
+              ],
               "optional": true
             }
           ]
@@ -12849,7 +13380,6 @@
                 {
                   "name": "tab",
                   "$ref": "tabs.Tab",
-                  "optional": true,
                   "description": "Details about the opened or activated space tab."
                 }
               ]
@@ -12957,8 +13487,7 @@
                   "name": "spaceId",
                   "type": "integer",
                   "description": "The id of the space belonging to the newly created button, as used by the tabs API.",
-                  "minimum": 1,
-                  "optional": true
+                  "minimum": 1
                 }
               ]
             }
@@ -13024,7 +13553,6 @@
                 {
                   "name": "tab",
                   "$ref": "tabs.Tab",
-                  "optional": true,
                   "description": "Details about the opened or activated tab."
                 }
               ]
@@ -13153,6 +13681,7 @@
             "mailTab": {
               "type": "boolean",
               "optional": true,
+              "max_manifest_version": 2,
               "description": "Whether the tab is a 3-pane tab."
             },
             "spaceId": {
@@ -13269,6 +13798,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "tab",
@@ -13281,17 +13811,19 @@
         {
           "name": "getCurrent",
           "type": "function",
-          "description": "Gets the tab that this script call is being made from. May be undefined if called from a non-tab context (for example: a background page or popup view).",
+          "description": "Gets the tab that this script call is being made from. May be <value>undefined</value> if called from a non-tab context (for example: a background page or popup view).",
           "async": "callback",
           "parameters": [
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "tab",
                   "$ref": "Tab",
-                  "optional": true
+                  "optional": true,
+                  "description": "This may return undefined"
                 }
               ]
             }
@@ -13428,7 +13960,6 @@
                 {
                   "name": "tab",
                   "$ref": "Tab",
-                  "optional": true,
                   "description": "Details about the created tab. Will contain the ID of the new tab."
                 }
               ]
@@ -13454,7 +13985,6 @@
               "parameters": [
                 {
                   "name": "tab",
-                  "optional": true,
                   "description": "Details about the duplicated tab. The :ref:`tabs.Tab` object doesn't contain ``url``, ``title`` and ``favIconUrl`` if the <permission>tabs</permission> permission has not been requested.",
                   "$ref": "Tab"
                 }
@@ -13477,7 +14007,8 @@
                 "mailTab": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Whether the tab is a Thunderbird 3-pane tab."
+                  "max_manifest_version": 2,
+                  "description": "Whether the tab is a Thunderbird 3-pane tab.  If specified, the ``queryInfo.type`` property will be ignored"
                 },
                 "spaceId": {
                   "type": "integer",
@@ -13498,7 +14029,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Match tabs against the given tab type or types. Ignored if ``queryInfo.mailTab`` is specified."
+                  "description": "Match tabs against the given tab type or types."
                 },
                 "active": {
                   "type": "boolean",
@@ -13582,6 +14113,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "result",
@@ -13632,7 +14164,6 @@
                 {
                   "name": "tab",
                   "$ref": "Tab",
-                  "optional": true,
                   "description": "Details about the updated tab. The :ref:`tabs.Tab` object doesn't contain ``url``, ``title`` and ``favIconUrl`` if the <permission>tabs</permission> permission has not been requested."
                 }
               ]
@@ -14299,6 +14830,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "window",
@@ -14322,6 +14854,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "window",
@@ -14345,6 +14878,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "window",
@@ -14368,6 +14902,7 @@
             {
               "type": "function",
               "name": "callback",
+              "optional": true,
               "parameters": [
                 {
                   "name": "windows",
@@ -14483,8 +15018,7 @@
                 {
                   "name": "window",
                   "$ref": "Window",
-                  "description": "Contains details about the created window.",
-                  "optional": true
+                  "description": "Contains details about the created window."
                 }
               ]
             }
