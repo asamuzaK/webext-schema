@@ -17,11 +17,11 @@
     "commander": "^12.0.0",
     "decamelize": "^6.0.0",
     "json5": "^2.2.3",
-    "sinon": "^17.0.2"
+    "sinon": "^18.0.0"
   },
   "devDependencies": {
     "@types/firefox-webext-browser": "^120.0.3",
-    "@types/node": "^20.12.11",
+    "@types/node": "^20.12.12",
     "@types/sinon": "^17.0.3",
     "c8": "^9.1.0",
     "chai": "^5.1.1",
@@ -54,5 +54,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "version": "5.3.1"
+  "version": "5.3.2"
 }
