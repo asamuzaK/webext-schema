@@ -4449,6 +4449,12 @@
                   "description": "Enable browser styles. See the `MDN documentation on browser styles <|link-mdn-browser-styles|>`__ for more information.",
                   "default": false
                 },
+                "default_area": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "Defines the location the action button will appear. Deprecated and ignored. Replaced by ``allowed_spaces``",
+                  "deprecated": "Unsupported on Thunderbird."
+                },
                 "default_windows": {
                   "description": "Defines the windows, the action button should appear in. Defaults to showing it only in the <value>normal</value> Thunderbird window, but can also be shown in the <value>messageDisplay</value> window.",
                   "type": "array",
@@ -5355,14 +5361,14 @@
                       "optional": true,
                       "format": "url",
                       "preprocess": "localize",
-                      "deprecated": "Unsupported on Thunderbird at this time."
+                      "deprecated": "Unsupported on Thunderbird."
                     },
                     "image_url": {
                       "type": "string",
                       "optional": true,
                       "format": "url",
                       "preprocess": "localize",
-                      "deprecated": "Unsupported on Thunderbird at this time."
+                      "deprecated": "Unsupported on Thunderbird."
                     },
                     "search_url_get_params": {
                       "type": "string",
@@ -5392,13 +5398,13 @@
                       "type": "string",
                       "optional": true,
                       "preprocess": "localize",
-                      "deprecated": "Unsupported on Thunderbird at this time."
+                      "deprecated": "Unsupported on Thunderbird."
                     },
                     "image_url_post_params": {
                       "type": "string",
                       "optional": true,
                       "preprocess": "localize",
-                      "deprecated": "Unsupported on Thunderbird at this time."
+                      "deprecated": "Unsupported on Thunderbird."
                     },
                     "search_form": {
                       "type": "string",
@@ -5415,7 +5421,7 @@
                         "preprocess": "localize"
                       },
                       "optional": true,
-                      "deprecated": "Unsupported on Thunderbird at this time."
+                      "deprecated": "Unsupported on Thunderbird."
                     },
                     "prepopulated_id": {
                       "type": "integer",
@@ -7818,16 +7824,17 @@
       "permissions": [
         "compose"
       ],
+      "max_manifest_version": 2,
       "types": [
         {
           "id": "RegisteredComposeScriptOptions",
           "type": "object",
-          "description": "Details of a compose script registered programmatically",
+          "description": "Details of a compose script registered programmatically.",
           "properties": {
             "css": {
               "type": "array",
               "optional": true,
-              "description": "The list of CSS files to inject",
+              "description": "The list of CSS files to inject.",
               "items": {
                 "$ref": "extensionTypes.ExtensionFileOrCode"
               }
@@ -7835,7 +7842,7 @@
             "js": {
               "type": "array",
               "optional": true,
-              "description": "The list of JavaScript files to inject",
+              "description": "The list of JavaScript files to inject.",
               "items": {
                 "$ref": "extensionTypes.ExtensionFileOrCode"
               }
@@ -7845,12 +7852,12 @@
         {
           "id": "RegisteredComposeScript",
           "type": "object",
-          "description": "An object that represents a compose script registered programmatically",
+          "description": "An object that represents a compose script registered programmatically.",
           "functions": [
             {
               "name": "unregister",
               "type": "function",
-              "description": "Unregister a compose script registered programmatically",
+              "description": "Unregister a compose script registered programmatically.",
               "async": true,
               "parameters": []
             }
@@ -7861,7 +7868,7 @@
         {
           "name": "register",
           "type": "function",
-          "description": "Register a compose script programmatically",
+          "description": "Register a compose script programmatically. **Note:** Registered scripts will only be applied to newly opened message composer tabs. To apply the script to already open message composer tab, manually inject your script by calling :ref:`tabs.executeScript` for each of the open <value>messageCompose</value> tabs.",
           "async": true,
           "parameters": [
             {
@@ -7877,6 +7884,7 @@
       "permissions": [
         "messagesModify"
       ],
+      "max_manifest_version": 2,
       "types": [
         {
           "id": "RegisteredMessageDisplayScriptOptions",
@@ -13583,8 +13591,7 @@
             {
               "type": "string",
               "enum": [
-                "tabs",
-                "tabHide"
+                "tabs"
               ]
             }
           ]
@@ -14294,6 +14301,7 @@
         {
           "name": "executeScript",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Injects JavaScript code into a page. For details, see the `programmatic injection <|link-content-scripts|>`__ section of the content scripts doc.",
           "async": "callback",
           "parameters": [
@@ -14331,6 +14339,7 @@
         {
           "name": "insertCSS",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Injects CSS into a page. For details, see the `programmatic injection <|link-content-scripts|>`__ section of the content scripts doc.",
           "async": "callback",
           "parameters": [
@@ -14358,6 +14367,7 @@
         {
           "name": "removeCSS",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Removes injected CSS from a page. For details, see the `programmatic injection <|link-content-scripts|>`__ section of the content scripts doc.",
           "async": "callback",
           "parameters": [
