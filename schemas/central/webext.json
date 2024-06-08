@@ -918,7 +918,7 @@
             },
             {
               "name": "tab",
-              "$ref": "tags.Tab",
+              "$ref": "tabs.Tab",
               "optional": true,
               "description": "Details of the $(ref:tabs.Tab) where the command was activated."
             }
@@ -8723,12 +8723,22 @@
             "matchAboutBlank": {
               "type": "boolean",
               "optional": true,
-              "description": "If matchAboutBlank is true, then the code is also injected in about:blank and about:srcdoc frames if your extension has access to its parent document. Code cannot be inserted in top-level about:-frames. By default it is <code>false</code>."
+              "description": "If matchAboutBlank is true, then the code is also injected in about:blank and about:srcdoc frames if your extension has access to its parent document. Ignored if matchOriginAsFallback is specified. By default it is <code>false</code>."
+            },
+            "matchOriginAsFallback": {
+              "type": "boolean",
+              "optional": true,
+              "description": "If matchOriginAsFallback is true, then the code is also injected in about:, data:, blob: when their origin matches the pattern in 'matches', even if the actual document origin is opaque (due to the use of CSP sandbox or iframe sandbox). Match patterns in 'matches' must specify a wildcard path glob. By default it is <code>false</code>."
             },
             "runAt": {
               "$ref": "extensionTypes.RunAt",
               "optional": true,
               "description": "The soonest that the JavaScript or CSS will be injected into the tab. Defaults to \"document_idle\"."
+            },
+            "world": {
+              "$ref": "extensionTypes.ExecutionWorld",
+              "optional": true,
+              "description": "The JavaScript world for a script to execute within. Defaults to \"ISOLATED\"."
             },
             "cookieStoreId": {
               "choices": [
@@ -10094,7 +10104,7 @@
         {
           "name": "updateEnabledRulesets",
           "type": "function",
-          "description": "Returns the ids for the current set of enabled static rulesets.",
+          "description": "Modifies the static rulesets enabled/disabled state.",
           "async": "callback",
           "parameters": [
             {
@@ -10127,6 +10137,44 @@
           ]
         },
         {
+          "name": "updateStaticRules",
+          "type": "function",
+          "description": "Modified individual static rules enabled/disabled state. Changes to rules belonging to a disabled ruleset will take effect when the ruleset becomes enabled.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "options",
+              "type": "object",
+              "properties": {
+                "rulesetId": {
+                  "type": "string"
+                },
+                "disableRuleIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "optional": true,
+                  "default": []
+                },
+                "enableRuleIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "optional": true,
+                  "default": []
+                }
+              }
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "parameters": []
+            }
+          ]
+        },
+        {
           "name": "getAvailableStaticRuleCount",
           "type": "function",
           "description": "Returns the remaining number of static rules an extension can enable",
@@ -10139,6 +10187,36 @@
                 {
                   "name": "count",
                   "type": "integer"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getDisabledRuleIds",
+          "type": "function",
+          "description": "Returns the list of individual disabled static rules from a given static ruleset id.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "options",
+              "type": "object",
+              "properties": {
+                "rulesetId": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "parameters": [
+                {
+                  "name": "disabledRuleIds",
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
                 }
               ]
             }
@@ -10339,13 +10417,25 @@
           "type": "number",
           "description": "The maximum number of static Rulesets an extension can specify as part of the rule_resources manifest key."
         },
+        "MAX_NUMBER_OF_DISABLED_STATIC_RULES": {
+          "type": "number",
+          "description": "The maximum number of static rules that can be disabled on each static ruleset."
+        },
         "MAX_NUMBER_OF_ENABLED_STATIC_RULESETS": {
           "type": "number",
           "description": "The maximum number of static Rulesets an extension can enable at any one time."
         },
         "MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES": {
           "type": "number",
-          "description": "The maximum number of dynamic and session rules an extension can add. NOTE: in the Firefox we are enforcing this limit to the session and dynamic rules count separately, instead of enforcing it to the rules count for both combined as the Chrome implementation does."
+          "description": "Deprecated property returning the maximum number of dynamic and session rules an extension can add, replaced by MAX_NUMBER_OF_DYNAMIC_RULES/MAX_NUMBER_OF_SESSION_RULES."
+        },
+        "MAX_NUMBER_OF_DYNAMIC_RULES": {
+          "type": "number",
+          "description": "The maximum number of dynamic session rules an extension can add."
+        },
+        "MAX_NUMBER_OF_SESSION_RULES": {
+          "type": "number",
+          "description": "The maximum number of dynamic session rules an extension can add."
         },
         "MAX_NUMBER_OF_REGEX_RULES": {
           "type": "number",
@@ -12076,6 +12166,15 @@
           "description": "The soonest that the JavaScript or CSS will be injected into the tab."
         },
         {
+          "id": "ExecutionWorld",
+          "type": "string",
+          "enum": [
+            "ISOLATED",
+            "MAIN"
+          ],
+          "description": "The JavaScript world for a script to execute within. <code>ISOLATED</code> is the default execution environment of content scripts, <code>MAIN</code> is the web page's execution environment."
+        },
+        {
           "id": "CSSOrigin",
           "type": "string",
           "enum": [
@@ -13616,6 +13715,16 @@
               "optional": true,
               "default": []
             },
+            "optional_host_permissions": {
+              "min_manifest_version": 3,
+              "type": "array",
+              "items": {
+                "$ref": "MatchPattern",
+                "onError": "warn"
+              },
+              "optional": true,
+              "default": []
+            },
             "optional_permissions": {
               "type": "array",
               "items": {
@@ -13980,6 +14089,9 @@
               "type": "string",
               "optional": true
             }
+          },
+          "additionalProperties": {
+            "$ref": "UnrecognizedProperty"
           }
         },
         {
@@ -13996,7 +14108,7 @@
             }
           },
           "additionalProperties": {
-            "type": "any"
+            "$ref": "UnrecognizedProperty"
           }
         },
         {
@@ -14149,6 +14261,12 @@
               "optional": true,
               "default": "document_idle",
               "description": "The soonest that the JavaScript or CSS will be injected into the tab. Defaults to \"document_idle\"."
+            },
+            "world": {
+              "$ref": "extensionTypes.ExecutionWorld",
+              "optional": true,
+              "default": "ISOLATED",
+              "description": "The JavaScript world for a script to execute within. Defaults to \"ISOLATED\"."
             }
           }
         },
@@ -15397,7 +15515,7 @@
             "proxyDNS": {
               "type": "boolean",
               "optional": true,
-              "description": "Proxy DNS when using SOCKS v5."
+              "description": "Proxy DNS when using SOCKS. DNS queries get leaked to the network when set to false. True by default for SOCKS v5. False by default for SOCKS v4."
             },
             "respectBeConservative": {
               "type": "boolean",
@@ -16900,9 +17018,10 @@
           "id": "ExecutionWorld",
           "type": "string",
           "enum": [
-            "ISOLATED"
+            "ISOLATED",
+            "MAIN"
           ],
-          "description": "The JavaScript world for a script to execute within. We currently only support the <code>'ISOLATED'</code> world."
+          "description": "The JavaScript world for a script to execute within. <code>ISOLATED</code> is the default execution environment of content scripts, <code>MAIN</code> is the web page's execution environment."
         },
         {
           "id": "RegisteredContentScript",
@@ -16950,6 +17069,11 @@
               "$ref": "extensionTypes.RunAt",
               "optional": true,
               "description": "Specifies when JavaScript files are injected into the web page. The preferred and default value is <code>document_idle</code>."
+            },
+            "world": {
+              "$ref": "ExecutionWorld",
+              "optional": true,
+              "description": "The JavaScript world for a script to execute within. Defaults to \"ISOLATED\"."
             },
             "persistAcrossSessions": {
               "type": "boolean",

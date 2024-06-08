@@ -112,7 +112,7 @@
             },
             {
               "name": "tab",
-              "$ref": "tags.Tab",
+              "$ref": "tabs.Tab",
               "optional": true,
               "description": "Details of the $(ref:tabs.Tab) where the command was activated."
             }
@@ -357,12 +357,22 @@
             "matchAboutBlank": {
               "type": "boolean",
               "optional": true,
-              "description": "If matchAboutBlank is true, then the code is also injected in about:blank and about:srcdoc frames if your extension has access to its parent document. Code cannot be inserted in top-level about:-frames. By default it is <code>false</code>."
+              "description": "If matchAboutBlank is true, then the code is also injected in about:blank and about:srcdoc frames if your extension has access to its parent document. Ignored if matchOriginAsFallback is specified. By default it is <code>false</code>."
+            },
+            "matchOriginAsFallback": {
+              "type": "boolean",
+              "optional": true,
+              "description": "If matchOriginAsFallback is true, then the code is also injected in about:, data:, blob: when their origin matches the pattern in 'matches', even if the actual document origin is opaque (due to the use of CSP sandbox or iframe sandbox). Match patterns in 'matches' must specify a wildcard path glob. By default it is <code>false</code>."
             },
             "runAt": {
               "$ref": "extensionTypes.RunAt",
               "optional": true,
               "description": "The soonest that the JavaScript or CSS will be injected into the tab. Defaults to \"document_idle\"."
+            },
+            "world": {
+              "$ref": "extensionTypes.ExecutionWorld",
+              "optional": true,
+              "description": "The JavaScript world for a script to execute within. Defaults to \"ISOLATED\"."
             },
             "cookieStoreId": {
               "choices": [
@@ -3155,15 +3165,45 @@
         {
           "name": "list",
           "type": "function",
+          "min_manifest_version": 3,
           "description": "Returns all mail accounts. They will be returned in the same order as used in Thunderbird's folder pane.",
           "async": "callback",
           "parameters": [
             {
               "name": "includeFolders",
-              "description": "Specifies whether the returned :ref:`accounts.MailAccount` objects should included their account's folders. Defaults to <value>true</value>.",
+              "optional": true,
+              "default": false,
+              "type": "boolean",
+              "description": "Specifies whether the returned :ref:`accounts.MailAccount` objects should included their account's folders. Defaults to <value>false</value>."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "accounts.MailAccount"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "type": "function",
+          "max_manifest_version": 2,
+          "description": "Returns all mail accounts. They will be returned in the same order as used in Thunderbird's folder pane.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "includeFolders",
               "optional": true,
               "default": true,
-              "type": "boolean"
+              "type": "boolean",
+              "description": "Specifies whether the returned :ref:`accounts.MailAccount` objects should included their account's folders. Defaults to <value>true</value>."
             },
             {
               "type": "function",
@@ -3183,6 +3223,7 @@
         {
           "name": "get",
           "type": "function",
+          "min_manifest_version": 3,
           "description": "Returns details of the requested account, or <value>null</value> if it doesn't exist.",
           "async": "callback",
           "parameters": [
@@ -3192,10 +3233,41 @@
             },
             {
               "name": "includeFolders",
-              "description": "Specifies whether the returned :ref:`accounts.MailAccount` object should included the account's folders. Defaults to <value>true</value>.",
+              "optional": true,
+              "default": false,
+              "type": "boolean",
+              "description": "Specifies whether the returned :ref:`accounts.MailAccount` object should included the account's folders. Defaults to <value>false</value>."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "accounts.MailAccount",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "type": "function",
+          "max_manifest_version": 2,
+          "description": "Returns details of the requested account, or <value>null</value> if it doesn't exist.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "accountId",
+              "$ref": "MailAccountId"
+            },
+            {
+              "name": "includeFolders",
               "optional": true,
               "default": true,
-              "type": "boolean"
+              "type": "boolean",
+              "description": "Specifies whether the returned :ref:`accounts.MailAccount` object should included the account's folders. Defaults to <value>true</value>."
             },
             {
               "type": "function",
@@ -3711,25 +3783,25 @@
               "type": "boolean",
               "optional": true,
               "default": true,
-              "description": "Whether to include results from local address books. Defaults to true."
+              "description": "Whether to include results from local address books. Defaults to <value>true</value>."
             },
             "includeRemote": {
               "type": "boolean",
               "optional": true,
               "default": true,
-              "description": "Whether to include results from remote address books. Defaults to true."
+              "description": "Whether to include results from remote address books. Defaults to <value>true</value>."
             },
             "includeReadOnly": {
               "type": "boolean",
               "optional": true,
               "default": true,
-              "description": "Whether to include results from read-only address books. Defaults to true."
+              "description": "Whether to include results from read-only address books. Defaults to <value>true</value>."
             },
             "includeReadWrite": {
               "type": "boolean",
               "optional": true,
               "default": true,
-              "description": "Whether to include results from read-write address books. Defaults to true."
+              "description": "Whether to include results from read-write address books. Defaults to <value>true</value>."
             }
           }
         },
@@ -3762,7 +3834,12 @@
               "description": "Indicates if the object came from a remote address book."
             },
             "properties": {
+              "max_manifest_version": 2,
               "$ref": "ContactProperties"
+            },
+            "vCard": {
+              "min_manifest_version": 3,
+              "type": "string"
             }
           }
         },
@@ -3982,6 +4059,7 @@
         {
           "name": "create",
           "type": "function",
+          "max_manifest_version": 2,
           "async": "callback",
           "parameters": [
             {
@@ -4014,8 +4092,39 @@
           "description": "Adds a new contact to the address book with the id ``parentId``."
         },
         {
+          "name": "create",
+          "type": "function",
+          "min_manifest_version": 3,
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "parentId",
+              "type": "string"
+            },
+            {
+              "name": "vCard",
+              "min_manifest_version": 3,
+              "type": "string",
+              "description": "The vCard for the new contact. If it includes an (optional) id and an existing contact has this id already, an exception is thrown."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string",
+                  "description": "The ID of the new contact."
+                }
+              ]
+            }
+          ],
+          "description": "Adds a new contact to the address book with the id ``parentId``."
+        },
+        {
           "name": "update",
           "type": "function",
+          "max_manifest_version": 2,
           "async": true,
           "parameters": [
             {
@@ -4026,6 +4135,24 @@
               "name": "properties",
               "$ref": "ContactProperties",
               "description": "An object with properties to update the specified contact. Individual properties are removed, if they are set to <value>null</value>. If the provided object includes a ``vCard`` member, all specified `legacy properties <|link-legacy-properties|>`__ are ignored and the details of the contact will be replaced by the provided vCard. Changes to the UID will be ignored. **Note:** Using individual properties is deprecated, use the ``vCard`` member instead. "
+            }
+          ],
+          "description": "Updates a contact."
+        },
+        {
+          "name": "update",
+          "type": "function",
+          "min_manifest_version": 3,
+          "async": true,
+          "parameters": [
+            {
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "name": "vCard",
+              "type": "string",
+              "description": "The updated vCard for the contact."
             }
           ],
           "description": "Updates a contact."
@@ -4058,6 +4185,7 @@
         {
           "name": "onUpdated",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Fired when a contact is changed.",
           "parameters": [
             {
@@ -4067,6 +4195,22 @@
             {
               "name": "changedProperties",
               "$ref": "PropertyChange"
+            }
+          ]
+        },
+        {
+          "name": "onUpdated",
+          "type": "function",
+          "min_manifest_version": 3,
+          "description": "Fired when a contact is changed.",
+          "parameters": [
+            {
+              "name": "node",
+              "$ref": "ContactNode"
+            },
+            {
+              "name": "oldVCard",
+              "type": "string"
             }
           ]
         },
@@ -4824,7 +4968,7 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Specifies for which tab the label should be retrieved. If no tab is specified, the global label is retrieved."
+                  "description": "Specifies for which tab the label should be retrieved. If no tab is specified, the global value is retrieved."
                 },
                 "windowId": {
                   "type": "integer",
@@ -5045,7 +5189,86 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Specifies for which tab the badge text should be retrieved. If no tab is specified, the global label is retrieved."
+                  "description": "Specifies for which tab the badge text should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setBadgeTextColor",
+          "type": "function",
+          "description": "Sets the text color for the badge.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "color": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "ColorArray"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The color to use as text color in the badge. Cleared by setting it to <value>null</value>."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the text color for the badge only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "getBadgeTextColor",
+          "type": "function",
+          "description": "Gets the text color of the badge.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the badge text color should be retrieved. If no tab is specified, the global value is retrieved."
                 },
                 "windowId": {
                   "type": "integer",
@@ -5091,7 +5314,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The color to use as background in the badge. Cleared by setting it to <value>null</value> or an empty string."
+                  "description": "The color to use as background in the badge. Cleared by setting it to <value>null</value>."
                 },
                 "tabId": {
                   "type": "integer",
@@ -5130,7 +5353,7 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Specifies for which tab the badge background color should be retrieved. If no tab is specified, the global label is retrieved."
+                  "description": "Specifies for which tab the badge background color should be retrieved. If no tab is specified, the global value is retrieved."
                 },
                 "windowId": {
                   "type": "integer",
@@ -6042,7 +6265,13 @@
               "properties": {
                 "id": {
                   "type": "string",
-                  "description": "The ID of a contact or mailing list from the :doc:`contacts` and :doc:`mailingLists`."
+                  "max_manifest_version": 2,
+                  "description": "The ID of a contact or mailing list from the :doc:`contacts` or :doc:`mailingLists`."
+                },
+                "nodeId": {
+                  "type": "string",
+                  "min_manifest_version": 3,
+                  "description": "The ID of a contact or mailing list node from the :doc:`addressBook.contacts` or :doc:`addressBook.mailingLists`."
                 },
                 "type": {
                   "type": "string",
@@ -6115,6 +6344,11 @@
               "description": "An additional fcc folder which can be selected while composing the message, an empty string if not used.",
               "optional": true
             },
+            "attachPublicPGPKey": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether the public OpenPGP key of the sending identity should be attached to the message."
+            },
             "attachVCard": {
               "type": "boolean",
               "optional": true,
@@ -6171,6 +6405,18 @@
               "type": "boolean",
               "optional": true,
               "description": "Let the sender know when the recipient's server received the message. Not supported by all servers."
+            },
+            "selectedEncryptionTechnology": {
+              "choices": [
+                {
+                  "$ref": "compose.EncryptionPropertiesSMIME"
+                },
+                {
+                  "$ref": "compose.EncryptionPropertiesOpenPGP"
+                }
+              ],
+              "optional": true,
+              "description": "The selected encryption technology (<value>OpenPGP</value> or <value>S/MIME</value>) which is to be used to sign and/or encrypt the message. If the sending identity does not support encryption at all, this will be <value>undefined</value>."
             },
             "followupTo": {
               "$ref": "ComposeRecipientList",
@@ -6356,6 +6602,46 @@
             "type": "boolean"
           },
           "description": "A <em>dictionary object</em> with entries for all installed dictionaries, having a language identifier as <em>key</em> (for example <value>en-US</value>) and a boolean expression as <em>value</em>, indicating whether that dictionary is enabled for spellchecking or not."
+        },
+        {
+          "id": "EncryptionPropertiesOpenPGP",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "^OpenPGP$"
+            },
+            "encryptBody": {
+              "type": "boolean",
+              "description": "Whether encryption of the message body using the OpenPGP technology is enabled. **Note:** If encryption is enabled, but the `preconditions <https://support.mozilla.org/en-US/kb/thunderbird-help-cannot-encrypt>`__ for sending an encrypted message are not met, the message cannot be sent."
+            },
+            "encryptSubject": {
+              "type": "boolean",
+              "description": "Whether encryption of the message subject using the OpenPGP technology is enabled (only supported if encryption of the body is enabled a well)."
+            },
+            "signMessage": {
+              "type": "boolean",
+              "description": "Whether the message will be signed using the OpenPGP technology."
+            }
+          }
+        },
+        {
+          "id": "EncryptionPropertiesSMIME",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "^S/MIME$"
+            },
+            "encryptBody": {
+              "type": "boolean",
+              "description": "Whether encryption of the message body using the S/MIME technology is enabled. **Note:** If encryption is enabled, but the `preconditions <https://support.mozilla.org/en-US/kb/thunderbird-help-cannot-encrypt>`__ for sending an encrypted message are not met, the message cannot be sent."
+            },
+            "signMessage": {
+              "type": "boolean",
+              "description": "Whether the message will be signed using the S/MIME technology"
+            }
+          }
         }
       ],
       "events": [
@@ -6702,7 +6988,7 @@
           "name": "setComposeDetails",
           "type": "function",
           "async": true,
-          "description": "Updates the compose window. The properties of the given :ref:`compose.ComposeDetails` object will be used to overwrite the current values of the specified compose window, so only properties that are to be changed should be included.\n\nWhen updating any of the array properties (``customHeaders`` and most address fields), make sure to first get the current values to not accidentally remove all existing entries when setting the new value.\n\n**Note:** The compose format of an existing compose window cannot be changed. Since Thunderbird 98, setting conflicting values for ``details.body``, ``details.plainTextBody`` or ``details.isPlaintext`` no longer throws an exception, instead the compose window chooses the matching ``details.body`` or ``details.plainTextBody`` value and ignores the other.",
+          "description": "Updates the compose window. The properties of the given :ref:`compose.ComposeDetails` object will be used to overwrite the current values of the specified compose window, so only properties that are to be changed should be included. Modified settings will be treated as user initiated, and turn off further automatic changes on these settings.\n\nWhen updating any of the array properties (``customHeaders`` and most address fields), make sure to first get the current values to not accidentally remove all existing entries when setting the new value.\n\n**Note:** The compose format of an existing compose window cannot be changed. Since Thunderbird 98, setting conflicting values for ``details.body``, ``details.plainTextBody`` or ``details.isPlaintext`` no longer throws an exception, instead the compose window chooses the matching ``details.body`` or ``details.plainTextBody`` value and ignores the other.",
           "permissions": [
             "compose"
           ],
@@ -7339,7 +7625,7 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Specifies for which tab the label should be retrieved. If no tab is specified, the global label is retrieved."
+                  "description": "Specifies for which tab the label should be retrieved. If no tab is specified, the global value is retrieved."
                 },
                 "windowId": {
                   "type": "integer",
@@ -7560,7 +7846,86 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Specifies for which tab the badge text should be retrieved. If no tab is specified, the global label is retrieved."
+                  "description": "Specifies for which tab the badge text should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setBadgeTextColor",
+          "type": "function",
+          "description": "Sets the text color for the badge.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "color": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "ColorArray"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The color to use as text color in the badge. Cleared by setting it to <value>null</value>."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the text color for the badge only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "getBadgeTextColor",
+          "type": "function",
+          "description": "Gets the text color of the badge.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the badge text color should be retrieved. If no tab is specified, the global value is retrieved."
                 },
                 "windowId": {
                   "type": "integer",
@@ -7606,7 +7971,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The color to use as background in the badge. Cleared by setting it to <value>null</value> or an empty string."
+                  "description": "The color to use as background in the badge. Cleared by setting it to <value>null</value>."
                 },
                 "tabId": {
                   "type": "integer",
@@ -7645,7 +8010,7 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Specifies for which tab the badge background color should be retrieved. If no tab is specified, the global label is retrieved."
+                  "description": "Specifies for which tab the badge background color should be retrieved. If no tab is specified, the global value is retrieved."
                 },
                 "windowId": {
                   "type": "integer",
@@ -8405,19 +8770,50 @@
         {
           "name": "get",
           "type": "function",
+          "min_manifest_version": 3,
           "description": "Returns the specified folder.",
           "async": "callback",
           "parameters": [
             {
-              "name": "folder",
+              "name": "folderId",
               "$ref": "folders.MailFolderId"
             },
             {
               "name": "includeSubFolders",
-              "description": "Specifies whether the returned :ref:`folders.MailFolder` object should include all its nested subfolders . Defaults to <value>true</value>.",
               "optional": true,
+              "type": "boolean",
+              "default": false,
+              "description": "Specifies whether the returned :ref:`folders.MailFolder` object should include all its nested subfolders. Defaults to <value>false</value>."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "folders.MailFolder"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "type": "function",
+          "max_manifest_version": 2,
+          "description": "Returns the specified folder.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "name": "includeSubFolders",
+              "optional": true,
+              "type": "boolean",
               "default": true,
-              "type": "boolean"
+              "description": "Specifies whether the returned :ref:`folders.MailFolder` object should include all its nested subfolders. Defaults to <value>true</value>."
             },
             {
               "type": "function",
@@ -8434,10 +8830,41 @@
         {
           "name": "create",
           "type": "function",
+          "min_manifest_version": 3,
           "permissions": [
             "accountsFolders"
           ],
-          "description": "Creates a new subfolder in the specified folder or at the root of the specified account.",
+          "description": "Creates a new subfolder in the specified folder.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "name": "childName",
+              "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "folders.MailFolder"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "create",
+          "type": "function",
+          "max_manifest_version": 2,
+          "permissions": [
+            "accountsFolders"
+          ],
+          "description": "Creates a new subfolder in the specified folder, or at the root of the specified account.",
           "async": "callback",
           "parameters": [
             {
@@ -8447,12 +8874,10 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.create() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.create() requires to specify the MailFolderId of the account's rootFolder, instead of a full MailAccount object.",
                   "$ref": "accounts.MailAccount"
                 }
@@ -8477,6 +8902,7 @@
         {
           "name": "rename",
           "type": "function",
+          "max_manifest_version": 2,
           "permissions": [
             "accountsFolders"
           ],
@@ -8490,7 +8916,6 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.rename() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
@@ -8513,8 +8938,39 @@
           ]
         },
         {
+          "name": "rename",
+          "type": "function",
+          "min_manifest_version": 3,
+          "permissions": [
+            "accountsFolders"
+          ],
+          "description": "Renames a folder.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "name": "newName",
+              "type": "string"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "folders.MailFolder"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "move",
           "type": "function",
+          "max_manifest_version": 2,
           "permissions": [
             "accountsFolders"
           ],
@@ -8528,7 +8984,6 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.move() requires to specify a MailFolderId for its source parameter, instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
@@ -8541,13 +8996,91 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.move() requires to specify a MailFolderId for its destination parameter, instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.move() requires to specify the MailFolderId of the account's rootFolder for its destination parameter, instead of a full MailAccount object.",
+                  "$ref": "accounts.MailAccount"
+                }
+              ]
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "folders.MailFolder"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "move",
+          "type": "function",
+          "min_manifest_version": 3,
+          "permissions": [
+            "accountsFolders"
+          ],
+          "description": "Moves the given source folder into the given destination folder. Throws if the destination already contains a folder with the name of the source folder.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "sourceFolderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "name": "destinationFolderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "folders.MailFolder"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "copy",
+          "type": "function",
+          "max_manifest_version": 2,
+          "permissions": [
+            "accountsFolders"
+          ],
+          "description": "Copies the given source folder into the given destination folder. Throws if the destination already contains a folder with the name of the source folder.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "source",
+              "choices": [
+                {
+                  "$ref": "folders.MailFolderId"
+                },
+                {
+                  "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.copy() requires to specify a MailFolderId for its source parameter, instead of a full MailFolder object.",
+                  "$ref": "folders.MailFolder"
+                }
+              ]
+            },
+            {
+              "name": "destination",
+              "choices": [
+                {
+                  "$ref": "folders.MailFolderId"
+                },
+                {
+                  "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.copy() requires to specify a MailFolderId for its destination parameter, instead of a full MailFolder object.",
+                  "$ref": "folders.MailFolder"
+                },
+                {
+                  "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.copy() requires to specify the MailFolderId of the account's rootFolder for its destination parameter, instead of a full MailAccount object.",
                   "$ref": "accounts.MailAccount"
                 }
               ]
@@ -8567,6 +9100,7 @@
         {
           "name": "copy",
           "type": "function",
+          "min_manifest_version": 3,
           "permissions": [
             "accountsFolders"
           ],
@@ -8574,35 +9108,12 @@
           "async": "callback",
           "parameters": [
             {
-              "name": "source",
-              "choices": [
-                {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
-                  "max_manifest_version": 2,
-                  "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.copy() requires to specify a MailFolderId for its source parameter, instead of a full MailFolder object.",
-                  "$ref": "folders.MailFolder"
-                }
-              ]
+              "name": "sourceFolderId",
+              "$ref": "folders.MailFolderId"
             },
             {
-              "name": "destination",
-              "choices": [
-                {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
-                  "max_manifest_version": 2,
-                  "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.copy() requires to specify a MailFolderId for its destination parameter, instead of a full MailFolder object.",
-                  "$ref": "folders.MailFolder"
-                },
-                {
-                  "max_manifest_version": 2,
-                  "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.copy() requires to specify the MailFolderId of the account's rootFolder for its destination parameter, instead of a full MailAccount object.",
-                  "$ref": "accounts.MailAccount"
-                }
-              ]
+              "name": "destinationFolderId",
+              "$ref": "folders.MailFolderId"
             },
             {
               "type": "function",
@@ -8623,6 +9134,7 @@
             "messagesDelete"
           ],
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Deletes a folder.",
           "async": true,
           "parameters": [
@@ -8633,11 +9145,27 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.delete() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "permissions": [
+            "accountsFolders",
+            "messagesDelete"
+          ],
+          "type": "function",
+          "min_manifest_version": 3,
+          "description": "Deletes a folder.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
             }
           ]
         },
@@ -8647,6 +9175,7 @@
             "accountsFolders"
           ],
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Updates properties of a folder.",
           "async": true,
           "parameters": [
@@ -8657,7 +9186,6 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.update() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
@@ -8678,8 +9206,37 @@
           ]
         },
         {
+          "name": "update",
+          "permissions": [
+            "accountsFolders"
+          ],
+          "type": "function",
+          "min_manifest_version": 3,
+          "description": "Updates properties of a folder.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "name": "updateProperties",
+              "type": "object",
+              "description": "The properties to update.",
+              "properties": {
+                "isFavorite": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Sets or clears the favorite status."
+                }
+              }
+            }
+          ]
+        },
+        {
           "name": "getFolderInfo",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Get additional information about a folder.",
           "async": "callback",
           "parameters": [
@@ -8690,7 +9247,6 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.getFolderInfo() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
@@ -8709,8 +9265,32 @@
           ]
         },
         {
+          "name": "getFolderInfo",
+          "type": "function",
+          "min_manifest_version": 3,
+          "description": "Get additional information about a folder.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "folders.MailFolderInfo"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "getFolderCapabilities",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Get capability information about a folder.",
           "async": "callback",
           "parameters": [
@@ -8721,7 +9301,6 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.getFolderCapabilities() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
@@ -8740,8 +9319,32 @@
           ]
         },
         {
+          "name": "getFolderCapabilities",
+          "type": "function",
+          "min_manifest_version": 3,
+          "description": "Get capability information about a folder.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "folders.MailFolderCapabilities"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "getParentFolders",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Get all parent folders as a flat ordered array. The first array entry is the direct parent.",
           "async": "callback",
           "parameters": [
@@ -8752,7 +9355,6 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.getParentFolders() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
@@ -8760,7 +9362,40 @@
             },
             {
               "name": "includeSubFolders",
-              "description": "Specifies whether the returned :ref:`folders.MailFolder` object for each parent folder should include its nested subfolders . Defaults to <value>false</value>.",
+              "description": "Specifies whether the returned :ref:`folders.MailFolder` object for each parent folder should include its nested subfolders. Defaults to <value>false</value>.",
+              "optional": true,
+              "default": false,
+              "type": "boolean"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "folders.MailFolder"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getParentFolders",
+          "type": "function",
+          "min_manifest_version": 3,
+          "description": "Get all parent folders as a flat ordered array. The first array entry is the direct parent.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "name": "includeSubFolders",
+              "description": "Specifies whether the returned :ref:`folders.MailFolder` object for each parent folder should include its nested subfolders. Defaults to <value>false</value>.",
               "optional": true,
               "default": false,
               "type": "boolean"
@@ -8783,6 +9418,40 @@
         {
           "name": "getSubFolders",
           "type": "function",
+          "min_manifest_version": 3,
+          "description": "Get the subfolders of the specified folder.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "name": "includeSubFolders",
+              "optional": true,
+              "type": "boolean",
+              "default": false,
+              "description": "Specifies whether the returned :ref:`folders.MailFolder` object for each direct subfolder should also include all its nested subfolders. Defaults to <value>false</value>."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "folders.MailFolder"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getSubFolders",
+          "type": "function",
+          "max_manifest_version": 2,
           "description": "Get the subfolders of the specified folder or account.",
           "async": "callback",
           "parameters": [
@@ -8793,12 +9462,10 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.getSubFolders() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.getSubFolders() requires to specify the MailFolderId of the account's rootFolder, instead of a full MailAccount object.",
                   "$ref": "accounts.MailAccount"
                 }
@@ -8806,10 +9473,10 @@
             },
             {
               "name": "includeSubFolders",
-              "description": "Specifies whether the returned :ref:`folders.MailFolder` object for each direct subfolder should also include all its nested subfolders . Defaults to <value>true</value>.",
               "optional": true,
+              "type": "boolean",
               "default": true,
-              "type": "boolean"
+              "description": "Specifies whether the returned :ref:`folders.MailFolder` object for each direct subfolder should also include all its nested subfolders. Defaults to <value>true</value>."
             },
             {
               "type": "function",
@@ -8892,6 +9559,7 @@
             "accountsFolders"
           ],
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Marks all messages in a folder as read.",
           "async": false,
           "parameters": [
@@ -8902,11 +9570,26 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.markAsRead() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "markAsRead",
+          "permissions": [
+            "accountsFolders"
+          ],
+          "type": "function",
+          "min_manifest_version": 3,
+          "description": "Marks all messages in a folder as read.",
+          "async": false,
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
             }
           ]
         }
@@ -9036,6 +9719,20 @@
       ],
       "types": [
         {
+          "id": "EncryptionCapabilities",
+          "type": "object",
+          "properties": {
+            "canEncrypt": {
+              "type": "boolean",
+              "description": "Whether the encryption technology is configured to support message encryption."
+            },
+            "canSign": {
+              "type": "boolean",
+              "description": "Whether the encryption technology is configured to support message signing."
+            }
+          }
+        },
+        {
           "id": "MailIdentity",
           "type": "object",
           "properties": {
@@ -9088,6 +9785,21 @@
               "type": "boolean",
               "optional": true,
               "description": "If the signature should be interpreted as plain text or as HTML."
+            },
+            "encryptionCapabilities": {
+              "type": "object",
+              "optional": true,
+              "description": "The encryption capabilities of this identity. Read only.",
+              "properties": {
+                "OpenPGP": {
+                  "$ref": "identities.EncryptionCapabilities",
+                  "description": "The capabilities of this identity for the OpenPGP encryption technology."
+                },
+                "S/MIME": {
+                  "$ref": "identities.EncryptionCapabilities",
+                  "description": "The capabilities of this identity for the S/MIME encryption technology."
+                }
+              }
             }
           }
         }
@@ -9334,6 +10046,11 @@
           "type": "object",
           "properties": {
             "id": {
+              "max_manifest_version": 2,
+              "type": "integer"
+            },
+            "tabId": {
+              "min_manifest_version": 3,
               "type": "integer"
             },
             "windowId": {
@@ -9341,6 +10058,17 @@
             },
             "active": {
               "type": "boolean"
+            },
+            "groupType": {
+              "type": "string",
+              "min_manifest_version": 3,
+              "description": "Grouping type of the message list.",
+              "optional": true,
+              "enum": [
+                "ungrouped",
+                "groupedByThread",
+                "groupedBySortType"
+              ]
             },
             "sortType": {
               "type": "string",
@@ -9381,7 +10109,8 @@
             },
             "viewType": {
               "type": "string",
-              "description": "Group mode of the message list.",
+              "max_manifest_version": 2,
+              "description": "Grouping type of the message list.",
               "optional": true,
               "enum": [
                 "ungrouped",
@@ -9433,6 +10162,17 @@
           "id": "MailTabProperties",
           "type": "object",
           "properties": {
+            "groupType": {
+              "type": "string",
+              "min_manifest_version": 3,
+              "description": "Grouping type of the message list.",
+              "optional": true,
+              "enum": [
+                "ungrouped",
+                "groupedByThread",
+                "groupedBySortType"
+              ]
+            },
             "sortType": {
               "type": "string",
               "description": "Sorts the list of messages. ``sortOrder`` must also be given.",
@@ -9472,7 +10212,8 @@
             },
             "viewType": {
               "type": "string",
-              "description": "Sets the group mode of displayed messages.",
+              "max_manifest_version": 2,
+              "description": "Sets the grouping type of displayed messages.",
               "optional": true,
               "enum": [
                 "ungrouped",
@@ -9611,7 +10352,7 @@
                 {
                   "type": "array",
                   "items": {
-                    "$ref": "MailTab"
+                    "$ref": "mailTabs.MailTab"
                   }
                 }
               ]
@@ -9621,13 +10362,13 @@
         {
           "name": "get",
           "type": "function",
-          "description": "Get the properties of a mail tab.",
+          "description": "Get the :ref:`mailTabs.MailTab` properties of a mail tab.",
           "async": "callback",
           "parameters": [
             {
               "name": "tabId",
               "type": "integer",
-              "description": "ID of the requested mail tab. Throws if the requested tab is not a mail tab."
+              "description": "ID of the requested mail tab. Throws if the requested <value>tabId</value> does not belong to a mail tab."
             },
             {
               "type": "function",
@@ -9635,7 +10376,7 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "MailTab"
+                  "$ref": "mailTabs.MailTab"
                 }
               ]
             }
@@ -9644,7 +10385,8 @@
         {
           "name": "getCurrent",
           "type": "function",
-          "description": "Get the properties of the active mail tab, if the active tab is a mail tab. Returns <value>undefined</value> otherwise.",
+          "max_manifest_version": 2,
+          "description": "Get the :ref:`mailTabs.MailTab` properties of the active mail tab. Returns <value>undefined</value>, if the active tab is not a mail tab.",
           "async": "callback",
           "parameters": [
             {
@@ -9653,7 +10395,7 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "MailTab",
+                  "$ref": "mailTabs.MailTab",
                   "optional": true,
                   "description": "This may return undefined"
                 }
@@ -9669,7 +10411,7 @@
           "parameters": [
             {
               "name": "createProperties",
-              "$ref": "MailTabProperties",
+              "$ref": "mailTabs.MailTabProperties",
               "optional": true,
               "default": {}
             },
@@ -9680,7 +10422,7 @@
               "parameters": [
                 {
                   "name": "mailTab",
-                  "$ref": "MailTab",
+                  "$ref": "mailTabs.MailTab",
                   "description": "Details about the created mail tab. Will contain the ID of the new tab."
                 }
               ]
@@ -9702,7 +10444,7 @@
             },
             {
               "name": "updateProperties",
-              "$ref": "MailTabProperties"
+              "$ref": "mailTabs.MailTabProperties"
             },
             {
               "type": "function",
@@ -9711,7 +10453,7 @@
               "parameters": [
                 {
                   "name": "mailTab",
-                  "$ref": "MailTab",
+                  "$ref": "mailTabs.MailTab",
                   "description": "Details about the updated mail tab."
                 }
               ]
@@ -9856,7 +10598,7 @@
                   "optional": true
                 },
                 "text": {
-                  "$ref": "QuickFilterTextDetail",
+                  "$ref": "mailTabs.QuickFilterTextDetail",
                   "description": "Shows only messages matching the supplied text.",
                   "optional": true
                 }
@@ -10097,7 +10839,7 @@
             "selectedMessages": {
               "$ref": "messages.MessageList",
               "optional": true,
-              "description": "The selected messages, if the context menu was opened in the message list. The <permission>messagesRead</permission> permission is required."
+              "description": "The selected message(s), if the context menu was opened in the message list. The <permission>messagesRead</permission> permission is required."
             },
             "displayedFolder": {
               "$ref": "folders.MailFolder",
@@ -10106,11 +10848,21 @@
             },
             "selectedFolder": {
               "$ref": "folders.MailFolder",
+              "max_manifest_version": 2,
               "optional": true,
               "description": "The selected folder, if the context menu was opened in the folder pane. The <permission>accountsRead</permission> permission is required."
             },
+            "selectedFolders": {
+              "type": "array",
+              "items": {
+                "$ref": "folders.MailFolder"
+              },
+              "optional": true,
+              "description": "The selected folder(s), if the context menu was opened in the folder pane. The <permission>accountsRead</permission> permission is required."
+            },
             "selectedAccount": {
               "$ref": "accounts.MailAccount",
+              "max_manifest_version": 2,
               "optional": true,
               "description": "The selected account, if the context menu was opened on an account entry in the folder pane. The <permission>accountsRead</permission> permission is required."
             },
@@ -10259,7 +11011,7 @@
             "selectedMessages": {
               "$ref": "messages.MessageList",
               "optional": true,
-              "description": "The selected messages, if the context menu was opened in the message list. The <permission>messagesRead</permission> permission is required."
+              "description": "The selected message(s), if the context menu was opened in the message list. The <permission>messagesRead</permission> permission is required."
             },
             "displayedFolder": {
               "$ref": "folders.MailFolder",
@@ -10268,11 +11020,21 @@
             },
             "selectedFolder": {
               "$ref": "folders.MailFolder",
+              "max_manifest_version": 2,
               "optional": true,
               "description": "The selected folder, if the context menu was opened in the folder pane. The <permission>accountsRead</permission> permission is required."
             },
+            "selectedFolders": {
+              "type": "array",
+              "items": {
+                "$ref": "folders.MailFolder"
+              },
+              "optional": true,
+              "description": "The selected folder(s), if the context menu was opened in the folder pane. The <permission>accountsRead</permission> permission is required."
+            },
             "selectedAccount": {
               "$ref": "accounts.MailAccount",
+              "max_manifest_version": 2,
               "optional": true,
               "description": "The selected account, if the context menu was opened on an account entry in the folder pane. The <permission>accountsRead</permission> permission is required."
             },
@@ -10773,6 +11535,7 @@
         {
           "name": "onMessageDisplayed",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Fired when a message is displayed, whether in a 3-pane tab, a message tab, or a message window.",
           "parameters": [
             {
@@ -10807,6 +11570,7 @@
       "functions": [
         {
           "name": "getDisplayedMessage",
+          "max_manifest_version": 2,
           "type": "function",
           "description": "Gets the currently displayed message in the specified tab (even if the tab itself is currently not visible), or the currently active tab. It returns <value>null</value> if no messages are displayed, or if multiple messages are displayed.",
           "async": "callback",
@@ -11210,7 +11974,7 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Specifies for which tab the label should be retrieved. If no tab is specified, the global label is retrieved."
+                  "description": "Specifies for which tab the label should be retrieved. If no tab is specified, the global value is retrieved."
                 },
                 "windowId": {
                   "type": "integer",
@@ -11431,7 +12195,86 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Specifies for which tab the badge text should be retrieved. If no tab is specified, the global label is retrieved."
+                  "description": "Specifies for which tab the badge text should be retrieved. If no tab is specified, the global value is retrieved."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "setBadgeTextColor",
+          "type": "function",
+          "description": "Sets the text color for the badge.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "color": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "ColorArray"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The color to use as text color in the badge. Cleared by setting it to <value>null</value>."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Sets the text color for the badge only for the given tab."
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2,
+                  "unsupported": true,
+                  "description": "Will throw an error if used."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "getBadgeTextColor",
+          "type": "function",
+          "description": "Gets the text color of the badge.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "details",
+              "type": "object",
+              "properties": {
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0,
+                  "description": "Specifies for which tab the badge text color should be retrieved. If no tab is specified, the global value is retrieved."
                 },
                 "windowId": {
                   "type": "integer",
@@ -11477,7 +12320,7 @@
                       "type": "null"
                     }
                   ],
-                  "description": "The color to use as background in the badge. Cleared by setting it to <value>null</value> or an empty string."
+                  "description": "The color to use as background in the badge. Cleared by setting it to <value>null</value>."
                 },
                 "tabId": {
                   "type": "integer",
@@ -11516,7 +12359,7 @@
                   "type": "integer",
                   "optional": true,
                   "minimum": 0,
-                  "description": "Specifies for which tab the badge background color should be retrieved. If no tab is specified, the global label is retrieved."
+                  "description": "Specifies for which tab the badge background color should be retrieved. If no tab is specified, the global value is retrieved."
                 },
                 "windowId": {
                   "type": "integer",
@@ -11924,7 +12767,7 @@
         {
           "id": "MessageAttachment",
           "type": "object",
-          "description": "Represents an attachment in a message.",
+          "description": "Represents an attachment in a message. This includes all MIME parts with a <value>content-disposition</value> header set to <value>attachment</value>, but also related parts like inline images.",
           "properties": {
             "contentType": {
               "type": "string",
@@ -11941,6 +12784,11 @@
             "size": {
               "type": "integer",
               "description": "The size in bytes of this attachment."
+            },
+            "contentId": {
+              "type": "string",
+              "optional": true,
+              "description": "The content-id of this part. Available for related parts, which are referenced from other places inside the same message (e.g. inline images)."
             },
             "message": {
               "$ref": "messages.MessageHeader",
@@ -12064,6 +12912,33 @@
         {
           "name": "list",
           "type": "function",
+          "min_manifest_version": 3,
+          "description": "Gets all messages in a folder.",
+          "async": "callback",
+          "permissions": [
+            "accountsRead"
+          ],
+          "parameters": [
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "messages.MessageList"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "type": "function",
+          "max_manifest_version": 2,
           "description": "Gets all messages in a folder.",
           "async": "callback",
           "permissions": [
@@ -12077,7 +12952,6 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: messages.list() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
@@ -12548,6 +13422,7 @@
         {
           "name": "move",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Moves messages to a specified folder. If the messages cannot be removed from the source folder, they will be copied instead of moved. Moving external messages will throw an <em>ExtensionError</em>.",
           "async": true,
           "permissions": [
@@ -12570,7 +13445,6 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: messages.move() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
@@ -12580,8 +13454,35 @@
           ]
         },
         {
+          "name": "move",
+          "type": "function",
+          "min_manifest_version": 3,
+          "description": "Moves messages to a specified folder. If the messages cannot be removed from the source folder, they will be copied instead of moved. Moving external messages will throw an <em>ExtensionError</em>.",
+          "async": true,
+          "permissions": [
+            "accountsRead",
+            "messagesMove"
+          ],
+          "parameters": [
+            {
+              "name": "messageIds",
+              "type": "array",
+              "description": "The IDs of the messages to move.",
+              "items": {
+                "$ref": "messages.MessageId"
+              }
+            },
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId",
+              "description": "The folder to move the messages to."
+            }
+          ]
+        },
+        {
           "name": "copy",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Copies messages to a specified folder.",
           "async": true,
           "permissions": [
@@ -12604,11 +13505,36 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: messages.copy() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
               ],
+              "description": "The folder to copy the messages to."
+            }
+          ]
+        },
+        {
+          "name": "copy",
+          "type": "function",
+          "min_manifest_version": 3,
+          "description": "Copies messages to a specified folder.",
+          "async": true,
+          "permissions": [
+            "accountsRead",
+            "messagesMove"
+          ],
+          "parameters": [
+            {
+              "name": "messageIds",
+              "type": "array",
+              "description": "The IDs of the messages to copy.",
+              "items": {
+                "$ref": "messages.MessageId"
+              }
+            },
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId",
               "description": "The folder to copy the messages to."
             }
           ]
@@ -12641,6 +13567,7 @@
         {
           "name": "import",
           "type": "function",
+          "max_manifest_version": 2,
           "description": "Imports a message into a local Thunderbird folder. To import a message into an IMAP folder, add it to a local folder first and then move it to the IMAP folder.",
           "async": "callback",
           "permissions": [
@@ -12661,11 +13588,49 @@
                   "$ref": "folders.MailFolderId"
                 },
                 {
-                  "max_manifest_version": 2,
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: messages.import() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 }
               ],
+              "description": "The folder to import the messages into."
+            },
+            {
+              "name": "properties",
+              "$ref": "messages.MessageProperties",
+              "optional": true
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "messages.MessageHeader"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "import",
+          "type": "function",
+          "min_manifest_version": 3,
+          "description": "Imports a message into a local Thunderbird folder. To import a message into an IMAP folder, add it to a local folder first and then move it to the IMAP folder.",
+          "async": "callback",
+          "permissions": [
+            "accountsRead",
+            "messagesImport"
+          ],
+          "parameters": [
+            {
+              "name": "file",
+              "type": "object",
+              "isInstanceOf": "File",
+              "additionalProperties": true
+            },
+            {
+              "name": "folderId",
+              "$ref": "folders.MailFolderId",
               "description": "The folder to import the messages into."
             },
             {
@@ -13062,7 +14027,7 @@
                   "type": "string"
                 },
                 {
-                  "$ref": "ColorArray"
+                  "$ref": "spaces.ColorArray"
                 }
               ],
               "optional": true,
@@ -13110,7 +14075,7 @@
                   "type": "string"
                 },
                 {
-                  "$ref": "ColorArray"
+                  "$ref": "spaces.ColorArray"
                 }
               ],
               "optional": "omit-key-if-missing",
@@ -13269,6 +14234,14 @@
               "properties": {
                 "id": {
                   "type": "integer",
+                  "max_manifest_version": 2,
+                  "description": "The id of the space.",
+                  "optional": true,
+                  "minimum": 1
+                },
+                "spaceId": {
+                  "type": "integer",
+                  "min_manifest_version": 3,
                   "description": "The id of the space.",
                   "optional": true,
                   "minimum": 1
@@ -14625,6 +15598,41 @@
         }
       ],
       "functions": [
+        {
+          "name": "convertToPlainText",
+          "type": "function",
+          "description": "Converts the provided body to readable plain text, without tags and leading/trailing whitespace.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "body",
+              "type": "string",
+              "description": "The to-be-converted body."
+            },
+            {
+              "name": "options",
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "flowed": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "The converted plain text will be wrapped to lines not longer than 72 characters and use format flowed, as defined by RFC 2646."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
         {
           "name": "formatFileSize",
           "type": "function",
