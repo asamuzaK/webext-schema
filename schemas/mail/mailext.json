@@ -3174,7 +3174,7 @@
               "optional": true,
               "default": false,
               "type": "boolean",
-              "description": "Specifies whether the returned :ref:`accounts.MailAccount` objects should included their account's folders. Defaults to <value>false</value>."
+              "description": "Specifies whether the returned :ref:`accounts.MailAccount` objects should include their account's folders. Defaults to <value>false</value>."
             },
             {
               "type": "function",
@@ -3203,7 +3203,7 @@
               "optional": true,
               "default": true,
               "type": "boolean",
-              "description": "Specifies whether the returned :ref:`accounts.MailAccount` objects should included their account's folders. Defaults to <value>true</value>."
+              "description": "Specifies whether the returned :ref:`accounts.MailAccount` objects should include their account's folders. Defaults to <value>true</value>."
             },
             {
               "type": "function",
@@ -8444,7 +8444,7 @@
             "quota": {
               "type": "array",
               "items": {
-                "$ref": "MailFolderQuota"
+                "$ref": "folders.MailFolderQuota"
               },
               "optional": true,
               "description": "Quota information, if available."
@@ -10489,6 +10489,37 @@
           ]
         },
         {
+          "name": "getSelectedFolders",
+          "type": "function",
+          "description": "Lists the selected folders in the folder pane.",
+          "permissions": [
+            "accountsRead"
+          ],
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "tabId",
+              "type": "integer",
+              "description": "Defaults to the active tab of the current window.",
+              "optional": true,
+              "minimum": 1
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "folders.MailFolder"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "getSelectedMessages",
           "type": "function",
           "description": "Lists the selected messages in the current folder.",
@@ -10839,18 +10870,19 @@
             "selectedMessages": {
               "$ref": "messages.MessageList",
               "optional": true,
-              "description": "The selected message(s), if the context menu was opened in the message list. The <permission>messagesRead</permission> permission is required."
+              "description": "The selected message(s) in the message list (a.k.a. the thread pane). Only available for the `message_list` context. The <permission>messagesRead</permission> permission is required. The returned selection includes the messages which would be affected by a context action through Thunderbirds UI, which may not be the actuall selected messages. For example, if the user has multiple messages selected and opens the context menu for a message outside that selection, only the message for which the context menu was opened, is returned."
             },
             "displayedFolder": {
               "$ref": "folders.MailFolder",
               "optional": true,
-              "description": "The displayed folder, if the context menu was opened in the message list. The <permission>accountsRead</permission> permission is required."
+              "description": "The displayed folder. Only available for the `message_list` context. The <permission>accountsRead</permission> permission is required."
             },
             "selectedFolder": {
               "$ref": "folders.MailFolder",
               "max_manifest_version": 2,
               "optional": true,
-              "description": "The selected folder, if the context menu was opened in the folder pane. The <permission>accountsRead</permission> permission is required."
+              "deprecated": "Deprecated since Thunderbird 128 and removed in Manifest V3: The selectedFolder property has been replaced by the selectedFolders property.",
+              "description": "The selected folder in the folder pane (where the context menu was opened). Only available for the `folder_pane` context. The <permission>accountsRead</permission> permission is required."
             },
             "selectedFolders": {
               "type": "array",
@@ -10858,13 +10890,14 @@
                 "$ref": "folders.MailFolder"
               },
               "optional": true,
-              "description": "The selected folder(s), if the context menu was opened in the folder pane. The <permission>accountsRead</permission> permission is required."
+              "description": "The selected folders in the folder pane. Only available for the `folder_pane` context. The <permission>accountsRead</permission> permission is required. The returned selection includes the folders which would be affected by a context action through Thunderbirds UI, which may not be the actuall selected folders. For example, if the user has multiple folders selected and opens the context menu for a folder outside that selection, only the folder for which the context menu was opened, is returned."
             },
             "selectedAccount": {
               "$ref": "accounts.MailAccount",
               "max_manifest_version": 2,
               "optional": true,
-              "description": "The selected account, if the context menu was opened on an account entry in the folder pane. The <permission>accountsRead</permission> permission is required."
+              "deprecated": "Deprecated since Thunderbird 128 and removed in Manifest V3: The selectedAccount property has been replaced by the selectedFolders property, returning the root folder of the account.",
+              "description": "The selected account in the folder pane, if the context menu was opened on an account entry. Only available for the `folder_pane` context. The <permission>accountsRead</permission> permission is required."
             },
             "attachments": {
               "type": "array",
@@ -11011,18 +11044,19 @@
             "selectedMessages": {
               "$ref": "messages.MessageList",
               "optional": true,
-              "description": "The selected message(s), if the context menu was opened in the message list. The <permission>messagesRead</permission> permission is required."
+              "description": "The selected message(s) in the message list (a.k.a. the thread pane). Only available for the `message_list` context. The <permission>messagesRead</permission> permission is required. The returned selection includes the messages which would be affected by a context action through Thunderbirds UI, which may not be the actuall selected messages. For example, if the user has multiple messages selected and opens the context menu for a message outside that selection, only the message for which the context menu was opened, is returned."
             },
             "displayedFolder": {
               "$ref": "folders.MailFolder",
               "optional": true,
-              "description": "The displayed folder, if the context menu was opened in the message list. The <permission>accountsRead</permission> permission is required."
+              "description": "The displayed folder. Only available for the `message_list` context. The <permission>accountsRead</permission> permission is required."
             },
             "selectedFolder": {
               "$ref": "folders.MailFolder",
               "max_manifest_version": 2,
               "optional": true,
-              "description": "The selected folder, if the context menu was opened in the folder pane. The <permission>accountsRead</permission> permission is required."
+              "deprecated": "Deprecated since Thunderbird 128 and removed in Manifest V3: The selectedFolder property has been replaced by the selectedFolders property.",
+              "description": "The selected folder in the folder pane (where the context menu was opened). Only available for the `folder_pane` context. The <permission>accountsRead</permission> permission is required."
             },
             "selectedFolders": {
               "type": "array",
@@ -11030,13 +11064,14 @@
                 "$ref": "folders.MailFolder"
               },
               "optional": true,
-              "description": "The selected folder(s), if the context menu was opened in the folder pane. The <permission>accountsRead</permission> permission is required."
+              "description": "The selected folders in the folder pane. Only available for the `folder_pane` context. The <permission>accountsRead</permission> permission is required. The returned selection includes the folders which would be affected by a context action through Thunderbirds UI, which may not be the actuall selected folders. For example, if the user has multiple folders selected and opens the context menu for a folder outside that selection, only the folder for which the context menu was opened, is returned."
             },
             "selectedAccount": {
               "$ref": "accounts.MailAccount",
               "max_manifest_version": 2,
               "optional": true,
-              "description": "The selected account, if the context menu was opened on an account entry in the folder pane. The <permission>accountsRead</permission> permission is required."
+              "deprecated": "Deprecated since Thunderbird 128 and removed in Manifest V3: The selectedAccount property has been replaced by the selectedFolders property, returning the root folder of the account.",
+              "description": "The selected account in the folder pane, if the context menu was opened on an account entry. Only available for the `folder_pane` context. The <permission>accountsRead</permission> permission is required."
             },
             "attachments": {
               "type": "array",
@@ -11558,11 +11593,17 @@
               "$ref": "tabs.Tab"
             },
             {
+              "max_manifest_version": 2,
               "name": "messages",
               "type": "array",
               "items": {
                 "$ref": "messages.MessageHeader"
               }
+            },
+            {
+              "min_manifest_version": 3,
+              "name": "displayedMessages",
+              "$ref": "messages.MessageList"
             }
           ]
         }
@@ -11618,10 +11659,19 @@
               "optional": true,
               "parameters": [
                 {
-                  "type": "array",
-                  "items": {
-                    "$ref": "messages.MessageHeader"
-                  }
+                  "choices": [
+                    {
+                      "max_manifest_version": 2,
+                      "type": "array",
+                      "items": {
+                        "$ref": "messages.MessageHeader"
+                      }
+                    },
+                    {
+                      "min_manifest_version": 3,
+                      "$ref": "messages.MessageList"
+                    }
+                  ]
                 }
               ]
             }
@@ -12553,6 +12603,21 @@
           "description": "A unique id representing a :ref:`messages.MessageHeader` and the associated message. This id doesn’t refer to the Message-ID email header. It is an internal tracking number that does not remain after a restart. Nor does it follow an email that has been moved to a different folder."
         },
         {
+          "id": "InlineTextPart",
+          "type": "object",
+          "description": "An inline part with content type <value>text/*</value>. These parts are not returned by :ref:`listAttachments` and usually make up the readable content of the message, mostly with content type <value>text/plain</value> or <value>text/html</value>",
+          "properties": {
+            "contentType": {
+              "type": "string",
+              "description": "The content type of the part. Most common types for inline text parts are <value>text/plain</value> and <value>text/html</value>. Possible other (deprecated) types are <value>text/richtext</value> and <value>text/enriched</value>. Some calendaring services include an inline text part with type <value>text/calendar</value>."
+            },
+            "content": {
+              "type": "string",
+              "description": "The content of this inline text part."
+            }
+          }
+        },
+        {
           "id": "MessageHeader",
           "type": "object",
           "description": "Basic information about a message.",
@@ -12663,7 +12728,7 @@
             "messages": {
               "type": "array",
               "items": {
-                "$ref": "MessageHeader"
+                "$ref": "messages.MessageHeader"
               }
             }
           }
@@ -12717,7 +12782,7 @@
             "parts": {
               "type": "array",
               "items": {
-                "$ref": "MessagePart"
+                "$ref": "messages.MessagePart"
               },
               "description": "Any sub-parts of this part.",
               "optional": true
@@ -12725,7 +12790,7 @@
             "size": {
               "type": "integer",
               "optional": true,
-              "description": "The size of this part. The size of <em>message/*</em> parts is not the actual message size (on disc), but the total size of its decoded body parts, excluding headers."
+              "description": "The size of this part. The size of parts with content type <em>message/rfc822</em> is not the actual message size (on disc), but the total size of its decoded body parts, excluding headers."
             }
           }
         },
@@ -13019,7 +13084,7 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "MessageHeader"
+                  "$ref": "messages.MessageHeader"
                 }
               ]
             }
@@ -13053,7 +13118,7 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "MessagePart"
+                  "$ref": "messages.MessagePart"
                 }
               ]
             }
@@ -13143,7 +13208,32 @@
                 {
                   "type": "array",
                   "items": {
-                    "$ref": "MessageAttachment"
+                    "$ref": "messages.MessageAttachment"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "listInlineTextParts",
+          "type": "function",
+          "description": "Lists all inline text parts of a message. These parts are not returned by :ref:`listAttachments` and usually make up the readable content of the message, mostly with content type <value>text/plain</value> or <value>text/html</value>. If a message only includes a <value>text/html</value> part, the method :ref:`messengerUtilities.convertToPlainText` can be used to retreive a plain text version. \n\n**Note:** A message usually contains only one inline text part per subtype, but technically messages can contain multiple inline text parts per subtype.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "messageId",
+              "$ref": "messages.MessageId"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "messages.InlineTextPart"
                   }
                 }
               ]
@@ -13415,7 +13505,7 @@
             },
             {
               "name": "newProperties",
-              "$ref": "MessageProperties"
+              "$ref": "messages.MessageProperties"
             }
           ]
         },
