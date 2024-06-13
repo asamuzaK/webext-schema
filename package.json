@@ -23,12 +23,12 @@
     "@types/firefox-webext-browser": "^120.0.3",
     "@types/node": "^20.14.2",
     "@types/sinon": "^17.0.3",
-    "c8": "^9.1.0",
+    "c8": "^10.1.2",
     "chai": "^5.1.1",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsdoc": "^48.2.9",
+    "eslint-plugin-jsdoc": "^48.2.11",
     "eslint-plugin-regexp": "^2.6.0",
     "eslint-plugin-unicorn": "^53.0.0",
     "mocha": "^10.4.0",
@@ -54,5 +54,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "version": "5.3.3"
+  "version": "5.3.4"
 }
