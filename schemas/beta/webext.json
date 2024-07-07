@@ -14088,6 +14088,10 @@
             "strict_max_version": {
               "type": "string",
               "optional": true
+            },
+            "admin_install_only": {
+              "type": "boolean",
+              "optional": true
             }
           },
           "additionalProperties": {
