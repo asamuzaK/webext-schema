@@ -750,6 +750,7 @@
                     },
                     "params": {
                       "optional": true,
+                      "max_manifest_version": 2,
                       "type": "array",
                       "items": {
                         "type": "object",
@@ -914,6 +915,12 @@
             {
               "name": "command",
               "type": "string"
+            },
+            {
+              "name": "tab",
+              "$ref": "tabs.Tab",
+              "optional": true,
+              "description": "Details of the $(ref:tabs.Tab) where the command was activated."
             }
           ]
         },
@@ -4463,6 +4470,11 @@
               "optional": true,
               "description": "Whether the tab has produced sound over the past couple of seconds (but it might not be heard if also muted). Equivalent to whether the speaker audio indicator is showing."
             },
+            "autoDiscardable": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether the tab can be discarded automatically by the browser when resources are low."
+            },
             "mutedInfo": {
               "$ref": "MutedInfo",
               "optional": true,
@@ -4764,6 +4776,7 @@
           "enum": [
             "attention",
             "audible",
+            "autoDiscardable",
             "discarded",
             "favIconUrl",
             "hidden",
@@ -5095,6 +5108,11 @@
                   "optional": true,
                   "description": "Whether the tabs are audible."
                 },
+                "autoDiscardable": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the tab can be discarded automatically by the browser when resources are low."
+                },
                 "muted": {
                   "type": "boolean",
                   "optional": true,
@@ -5311,6 +5329,11 @@
                   "type": "boolean",
                   "optional": true,
                   "description": "Whether the tab should be active. Does not affect whether the window is focused (see $(ref:windows.update))."
+                },
+                "autoDiscardable": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the tab can be discarded automatically by the browser when resources are low."
                 },
                 "highlighted": {
                   "type": "boolean",
@@ -5596,9 +5619,10 @@
         {
           "name": "captureVisibleTab",
           "type": "function",
-          "description": "Captures an area of the currently active tab in the specified window. You must have $(topic:declare_permissions)[&lt;all_urls&gt;] permission to use this method.",
+          "description": "Captures an area of the currently active tab in the specified window. You must have &lt;all_urls&gt; or activeTab permission to use this method.",
           "permissions": [
-            "<all_urls>"
+            "<all_urls>",
+            "activeTab"
           ],
           "async": "callback",
           "parameters": [
@@ -6057,6 +6081,11 @@
                   "type": "boolean",
                   "optional": true,
                   "description": "The tab's new audible state."
+                },
+                "autoDiscardable": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "The tab's new autoDiscardable state."
                 },
                 "discarded": {
                   "type": "boolean",
@@ -6517,307 +6546,6 @@
               }
             }
           }
-        }
-      ]
-    }
-  ],
-  "urlbar.json": [
-    {
-      "namespace": "manifest",
-      "types": [
-        {
-          "$extend": "PermissionPrivileged",
-          "choices": [
-            {
-              "type": "string",
-              "enum": [
-                "urlbar"
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "namespace": "urlbar",
-      "description": "Use the <code>browser.urlbar</code> API to experiment with new features in the URLBar. Restricted to Mozilla privileged WebExtensions.",
-      "permissions": [
-        "urlbar"
-      ],
-      "types": [
-        {
-          "id": "EngagementState",
-          "type": "string",
-          "enum": [
-            "start",
-            "engagement",
-            "abandonment",
-            "discard"
-          ],
-          "description": "The state of an engagement made with the urlbar by the user. <code>start</code>: The user has started an engagement. <code>engagement</code>: The user has completed an engagement by picking a result. <code>abandonment</code>: The user has abandoned their engagement, for example by blurring the urlbar. <code>discard</code>: The engagement ended in a way that should be ignored by listeners."
-        },
-        {
-          "id": "Query",
-          "type": "object",
-          "description": "A query performed in the urlbar.",
-          "properties": {
-            "isPrivate": {
-              "type": "boolean",
-              "description": "Whether the query's browser context is private."
-            },
-            "maxResults": {
-              "type": "integer",
-              "description": "The maximum number of results shown to the user."
-            },
-            "searchString": {
-              "type": "string",
-              "description": "The query's search string."
-            },
-            "sources": {
-              "type": "array",
-              "description": "List of acceptable source types to return.",
-              "items": {
-                "$ref": "SourceType"
-              }
-            }
-          }
-        },
-        {
-          "id": "Result",
-          "type": "object",
-          "description": "A result of a query. Queries can have many results. Each result is created by a provider.",
-          "properties": {
-            "payload": {
-              "type": "object",
-              "description": "An object with arbitrary properties depending on the result's type."
-            },
-            "source": {
-              "$ref": "SourceType",
-              "description": "The result's source."
-            },
-            "type": {
-              "$ref": "ResultType",
-              "description": "The result's type."
-            },
-            "suggestedIndex": {
-              "type": "integer",
-              "description": "Suggest a preferred position for this result within the result set.",
-              "optional": true,
-              "default": -1
-            }
-          }
-        },
-        {
-          "id": "ResultType",
-          "type": "string",
-          "enum": [
-            "dynamic",
-            "remote_tab",
-            "search",
-            "tab",
-            "tip",
-            "url"
-          ],
-          "description": "Possible types of results. <code>dynamic</code>: A result whose view and payload are specified by the extension. <code>remote_tab</code>: A synced tab from another device. <code>search</code>: A search suggestion from a search engine. <code>tab</code>: An open tab in the browser. <code>tip</code>: An actionable message to help the user with their query. <code>url</code>: A URL that's not one of the other types."
-        },
-        {
-          "id": "SearchOptions",
-          "type": "object",
-          "description": "Options to the <code>search</code> function.",
-          "properties": {
-            "focus": {
-              "type": "boolean",
-              "optional": true,
-              "default": true,
-              "description": "Whether to focus the input field and select its contents."
-            }
-          }
-        },
-        {
-          "id": "SourceType",
-          "type": "string",
-          "enum": [
-            "bookmarks",
-            "history",
-            "local",
-            "network",
-            "search",
-            "tabs"
-          ],
-          "description": "Possible sources of results. <code>bookmarks</code>: The result comes from the user's bookmarks. <code>history</code>: The result comes from the user's history. <code>local</code>: The result comes from some local source not covered by another source type. <code>network</code>: The result comes from some network source not covered by another source type. <code>search</code>: The result comes from a search engine. <code>tabs</code>: The result is an open tab in the browser or a synced tab from another device."
-        }
-      ],
-      "properties": {
-        "engagementTelemetry": {
-          "$ref": "types.Setting",
-          "description": "Enables or disables the engagement telemetry."
-        }
-      },
-      "functions": [
-        {
-          "name": "closeView",
-          "type": "function",
-          "async": true,
-          "description": "Closes the urlbar view in the current window.",
-          "parameters": []
-        },
-        {
-          "name": "focus",
-          "type": "function",
-          "async": true,
-          "description": "Focuses the urlbar in the current window.",
-          "parameters": [
-            {
-              "name": "select",
-              "type": "boolean",
-              "optional": true,
-              "default": false,
-              "description": "If true, the text in the urlbar will also be selected."
-            }
-          ]
-        },
-        {
-          "name": "search",
-          "type": "function",
-          "async": true,
-          "description": "Starts a search in the urlbar in the current window.",
-          "parameters": [
-            {
-              "name": "searchString",
-              "type": "string",
-              "description": "The search string."
-            },
-            {
-              "name": "options",
-              "$ref": "SearchOptions",
-              "optional": true,
-              "default": {},
-              "description": "Options for the search."
-            }
-          ]
-        }
-      ],
-      "events": [
-        {
-          "name": "onBehaviorRequested",
-          "type": "function",
-          "description": "Before a query starts, this event is fired for the given provider. Its purpose is to request the provider's behavior for the query. The listener should return a behavior in response. By default, providers are inactive, so if your provider should always be inactive, you don't need to listen for this event.",
-          "parameters": [
-            {
-              "name": "query",
-              "$ref": "Query",
-              "description": "The query for which the behavior is requested."
-            }
-          ],
-          "extraParameters": [
-            {
-              "name": "providerName",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9_-]+$",
-              "description": "The name of the provider whose behavior the listener returns."
-            }
-          ],
-          "returns": {
-            "type": "string",
-            "enum": [
-              "active",
-              "inactive",
-              "restricting"
-            ],
-            "description": "The behavior of the provider for the query."
-          }
-        },
-        {
-          "name": "onEngagement",
-          "type": "function",
-          "description": "This event is fired when the user starts and ends an engagement with the urlbar.",
-          "parameters": [
-            {
-              "name": "state",
-              "$ref": "EngagementState",
-              "description": "The state of the engagement."
-            }
-          ],
-          "extraParameters": [
-            {
-              "name": "providerName",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9_-]+$",
-              "description": "The name of the provider that will listen for engagement events."
-            }
-          ]
-        },
-        {
-          "name": "onQueryCanceled",
-          "type": "function",
-          "description": "This event is fired for the given provider when a query is canceled. The listener should stop any ongoing fetch or creation of results and clean up its resources.",
-          "parameters": [
-            {
-              "name": "query",
-              "$ref": "Query",
-              "description": "The query that was canceled."
-            }
-          ],
-          "extraParameters": [
-            {
-              "name": "providerName",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9_-]+$",
-              "description": "The name of the provider that is creating results for the query."
-            }
-          ]
-        },
-        {
-          "name": "onResultsRequested",
-          "type": "function",
-          "description": "When a query starts, this event is fired for the given provider if the provider is active for the query and there are no other providers that are restricting. Its purpose is to request the provider's results for the query. The listener should return a list of results in response.",
-          "parameters": [
-            {
-              "name": "query",
-              "$ref": "Query",
-              "description": "The query for which results are requested."
-            }
-          ],
-          "extraParameters": [
-            {
-              "name": "providerName",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9_-]+$",
-              "description": "The name of the provider whose results the listener returns."
-            }
-          ],
-          "returns": {
-            "type": "array",
-            "items": {
-              "$ref": "Result"
-            },
-            "description": "The results that the provider fetched for the query."
-          }
-        },
-        {
-          "name": "onResultPicked",
-          "type": "function",
-          "description": "Typically, a provider includes a <code>url</code> property in its results' payloads. When the user picks a result with a URL, Firefox automatically loads the URL. URLs don't make sense for every result type, however. When the user picks a result without a URL, this event is fired. The provider should take an appropriate action in response. Currently the only applicable <code>ResultTypes</code> are <code>dynamic</code> and <code>tip</code>.",
-          "parameters": [
-            {
-              "name": "payload",
-              "type": "object",
-              "description": "The payload of the result that was picked."
-            },
-            {
-              "name": "elementName",
-              "type": "string",
-              "description": "If the result is a dynamic type, this is the name of the element in the result view that was picked. If the result is not a dynamic type, this is an empty string."
-            }
-          ],
-          "extraParameters": [
-            {
-              "name": "providerName",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9_-]+$",
-              "description": "The listener will be called for the results of the provider with this name."
-            }
-          ]
         }
       ]
     }
@@ -7855,6 +7583,32 @@
                 {
                   "name": "result",
                   "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getUserSettings",
+          "type": "function",
+          "description": "Returns the user-specified settings relating to an extension's action.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "userSettings",
+                  "type": "object",
+                  "properties": {
+                    "isOnToolbar": {
+                      "type": "boolean",
+                      "optional": true,
+                      "description": "Whether the extension's action icon is visible on browser windows' top-level toolbar (i.e., whether the extension has been 'pinned' by the user)."
+                    }
+                  },
+                  "description": "The collection of user-specified settings relating to an extension's action."
                 }
               ]
             }
@@ -8969,12 +8723,22 @@
             "matchAboutBlank": {
               "type": "boolean",
               "optional": true,
-              "description": "If matchAboutBlank is true, then the code is also injected in about:blank and about:srcdoc frames if your extension has access to its parent document. Code cannot be inserted in top-level about:-frames. By default it is <code>false</code>."
+              "description": "If matchAboutBlank is true, then the code is also injected in about:blank and about:srcdoc frames if your extension has access to its parent document. Ignored if matchOriginAsFallback is specified. By default it is <code>false</code>."
+            },
+            "matchOriginAsFallback": {
+              "type": "boolean",
+              "optional": true,
+              "description": "If matchOriginAsFallback is true, then the code is also injected in about:, data:, blob: when their origin matches the pattern in 'matches', even if the actual document origin is opaque (due to the use of CSP sandbox or iframe sandbox). Match patterns in 'matches' must specify a wildcard path glob. By default it is <code>false</code>."
             },
             "runAt": {
               "$ref": "extensionTypes.RunAt",
               "optional": true,
               "description": "The soonest that the JavaScript or CSS will be injected into the tab. Defaults to \"document_idle\"."
+            },
+            "world": {
+              "$ref": "extensionTypes.ExecutionWorld",
+              "optional": true,
+              "description": "The JavaScript world for a script to execute within. Defaults to \"ISOLATED\"."
             },
             "cookieStoreId": {
               "choices": [
@@ -9181,9 +8945,37 @@
           ]
         },
         {
+          "name": "move",
+          "type": "function",
+          "description": "Reorder one or more contextual identities by their cookieStoreIDs to a given position.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "cookieStoreIds",
+              "description": "The ID or list of IDs of the contextual identity cookie stores. ",
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "integer",
+              "name": "position",
+              "description": "The position the contextual identity should move to."
+            }
+          ]
+        },
+        {
           "name": "remove",
           "type": "function",
-          "description": "Deletes a contetual identity by its cookie Store ID.",
+          "description": "Deletes a contextual identity by its cookie Store ID.",
           "async": true,
           "parameters": [
             {
@@ -10199,6 +9991,20 @@
               }
             }
           }
+        },
+        {
+          "id": "GetRulesFilter",
+          "type": "object",
+          "properties": {
+            "ruleIds": {
+              "type": "array",
+              "optional": true,
+              "description": "If specified, only rules with matching IDs are included.",
+              "items": {
+                "type": "integer"
+              }
+            }
+          }
         }
       ],
       "functions": [
@@ -10298,7 +10104,7 @@
         {
           "name": "updateEnabledRulesets",
           "type": "function",
-          "description": "Returns the ids for the current set of enabled static rulesets.",
+          "description": "Modifies the static rulesets enabled/disabled state.",
           "async": "callback",
           "parameters": [
             {
@@ -10331,6 +10137,44 @@
           ]
         },
         {
+          "name": "updateStaticRules",
+          "type": "function",
+          "description": "Modified individual static rules enabled/disabled state. Changes to rules belonging to a disabled ruleset will take effect when the ruleset becomes enabled.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "options",
+              "type": "object",
+              "properties": {
+                "rulesetId": {
+                  "type": "string"
+                },
+                "disableRuleIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "optional": true,
+                  "default": []
+                },
+                "enableRuleIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "optional": true,
+                  "default": []
+                }
+              }
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "parameters": []
+            }
+          ]
+        },
+        {
           "name": "getAvailableStaticRuleCount",
           "type": "function",
           "description": "Returns the remaining number of static rules an extension can enable",
@@ -10349,11 +10193,47 @@
           ]
         },
         {
+          "name": "getDisabledRuleIds",
+          "type": "function",
+          "description": "Returns the list of individual disabled static rules from a given static ruleset id.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "options",
+              "type": "object",
+              "properties": {
+                "rulesetId": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "name": "callback",
+              "type": "function",
+              "parameters": [
+                {
+                  "name": "disabledRuleIds",
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "getDynamicRules",
           "type": "function",
           "description": "Returns the current set of dynamic rules for the extension.",
           "async": "callback",
           "parameters": [
+            {
+              "name": "filter",
+              "$ref": "GetRulesFilter",
+              "optional": true,
+              "description": "An object to filter the set of dynamic rules for the extension."
+            },
             {
               "name": "callback",
               "type": "function",
@@ -10375,6 +10255,12 @@
           "description": "Returns the current set of session scoped rules for the extension.",
           "async": "callback",
           "parameters": [
+            {
+              "name": "filter",
+              "$ref": "GetRulesFilter",
+              "optional": true,
+              "description": "An object to filter the set of session scoped rules for the extension."
+            },
             {
               "name": "callback",
               "type": "function",
@@ -10531,13 +10417,25 @@
           "type": "number",
           "description": "The maximum number of static Rulesets an extension can specify as part of the rule_resources manifest key."
         },
+        "MAX_NUMBER_OF_DISABLED_STATIC_RULES": {
+          "type": "number",
+          "description": "The maximum number of static rules that can be disabled on each static ruleset."
+        },
         "MAX_NUMBER_OF_ENABLED_STATIC_RULESETS": {
           "type": "number",
           "description": "The maximum number of static Rulesets an extension can enable at any one time."
         },
         "MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES": {
           "type": "number",
-          "description": "The maximum number of dynamic and session rules an extension can add. NOTE: in the Firefox we are enforcing this limit to the session and dynamic rules count separately, instead of enforcing it to the rules count for both combined as the Chrome implementation does."
+          "description": "Deprecated property returning the maximum number of dynamic and session rules an extension can add, replaced by MAX_NUMBER_OF_DYNAMIC_RULES/MAX_NUMBER_OF_SESSION_RULES."
+        },
+        "MAX_NUMBER_OF_DYNAMIC_RULES": {
+          "type": "number",
+          "description": "The maximum number of dynamic session rules an extension can add."
+        },
+        "MAX_NUMBER_OF_SESSION_RULES": {
+          "type": "number",
+          "description": "The maximum number of dynamic session rules an extension can add."
         },
         "MAX_NUMBER_OF_REGEX_RULES": {
           "type": "number",
@@ -12268,6 +12166,15 @@
           "description": "The soonest that the JavaScript or CSS will be injected into the tab."
         },
         {
+          "id": "ExecutionWorld",
+          "type": "string",
+          "enum": [
+            "ISOLATED",
+            "MAIN"
+          ],
+          "description": "The JavaScript world for a script to execute within. <code>ISOLATED</code> is the default execution environment of content scripts, <code>MAIN</code> is the web page's execution environment."
+        },
+        {
           "id": "CSSOrigin",
           "type": "string",
           "enum": [
@@ -12528,7 +12435,10 @@
             "unregisteredthreads",
             "processcpu",
             "power",
-            "responsiveness"
+            "responsiveness",
+            "cpufreq",
+            "bandwidth",
+            "memory"
           ]
         },
         {
@@ -13185,12 +13095,13 @@
         },
         {
           "id": "ExtensionInstallType",
-          "description": "How the extension was installed. One of<br><var>development</var>: The extension was loaded unpacked in developer mode,<br><var>normal</var>: The extension was installed normally via an .xpi file,<br><var>sideload</var>: The extension was installed by other software on the machine,<br><var>other</var>: The extension was installed by other means.",
+          "description": "How the extension was installed. One of<br><var>development</var>: The extension was loaded unpacked in developer mode,<br><var>normal</var>: The extension was installed normally via an .xpi file,<br><var>sideload</var>: The extension was installed by other software on the machine,<br><var>admin</var>: The extension was installed by policy,<br><var>other</var>: The extension was installed by other means.",
           "type": "string",
           "enum": [
             "development",
             "normal",
             "sideload",
+            "admin",
             "other"
           ]
         },
@@ -13633,10 +13544,13 @@
             },
             "incognito": {
               "type": "string",
+              "description": "The 'split' value is not supported.",
               "enum": [
                 "not_allowed",
-                "spanning"
+                "spanning",
+                "split"
               ],
+              "postprocess": "incognitoSplitUnsupportedAndFallback",
               "default": "spanning",
               "optional": true
             },
@@ -13698,6 +13612,11 @@
                 }
               ],
               "optional": true
+            },
+            "options_page": {
+              "$ref": "ExtensionURL",
+              "optional": true,
+              "description": "Alias property for options_ui.page, ignored when options_ui.page is set. When using this property the options page is always opened in a new tab."
             },
             "options_ui": {
               "type": "object",
@@ -13787,6 +13706,16 @@
               "default": false
             },
             "host_permissions": {
+              "min_manifest_version": 3,
+              "type": "array",
+              "items": {
+                "$ref": "MatchPattern",
+                "onError": "warn"
+              },
+              "optional": true,
+              "default": []
+            },
+            "optional_host_permissions": {
               "min_manifest_version": 3,
               "type": "array",
               "items": {
@@ -14159,7 +14088,14 @@
             "strict_max_version": {
               "type": "string",
               "optional": true
+            },
+            "admin_install_only": {
+              "type": "boolean",
+              "optional": true
             }
+          },
+          "additionalProperties": {
+            "$ref": "UnrecognizedProperty"
           }
         },
         {
@@ -14176,7 +14112,7 @@
             }
           },
           "additionalProperties": {
-            "type": "any"
+            "$ref": "UnrecognizedProperty"
           }
         },
         {
@@ -14317,13 +14253,24 @@
             "match_about_blank": {
               "type": "boolean",
               "optional": true,
-              "description": "If matchAboutBlank is true, then the code is also injected in about:blank and about:srcdoc frames if your extension has access to its parent document. Code cannot be inserted in top-level about:-frames. By default it is <code>false</code>."
+              "description": "If match_about_blank is true, then the code is also injected in about:blank and about:srcdoc frames if your extension has access to its parent document. Ignored if match_origin_as_fallback is specified. By default it is <code>false</code>."
+            },
+            "match_origin_as_fallback": {
+              "type": "boolean",
+              "optional": true,
+              "description": "If match_origin_as_fallback is true, then the code is also injected in about:, data:, blob: when their origin matches the pattern in 'matches', even if the actual document origin is opaque (due to the use of CSP sandbox or iframe sandbox). Match patterns in 'matches' must specify a wildcard path glob. By default it is <code>false</code>."
             },
             "run_at": {
               "$ref": "extensionTypes.RunAt",
               "optional": true,
               "default": "document_idle",
               "description": "The soonest that the JavaScript or CSS will be injected into the tab. Defaults to \"document_idle\"."
+            },
+            "world": {
+              "$ref": "extensionTypes.ExecutionWorld",
+              "optional": true,
+              "default": "ISOLATED",
+              "description": "The JavaScript world for a script to execute within. Defaults to \"ISOLATED\"."
             }
           }
         },
@@ -15572,7 +15519,7 @@
             "proxyDNS": {
               "type": "boolean",
               "optional": true,
-              "description": "Proxy DNS when using SOCKS v5."
+              "description": "Proxy DNS when using SOCKS. DNS queries get leaked to the network when set to false. True by default for SOCKS v5. False by default for SOCKS v4."
             },
             "respectBeConservative": {
               "type": "boolean",
@@ -15937,6 +15884,132 @@
       "description": "Use the <code>browser.runtime</code> API to retrieve the background page, return details about the manifest, and listen for and respond to events in the app or extension lifecycle. You can also use this API to convert the relative path of URLs to fully-qualified URLs.",
       "types": [
         {
+          "id": "ContextFilter",
+          "min_manifest_version": 3,
+          "type": "object",
+          "description": "A filter to match against existing extension context. Matching contexts must match all specified filters.",
+          "properties": {
+            "contextIds": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "contextTypes": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "$ref": "ContextType"
+              }
+            },
+            "documentIds": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "documentOrigins": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "documentUrls": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "frameIds": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "tabIds": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "windowIds": {
+              "optional": true,
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "incognito": {
+              "optional": true,
+              "type": "boolean"
+            }
+          }
+        },
+        {
+          "id": "ContextType",
+          "type": "string",
+          "enum": [
+            "BACKGROUND",
+            "POPUP",
+            "SIDE_PANEL",
+            "TAB"
+          ],
+          "description": "The type of extension view."
+        },
+        {
+          "id": "ExtensionContext",
+          "type": "object",
+          "description": "A context hosting extension content",
+          "properties": {
+            "contextId": {
+              "type": "string",
+              "description": "An unique identifier associated to this context"
+            },
+            "contextType": {
+              "$ref": "ContextType",
+              "description": "The type of the context"
+            },
+            "documentId": {
+              "type": "string",
+              "unsupported": true,
+              "optional": true,
+              "description": "An UUID for the document associated with this context, or undefined if it is not hosted in a document"
+            },
+            "documentOrigin": {
+              "type": "string",
+              "optional": true,
+              "description": "The origin of the document associated with this context, or undefined if it is not hosted in a document"
+            },
+            "documentUrl": {
+              "type": "string",
+              "optional": true,
+              "description": "The URL of the document associated with this context, or undefined if it is not hosted in a document"
+            },
+            "incognito": {
+              "type": "boolean",
+              "description": "Whether the context is associated with an private browsing context."
+            },
+            "frameId": {
+              "type": "integer",
+              "description": "The frame ID for this context, or -1 if it is not hosted in a frame."
+            },
+            "tabId": {
+              "type": "integer",
+              "description": "The tab ID for this context, or -1 if it is not hosted in a tab."
+            },
+            "windowId": {
+              "type": "integer",
+              "description": "The window ID for this context, or -1 if it is not hosted in a window."
+            }
+          }
+        },
+        {
           "id": "Port",
           "type": "object",
           "allowedContexts": [
@@ -16131,6 +16204,24 @@
             "os_update",
             "periodic"
           ]
+        },
+        {
+          "id": "OnPerformanceWarningCategory",
+          "type": "string",
+          "enum": [
+            "content_script"
+          ],
+          "description": "The performance warning event category, e.g. 'content_script'."
+        },
+        {
+          "id": "OnPerformanceWarningSeverity",
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "description": "The performance warning event severity. Will be 'high' for serious and user-visible issues."
         }
       ],
       "properties": {
@@ -16182,6 +16273,33 @@
                     "type": "any"
                   },
                   "description": "The JavaScript 'window' object for the background page."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getContexts",
+          "type": "function",
+          "description": "Fetches information about active contexts associated with this extension",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "filter",
+              "$ref": "ContextFilter",
+              "description": "A filter to find matching context."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "contexts",
+                  "type": "array",
+                  "items": {
+                    "$ref": "ExtensionContext"
+                  },
+                  "description": "The matching contexts, if any."
                 }
               ]
             }
@@ -16263,14 +16381,14 @@
         {
           "name": "setUninstallURL",
           "type": "function",
-          "description": "Sets the URL to be visited upon uninstallation. This may be used to clean up server-side data, do analytics, and implement surveys. Maximum 255 characters.",
+          "description": "Sets the URL to be visited upon uninstallation. This may be used to clean up server-side data, do analytics, and implement surveys. Maximum 1023 characters.",
           "async": "callback",
           "parameters": [
             {
               "type": "string",
               "name": "url",
               "optional": true,
-              "maxLength": 255,
+              "maxLength": 1023,
               "description": "URL to be opened after the extension is uninstalled. This URL must have an http: or https: scheme. Set an empty string to not open a new tab upon uninstallation."
             },
             {
@@ -16708,6 +16826,36 @@
               "description": "The reason that the event is being dispatched."
             }
           ]
+        },
+        {
+          "name": "onPerformanceWarning",
+          "type": "function",
+          "description": "Fired when a runtime performance issue is detected with the extension. Observe this event to be proactively notified of runtime performance problems with the extension.",
+          "parameters": [
+            {
+              "type": "object",
+              "name": "details",
+              "properties": {
+                "category": {
+                  "$ref": "OnPerformanceWarningCategory",
+                  "description": "The performance warning event category, e.g. 'content_script'."
+                },
+                "severity": {
+                  "$ref": "OnPerformanceWarningSeverity",
+                  "description": "The performance warning event severity, e.g. 'high'."
+                },
+                "tabId": {
+                  "type": "integer",
+                  "optional": true,
+                  "description": "The $(ref:tabs.Tab) that the performance warning relates to, if any."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "An explanation of what the warning means, and hopefully how to address it."
+                }
+              }
+            }
+          ]
         }
       ]
     }
@@ -16874,9 +17022,10 @@
           "id": "ExecutionWorld",
           "type": "string",
           "enum": [
-            "ISOLATED"
+            "ISOLATED",
+            "MAIN"
           ],
-          "description": "The JavaScript world for a script to execute within. We currently only support the <code>'ISOLATED'</code> world."
+          "description": "The JavaScript world for a script to execute within. <code>ISOLATED</code> is the default execution environment of content scripts, <code>MAIN</code> is the web page's execution environment."
         },
         {
           "id": "RegisteredContentScript",
@@ -16915,10 +17064,20 @@
                 "type": "string"
               }
             },
+            "matchOriginAsFallback": {
+              "type": "boolean",
+              "optional": true,
+              "description": "If matchOriginAsFallback is true, then the code is also injected in about:, data:, blob: when their origin matches the pattern in 'matches', even if the actual document origin is opaque (due to the use of CSP sandbox or iframe sandbox). Match patterns in 'matches' must specify a wildcard path glob. By default it is <code>false</code>."
+            },
             "runAt": {
               "$ref": "extensionTypes.RunAt",
               "optional": true,
               "description": "Specifies when JavaScript files are injected into the web page. The preferred and default value is <code>document_idle</code>."
+            },
+            "world": {
+              "$ref": "ExecutionWorld",
+              "optional": true,
+              "description": "The JavaScript world for a script to execute within. Defaults to \"ISOLATED\"."
             },
             "persistAcrossSessions": {
               "type": "boolean",
@@ -19543,12 +19702,10 @@
                   "description": "0 indicates the navigation happens in the tab content window; a positive value indicates navigation in a subframe. Frame IDs are unique within a tab."
                 },
                 "transitionType": {
-                  "unsupported": true,
                   "$ref": "TransitionType",
                   "description": "Cause of the navigation."
                 },
                 "transitionQualifiers": {
-                  "unsupported": true,
                   "type": "array",
                   "description": "A list of transition qualifiers.",
                   "items": {
@@ -19770,12 +19927,10 @@
                   "description": "0 indicates the navigation happens in the tab content window; a positive value indicates navigation in a subframe. Frame IDs are unique within a tab."
                 },
                 "transitionType": {
-                  "unsupported": true,
                   "$ref": "TransitionType",
                   "description": "Cause of the navigation."
                 },
                 "transitionQualifiers": {
-                  "unsupported": true,
                   "type": "array",
                   "description": "A list of transition qualifiers.",
                   "items": {
@@ -19849,12 +20004,10 @@
                   "description": "0 indicates the navigation happens in the tab content window; a positive value indicates navigation in a subframe. Frame IDs are unique within a tab."
                 },
                 "transitionType": {
-                  "unsupported": true,
                   "$ref": "TransitionType",
                   "description": "Cause of the navigation."
                 },
                 "transitionQualifiers": {
-                  "unsupported": true,
                   "type": "array",
                   "description": "A list of transition qualifiers.",
                   "items": {
@@ -19891,6 +20044,7 @@
               "type": "string",
               "enum": [
                 "webRequest",
+                "webRequestAuthProvider",
                 "webRequestBlocking",
                 "webRequestFilterResponse",
                 "webRequestFilterResponse.serviceWorkerScript"
@@ -19981,7 +20135,7 @@
             "blocking",
             "asyncBlocking"
           ],
-          "postprocess": "webRequestBlockingPermissionRequired"
+          "postprocess": "webRequestBlockingOrAuthProviderPermissionRequired"
         },
         {
           "id": "OnResponseStartedOptions",
@@ -20988,7 +21142,7 @@
             {
               "type": "function",
               "optional": true,
-              "name": "callback",
+              "name": "asyncCallback",
               "parameters": [
                 {
                   "name": "response",
@@ -21007,6 +21161,7 @@
               "type": "array",
               "optional": true,
               "name": "extraInfoSpec",
+              "postprocess": "mutuallyExclusiveBlockingOrAsyncBlocking",
               "description": "Array of extra information that should be passed to the listener function.",
               "items": {
                 "$ref": "OnAuthRequiredOptions"
