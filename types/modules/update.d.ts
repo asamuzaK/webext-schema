@@ -1,4 +1,4 @@
-export const ESR_VER: 115;
+export const ESR_VER: 128;
 export function fetchText(url: string): Promise<string>;
 export function getChannelUrl(channel: string): string;
 export function getSchemaData(file: string, baseUrl: string): Promise<object>;
