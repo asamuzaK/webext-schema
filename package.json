@@ -28,7 +28,7 @@
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsdoc": "^48.5.2",
+    "eslint-plugin-jsdoc": "^48.6.0",
     "eslint-plugin-regexp": "^2.6.0",
     "eslint-plugin-unicorn": "^54.0.0",
     "mocha": "^10.6.0",
@@ -54,5 +54,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "version": "5.3.5"
+  "version": "5.4.0"
 }
