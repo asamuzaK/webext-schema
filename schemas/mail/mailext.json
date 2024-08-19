@@ -3098,8 +3098,15 @@
               "description": "The human-friendly name of this account."
             },
             "type": {
-              "type": "string",
-              "description": "What sort of account this is, e.g. <var>imap</var>, <var>nntp</var>, or <var>pop3</var>."
+              "choices": [
+                {
+                  "$ref": "accounts.NativeMailAccountType"
+                },
+                {
+                  "$ref": "accounts.ExtensionMailAccountType"
+                }
+              ],
+              "description": "What sort of account this is. Either one of the natively supported account types, or an account type added by an extension."
             },
             "folders": {
               "max_manifest_version": 2,
@@ -3135,17 +3142,18 @@
           "description": "A unique id representing a $(ref:accounts.MailAccount)."
         },
         {
-          "id": "MailAccountType",
-          "description": "The type of an account.",
+          "id": "NativeMailAccountType",
+          "description": "The type of an account natively supported by Thunderbird.",
           "choices": [
             {
               "max_manifest_version": 2,
               "type": "string",
               "enum": [
                 "imap",
-                "pop3",
                 "nntp",
-                "none"
+                "none",
+                "pop3",
+                "rss"
               ]
             },
             {
@@ -3153,12 +3161,19 @@
               "type": "string",
               "enum": [
                 "imap",
-                "pop3",
+                "local",
                 "nntp",
-                "local"
+                "pop3",
+                "rss"
               ]
             }
           ]
+        },
+        {
+          "id": "ExtensionMailAccountType",
+          "description": "The type of an account which was added by an extension. For the time being there is no guarantee for account types added by extensions to always work as expected.",
+          "type": "string",
+          "pattern": "^extension:.*$"
         }
       ],
       "functions": [
@@ -10306,7 +10321,7 @@
             "displayedFolderId": {
               "$ref": "folders.MailFolderId",
               "min_manifest_version": 3,
-              "description": "Sets the folder displayed in the mail tab. Requires the <permission>accountsRead</permission> permission. The previous message selection in the given folder will be restored, if any. This property is ignored, if <var>selectedMessages</var> is specified.",
+              "description": "Sets the folder displayed in the mail tab. Requires the <permission>accountsRead</permission> permission. The previous message selection in the given folder will be restored, if any.",
               "optional": true
             },
             "displayedFolder": {
@@ -10320,7 +10335,7 @@
                 }
               ],
               "max_manifest_version": 2,
-              "description": "Sets the folder displayed in the mail tab. Requires the <permission>accountsRead</permission> permission. The previous message selection in the given folder will be restored, if any. This property is ignored, if <var>selectedMessages</var> is specified.",
+              "description": "Sets the folder displayed in the mail tab. Requires the <permission>accountsRead</permission> permission. The previous message selection in the given folder will be restored, if any.",
               "optional": true
             }
           }
@@ -11161,6 +11176,30 @@
             }
           },
           "description": "A <em>dictionary object</em> to specify paths for multiple icons in different sizes, so the best matching icon can be used, instead of scaling a standard icon to fit the pixel density of the user's display. Each entry is a <em>name-value</em> pair, with <em>name</em> being a size and <em>value</em> being a $(ref:menus.MenuIconPath). Example: <literalinclude>includes/IconPath.json<lang>JSON</lang></literalinclude>See the <a href='url-choosing-icon-size'>MDN documentation about choosing icon sizes</a> for more information on this. "
+        },
+        {
+          "id": "MenuActionCommand",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "_execute_browser_action",
+                "_execute_compose_action",
+                "_execute_message_display_action"
+              ],
+              "max_manifest_version": 2
+            },
+            {
+              "type": "string",
+              "enum": [
+                "_execute_action",
+                "_execute_compose_action",
+                "_execute_message_display_action"
+              ],
+              "min_manifest_version": 3
+            }
+          ],
+          "description": "A predefined command to open an action popup."
         }
       ],
       "functions": [
@@ -11293,16 +11332,13 @@
                   "optional": true,
                   "choices": [
                     {
-                      "type": "string",
-                      "max_manifest_version": 2,
-                      "description": "Specifies a command to issue for the context click. Currently supports internal commands <var>_execute_browser_action</var>, <var>_execute_compose_action</var> and <var>_execute_message_display_action</var>."
+                      "type": "string"
                     },
                     {
-                      "type": "string",
-                      "min_manifest_version": 3,
-                      "description": "Specifies a command to issue for the context click. Currently supports internal commands <var>_execute_action</var>, <var>_execute_compose_action</var> and <var>_execute_message_display_action</var>."
+                      "$ref": "menus.MenuActionCommand"
                     }
-                  ]
+                  ],
+                  "description": "Specifies a command to issue for the context click. Can either be a user defined command, or one of the predefined action commands."
                 }
               }
             },
@@ -12666,25 +12702,30 @@
           }
         },
         {
+          "id": "MailBoxHeaderString",
+          "type": "string",
+          "description": "Content may either be a single email address, or a mailbox string (see RFC 5322, section 3.4). Use $(ref:messengerUtilities.parseMailboxString) to extract the name and/or the email from the mailbox string."
+        },
+        {
           "id": "MessageHeader",
           "type": "object",
           "description": "Basic information about a message.",
           "properties": {
             "author": {
-              "type": "string"
+              "$ref": "messages.MailBoxHeaderString"
             },
             "bccList": {
               "description": "The Bcc recipients. Not populated for news/nntp messages.",
               "type": "array",
               "items": {
-                "type": "string"
+                "$ref": "messages.MailBoxHeaderString"
               }
             },
             "ccList": {
               "description": "The Cc recipients. Not populated for news/nntp messages.",
               "type": "array",
               "items": {
-                "type": "string"
+                "$ref": "messages.MailBoxHeaderString"
               }
             },
             "date": {
@@ -12737,7 +12778,7 @@
               "description": "The To recipients. Not populated for news/nntp messages.",
               "type": "array",
               "items": {
-                "type": "string"
+                "$ref": "messages.MailBoxHeaderString"
               }
             },
             "size": {
@@ -14181,7 +14222,7 @@
       "namespace": "spaces",
       "types": [
         {
-          "id": "SpaceButtonProperties_MV2",
+          "id": "ButtonProperties",
           "type": "object",
           "properties": {
             "badgeBackgroundColor": {
@@ -14229,7 +14270,7 @@
           }
         },
         {
-          "id": "SpaceButtonProperties_MV3",
+          "id": "SpaceButtonProperties",
           "type": "object",
           "properties": {
             "badgeBackgroundColor": {
@@ -14334,11 +14375,11 @@
               "description": "Properties of the button for the new space.",
               "choices": [
                 {
-                  "$ref": "spaces.SpaceButtonProperties_MV3",
+                  "$ref": "spaces.SpaceButtonProperties",
                   "min_manifest_version": 3
                 },
                 {
-                  "$ref": "spaces.SpaceButtonProperties_MV2",
+                  "$ref": "spaces.ButtonProperties",
                   "max_manifest_version": 2
                 }
               ],
@@ -14485,11 +14526,11 @@
               "description": "Only specified button properties will be updated.",
               "choices": [
                 {
-                  "$ref": "spaces.SpaceButtonProperties_MV3",
+                  "$ref": "spaces.SpaceButtonProperties",
                   "min_manifest_version": 3
                 },
                 {
-                  "$ref": "spaces.SpaceButtonProperties_MV2",
+                  "$ref": "spaces.ButtonProperties",
                   "max_manifest_version": 2
                 }
               ],
