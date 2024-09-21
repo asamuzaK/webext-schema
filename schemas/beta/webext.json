@@ -4445,7 +4445,7 @@
             },
             "openerTabId": {
               "type": "integer",
-              "minimum": 0,
+              "minimum": -1,
               "optional": true,
               "description": "The ID of the tab that opened this tab, if any. This property is only present if the opener tab still exists."
             },
@@ -4989,7 +4989,7 @@
                 },
                 "openerTabId": {
                   "type": "integer",
-                  "minimum": 0,
+                  "minimum": -1,
                   "optional": true,
                   "description": "The ID of the tab that opened this tab. If specified, the opener tab must be in the same window as the newly created tab."
                 },
@@ -5203,7 +5203,7 @@
                 },
                 "openerTabId": {
                   "type": "integer",
-                  "minimum": 0,
+                  "minimum": -1,
                   "optional": true,
                   "description": "The ID of the tab that opened this tab. If specified, the opener tab must be in the same window as this tab."
                 },
@@ -5353,7 +5353,7 @@
                 },
                 "openerTabId": {
                   "type": "integer",
-                  "minimum": 0,
+                  "minimum": -1,
                   "optional": true,
                   "description": "The ID of the tab that opened this tab. If specified, the opener tab must be in the same window as this tab."
                 },
@@ -17437,7 +17437,7 @@
           ]
         },
         {
-          "id": "StorageAreaSync",
+          "id": "StorageAreaWithUsage",
           "type": "object",
           "functions": [
             {
@@ -17634,7 +17634,7 @@
       ],
       "properties": {
         "sync": {
-          "$ref": "StorageAreaSync",
+          "$ref": "StorageAreaWithUsage",
           "description": "Items in the <code>sync</code> storage area are synced by the browser.",
           "properties": {
             "QUOTA_BYTES": {
@@ -17688,8 +17688,13 @@
           "allowedContexts": [
             "devtools"
           ],
-          "$ref": "StorageArea",
-          "description": "Items in the <code>session</code> storage area are kept in memory, and only until the either browser or extension is closed or reloaded."
+          "$ref": "StorageAreaWithUsage",
+          "description": "Items in the <code>session</code> storage area are kept in memory, and only until the either browser or extension is closed or reloaded.",
+          "properties": {
+            "QUOTA_BYTES": {
+              "description": "The maximum amount of data (in bytes, currently at 10MB) that can be stored in session storage, as measured by the StructuredCloneHolder of every value plus every key's length."
+            }
+          }
         }
       }
     }

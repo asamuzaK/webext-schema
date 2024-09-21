@@ -3259,8 +3259,14 @@
               "optional": true,
               "parameters": [
                 {
-                  "$ref": "accounts.MailAccount",
-                  "optional": true
+                  "choices": [
+                    {
+                      "$ref": "accounts.MailAccount"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               ]
             }
@@ -6165,7 +6171,7 @@
         {
           "name": "getAccount",
           "type": "function",
-          "description": "Retrieve information about a single cloud file account, or <var>undefined</var> if it does not exists",
+          "description": "Retrieve information about a single cloud file account. Returns <var>undefined</var>, if the requested account does not exist.",
           "allowedContexts": [
             "content"
           ],
@@ -6183,8 +6189,7 @@
               "parameters": [
                 {
                   "optional": true,
-                  "$ref": "CloudFileAccount",
-                  "description": "This may return undefined"
+                  "$ref": "CloudFileAccount"
                 }
               ]
             }
@@ -6217,7 +6222,7 @@
         {
           "name": "updateAccount",
           "type": "function",
-          "description": "Update a cloud file account.",
+          "description": "Update a cloud file account. Returns <var>undefined</var>, if the requested account does not exist.",
           "allowedContexts": [
             "content"
           ],
@@ -6270,8 +6275,7 @@
               "parameters": [
                 {
                   "optional": true,
-                  "$ref": "CloudFileAccount",
-                  "description": "This may return undefined"
+                  "$ref": "CloudFileAccount"
                 }
               ]
             }
@@ -6555,7 +6559,7 @@
               "optional": true
             },
             "relatedMessageId": {
-              "description": "The id of the original message (in case of draft, template, forward or reply). Read-only. Is <var>null</var> in all other cases or if the original message was opened from file.",
+              "description": "The id of the original message (in case of draft, template, forward or reply). Read-only. Is <var>undefined</var> in all other cases or if the original message was opened from file.",
               "$ref": "messages.MessageId",
               "optional": true
             },
@@ -8390,84 +8394,138 @@
       "types": [
         {
           "id": "MailFolder",
-          "type": "object",
           "description": "An object describing a folder.",
-          "properties": {
-            "accountId": {
-              "$ref": "accounts.MailAccountId",
-              "optional": true,
-              "description": "The id of the account this folder belongs to."
-            },
-            "id": {
-              "$ref": "folders.MailFolderId",
-              "optional": true,
-              "description": "An identifier for the folder."
-            },
-            "isFavorite": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Whether this folder is a favorite folder."
-            },
-            "isRoot": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Whether this folder is a root folder."
-            },
-            "isTag": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Whether this folder is a virtual tag folder."
-            },
-            "isUnified": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Whether this folder is a unified mailbox folder."
-            },
-            "isVirtual": {
-              "type": "boolean",
-              "optional": true,
-              "description": "Whether this folder is a virtual search folder."
-            },
-            "name": {
-              "type": "string",
-              "optional": true,
-              "description": "The human-friendly name of this folder."
-            },
-            "path": {
-              "type": "string",
-              "description": "Path to this folder in the account. Although paths look predictable, never guess a folder's path, as there are a number of reasons why it may not be what you think it is. Use $(ref:folders.getParentFolders) or $(ref:folders.getSubFolders) to obtain hierarchy information."
-            },
-            "specialUse": {
-              "type": "array",
-              "items": {
-                "$ref": "folders.MailFolderSpecialUse"
-              },
-              "optional": true,
-              "description": "The special use of this folder. A folder can have multiple special uses."
-            },
-            "subFolders": {
-              "description": "Subfolders of this folder. The property may be <var>null</var>, if inclusion of folders had not been requested. The folders will be returned in the same order as used in Thunderbird's folder pane.",
-              "choices": [
-                {
+          "choices": [
+            {
+              "max_manifest_version": 2,
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "$ref": "accounts.MailAccountId",
+                  "optional": true,
+                  "description": "The id of the account this folder belongs to."
+                },
+                "id": {
+                  "$ref": "folders.MailFolderId",
+                  "optional": true,
+                  "description": "An identifier for the folder."
+                },
+                "isFavorite": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether this folder is a favorite folder."
+                },
+                "isRoot": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether this folder is a root folder."
+                },
+                "isTag": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether this folder is a virtual tag folder."
+                },
+                "isUnified": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether this folder is a unified mailbox folder."
+                },
+                "isVirtual": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether this folder is a virtual search folder."
+                },
+                "name": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The human-friendly name of this folder."
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Path to this folder in the account. Although paths look predictable, never guess a folder's path, as there are a number of reasons why it may not be what you think it is. Use $(ref:folders.getParentFolders) or $(ref:folders.getSubFolders) to obtain hierarchy information."
+                },
+                "specialUse": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "folders.MailFolderSpecialUse"
+                  },
+                  "optional": true,
+                  "description": "The special use of this folder. A folder can have multiple special uses."
+                },
+                "subFolders": {
+                  "description": "Subfolders of this folder. This property is optional and only present if the inclusion of subfolders had been requested. The folders will be returned in the same order as used in Thunderbird's folder pane.",
                   "type": "array",
                   "items": {
                     "$ref": "folders.MailFolder"
-                  }
+                  },
+                  "optional": true
                 },
-                {
-                  "max_manifest_version": 2,
-                  "type": "null"
+                "type": {
+                  "$ref": "folders.MailFolderSpecialUse",
+                  "optional": true,
+                  "description": "Deprecated. Was used to represent the type of this folder."
                 }
-              ],
-              "optional": true
+              }
             },
-            "type": {
-              "max_manifest_version": 2,
-              "$ref": "folders.MailFolderSpecialUse",
-              "optional": true,
-              "description": "Deprecated. Was used to represent the type of this folder."
+            {
+              "min_manifest_version": 3,
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "$ref": "accounts.MailAccountId",
+                  "description": "The id of the account this folder belongs to. This property is optional and not available for unified mailbox folders or virtual tag folders.",
+                  "optional": true
+                },
+                "id": {
+                  "$ref": "folders.MailFolderId",
+                  "description": "An identifier for the folder."
+                },
+                "isFavorite": {
+                  "type": "boolean",
+                  "description": "Whether this folder is a favorite folder."
+                },
+                "isRoot": {
+                  "type": "boolean",
+                  "description": "Whether this folder is a root folder."
+                },
+                "isTag": {
+                  "type": "boolean",
+                  "description": "Whether this folder is a virtual tag folder."
+                },
+                "isUnified": {
+                  "type": "boolean",
+                  "description": "Whether this folder is a unified mailbox folder."
+                },
+                "isVirtual": {
+                  "type": "boolean",
+                  "description": "Whether this folder is a virtual search folder."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The human-friendly name of this folder."
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Path to this folder in the account. Although paths look predictable, never guess a folder's path, as there are a number of reasons why it may not be what you think it is. Use $(ref:folders.getParentFolders) or $(ref:folders.getSubFolders) to obtain hierarchy information."
+                },
+                "specialUse": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "folders.MailFolderSpecialUse"
+                  },
+                  "description": "The special use of this folder. A folder can have multiple special uses."
+                },
+                "subFolders": {
+                  "description": "Subfolders of this folder. This property is optional and only present if the inclusion of subfolders had been requested. The folders will be returned in the same order as used in Thunderbird's folder pane.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "folders.MailFolder"
+                  },
+                  "optional": true
+                }
+              }
             }
-          }
+          ]
         },
         {
           "id": "MailFolderId",
@@ -9584,7 +9642,7 @@
         {
           "name": "getTagFolder",
           "type": "function",
-          "description": "Get one of the special unified mailbox tag folders, which are virtual search folders and group messages from all mail accounts based on their tags.",
+          "description": "Get one of the special virtual tag folders, which are virtual search folders and group messages from all mail accounts based on their tags.",
           "async": "callback",
           "parameters": [
             {
@@ -10459,8 +10517,7 @@
               "parameters": [
                 {
                   "$ref": "mailTabs.MailTab",
-                  "optional": true,
-                  "description": "This may return undefined"
+                  "optional": true
                 }
               ]
             }
@@ -14169,7 +14226,7 @@
         {
           "name": "getTabValue",
           "type": "function",
-          "description": "Retrieve a previously stored value for a given tab, given its key. Returns <var>undefined</var> if the key does not exist.",
+          "description": "Retrieve a previously stored value for a given tab, given its key. Returns <var>undefined</var> if the requested <var>key</var> does not exist for the given <var>tabId</var>.",
           "async": "callback",
           "parameters": [
             {
@@ -14189,8 +14246,7 @@
               "parameters": [
                 {
                   "type": "string",
-                  "optional": true,
-                  "description": "This may return undefined"
+                  "optional": true
                 }
               ]
             }
@@ -14222,93 +14278,98 @@
       "namespace": "spaces",
       "types": [
         {
-          "id": "ButtonProperties",
-          "type": "object",
-          "properties": {
-            "badgeBackgroundColor": {
-              "choices": [
-                {
-                  "type": "string"
-                },
-                {
-                  "$ref": "spaces.ColorArray"
-                }
-              ],
-              "optional": true,
-              "description": "Sets the background color of the badge. Can be specified as an array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <var>[255, 0, 0, 255]</var>. Can also be a string with an HTML color name (<var>red</var>) or a HEX color value (<var>#FF0000</var> or <var>#F00</var>). Reset when set to an empty string."
-            },
-            "badgeText": {
-              "type": "string",
-              "optional": true,
-              "description": "Sets the badge text for the button in the spaces toolbar. The badge is displayed on top of the icon. Any number of characters can be set, but only about four can fit in the space. Removed when set to an empty string."
-            },
-            "defaultIcons": {
-              "choices": [
-                {
-                  "type": "string"
-                },
-                {
-                  "$ref": "manifest.IconPath"
-                }
-              ],
-              "optional": true,
-              "description": "The paths to one or more icons for the button in the spaces toolbar. Reset to the extension icon, when set to an empty string."
-            },
-            "themeIcons": {
-              "type": "array",
-              "optional": true,
-              "items": {
-                "$ref": "manifest.ThemeIcons"
-              },
-              "description": "Specifies dark and light icons for the button in the spaces toolbar to be used with themes: The <var>light</var> icons will be used on dark backgrounds and vice versa. At least the set for <em>16px</em> icons should be specified. The set for <em>32px</em> icons will be used on screens with a very high pixel density, if specified. Reset when set to an empty array."
-            },
-            "title": {
-              "type": "string",
-              "optional": true,
-              "description": "The title for the button in the spaces toolbar, used in the tooltip of the button and as the displayed name in the overflow menu. Reset to the name of the extension, when set to an empty string."
-            }
-          }
-        },
-        {
           "id": "SpaceButtonProperties",
-          "type": "object",
-          "properties": {
-            "badgeBackgroundColor": {
-              "choices": [
-                {
-                  "type": "string"
+          "choices": [
+            {
+              "max_manifest_version": 2,
+              "type": "object",
+              "properties": {
+                "badgeBackgroundColor": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "spaces.ColorArray"
+                    }
+                  ],
+                  "optional": true,
+                  "description": "Sets the background color of the badge. Can be specified as an array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <var>[255, 0, 0, 255]</var>. Can also be a string with an HTML color name (<var>red</var>) or a HEX color value (<var>#FF0000</var> or <var>#F00</var>). Reset when set to an empty string."
                 },
-                {
-                  "$ref": "spaces.ColorArray"
+                "badgeText": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "Sets the badge text for the button in the spaces toolbar. The badge is displayed on top of the icon. Any number of characters can be set, but only about four can fit in the space. Removed when set to an empty string."
+                },
+                "defaultIcons": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "manifest.IconPath"
+                    }
+                  ],
+                  "optional": true,
+                  "description": "The paths to one or more icons for the button in the spaces toolbar. Reset to the extension icon, when set to an empty string."
+                },
+                "themeIcons": {
+                  "type": "array",
+                  "optional": true,
+                  "items": {
+                    "$ref": "manifest.ThemeIcons"
+                  },
+                  "description": "Specifies dark and light icons for the button in the spaces toolbar to be used with themes: The <var>light</var> icons will be used on dark backgrounds and vice versa. At least the set for <em>16px</em> icons should be specified. The set for <em>32px</em> icons will be used on screens with a very high pixel density, if specified. Reset when set to an empty array."
+                },
+                "title": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The title for the button in the spaces toolbar, used in the tooltip of the button and as the displayed name in the overflow menu. Reset to the name of the extension, when set to an empty string."
                 }
-              ],
-              "optional": "omit-key-if-missing",
-              "description": "Sets the background color of the badge. Can be specified as an array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <var>[255, 0, 0, 255]</var>. Can also be a string with an HTML color name (<var>red</var>) or a HEX color value (<var>#FF0000</var> or <var>#F00</var>). Reset when set to <var>null</var>."
+              }
             },
-            "badgeText": {
-              "type": "string",
-              "optional": "omit-key-if-missing",
-              "description": "Sets the badge text for the button in the spaces toolbar. The badge is displayed on top of the icon. Any number of characters can be set, but only about four can fit in the space. Removed when set to <var>null</var>."
-            },
-            "defaultIcons": {
-              "$ref": "manifest.IconPath",
-              "optional": "omit-key-if-missing",
-              "description": "The paths to one or more icons for the button in the spaces toolbar. Reset to the extension icon, when set to <var>null</var>."
-            },
-            "themeIcons": {
-              "type": "array",
-              "optional": "omit-key-if-missing",
-              "items": {
-                "$ref": "manifest.ThemeIcons"
-              },
-              "description": "Specifies dark and light icons for the button in the spaces toolbar to be used with themes: The <var>light</var> icons will be used on dark backgrounds and vice versa. At least the set for <em>16px</em> icons should be specified. The set for <em>32px</em> icons will be used on screens with a very high pixel density, if specified. Reset when set to <var>null</var>."
-            },
-            "title": {
-              "type": "string",
-              "optional": "omit-key-if-missing",
-              "description": "The title for the button in the spaces toolbar, used in the tooltip of the button and as the displayed name in the overflow menu. Reset to the name of the extension, when set to <var>null</var>."
+            {
+              "min_manifest_version": 3,
+              "type": "object",
+              "properties": {
+                "badgeBackgroundColor": {
+                  "choices": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "spaces.ColorArray"
+                    }
+                  ],
+                  "optional": "omit-key-if-missing",
+                  "description": "Sets the background color of the badge. Can be specified as an array of four integers in the range [0,255] that make up the RGBA color of the badge. For example, opaque red is <var>[255, 0, 0, 255]</var>. Can also be a string with an HTML color name (<var>red</var>) or a HEX color value (<var>#FF0000</var> or <var>#F00</var>). Reset when set to <var>null</var>."
+                },
+                "badgeText": {
+                  "type": "string",
+                  "optional": "omit-key-if-missing",
+                  "description": "Sets the badge text for the button in the spaces toolbar. The badge is displayed on top of the icon. Any number of characters can be set, but only about four can fit in the space. Removed when set to <var>null</var>."
+                },
+                "defaultIcons": {
+                  "$ref": "manifest.IconPath",
+                  "optional": "omit-key-if-missing",
+                  "description": "The paths to one or more icons for the button in the spaces toolbar. Reset to the extension icon, when set to <var>null</var>."
+                },
+                "themeIcons": {
+                  "type": "array",
+                  "optional": "omit-key-if-missing",
+                  "items": {
+                    "$ref": "manifest.ThemeIcons"
+                  },
+                  "description": "Specifies dark and light icons for the button in the spaces toolbar to be used with themes: The <var>light</var> icons will be used on dark backgrounds and vice versa. At least the set for <em>16px</em> icons should be specified. The set for <em>32px</em> icons will be used on screens with a very high pixel density, if specified. Reset when set to <var>null</var>."
+                },
+                "title": {
+                  "type": "string",
+                  "optional": "omit-key-if-missing",
+                  "description": "The title for the button in the spaces toolbar, used in the tooltip of the button and as the displayed name in the overflow menu. Reset to the name of the extension, when set to <var>null</var>."
+                }
+              }
             }
-          }
+          ]
         },
         {
           "id": "ColorArray",
@@ -14373,16 +14434,7 @@
             {
               "name": "buttonProperties",
               "description": "Properties of the button for the new space.",
-              "choices": [
-                {
-                  "$ref": "spaces.SpaceButtonProperties",
-                  "min_manifest_version": 3
-                },
-                {
-                  "$ref": "spaces.ButtonProperties",
-                  "max_manifest_version": 2
-                }
-              ],
+              "$ref": "spaces.SpaceButtonProperties",
               "optional": true,
               "default": {}
             },
@@ -14524,16 +14576,7 @@
             {
               "name": "buttonProperties",
               "description": "Only specified button properties will be updated.",
-              "choices": [
-                {
-                  "$ref": "spaces.SpaceButtonProperties",
-                  "min_manifest_version": 3
-                },
-                {
-                  "$ref": "spaces.ButtonProperties",
-                  "max_manifest_version": 2
-                }
-              ],
+              "$ref": "spaces.SpaceButtonProperties",
               "optional": true
             }
           ]
@@ -14995,7 +15038,7 @@
         {
           "name": "getCurrent",
           "type": "function",
-          "description": "Gets the tab that this script call is being made from. May be <var>undefined</var> if called from a non-tab context (for example: a background page or popup view).",
+          "description": "Gets the tab that this script call is being made from. Returns <var>undefined</var> if called from a non-tab context (for example a background page or a popup view).",
           "async": "callback",
           "parameters": [
             {
@@ -15006,8 +15049,7 @@
                 {
                   "name": "tab",
                   "$ref": "Tab",
-                  "optional": true,
-                  "description": "This may return undefined"
+                  "optional": true
                 }
               ]
             }
@@ -15092,7 +15134,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates a new content tab. Use the $(doc:messageDisplay) to open messages. Only supported in <var>normal</var> windows. Same-site links in the loaded page are opened within Thunderbird, all other links are opened in the user's default browser. To override this behavior, add-ons have to register a <a href='url-content-script-click-capture'>content script</a> , capture click events and handle them manually.",
+          "description": "Creates a new content tab. To create message tabs, use the $(ref:messageDisplay.open). Only supported in <var>normal</var> windows. Same-site links in the loaded page are opened within Thunderbird, all other links are opened in the user's default browser. To override this behavior, add-ons have to register a <a href='url-content-script-click-capture'>content script</a> , capture click events and handle them manually.",
           "async": "callback",
           "parameters": [
             {
@@ -15144,7 +15186,7 @@
                 {
                   "name": "tab",
                   "$ref": "Tab",
-                  "description": "Details about the created tab. Will contain the ID of the new tab."
+                  "description": "A Promise that will be fulfilled with a $(ref:tabs.Tab) object containing details about the created tab. If the tab could not be created (for example, because it was added to a non-normal window) the promise will be rejected with an error message. The returned promise resolves as soon as the tab has been created. The tab may still be loading, with its title being <var>loading...</var> and its URL being <var>about:blank</var>. To detect when the tab has finished loading, listen to the $(ref:tabs.onUpdated) event before creating the tab."
                 }
               ]
             }
@@ -15574,7 +15616,7 @@
         {
           "name": "onCreated",
           "type": "function",
-          "description": "Fired when a tab is created. Note that the tab's URL may not be set at the time this event fired, but you can listen to onUpdated events to be notified when a URL is set.",
+          "description": "Fired when a tab is created. The tab may still be loading, with its title being <var>loading...</var> and its URL being <var>about:blank</var>. To detect when the tab has finished loading, listen to the $(ref:tabs.onUpdated) event.",
           "parameters": [
             {
               "$ref": "Tab",
