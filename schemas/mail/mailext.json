@@ -8631,7 +8631,7 @@
                 "STORAGE",
                 "MESSAGE"
               ],
-              "description": "The type of the quota as defined by RFC2087. A <var>STORAGE</var> quota is constraining the available storage in bytes, a <var>MESSAGE</var> quota is constraining the number of storable messages."
+              "description": "The type of the quota as defined by RFC 2087. A <var>STORAGE</var> quota is constraining the available storage in bytes, a <var>MESSAGE</var> quota is constraining the number of storable messages."
             },
             "limit": {
               "type": "integer",
@@ -10611,7 +10611,7 @@
         {
           "name": "getSelectedFolders",
           "type": "function",
-          "description": "Lists the selected folders in the folder pane.",
+          "description": "Lists the selected folders in the folder pane. Does not include folders which are context-clicked, but not selected. The context-clicked folders are always returned by the $(ref:menus.onClicked) event of the menus API.",
           "permissions": [
             "accountsRead"
           ],
@@ -10642,7 +10642,7 @@
         {
           "name": "getSelectedMessages",
           "type": "function",
-          "description": "Lists the selected messages in the current folder.",
+          "description": "Lists the selected messages in the current folder. Includes messages in collapsed threads. Does not include messages which are context-clicked, but not selected. The context-clicked messages are always returned by the $(ref:menus.onClicked) event of the menus API.",
           "permissions": [
             "messagesRead"
           ],
@@ -10670,7 +10670,7 @@
         {
           "name": "setSelectedMessages",
           "type": "function",
-          "description": "Selects none, one or multiple messages.",
+          "description": "Selects none, one or multiple messages. Opens collapsed threads to show the selection, if required.",
           "permissions": [
             "messagesRead",
             "accountsRead"
@@ -12886,7 +12886,7 @@
           "properties": {
             "body": {
               "type": "string",
-              "description": "The content of the part.",
+              "description": "The quoted-printable or base64 decoded content of the part. Only present for parts with a content type of <var>text/*</var> and only if requested, see the <var>decodeContent</var> option of $(ref:messages.getFull). Use $(ref:messages.getAttachmentFile) to retrieve the content of parts which have a content type other than <var>text/*</var>.",
               "optional": true
             },
             "contentType": {
@@ -12906,7 +12906,7 @@
             },
             "headers": {
               "type": "object",
-              "description": "A <em>dictionary object</em> of part headers as <em>key-value</em> pairs, with the header name as <em>key</em>, and an array of headers as <em>value</em>.",
+              "description": "A <em>dictionary object</em> of RFC 2047 decoded part headers as <em>key-value</em> pairs, with the header name as <em>key</em>, and an array of headers as <em>value</em>. Only present if requested, see the <var>decodeHeaders</var> option of $(ref:messages.getFull).",
               "optional": true,
               "additionalProperties": {
                 "type": "array",
@@ -12932,6 +12932,22 @@
               },
               "description": "Any sub-parts of this part.",
               "optional": true
+            },
+            "rawBody": {
+              "type": "string",
+              "description": "The raw content of the part. Only present if requested, see the <var>decodeContent</var> option of $(ref:messages.getFull).",
+              "optional": true
+            },
+            "rawHeaders": {
+              "type": "object",
+              "description": "A <em>dictionary object</em> of raw part headers as <em>key-value</em> pairs, with the header name as <em>key</em>, and an array of headers as <em>value</em>. Only present if requested, see the <var>decodeHeaders</var> option of $(ref:messages.getFull).",
+              "optional": true,
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
             },
             "size": {
               "type": "integer",
@@ -13252,7 +13268,17 @@
               "properties": {
                 "decrypt": {
                   "type": "boolean",
-                  "description": "Whether the message should be decrypted. If the message could not be decrypted, its parts are omitted. Defaults to true.",
+                  "description": "Whether the message should be decrypted. If the message could not be decrypted, its parts are omitted. Defaults to <var>true</var>.",
+                  "optional": true
+                },
+                "decodeHeaders": {
+                  "type": "boolean",
+                  "description": "Whether to decode RFC 2047 encoded headers of message parts. Defaults to <var>true</var>. **Note:** Automatic decoding of headers containing a list of comma separated mailbox strings can have unwanted side effects. Example: <literalinclude>includes/messages/badHeader.js<lang>JavaScript</lang></literalinclude>",
+                  "optional": true
+                },
+                "decodeContent": {
+                  "type": "boolean",
+                  "description": "Whether to decode quoted-printable or base64 encoded content of message parts. Defaults to <var>true</var>.",
                   "optional": true
                 }
               },
@@ -13273,12 +13299,20 @@
         {
           "name": "getRaw",
           "type": "function",
-          "description": "Returns the unmodified source of a message. Throws if the message could not be read, for example due to network issues.",
+          "description": "Returns the raw content of a message. Throws if the message could not be read, for example due to network issues.",
           "async": "callback",
           "parameters": [
             {
-              "name": "messageId",
-              "$ref": "messages.MessageId"
+              "name": "message",
+              "description": "Either a $(ref:messages.MessageId) of an existing message, or a $(ref:messages.MessagePart) with raw header and raw content data representing a full RFC 822 message (the provided data will be used as-is without applying any further encoding). See the <var>decodeHeaders</var> and <var>decodeContent</var> options of $(ref:messages.getFull) for further details on how to retrieve a $(ref:messages.MessagePart) with raw values. You can use $(ref:messengerUtilities.decodeMimeHeader) and $(ref:messengerUtilities.encodeMimeHeader) to manipulate a raw MessagePart.",
+              "choices": [
+                {
+                  "$ref": "messages.MessageId"
+                },
+                {
+                  "$ref": "messages.MessagePart"
+                }
+              ]
             },
             {
               "name": "options",
@@ -13399,7 +13433,7 @@
             {
               "name": "partName",
               "type": "string",
-              "pattern": "^\\d+(\\.\\d+)*$"
+              "pattern": "^\\d+(\\.\\d+\\$?)*$"
             },
             {
               "type": "function",
@@ -13829,7 +13863,7 @@
           "name": "import",
           "type": "function",
           "max_manifest_version": 2,
-          "description": "Imports a message into a local Thunderbird folder. To import a message into an IMAP folder, add it to a local folder first and then move it to the IMAP folder.",
+          "description": "Imports a message into a folder. Supports local folders, POP and IMAP folders. Throws, if the destination folder already contains a message with the Message-ID of the message being imported.",
           "async": "callback",
           "permissions": [
             "accountsRead",
@@ -13876,7 +13910,7 @@
           "name": "import",
           "type": "function",
           "min_manifest_version": 3,
-          "description": "Imports a message into a local Thunderbird folder. To import a message into an IMAP folder, add it to a local folder first and then move it to the IMAP folder.",
+          "description": "Imports a message into a folder. Supports local folders, POP and IMAP folders. Throws, if the destination folder already contains a message with the Message-ID of the message being imported.",
           "async": "callback",
           "permissions": [
             "accountsRead",
@@ -15841,6 +15875,31 @@
               "description": "The members of the group, if available."
             }
           }
+        },
+        {
+          "id": "MailboxHeaders",
+          "type": "string",
+          "description": "MIME headers, which by default are treated as containing one or more mailbox strings.",
+          "enum": [
+            "bcc",
+            "cc",
+            "from",
+            "reply-to",
+            "resent-bcc",
+            "resent-cc",
+            "resent-from",
+            "resent-reply-to",
+            "resent-sender",
+            "resent-to",
+            "sender",
+            "to",
+            "approved",
+            "disposition-notification-to",
+            "delivered-to",
+            "return-receipt-to",
+            "mail-reply-to",
+            "mail-followup-to"
+          ]
         }
       ],
       "functions": [
@@ -15928,6 +15987,96 @@
                   "type": "array",
                   "items": {
                     "$ref": "messengerUtilities.ParsedMailbox"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "decodeMimeHeader",
+          "type": "function",
+          "description": "Decode the provided header into a readable format according to RFC 2047.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "headerName",
+              "type": "string"
+            },
+            {
+              "name": "headerValue",
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "isMailBoxHeader",
+              "type": "boolean",
+              "optional": true,
+              "description": "Headers containing multiple mailbox strings need special handling. For example the header <var>=?UTF-8?Q?H=C3=B6rst=2C_Kenny?= <K.Hoerst@invalid>, new@thunderbird.bug</var> will be wrongly decoded to <var>Hörst, Kenny <K.Hoerst@invalid>, new@thunderbird.bug</var>, corrupting the structure of the first mailbox string. This option overrides the default behavior of treating the headers defined in $(ref:messengerUtilities.MailboxHeaders) as mailbox headers."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "encodeMimeHeader",
+          "type": "function",
+          "description": "Encode the provided header according to RFC 2047.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "headerName",
+              "type": "string"
+            },
+            {
+              "name": "headerValue",
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "isMailBoxHeader",
+              "type": "boolean",
+              "optional": true,
+              "description": "Headers containing multiple mailbox strings need special handling. This option overrides the default behavior of treating the headers defined in $(ref:messengerUtilities.MailboxHeaders) as mailbox headers."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
                   }
                 }
               ]
@@ -16260,7 +16409,7 @@
                 "allowScriptsToClose": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Allow scripts running inside the window to close the window by calling <code>window.close()</code>."
+                  "description": "Allow scripts running inside the window to close the window by calling <code>window.close()</code>. Defaults to <var>true</var> when the given URL points to an extension page (a page included with this extension and loaded with the <var>moz-extension:</var> protocol), defaults to <var>false</var> otherwise."
                 },
                 "cookieStoreId": {
                   "type": "string",

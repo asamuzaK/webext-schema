@@ -9085,6 +9085,11 @@
               "type": "string",
               "optional": true,
               "description": "The first-party URL of the cookie, if the cookie is in storage partitioned by the top-level site."
+            },
+            "hasCrossSiteAncestor": {
+              "type": "boolean",
+              "optional": true,
+              "description": "Whether or not the cookie is in a third-party context, respecting ancestor chains."
             }
           }
         },
@@ -17704,64 +17709,6 @@
       "namespace": "manifest",
       "types": [
         {
-          "$extend": "WebExtensionManifest",
-          "properties": {
-            "telemetry": {
-              "type": "object",
-              "optional": true,
-              "additionalProperties": {
-                "$ref": "UnrecognizedProperty"
-              },
-              "properties": {
-                "ping_type": {
-                  "type": "string"
-                },
-                "schemaNamespace": {
-                  "type": "string"
-                },
-                "public_key": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "key": {
-                      "type": "object",
-                      "properties": {
-                        "crv": {
-                          "type": "string",
-                          "optional": "false"
-                        },
-                        "kty": {
-                          "type": "string",
-                          "optional": "false"
-                        },
-                        "x": {
-                          "type": "string",
-                          "optional": "false"
-                        },
-                        "y": {
-                          "type": "string",
-                          "optional": "false"
-                        }
-                      }
-                    }
-                  }
-                },
-                "study_name": {
-                  "type": "string",
-                  "optional": true
-                },
-                "pioneer_id": {
-                  "type": "boolean",
-                  "optional": true,
-                  "default": false
-                }
-              }
-            }
-          }
-        },
-        {
           "$extend": "PermissionPrivileged",
           "choices": [
             {
@@ -17916,39 +17863,6 @@
               }
             }
           ]
-        },
-        {
-          "name": "submitEncryptedPing",
-          "type": "function",
-          "description": "Submits a custom ping to the Telemetry back-end, with an encrypted payload. Requires a telemetry entry in the manifest to be used.",
-          "parameters": [
-            {
-              "name": "message",
-              "type": "object",
-              "additionalProperties": {
-                "type": "any"
-              },
-              "description": "The data payload for the ping, which will be encrypted."
-            },
-            {
-              "description": "Options object.",
-              "name": "options",
-              "type": "object",
-              "properties": {
-                "schemaName": {
-                  "type": "string",
-                  "optional": false,
-                  "description": "Schema name used for payload."
-                },
-                "schemaVersion": {
-                  "type": "integer",
-                  "optional": false,
-                  "description": "Schema version used for payload."
-                }
-              }
-            }
-          ],
-          "async": true
         },
         {
           "name": "canUpload",
@@ -18118,6 +18032,7 @@
         },
         {
           "name": "recordEvent",
+          "deprecated": "`recordEvent` has been deprecated since Firefox 132 (see bug 1894533)",
           "type": "function",
           "description": "Record an event in Telemetry. Throws when trying to record an unknown event.",
           "async": true,
@@ -18177,6 +18092,7 @@
         },
         {
           "name": "registerEvents",
+          "deprecated": "`registerEvents` has been deprecated since Firefox 132 (see bug 1894533)",
           "type": "function",
           "description": "Register new events to record them from addons. See nsITelemetry.idl for more details.",
           "async": true,
