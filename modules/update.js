@@ -110,7 +110,7 @@ export const getFileList = async baseUrl => {
  * get all schema data
  * @param {string} baseUrl - base URL
  * @param {boolean} info - console info
- * @returns {Promise.<Array>} - schemas data in array
+ * @returns {Promise.<Array.<object>>} - schemas data in array
  */
 export const getAllSchemaData = async (baseUrl, info) => {
   if (!isString(baseUrl)) {
@@ -133,7 +133,7 @@ export const getAllSchemaData = async (baseUrl, info) => {
  * @param {string} baseUrl - base URL
  * @param {Array} arr - array of schema file names
  * @param {boolean} info - console info
- * @returns {Promise.<Array>} - schema data in array
+ * @returns {Promise.<Array.<object>>} - schema data in array
  */
 export const getListedSchemaData = async (baseUrl, arr, info) => {
   if (!isString(baseUrl)) {
@@ -157,7 +157,7 @@ export const getListedSchemaData = async (baseUrl, arr, info) => {
  * get MailExtensions schema data
  * @param {string} baseUrl - base URL
  * @param {boolean} info - console info
- * @returns {Promise.<Array>} - results of each handler
+ * @returns {Promise.<Array.<object>>} - results of each handler
  */
 export const getMailExtSchemaData = async (baseUrl, info) => {
   if (!isString(baseUrl)) {
