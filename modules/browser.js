@@ -500,7 +500,7 @@ export const executeScriptToTab = async (opt = {}) => {
  * search in new tab
  * @param {string} text - query string
  * @param {object} opt - create tab options
- * @returns {object} - tabs.Tab
+ * @returns {Promise.<object>} - tabs.Tab
  */
 export const searchInNewTab = async (text, opt) => {
   if (!isString(text)) {
