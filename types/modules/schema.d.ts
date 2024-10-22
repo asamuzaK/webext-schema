@@ -9,17 +9,17 @@ export class Schema {
     _schema: any;
     set channel(ch: any);
     get channel(): any;
-    _getTargetFromNamespace(key: string): object;
-    _assignImportMap(): void;
-    _assignRefMap(): void;
-    _mockEvents(target: object, events: any[]): object;
-    _mockFunctions(target: object, funcs: any[]): object;
-    _mockProperties(target: object, props: object, namespace: string): object;
-    _mockTypes(target: object, types: any[], namespace: string): object;
-    _parseSchemaContent(): object;
-    get(name: string): any[];
+    private _getTargetFromNamespace;
+    private _assignImportMap;
+    private _assignRefMap;
+    private _mockEvents;
+    private _mockFunctions;
+    private _mockProperties;
+    private _mockTypes;
+    private _parseSchemaContent;
+    get(name: string): Array<object> | null;
     getAll(): object;
-    list(): any[];
+    list(): Array<string>;
     mock(): object;
     #private;
 }
