@@ -497,6 +497,32 @@ export const executeScriptToTab = async (opt = {}) => {
 
 /* search */
 /**
+ * search in new tab
+ * @param {string} text - query string
+ * @param {object} opt - create tab options
+ * @returns {object} - tabs.Tab
+ */
+export const searchInNewTab = async (text, opt) => {
+  if (!isString(text)) {
+    throw new TypeError(`Expected String but got ${getType(text)}.`);
+  }
+  const isGranted = await isPermissionGranted({
+    permissions: ['search']
+  });
+  let tab;
+  if (isGranted) {
+    const { search } = browser;
+    const { id: tabId } = await tabs.create(isObjectNotEmpty(opt) ? opt : null);
+    await search.query({
+      tabId,
+      text
+    });
+    tab = await tabs.get(tabId);
+  }
+  return tab ?? null;
+};
+
+/**
  * search with a search engine
  * @param {string} query - search query
  * @param {object} opt - options
