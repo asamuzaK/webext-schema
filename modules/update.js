@@ -1,6 +1,7 @@
 /**
  * update.js
  */
+/* eslint-disable no-await-in-loop */
 
 /* api */
 import path from 'node:path';
@@ -114,12 +115,14 @@ export const getAllSchemaData = async baseUrl => {
   if (!isString(baseUrl)) {
     throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
   }
+  const schemas = [];
   const items = await getFileList(baseUrl);
-  const func = [];
   for (const item of items) {
-    func.push(getSchemaData(item, baseUrl));
+    console.info(`Fetching ${item}`);
+    const schema = await getSchemaData(item, baseUrl);
+    schemas.push(schema);
   }
-  return Promise.all(func);
+  return schemas;
 };
 
 /**
@@ -135,11 +138,13 @@ export const getListedSchemaData = async (baseUrl, arr) => {
   if (!Array.isArray(arr)) {
     throw new TypeError(`Expected Array but got ${getType(arr)}.`);
   }
-  const func = [];
+  const schemas = [];
   for (const item of arr) {
-    func.push(getSchemaData(item, baseUrl));
+    console.info(`Fetching ${item}`);
+    const schema = await getSchemaData(item, baseUrl);
+    schemas.push(schema);
   }
-  return Promise.all(func);
+  return schemas;
 };
 
 /**
@@ -157,11 +162,15 @@ export const getMailExtSchemaData = async baseUrl => {
     'commands.json',
     'pkcs11.json'
   ];
-  const func = [];
+  const schemas = [];
   for (const item of items) {
-    !excludeFile.includes(item) && func.push(getSchemaData(item, schemaUrl));
+    if (!excludeFile.includes(item)) {
+      console.info(`Fetching ${item}`);
+      const schema = await getSchemaData(item, schemaUrl);
+      schemas.push(schema);
+    }
   }
-  return Promise.all(func);
+  return schemas;
 };
 
 /**

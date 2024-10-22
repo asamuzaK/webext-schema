@@ -198,6 +198,7 @@ describe('get all schema data', () => {
   });
 
   it('should get array', async () => {
+    const stubInfo = sinon.stub(console, 'info');
     const url = new URL('https://example.com');
     const mockPool = mockAgent.get(url.origin);
     mockPool.intercept({ path: '/jar.mn', method: 'GET' })
@@ -207,6 +208,7 @@ describe('get all schema data', () => {
     mockPool.intercept({ path: '/bar.json', method: 'GET' })
       .reply(200, '{ "baz": "qux" }');
     const res = await getAllSchemaData('https://example.com/');
+    stubInfo.restore();
     assert.deepEqual(res, [
       {
         file: 'foo.json',
@@ -251,6 +253,7 @@ describe('get listed schema data', () => {
   });
 
   it('should get array', async () => {
+    const stubInfo = sinon.stub(console, 'info');
     const url = new URL('https://example.com');
     const mockPool = mockAgent.get(url.origin);
     mockPool.intercept({ path: '/foo.json', method: 'GET' })
@@ -259,6 +262,7 @@ describe('get listed schema data', () => {
       .reply(200, '{ "baz": "qux" }');
     const res = await getListedSchemaData('https://example.com/',
       ['foo.json', 'bar.json']);
+    stubInfo.restore();
     assert.deepEqual(res, [
       {
         file: 'foo.json',
@@ -296,6 +300,7 @@ describe('get MailExtensions schema data', () => {
   });
 
   it('should get array', async () => {
+    const stubInfo = sinon.stub(console, 'info');
     const url = new URL('https://example.com');
     const mockPool = mockAgent.get(url.origin);
     mockPool.intercept({ path: '/jar.mn', method: 'GET' })
@@ -305,6 +310,7 @@ describe('get MailExtensions schema data', () => {
     mockPool.intercept({ path: '/schemas/browserAction.json', method: 'GET' })
       .reply(200, '{ "bar": "baz" }');
     const res = await getMailExtSchemaData('https://example.com/');
+    stubInfo.restore();
     assert.deepEqual(res, [
       {
         file: 'accounts.json',
@@ -325,15 +331,19 @@ describe('get MailExtensions schema data', () => {
 describe('create unified schema', () => {
   it('should get object', async () => {
     const stubAll = sinon.stub(Promise, 'all').resolves([]);
+    const stubInfo = sinon.stub(console, 'info');
     const res = await createUnifiedSchema();
     stubAll.restore();
+    stubInfo.restore();
     assert.deepEqual(res, {}, 'result');
   });
 
   it('should get object', async () => {
     const stubAll = sinon.stub(Promise, 'all').resolves([]);
+    const stubInfo = sinon.stub(console, 'info');
     const res = await createUnifiedSchema('mail');
     stubAll.restore();
+    stubInfo.restore();
     assert.deepEqual(res, {}, 'result');
   });
 });
@@ -378,7 +388,7 @@ describe('save schema file', () => {
     stubAll.restore();
     stubWrite.restore();
     assert.strictEqual(writeCallCount, i + 1, 'write');
-    assert.strictEqual(infoCallCount, j, 'info');
+    assert.strictEqual(infoCallCount, j + 2, 'info');
     assert.strictEqual(res, filePath, 'result');
   });
 
@@ -414,7 +424,7 @@ describe('save schema file', () => {
     stubWrite.restore();
     stubAll.restore();
     assert.strictEqual(writeCallCount, i + 1, 'write');
-    assert.strictEqual(infoCallCount, j + 1, 'info');
+    assert.strictEqual(infoCallCount, j + 3, 'info');
     assert.strictEqual(res, filePath, 'result');
   });
 
@@ -514,10 +524,12 @@ describe('update schemas files', () => {
     ]);
     const stubTrace = sinon.stub(console, 'trace');
     const i = stubTrace.callCount;
+    const stubInfo = sinon.stub(console, 'info');
     await updateSchemas();
     const { callCount: traceCallCount } = stubTrace;
     stubAll.restore();
     stubTrace.restore();
+    stubInfo.restore();
     assert.strictEqual(traceCallCount, i + 2, 'trace');
   });
 
@@ -541,10 +553,12 @@ describe('update schemas files', () => {
     ]);
     const stubTrace = sinon.stub(console, 'trace');
     const i = stubTrace.callCount;
+    const stubInfo = sinon.stub(console, 'info');
     await updateSchemas();
     const { callCount: traceCallCount } = stubTrace;
     stubAll.restore();
     stubTrace.restore();
+    stubInfo.restore();
     assert.strictEqual(traceCallCount, i, 'trace');
   });
 
@@ -557,6 +571,7 @@ describe('update schemas files', () => {
     ]);
     const stubTrace = sinon.stub(console, 'trace');
     const i = stubTrace.callCount;
+    const stubInfo = sinon.stub(console, 'info');
     const opt = {
       channel: 'beta'
     };
@@ -564,6 +579,7 @@ describe('update schemas files', () => {
     const { callCount: traceCallCount } = stubTrace;
     stubAll.restore();
     stubTrace.restore();
+    stubInfo.restore();
     assert.strictEqual(traceCallCount, i + 1, 'trace');
   });
 
@@ -575,6 +591,7 @@ describe('update schemas files', () => {
     ]);
     const stubTrace = sinon.stub(console, 'trace');
     const i = stubTrace.callCount;
+    const stubInfo = sinon.stub(console, 'info');
     const opt = {
       channel: 'beta'
     };
@@ -582,6 +599,7 @@ describe('update schemas files', () => {
     const { callCount: traceCallCount } = stubTrace;
     stubAll.restore();
     stubTrace.restore();
+    stubInfo.restore();
     assert.strictEqual(traceCallCount, i, 'trace');
   });
 });
