@@ -55,6 +55,7 @@ export class Schema {
 
   /**
    * get target from namespace key
+   * @private
    * @param {string} key - namespace key
    * @returns {object} - target object
    */
@@ -81,6 +82,7 @@ export class Schema {
 
   /**
    * assign imported values
+   * @private
    * @returns {void}
    */
   _assignImportMap() {
@@ -107,6 +109,7 @@ export class Schema {
 
   /**
    * assign referred values
+   * @private
    * @returns {void}
    */
   _assignRefMap() {
@@ -133,6 +136,7 @@ export class Schema {
 
   /**
    * mock events
+   * @private
    * @param {object} target - target object
    * @param {Array} events - events
    * @returns {object} - target object
@@ -158,6 +162,7 @@ export class Schema {
 
   /**
    * mock functions
+   * @private
    * @param {object} target - target object
    * @param {Array} funcs - functions
    * @returns {object} - target object
@@ -180,6 +185,7 @@ export class Schema {
 
   /**
    * mock properties
+   * @private
    * @param {object} target - target object
    * @param {object} props - properties
    * @param {string} namespace - namespace
@@ -220,6 +226,7 @@ export class Schema {
 
   /**
    * mock types
+   * @private
    * @param {object} target - target object
    * @param {Array} types - types
    * @param {string} namespace - namespace
@@ -257,6 +264,7 @@ export class Schema {
 
   /**
    * parse schema content
+   * @private
    * @returns {object} - schema
    */
   _parseSchemaContent() {
@@ -274,7 +282,7 @@ export class Schema {
   /**
    * get schema
    * @param {string} name - API name or file name
-   * @returns {Array} - schema
+   * @returns {?Array.<object>} - schema
    */
   get(name) {
     if (!isString(name)) {
@@ -304,7 +312,7 @@ export class Schema {
 
   /**
    * list schemas
-   * @returns {Array} - file list
+   * @returns {Array.<string>} - file list
    */
   list() {
     const schemas = this._schema ?? this._parseSchemaContent();
