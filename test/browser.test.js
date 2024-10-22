@@ -1248,6 +1248,81 @@ describe('browser', () => {
     });
   });
 
+  describe('search in new tab', () => {
+    const func = mjs.searchInNewTab;
+
+    it('should throw if no argument given', async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message,
+          'Expected String but got Undefined.');
+      });
+    });
+
+    it('should throw if 1st argument is not string', async () => {
+      await func(1).catch(e => {
+        assert.strictEqual(e.message,
+          'Expected String but got Number.');
+      });
+    });
+
+    it('should not call function if permission is not granted', async () => {
+      browser.permissions.contains.resolves(false);
+      const i = browser.search.query.callCount;
+      const res = await func('foo');
+      assert.strictEqual(browser.search.query.callCount, i, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should call function', async () => {
+      browser.tabs.create.resolves({
+        id: 1
+      });
+      browser.tabs.get.withArgs(1).resolves({
+        id: 1
+      });
+      const i = browser.search.query.withArgs({
+        text: 'foo',
+        tabId: 1
+      }).callCount;
+      const res = await func('foo');
+      assert.strictEqual(browser.search.query.withArgs({
+        text: 'foo',
+        tabId: 1
+      }).callCount, i + 1, 'called');
+      assert.deepEqual(res, {
+        id: 1
+      }, 'result');
+    });
+
+    it('should call function', async () => {
+      browser.tabs.create.withArgs({
+        index: 2
+      }).resolves({
+        id: 1,
+        index: 2
+      });
+      browser.tabs.get.withArgs(1).resolves({
+        id: 1,
+        index: 2
+      });
+      const i = browser.search.query.withArgs({
+        text: 'foo',
+        tabId: 1
+      }).callCount;
+      const res = await func('foo', {
+        index: 2
+      });
+      assert.strictEqual(browser.search.query.withArgs({
+        text: 'foo',
+        tabId: 1
+      }).callCount, i + 1, 'called');
+      assert.deepEqual(res, {
+        id: 1,
+        index: 2
+      }, 'result');
+    });
+  });
+
   describe('search with a search engine', () => {
     const func = mjs.searchWithSearchEngine;
 
