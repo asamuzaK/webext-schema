@@ -109,16 +109,19 @@ export const getFileList = async baseUrl => {
 /**
  * get all schema data
  * @param {string} baseUrl - base URL
+ * @param {boolean} info - console info
  * @returns {Promise.<Array>} - schemas data in array
  */
-export const getAllSchemaData = async baseUrl => {
+export const getAllSchemaData = async (baseUrl, info) => {
   if (!isString(baseUrl)) {
     throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
   }
   const schemas = [];
   const items = await getFileList(baseUrl);
   for (const item of items) {
-    console.info(`Fetching ${item}`);
+    if (info) {
+      console.info(`Fetching ${item}`);
+    }
     const schema = await getSchemaData(item, baseUrl);
     schemas.push(schema);
   }
@@ -129,9 +132,10 @@ export const getAllSchemaData = async baseUrl => {
  * get listed schema data
  * @param {string} baseUrl - base URL
  * @param {Array} arr - array of schema file names
+ * @param {boolean} info - console info
  * @returns {Promise.<Array>} - schema data in array
  */
-export const getListedSchemaData = async (baseUrl, arr) => {
+export const getListedSchemaData = async (baseUrl, arr, info) => {
   if (!isString(baseUrl)) {
     throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
   }
@@ -140,7 +144,9 @@ export const getListedSchemaData = async (baseUrl, arr) => {
   }
   const schemas = [];
   for (const item of arr) {
-    console.info(`Fetching ${item}`);
+    if (info) {
+      console.info(`Fetching ${item}`);
+    }
     const schema = await getSchemaData(item, baseUrl);
     schemas.push(schema);
   }
@@ -150,9 +156,10 @@ export const getListedSchemaData = async (baseUrl, arr) => {
 /**
  * get MailExtensions schema data
  * @param {string} baseUrl - base URL
+ * @param {boolean} info - console info
  * @returns {Promise.<Array>} - results of each handler
  */
-export const getMailExtSchemaData = async baseUrl => {
+export const getMailExtSchemaData = async (baseUrl, info) => {
   if (!isString(baseUrl)) {
     throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
   }
@@ -165,7 +172,9 @@ export const getMailExtSchemaData = async baseUrl => {
   const schemas = [];
   for (const item of items) {
     if (!excludeFile.includes(item)) {
-      console.info(`Fetching ${item}`);
+      if (info) {
+        console.info(`Fetching ${item}`);
+      }
       const schema = await getSchemaData(item, schemaUrl);
       schemas.push(schema);
     }
@@ -176,9 +185,10 @@ export const getMailExtSchemaData = async baseUrl => {
 /**
  * create unified schema
  * @param {string} channel - release channel
+ * @param {boolean} info - console info
  * @returns {Promise.<object>} - schema
  */
-export const createUnifiedSchema = async channel => {
+export const createUnifiedSchema = async (channel, info) => {
   const channelUrl = getChannelUrl(channel);
   const schema = {};
   let arr;
@@ -196,14 +206,16 @@ export const createUnifiedSchema = async channel => {
     const toolkitBaseUrl =
       `${getChannelUrl('central')}toolkit/components/extensions/schemas/`;
     arr = await Promise.all([
-      getListedSchemaData(browserBaseUrl, browserItems),
-      getListedSchemaData(toolkitBaseUrl, toolkitItems),
-      getMailExtSchemaData(`${channelUrl}mail/components/extensions/`)
+      getListedSchemaData(browserBaseUrl, browserItems, info),
+      getListedSchemaData(toolkitBaseUrl, toolkitItems, info),
+      getMailExtSchemaData(`${channelUrl}mail/components/extensions/`, info)
     ]);
   } else {
     arr = await Promise.all([
-      getAllSchemaData(`${channelUrl}browser/components/extensions/schemas/`),
-      getAllSchemaData(`${channelUrl}toolkit/components/extensions/schemas/`)
+      getAllSchemaData(`${channelUrl}browser/components/extensions/schemas/`,
+        info),
+      getAllSchemaData(`${channelUrl}toolkit/components/extensions/schemas/`,
+        info)
     ]);
   }
   for (const items of arr) {
@@ -225,7 +237,7 @@ export const saveSchemaFile = async (channel, info) => {
   if (!isString(channel)) {
     throw new TypeError(`Expected String but got ${getType(channel)}.`);
   }
-  const schema = await createUnifiedSchema(channel);
+  const schema = await createUnifiedSchema(channel, info);
   const content = `${JSON.stringify(schema, null, INDENT)}\n`;
   const fileName = channel === 'mail' ? 'mailext' : 'webext';
   const filePath =

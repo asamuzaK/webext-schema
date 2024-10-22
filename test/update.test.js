@@ -208,6 +208,36 @@ describe('get all schema data', () => {
     mockPool.intercept({ path: '/bar.json', method: 'GET' })
       .reply(200, '{ "baz": "qux" }');
     const res = await getAllSchemaData('https://example.com/');
+    assert.isFalse(stubInfo.called, 'info');
+    stubInfo.restore();
+    assert.deepEqual(res, [
+      {
+        file: 'foo.json',
+        schema: {
+          foo: 'foobar'
+        }
+      },
+      {
+        file: 'bar.json',
+        schema: {
+          baz: 'qux'
+        }
+      }
+    ], 'result');
+  });
+
+  it('should get array', async () => {
+    const stubInfo = sinon.stub(console, 'info');
+    const url = new URL('https://example.com');
+    const mockPool = mockAgent.get(url.origin);
+    mockPool.intercept({ path: '/jar.mn', method: 'GET' })
+      .reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+    mockPool.intercept({ path: '/foo.json', method: 'GET' })
+      .reply(200, '{ "foo": "foobar" }');
+    mockPool.intercept({ path: '/bar.json', method: 'GET' })
+      .reply(200, '{ "baz": "qux" }');
+    const res = await getAllSchemaData('https://example.com/', true);
+    assert.isTrue(stubInfo.called, 'info');
     stubInfo.restore();
     assert.deepEqual(res, [
       {
@@ -262,6 +292,35 @@ describe('get listed schema data', () => {
       .reply(200, '{ "baz": "qux" }');
     const res = await getListedSchemaData('https://example.com/',
       ['foo.json', 'bar.json']);
+    assert.isFalse(stubInfo.called, 'info');
+    stubInfo.restore();
+    assert.deepEqual(res, [
+      {
+        file: 'foo.json',
+        schema: {
+          foo: 'foobar'
+        }
+      },
+      {
+        file: 'bar.json',
+        schema: {
+          baz: 'qux'
+        }
+      }
+    ], 'result');
+  });
+
+  it('should get array', async () => {
+    const stubInfo = sinon.stub(console, 'info');
+    const url = new URL('https://example.com');
+    const mockPool = mockAgent.get(url.origin);
+    mockPool.intercept({ path: '/foo.json', method: 'GET' })
+      .reply(200, '{ "foo": "foobar" }');
+    mockPool.intercept({ path: '/bar.json', method: 'GET' })
+      .reply(200, '{ "baz": "qux" }');
+    const res = await getListedSchemaData('https://example.com/',
+      ['foo.json', 'bar.json'], true);
+    assert.isTrue(stubInfo.called, 'info');
     stubInfo.restore();
     assert.deepEqual(res, [
       {
@@ -310,6 +369,36 @@ describe('get MailExtensions schema data', () => {
     mockPool.intercept({ path: '/schemas/browserAction.json', method: 'GET' })
       .reply(200, '{ "bar": "baz" }');
     const res = await getMailExtSchemaData('https://example.com/');
+    assert.isFalse(stubInfo.called, 'info');
+    stubInfo.restore();
+    assert.deepEqual(res, [
+      {
+        file: 'accounts.json',
+        schema: {
+          foo: 'foobar'
+        }
+      },
+      {
+        file: 'browserAction.json',
+        schema: {
+          bar: 'baz'
+        }
+      }
+    ], 'result');
+  });
+
+  it('should get array', async () => {
+    const stubInfo = sinon.stub(console, 'info');
+    const url = new URL('https://example.com');
+    const mockPool = mockAgent.get(url.origin);
+    mockPool.intercept({ path: '/jar.mn', method: 'GET' })
+      .reply(200, '# comment\n\nmessenger.jar:\n% content/messenger/ext-mail.json\n    content/messenger/schemas/accounts.json\n    content/messenger/schemas/browserAction.json\n    content/messenger/schemas/commands.json\n    content/messenger/schemas/pkcs11.json\n');
+    mockPool.intercept({ path: '/schemas/accounts.json', method: 'GET' })
+      .reply(200, '{ "foo": "foobar" }');
+    mockPool.intercept({ path: '/schemas/browserAction.json', method: 'GET' })
+      .reply(200, '{ "bar": "baz" }');
+    const res = await getMailExtSchemaData('https://example.com/', true);
+    assert.isTrue(stubInfo.called, 'info');
     stubInfo.restore();
     assert.deepEqual(res, [
       {
@@ -388,7 +477,7 @@ describe('save schema file', () => {
     stubAll.restore();
     stubWrite.restore();
     assert.strictEqual(writeCallCount, i + 1, 'write');
-    assert.strictEqual(infoCallCount, j + 2, 'info');
+    assert.strictEqual(infoCallCount, j, 'info');
     assert.strictEqual(res, filePath, 'result');
   });
 
