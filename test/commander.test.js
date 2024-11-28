@@ -1,8 +1,8 @@
 /* api */
+import { strict as assert } from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
 import sinon from 'sinon';
-import { assert } from 'chai';
 import { describe, it } from 'mocha';
 
 /* test */
@@ -17,7 +17,7 @@ describe('clean directory', () => {
     cleanDirectory({ dir });
     const { called: rmCalled } = stubRm;
     stubRm.restore();
-    assert.isFalse(rmCalled, 'not called');
+    assert.strictEqual(rmCalled, false, 'not called');
   });
 
   it('should call funtion', () => {
@@ -29,8 +29,8 @@ describe('clean directory', () => {
     const { called: infoCalled } = stubInfo;
     stubRm.restore();
     stubInfo.restore();
-    assert.isTrue(rmCalled, 'called');
-    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(rmCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
   });
 
   it('should call funtion', () => {
@@ -42,8 +42,8 @@ describe('clean directory', () => {
     const { calledOnce: infoCalled } = stubInfo;
     stubRm.restore();
     stubInfo.restore();
-    assert.isTrue(rmCalled, 'called');
-    assert.isTrue(infoCalled, 'not called');
+    assert.strictEqual(rmCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
   });
 });
 

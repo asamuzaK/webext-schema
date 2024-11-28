@@ -1,9 +1,9 @@
 /* api */
+import { strict as assert } from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import sinon from 'sinon';
-import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { MockAgent, getGlobalDispatcher, setGlobalDispatcher } from 'undici';
 
@@ -29,19 +29,21 @@ describe('fetch text', () => {
 
   it('should throw', async () => {
     await fetchText().catch(e => {
-      assert.instanceOf(e, TypeError, 'error');
-      assert.strictEqual(e.message, 'Expected String but got Undefined.');
+      assert.deepStrictEqual(e,
+        new TypeError('Expected String but got Undefined.'));
     });
   });
 
   it('should throw', async () => {
     const url = new URL('https://example.com');
     mockAgent.get(url.origin).intercept({ path: url.pathname, method: 'GET' })
-      .reply(404);
+      .reply(404, {
+        ok: false,
+        status: 404
+      });
     await fetchText('https://example.com').catch(e => {
-      assert.instanceOf(e, Error, 'error');
-      assert.strictEqual(e.message,
-        'Network response was not ok. status: 404');
+      assert.deepStrictEqual(e,
+        new Error('Network response was not ok. status: 404'));
     });
   });
 
@@ -119,15 +121,15 @@ describe('get schema data', () => {
 
   it('should throw', async () => {
     await getSchemaData().catch(e => {
-      assert.instanceOf(e, TypeError, 'error');
-      assert.strictEqual(e.message, 'Expected String but got Undefined.');
+      assert.deepStrictEqual(e,
+        new TypeError('Expected String but got Undefined.'));
     });
   });
 
   it('should throw', async () => {
     await getSchemaData('foo').catch(e => {
-      assert.instanceOf(e, TypeError, 'error');
-      assert.strictEqual(e.message, 'Expected String but got Undefined.');
+      assert.deepStrictEqual(e,
+        new TypeError('Expected String but got Undefined.'));
     });
   });
 
@@ -159,8 +161,8 @@ describe('get schema file list from jar manifest', () => {
 
   it('should throw', async () => {
     await getFileList().catch(e => {
-      assert.instanceOf(e, TypeError, 'error');
-      assert.strictEqual(e.message, 'Expected String but got Undefined.');
+      assert.deepStrictEqual(e,
+        new TypeError('Expected String but got Undefined.'));
     });
   });
 
@@ -192,8 +194,8 @@ describe('get all schema data', () => {
 
   it('should throw', async () => {
     await getAllSchemaData().catch(e => {
-      assert.instanceOf(e, TypeError, 'error');
-      assert.strictEqual(e.message, 'Expected String but got Undefined.');
+      assert.deepStrictEqual(e,
+        new TypeError('Expected String but got Undefined.'));
     });
   });
 
@@ -208,7 +210,7 @@ describe('get all schema data', () => {
     mockPool.intercept({ path: '/bar.json', method: 'GET' })
       .reply(200, '{ "baz": "qux" }');
     const res = await getAllSchemaData('https://example.com/');
-    assert.isFalse(stubInfo.called, 'info');
+    assert.strictEqual(stubInfo.called, false, 'info');
     stubInfo.restore();
     assert.deepEqual(res, [
       {
@@ -237,7 +239,7 @@ describe('get all schema data', () => {
     mockPool.intercept({ path: '/bar.json', method: 'GET' })
       .reply(200, '{ "baz": "qux" }');
     const res = await getAllSchemaData('https://example.com/', true);
-    assert.isTrue(stubInfo.called, 'info');
+    assert.strictEqual(stubInfo.called, true, 'info');
     stubInfo.restore();
     assert.deepEqual(res, [
       {
@@ -270,15 +272,15 @@ describe('get listed schema data', () => {
 
   it('should throw', async () => {
     await getListedSchemaData().catch(e => {
-      assert.instanceOf(e, TypeError, 'error');
-      assert.strictEqual(e.message, 'Expected String but got Undefined.');
+      assert.deepStrictEqual(e,
+        new TypeError('Expected String but got Undefined.'));
     });
   });
 
   it('should throw', async () => {
     await getListedSchemaData('foo').catch(e => {
-      assert.instanceOf(e, TypeError, 'error');
-      assert.strictEqual(e.message, 'Expected Array but got Undefined.');
+      assert.deepStrictEqual(e,
+        new TypeError('Expected Array but got Undefined.'));
     });
   });
 
@@ -292,7 +294,7 @@ describe('get listed schema data', () => {
       .reply(200, '{ "baz": "qux" }');
     const res = await getListedSchemaData('https://example.com/',
       ['foo.json', 'bar.json']);
-    assert.isFalse(stubInfo.called, 'info');
+    assert.strictEqual(stubInfo.called, false, 'info');
     stubInfo.restore();
     assert.deepEqual(res, [
       {
@@ -320,7 +322,7 @@ describe('get listed schema data', () => {
       .reply(200, '{ "baz": "qux" }');
     const res = await getListedSchemaData('https://example.com/',
       ['foo.json', 'bar.json'], true);
-    assert.isTrue(stubInfo.called, 'info');
+    assert.strictEqual(stubInfo.called, true, 'info');
     stubInfo.restore();
     assert.deepEqual(res, [
       {
@@ -353,8 +355,8 @@ describe('get MailExtensions schema data', () => {
 
   it('should throw', async () => {
     await getMailExtSchemaData().catch(e => {
-      assert.instanceOf(e, TypeError, 'error');
-      assert.strictEqual(e.message, 'Expected String but got Undefined.');
+      assert.deepStrictEqual(e,
+        new TypeError('Expected String but got Undefined.'));
     });
   });
 
@@ -369,7 +371,7 @@ describe('get MailExtensions schema data', () => {
     mockPool.intercept({ path: '/schemas/browserAction.json', method: 'GET' })
       .reply(200, '{ "bar": "baz" }');
     const res = await getMailExtSchemaData('https://example.com/');
-    assert.isFalse(stubInfo.called, 'info');
+    assert.strictEqual(stubInfo.called, false, 'info');
     stubInfo.restore();
     assert.deepEqual(res, [
       {
@@ -398,7 +400,7 @@ describe('get MailExtensions schema data', () => {
     mockPool.intercept({ path: '/schemas/browserAction.json', method: 'GET' })
       .reply(200, '{ "bar": "baz" }');
     const res = await getMailExtSchemaData('https://example.com/', true);
-    assert.isTrue(stubInfo.called, 'info');
+    assert.strictEqual(stubInfo.called, true, 'info');
     stubInfo.restore();
     assert.deepEqual(res, [
       {
@@ -438,32 +440,55 @@ describe('create unified schema', () => {
 });
 
 describe('save schema file', () => {
+  const globalDispatcher = getGlobalDispatcher();
+  const mockAgent = new MockAgent();
+  beforeEach(() => {
+    setGlobalDispatcher(mockAgent);
+    mockAgent.disableNetConnect();
+  });
+  afterEach(() => {
+    mockAgent.enableNetConnect();
+    setGlobalDispatcher(globalDispatcher);
+  });
+
   it('should throw', async () => {
     await saveSchemaFile().catch(e => {
-      assert.instanceOf(e, TypeError, 'error');
-      assert.strictEqual(e.message, 'Expected String but got Undefined.');
+      assert.deepStrictEqual(e,
+        new TypeError('Expected String but got Undefined.'));
     });
   });
 
   it('should create file', async () => {
-    const stubAll = sinon.stub(Promise, 'all').resolves([
-      [
-        {
-          file: 'foo',
-          schema: {
-            foo: 'bar'
-          }
-        }
-      ],
-      [
-        {
-          file: 'baz',
-          schema: {
-            baz: 'qux'
-          }
-        }
-      ]
-    ]);
+    const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
+    const mockPool = mockAgent.get(url.origin);
+    const browserItems = [
+      'commands.json',
+      'pkcs11.json'
+    ];
+    for (const item of browserItems) {
+      mockPool.intercept({
+        path: `${url.pathname}browser/components/extensions/schemas/${item}`,
+        method: 'GET'
+      }).reply(200, `{ "browser": "${item}" }`);
+    }
+    const toolkitItems = [
+      'content_scripts.json', 'experiments.json', 'extension.json', 'i18n.json',
+      'management.json', 'permissions.json', 'runtime.json', 'theme.json'
+    ];
+    for (const item of toolkitItems) {
+      mockPool.intercept({
+        path: `${url.pathname}toolkit/components/extensions/schemas/${item}`,
+        method: 'GET'
+      }).reply(200, `{ "toolkit": "${item}" }`);
+    }
+    mockPool.intercept({
+      path: '/comm-central/raw-file/tip/mail/components/extensions/jar.mn',
+      method: 'GET'
+    }).reply(200, '# comment\n\nmessenger.jar:\n% content/messenger/ext-mail.json\n    content/messenger/schemas/accounts.json\n');
+    mockPool.intercept({
+      path: '/comm-central/raw-file/tip/mail/components/extensions/schemas/accounts.json',
+      method: 'GET'
+    }).reply(200, '{ "mail": "accounts.json" }');
     const stubWrite = sinon.stub(fs.promises, 'writeFile');
     const stubInfo = sinon.stub(console, 'info');
     const i = stubWrite.callCount;
@@ -474,7 +499,6 @@ describe('save schema file', () => {
     const { callCount: writeCallCount } = stubWrite;
     const { callCount: infoCallCount } = stubInfo;
     stubInfo.restore();
-    stubAll.restore();
     stubWrite.restore();
     assert.strictEqual(writeCallCount, i + 1, 'write');
     assert.strictEqual(infoCallCount, j, 'info');
@@ -482,24 +506,36 @@ describe('save schema file', () => {
   });
 
   it('should create file', async () => {
-    const stubAll = sinon.stub(Promise, 'all').resolves([
-      [
-        {
-          file: 'foo',
-          schema: {
-            foo: 'bar'
-          }
-        }
-      ],
-      [
-        {
-          file: 'baz',
-          schema: {
-            baz: 'qux'
-          }
-        }
-      ]
-    ]);
+    const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
+    const mockPool = mockAgent.get(url.origin);
+    const browserItems = [
+      'commands.json',
+      'pkcs11.json'
+    ];
+    for (const item of browserItems) {
+      mockPool.intercept({
+        path: `${url.pathname}browser/components/extensions/schemas/${item}`,
+        method: 'GET'
+      }).reply(200, `{ "browser": "${item}" }`);
+    }
+    const toolkitItems = [
+      'content_scripts.json', 'experiments.json', 'extension.json', 'i18n.json',
+      'management.json', 'permissions.json', 'runtime.json', 'theme.json'
+    ];
+    for (const item of toolkitItems) {
+      mockPool.intercept({
+        path: `${url.pathname}toolkit/components/extensions/schemas/${item}`,
+        method: 'GET'
+      }).reply(200, `{ "toolkit": "${item}" }`);
+    }
+    mockPool.intercept({
+      path: '/comm-central/raw-file/tip/mail/components/extensions/jar.mn',
+      method: 'GET'
+    }).reply(200, '# comment\n\nmessenger.jar:\n% content/messenger/ext-mail.json\n    content/messenger/schemas/accounts.json\n');
+    mockPool.intercept({
+      path: '/comm-central/raw-file/tip/mail/components/extensions/schemas/accounts.json',
+      method: 'GET'
+    }).reply(200, '{ "mail": "accounts.json" }');
     const stubWrite = sinon.stub(fs.promises, 'writeFile');
     const stubInfo = sinon.stub(console, 'info');
     const i = stubWrite.callCount;
@@ -511,31 +547,39 @@ describe('save schema file', () => {
     const { callCount: infoCallCount } = stubInfo;
     stubInfo.restore();
     stubWrite.restore();
-    stubAll.restore();
     assert.strictEqual(writeCallCount, i + 1, 'write');
-    assert.strictEqual(infoCallCount, j + 3, 'info');
+    assert.strictEqual(infoCallCount, j + 12, 'info');
     assert.strictEqual(res, filePath, 'result');
   });
 
   it('should create file', async () => {
-    const stubAll = sinon.stub(Promise, 'all').resolves([
-      [
-        {
-          file: 'foo',
-          schema: {
-            foo: 'bar'
-          }
-        }
-      ],
-      [
-        {
-          file: 'baz',
-          schema: {
-            baz: 'qux'
-          }
-        }
-      ]
-    ]);
+    const url =
+      new URL('https://hg.mozilla.org/releases/mozilla-release/raw-file/tip/');
+    const mockPool = mockAgent.get(url.origin);
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/jar.mn`,
+      method: 'GET'
+    }).reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/foo.json`,
+      method: 'GET'
+    }).reply(200, '{ "browser": "foo.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/bar.json`,
+      method: 'GET'
+    }).reply(200, '{ "browser": "bar.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/jar.mn`,
+      method: 'GET'
+    }).reply(200, 'content/extensions/schemas/baz.json\ncontent/extensions/schemas/qux.json\n');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/baz.json`,
+      method: 'GET'
+    }).reply(200, '{ "toolkit": "baz.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/qux.json`,
+      method: 'GET'
+    }).reply(200, '{ "toolkit": "qux.json" }');
     const stubWrite = sinon.stub(fs.promises, 'writeFile');
     const stubInfo = sinon.stub(console, 'info');
     const i = stubWrite.callCount;
@@ -546,7 +590,6 @@ describe('save schema file', () => {
     const { callCount: writeCallCount } = stubWrite;
     const { callCount: infoCallCount } = stubInfo;
     stubInfo.restore();
-    stubAll.restore();
     stubWrite.restore();
     assert.strictEqual(writeCallCount, i + 1, 'write');
     assert.strictEqual(infoCallCount, j, 'info');
@@ -554,24 +597,33 @@ describe('save schema file', () => {
   });
 
   it('should create file', async () => {
-    const stubAll = sinon.stub(Promise, 'all').resolves([
-      [
-        {
-          file: 'foo',
-          schema: {
-            foo: 'bar'
-          }
-        }
-      ],
-      [
-        {
-          file: 'baz',
-          schema: {
-            baz: 'qux'
-          }
-        }
-      ]
-    ]);
+    const url =
+      new URL('https://hg.mozilla.org/releases/mozilla-release/raw-file/tip/');
+    const mockPool = mockAgent.get(url.origin);
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/jar.mn`,
+      method: 'GET'
+    }).reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/foo.json`,
+      method: 'GET'
+    }).reply(200, '{ "browser": "foo.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/bar.json`,
+      method: 'GET'
+    }).reply(200, '{ "browser": "bar.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/jar.mn`,
+      method: 'GET'
+    }).reply(200, 'content/extensions/schemas/baz.json\ncontent/extensions/schemas/qux.json\n');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/baz.json`,
+      method: 'GET'
+    }).reply(200, '{ "toolkit": "baz.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/qux.json`,
+      method: 'GET'
+    }).reply(200, '{ "toolkit": "qux.json" }');
     const stubWrite = sinon.stub(fs.promises, 'writeFile');
     const stubInfo = sinon.stub(console, 'info');
     const i = stubWrite.callCount;
@@ -583,112 +635,253 @@ describe('save schema file', () => {
     const { callCount: infoCallCount } = stubInfo;
     stubInfo.restore();
     stubWrite.restore();
-    stubAll.restore();
     assert.strictEqual(writeCallCount, i + 1, 'write');
-    assert.strictEqual(infoCallCount, j + 1, 'info');
+    assert.strictEqual(infoCallCount, j + 5, 'info');
     assert.strictEqual(res, filePath, 'result');
   });
 });
 
 describe('update schemas files', () => {
-  it('should call function', async () => {
-    const stubAll = sinon.stub(Promise, 'allSettled').resolves([
-      {
-        status: 'resolved'
-      },
-      {
-        status: 'resolved'
-      },
-      {
-        reason: new Error('error'),
-        status: 'rejected'
-      },
-      {
-        reason: new Error('error'),
-        status: 'rejected'
-      },
-      {
-        status: 'resolved'
-      }
-    ]);
+  const globalDispatcher = getGlobalDispatcher();
+  const mockAgent = new MockAgent();
+  beforeEach(() => {
+    setGlobalDispatcher(mockAgent);
+    mockAgent.disableNetConnect();
+  });
+  afterEach(() => {
+    mockAgent.enableNetConnect();
+    setGlobalDispatcher(globalDispatcher);
+  });
+
+  it('should not call function', async () => {
+    const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
+    const centralPath = url.pathname;
+    const betaPath = '/releases/mozilla-beta/raw-file/tip/';
+    const releasePath = '/releases/mozilla-release/raw-file/tip/';
+    const esrPath = `/releases/mozilla-esr${ESR_VER}/raw-file/tip/`;
+    const mailPath = '/comm-central/raw-file/tip/';
+    const mockPool = mockAgent.get(url.origin);
+    for (const item of [centralPath, betaPath, releasePath, esrPath]) {
+      mockPool.intercept({
+        path: `${item}browser/components/extensions/schemas/jar.mn`,
+        method: 'GET'
+      }).reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+      mockPool.intercept({
+        path: `${item}browser/components/extensions/schemas/foo.json`,
+        method: 'GET'
+      }).reply(200, '{ "browser": "foo.json" }');
+      mockPool.intercept({
+        path: `${item}browser/components/extensions/schemas/bar.json`,
+        method: 'GET'
+      }).reply(200, '{ "browser": "bar.json" }');
+      mockPool.intercept({
+        path: `${item}toolkit/components/extensions/schemas/jar.mn`,
+        method: 'GET'
+      }).reply(200, 'content/extensions/schemas/baz.json\ncontent/extensions/schemas/qux.json\n');
+      mockPool.intercept({
+        path: `${item}toolkit/components/extensions/schemas/baz.json`,
+        method: 'GET'
+      }).reply(200, '{ "toolkit": "baz.json" }');
+      mockPool.intercept({
+        path: `${item}toolkit/components/extensions/schemas/qux.json`,
+        method: 'GET'
+      }).reply(200, '{ "toolkit": "qux.json" }');
+    }
+    const browserItems = [
+      'commands.json',
+      'pkcs11.json'
+    ];
+    for (const item of browserItems) {
+      mockPool.intercept({
+        path: `${centralPath}browser/components/extensions/schemas/${item}`,
+        method: 'GET'
+      }).reply(200, `{ "browser": "${item}" }`);
+    }
+    const toolkitItems = [
+      'content_scripts.json', 'experiments.json', 'extension.json', 'i18n.json',
+      'management.json', 'permissions.json', 'runtime.json', 'theme.json'
+    ];
+    for (const item of toolkitItems) {
+      mockPool.intercept({
+        path: `${centralPath}toolkit/components/extensions/schemas/${item}`,
+        method: 'GET'
+      }).reply(200, `{ "toolkit": "${item}" }`);
+    }
+    mockPool.intercept({
+      path: `${mailPath}mail/components/extensions/jar.mn`,
+      method: 'GET'
+    }).reply(200, 'content/messenger/schemas/quux.json\n');
+    mockPool.intercept({
+      path: `${mailPath}mail/components/extensions/schemas/quux.json`,
+      method: 'GET'
+    }).reply(200, '{ "mail": "quux.json" }');
+    const stubWrite = sinon.stub(fs.promises, 'writeFile');
     const stubTrace = sinon.stub(console, 'trace');
     const i = stubTrace.callCount;
     const stubInfo = sinon.stub(console, 'info');
     await updateSchemas();
     const { callCount: traceCallCount } = stubTrace;
-    stubAll.restore();
+    stubWrite.restore();
     stubTrace.restore();
     stubInfo.restore();
-    assert.strictEqual(traceCallCount, i + 2, 'trace');
+    assert.strictEqual(traceCallCount, i, 'trace not called');
   });
 
   it('should not call function', async () => {
-    const stubAll = sinon.stub(Promise, 'allSettled').resolves([
-      {
-        status: 'resolved'
-      },
-      {
-        status: 'resolved'
-      },
-      {
-        status: 'resolved'
-      },
-      {
-        status: 'resolved'
-      },
-      {
-        status: 'resolved'
-      }
-    ]);
+    const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
+    const centralPath = url.pathname;
+    const betaPath = '/releases/mozilla-beta/raw-file/tip/';
+    const releasePath = '/releases/mozilla-release/raw-file/tip/';
+    const esrPath = `/releases/mozilla-esr${ESR_VER}/raw-file/tip/`;
+    const mailPath = '/comm-central/raw-file/tip/';
+    const mockPool = mockAgent.get(url.origin);
+    for (const item of [centralPath, betaPath, releasePath, esrPath]) {
+      mockPool.intercept({
+        path: `${item}browser/components/extensions/schemas/jar.mn`,
+        method: 'GET'
+      }).reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+      mockPool.intercept({
+        path: `${item}browser/components/extensions/schemas/foo.json`,
+        method: 'GET'
+      }).reply(200, '{ "browser": "foo.json" }');
+      mockPool.intercept({
+        path: `${item}browser/components/extensions/schemas/bar.json`,
+        method: 'GET'
+      }).reply(200, '{ "browser": "bar.json" }');
+      mockPool.intercept({
+        path: `${item}toolkit/components/extensions/schemas/jar.mn`,
+        method: 'GET'
+      }).reply(200, 'content/extensions/schemas/baz.json\ncontent/extensions/schemas/qux.json\n');
+      mockPool.intercept({
+        path: `${item}toolkit/components/extensions/schemas/baz.json`,
+        method: 'GET'
+      }).reply(200, '{ "toolkit": "baz.json" }');
+      mockPool.intercept({
+        path: `${item}toolkit/components/extensions/schemas/qux.json`,
+        method: 'GET'
+      }).reply(200, '{ "toolkit": "qux.json" }');
+    }
+    const browserItems = [
+      'commands.json',
+      'pkcs11.json'
+    ];
+    for (const item of browserItems) {
+      mockPool.intercept({
+        path: `${centralPath}browser/components/extensions/schemas/${item}`,
+        method: 'GET'
+      }).reply(200, `{ "browser": "${item}" }`);
+    }
+    const toolkitItems = [
+      'content_scripts.json', 'experiments.json', 'extension.json', 'i18n.json',
+      'management.json', 'permissions.json', 'runtime.json', 'theme.json'
+    ];
+    for (const item of toolkitItems) {
+      mockPool.intercept({
+        path: `${centralPath}toolkit/components/extensions/schemas/${item}`,
+        method: 'GET'
+      }).reply(200, `{ "toolkit": "${item}" }`);
+    }
+    mockPool.intercept({
+      path: `${mailPath}mail/components/extensions/jar.mn`,
+      method: 'GET'
+    }).reply(200, 'content/messenger/schemas/quux.json\n');
+    mockPool.intercept({
+      path: `${mailPath}mail/components/extensions/schemas/quux.json`,
+      method: 'GET'
+    }).reply(400, '{ "ok": false, "status": 400 }');
+    const stubWrite = sinon.stub(fs.promises, 'writeFile');
     const stubTrace = sinon.stub(console, 'trace');
     const i = stubTrace.callCount;
     const stubInfo = sinon.stub(console, 'info');
     await updateSchemas();
     const { callCount: traceCallCount } = stubTrace;
-    stubAll.restore();
+    stubWrite.restore();
     stubTrace.restore();
     stubInfo.restore();
-    assert.strictEqual(traceCallCount, i, 'trace');
-  });
-
-  it('should call function', async () => {
-    const stubAll = sinon.stub(Promise, 'allSettled').resolves([
-      {
-        reason: new Error('error'),
-        status: 'rejected'
-      }
-    ]);
-    const stubTrace = sinon.stub(console, 'trace');
-    const i = stubTrace.callCount;
-    const stubInfo = sinon.stub(console, 'info');
-    const opt = {
-      channel: 'beta'
-    };
-    await updateSchemas(opt);
-    const { callCount: traceCallCount } = stubTrace;
-    stubAll.restore();
-    stubTrace.restore();
-    stubInfo.restore();
-    assert.strictEqual(traceCallCount, i + 1, 'trace');
+    assert.strictEqual(traceCallCount, i + 1, 'trace called');
   });
 
   it('should not call function', async () => {
-    const stubAll = sinon.stub(Promise, 'allSettled').resolves([
-      {
-        status: 'resolved'
-      }
-    ]);
+    const url =
+      new URL('https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/');
+    const mockPool = mockAgent.get(url.origin);
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/jar.mn`,
+      method: 'GET'
+    }).reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/foo.json`,
+      method: 'GET'
+    }).reply(200, '{ "browser": "foo.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/bar.json`,
+      method: 'GET'
+    }).reply(200, '{ "browser": "bar.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/jar.mn`,
+      method: 'GET'
+    }).reply(200, 'content/extensions/schemas/baz.json\ncontent/extensions/schemas/qux.json\n');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/baz.json`,
+      method: 'GET'
+    }).reply(200, '{ "toolkit": "baz.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/qux.json`,
+      method: 'GET'
+    }).reply(200, '{ "toolkit": "qux.json" }');
+    const stubWrite = sinon.stub(fs.promises, 'writeFile');
     const stubTrace = sinon.stub(console, 'trace');
     const i = stubTrace.callCount;
     const stubInfo = sinon.stub(console, 'info');
-    const opt = {
+    await updateSchemas({
       channel: 'beta'
-    };
-    await updateSchemas(opt);
+    });
     const { callCount: traceCallCount } = stubTrace;
-    stubAll.restore();
+    stubWrite.restore();
     stubTrace.restore();
     stubInfo.restore();
-    assert.strictEqual(traceCallCount, i, 'trace');
+    assert.strictEqual(traceCallCount, i, 'trace not called');
+  });
+
+  it('should not call function', async () => {
+    const url =
+      new URL('https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/');
+    const mockPool = mockAgent.get(url.origin);
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/jar.mn`,
+      method: 'GET'
+    }).reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/foo.json`,
+      method: 'GET'
+    }).reply(200, '{ "browser": "foo.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}browser/components/extensions/schemas/bar.json`,
+      method: 'GET'
+    }).reply(200, '{ "browser": "bar.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/jar.mn`,
+      method: 'GET'
+    }).reply(200, 'content/extensions/schemas/baz.json\ncontent/extensions/schemas/qux.json\n');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/baz.json`,
+      method: 'GET'
+    }).reply(200, '{ "toolkit": "baz.json" }');
+    mockPool.intercept({
+      path: `${url.pathname}toolkit/components/extensions/schemas/qux.json`,
+      method: 'GET'
+    }).reply(400, '{ "ok": false, "status": 400 }');
+    const stubWrite = sinon.stub(fs.promises, 'writeFile');
+    const stubTrace = sinon.stub(console, 'trace');
+    const i = stubTrace.callCount;
+    const stubInfo = sinon.stub(console, 'info');
+    await updateSchemas({
+      channel: 'beta'
+    });
+    const { callCount: traceCallCount } = stubTrace;
+    stubWrite.restore();
+    stubTrace.restore();
+    stubInfo.restore();
+    assert.strictEqual(traceCallCount, i + 1, 'trace called');
   });
 });

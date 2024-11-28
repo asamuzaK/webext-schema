@@ -1,6 +1,6 @@
 /* api */
+import { strict as assert } from 'node:assert';
 import sinon from 'sinon';
-import { assert } from 'chai';
 import { describe, it } from 'mocha';
 
 /* test */
@@ -42,7 +42,7 @@ describe('isObjectNotEmpty', () => {
   it('should get false', () => {
     const items = [{}, [], ['foo'], '', 'foo', undefined, null, 1, true];
     for (const item of items) {
-      assert.isFalse(isObjectNotEmpty(item));
+      assert.strictEqual(isObjectNotEmpty(item), false);
     }
   });
 
@@ -50,7 +50,7 @@ describe('isObjectNotEmpty', () => {
     const item = {
       foo: 'bar'
     };
-    assert.isTrue(isObjectNotEmpty(item));
+    assert.strictEqual(isObjectNotEmpty(item), true);
   });
 });
 
@@ -74,9 +74,9 @@ describe('logErr', () => {
     const res = logErr(new Error(msg));
     const { calledOnce } = consoleError;
     consoleError.restore();
-    assert.isTrue(calledOnce);
+    assert.strictEqual(calledOnce, true);
     assert.strictEqual(errMsg, msg);
-    assert.isFalse(res);
+    assert.strictEqual(res, false);
   });
 });
 
@@ -90,7 +90,7 @@ describe('logMsg', () => {
     const res = logMsg(msg);
     const { calledOnce } = consoleLog;
     consoleLog.restore();
-    assert.isTrue(calledOnce);
+    assert.strictEqual(calledOnce, true);
     assert.strictEqual(logMessage, msg);
     assert.strictEqual(res, msg);
   });
@@ -106,9 +106,9 @@ describe('logWarn', () => {
     const res = logWarn(msg);
     const { calledOnce } = consoleWarn;
     consoleWarn.restore();
-    assert.isTrue(calledOnce);
+    assert.strictEqual(calledOnce, true);
     assert.strictEqual(warnMsg, msg);
-    assert.isFalse(res);
+    assert.strictEqual(res, false);
   });
 });
 

@@ -3,9 +3,9 @@
  */
 
 /* api */
-import sinon from 'sinon';
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
+import sinon from 'sinon';
 import { browser } from './mocha/setup.js';
 
 /* test */
@@ -25,7 +25,7 @@ describe('browser', () => {
   });
 
   it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
+    assert.strictEqual(typeof browser, 'object', 'browser');
   });
 
   describe('check if permission is granted', () => {
@@ -62,80 +62,80 @@ describe('browser', () => {
 
     it('should get result', async () => {
       const res = await func();
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
       const res = await func('foo');
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
       const res = await func([]);
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
       const res = await func({
         foo: ['bar']
       });
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
       const res = await func({
         origins: ['https://mozilla.org/']
       });
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
       const res = await func({
         origins: ['https://example.com/']
       });
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get result', async () => {
       const res = await func({
         origins: ['http://www.example.com/foo']
       });
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get result', async () => {
       const res = await func({
         permissions: ['alarms']
       });
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
       const res = await func({
         permissions: ['tabs']
       });
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get result', async () => {
       const res = await func({
         permissions: ['tabs', 'bookmarks']
       });
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
       const res = await func({
         permissions: ['tabs', 'browserSettings']
       });
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get result', async () => {
       const res = await func({
         permissions: ['tabs', 'browserSettings', 'commands']
       });
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
@@ -143,7 +143,7 @@ describe('browser', () => {
         origins: ['https://example.com/'],
         permissions: ['tabs']
       });
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get result', async () => {
@@ -151,7 +151,7 @@ describe('browser', () => {
         origins: ['https://mozilla.org/'],
         permissions: ['tabs']
       });
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
@@ -159,7 +159,7 @@ describe('browser', () => {
         origins: ['https://example.com/'],
         permissions: ['alarms']
       });
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
   });
 
@@ -171,22 +171,22 @@ describe('browser', () => {
       const i = browser.bookmarks.create.callCount;
       const res = await func({ foo: 'bar' });
       assert.strictEqual(browser.bookmarks.create.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null if no argument given', async () => {
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null if argument is not object', async () => {
       const res = await func('foo');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null if argument is empty object', async () => {
       const res = await func({});
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get object', async () => {
@@ -204,7 +204,7 @@ describe('browser', () => {
       const i = browser.bookmarks.create.callCount;
       const res = await func({ foo: 'bar' });
       assert.strictEqual(browser.bookmarks.create.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -224,8 +224,7 @@ describe('browser', () => {
     it('should throw if ID not found', async () => {
       browser.bookmarks.getSubTree.withArgs('foo').rejects(new Error('error'));
       await func('foo').catch(e => {
-        assert.instanceOf(e, Error, 'error');
-        assert.strictEqual(e.message, 'error', 'message');
+        assert.deepStrictEqual(e, new Error('error'));
       });
     });
 
@@ -269,12 +268,12 @@ describe('browser', () => {
         browser.browserSettings.closeTabsByDoubleClick.get.callCount, i,
         'not called'
       );
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get object', async () => {
@@ -296,7 +295,7 @@ describe('browser', () => {
         browser.browserSettings.contextMenuShowEvent.get.callCount, i,
         'not called'
       );
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get true', async () => {
@@ -314,7 +313,7 @@ describe('browser', () => {
         browser.browserSettings.contextMenuShowEvent.set.callCount, j,
         'not called'
       );
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get true', async () => {
@@ -334,7 +333,7 @@ describe('browser', () => {
         browser.browserSettings.contextMenuShowEvent.set.callCount, j + 1,
         'called'
       );
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get false', async () => {
@@ -354,7 +353,7 @@ describe('browser', () => {
         browser.browserSettings.contextMenuShowEvent.set.callCount, j + 1,
         'called'
       );
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get false', async () => {
@@ -373,7 +372,7 @@ describe('browser', () => {
         browser.browserSettings.contextMenuShowEvent.set.callCount, j,
         'not called'
       );
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
   });
 
@@ -388,7 +387,7 @@ describe('browser', () => {
         browser.browserSettings.contextMenuShowEvent.clear.callCount, i,
         'not called'
       );
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get true', async () => {
@@ -399,7 +398,7 @@ describe('browser', () => {
         browser.browserSettings.contextMenuShowEvent.clear.callCount, i + 1,
         'called'
       );
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get false', async () => {
@@ -410,7 +409,7 @@ describe('browser', () => {
         browser.browserSettings.contextMenuShowEvent.clear.callCount, i + 1,
         'called'
       );
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
   });
 
@@ -424,7 +423,7 @@ describe('browser', () => {
       assert.strictEqual(
         browser.browserSettings.newTabPosition.get.callCount, i, 'not called'
       );
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get value', async () => {
@@ -444,12 +443,12 @@ describe('browser', () => {
     it('should get false if permission is not granted', async () => {
       browser.permissions.contains.resolves(false);
       const res = await func();
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get true', async () => {
       const res = await func();
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
   });
 
@@ -477,25 +476,30 @@ describe('browser', () => {
     it('should get null', async () => {
       browser.permissions.contains.resolves(false);
       const res = await func('foo', '');
-      assert.isFalse(browser.commands.reset.calledOnce, 'called');
-      assert.isFalse(browser.commands.update.calledOnce, 'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(browser.commands.reset.calledOnce, false,
+        'not called');
+      assert.strictEqual(browser.commands.update.calledOnce, false,
+        'not called');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func('foo', 'a');
-      assert.isFalse(browser.commands.reset.calledOnce, 'called');
-      assert.isFalse(browser.commands.update.calledOnce, 'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(browser.commands.reset.calledOnce, false,
+        'not called');
+      assert.strictEqual(browser.commands.update.calledOnce, false,
+        'not called');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
       browser.commands.reset.resolves(undefined);
       browser.commands.update.rejects();
       const res = await func('foo', '');
-      assert.isTrue(browser.commands.reset.calledOnce, 'called');
-      assert.isFalse(browser.commands.update.calledOnce, 'not called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(browser.commands.reset.calledOnce, true, 'called');
+      assert.strictEqual(browser.commands.update.calledOnce, false,
+        'not called');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -550,8 +554,9 @@ describe('browser', () => {
         const res = await func('foo', item);
         assert.strictEqual(browser.commands.update.callCount, i + 1,
                            `called ${item}`);
-        assert.isFalse(browser.commands.reset.calledOnce, 'not called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(browser.commands.reset.calledOnce, false,
+          'not called');
+        assert.strictEqual(res, undefined, 'result');
       }
     });
 
@@ -559,9 +564,10 @@ describe('browser', () => {
       browser.commands.reset.rejects();
       browser.commands.update.resolves(undefined);
       const res = await func('foo', ' Ctrl+a ');
-      assert.isTrue(browser.commands.update.calledOnce, 'called');
-      assert.isFalse(browser.commands.reset.calledOnce, 'not called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(browser.commands.update.calledOnce, true, 'called');
+      assert.strictEqual(browser.commands.reset.calledOnce, false,
+        'not called');
+      assert.strictEqual(res, undefined, 'result');
     });
   });
 
@@ -574,13 +580,13 @@ describe('browser', () => {
       const res = await func();
       assert.strictEqual(browser.contextualIdentities.query.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should throw', async () => {
       browser.contextualIdentities.query.rejects(new Error('error'));
       await func().catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.deepStrictEqual(e, new Error('error'));
       });
     });
 
@@ -594,7 +600,7 @@ describe('browser', () => {
         }
       ]);
       const res = await func();
-      assert.isArray(res, 'array');
+      assert.strictEqual(Array.isArray(res), true, 'array');
       assert.deepEqual(res, [{ foo: 'bar' }, { baz: 'qux' }], 'result');
     });
   });
@@ -604,13 +610,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Undefined.'));
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Number.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Number.'));
       });
     });
 
@@ -620,14 +628,14 @@ describe('browser', () => {
       const res = await func('foo');
       assert.strictEqual(browser.contextualIdentities.get.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should throw', async () => {
       browser.contextualIdentities.get.withArgs('foo')
         .rejects(new Error('error'));
       await func('foo').catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.deepStrictEqual(e, new Error('error'));
       });
     });
 
@@ -646,25 +654,25 @@ describe('browser', () => {
       const i = browser.management.getAll.callCount;
       const res = await func();
       assert.strictEqual(browser.management.getAll.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should throw', async () => {
       browser.management.getAll.rejects(new Error('error'));
       await func().catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.deepStrictEqual(e, new Error('error'));
       });
     });
 
     it('should get null', async () => {
       browser.management.getAll.resolves([]);
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get array', async () => {
@@ -690,8 +698,7 @@ describe('browser', () => {
       const res = await func();
       const { called } = stub;
       stub.restore();
-      assert.isFalse(called, 'not logged');
-      assert.isArray(res, 'array');
+      assert.strictEqual(called, false, 'not logged');
       assert.deepEqual(res, [
         {
           enabled: true,
@@ -706,13 +713,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Undefined.'));
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Number.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Number.'));
       });
     });
 
@@ -721,13 +730,13 @@ describe('browser', () => {
       const i = browser.management.get.callCount;
       const res = await func('foo');
       assert.strictEqual(browser.management.get.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should reject if given id is not found', async () => {
       browser.management.get.withArgs('foo').rejects(new Error('error'));
       await func('foo').catch(e => {
-        assert.strictEqual(e.message, 'error');
+        assert.deepStrictEqual(e, new Error('error'));
       });
     });
 
@@ -746,25 +755,25 @@ describe('browser', () => {
       const i = browser.management.getAll.callCount;
       const res = await func();
       assert.strictEqual(browser.management.getAll.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should throw', async () => {
       browser.management.getAll.rejects(new Error('error'));
       await func().catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.deepStrictEqual(e, new Error('error'));
       });
     });
 
     it('should get null', async () => {
       browser.management.getAll.resolves([]);
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get array', async () => {
@@ -783,7 +792,6 @@ describe('browser', () => {
         }
       ]);
       const res = await func();
-      assert.isArray(res, 'array');
       assert.deepEqual(res, [
         {
           type: 'extension'
@@ -800,13 +808,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Undefined.'));
       });
     });
 
-    it('should throw if no argument given', async () => {
+    it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Number.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Number.'));
       });
     });
 
@@ -816,13 +826,13 @@ describe('browser', () => {
       const res = await func('foo');
       assert.strictEqual(browser.notifications.clear.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get result', async () => {
       browser.notifications.clear.withArgs('foo').resolves(true);
       const res = await func('foo');
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
   });
 
@@ -831,13 +841,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Undefined.'));
       });
     });
 
     it('should throw if first argument is not string', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Number.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Number.'));
       });
     });
 
@@ -847,7 +859,7 @@ describe('browser', () => {
       const res = await func('foo');
       assert.strictEqual(browser.notifications.create.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get message', async () => {
@@ -882,15 +894,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message,
-          'Expected String or Array but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String or Array but got Undefined.'));
       });
     });
 
     it('should throw if given argument is not string or array', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message,
-          'Expected String or Array but got Number.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String or Array but got Number.'));
       });
     });
 
@@ -898,21 +910,21 @@ describe('browser', () => {
       browser.permissions.remove.withArgs({ permissions: ['foo'] })
         .resolves(true);
       const res = await func('foo');
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get result', async () => {
       browser.permissions.remove.withArgs({ permissions: ['foo'] })
         .resolves(false);
       const res = await func('foo');
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
       browser.permissions.remove.withArgs({ permissions: ['foo'] })
         .resolves(true);
       const res = await func(['foo']);
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
   });
 
@@ -921,15 +933,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message,
-          'Expected String or Array but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String or Array but got Undefined.'));
       });
     });
 
     it('should throw if given argument is not string or array', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message,
-          'Expected String or Array but got Number.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String or Array but got Number.'));
       });
     });
 
@@ -937,21 +949,21 @@ describe('browser', () => {
       browser.permissions.request.withArgs({ permissions: ['foo'] })
         .resolves(true);
       const res = await func('foo');
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get result', async () => {
       browser.permissions.request.withArgs({ permissions: ['foo'] })
         .resolves(false);
       const res = await func('foo');
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
       browser.permissions.request.withArgs({ permissions: ['foo'] })
         .resolves(true);
       const res = await func(['foo']);
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
   });
 
@@ -1060,7 +1072,7 @@ describe('browser', () => {
       assert.strictEqual(browser.tabs.sendMessage.callCount, i, 'not called');
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -1106,7 +1118,7 @@ describe('browser', () => {
       assert.strictEqual(browser.tabs.sendMessage.callCount, i, 'not called');
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
   });
 
@@ -1116,12 +1128,12 @@ describe('browser', () => {
     it('should get false if permission is not granted', async () => {
       browser.permissions.contains.resolves(false);
       const res = await func();
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get true', async () => {
       const res = await func();
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
   });
 
@@ -1135,7 +1147,7 @@ describe('browser', () => {
       const res = await func();
       assert.strictEqual(browser.scripting.executeScript.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should not call function if no tabId in target', async () => {
@@ -1146,7 +1158,7 @@ describe('browser', () => {
       });
       assert.strictEqual(browser.scripting.executeScript.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should not call function if files / func is not included', async () => {
@@ -1159,7 +1171,7 @@ describe('browser', () => {
       });
       assert.strictEqual(browser.scripting.executeScript.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should not call function if files is an empty array', async () => {
@@ -1173,7 +1185,7 @@ describe('browser', () => {
       });
       assert.strictEqual(browser.scripting.executeScript.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should throw', async () => {
@@ -1185,7 +1197,7 @@ describe('browser', () => {
           tabId: 1
         }
       }).catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.deepStrictEqual(e, new Error('error'));
       });
       stubErr.restore();
     });
@@ -1215,7 +1227,7 @@ describe('browser', () => {
       });
       assert.strictEqual(browser.scripting.executeScript.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -1270,7 +1282,7 @@ describe('browser', () => {
       const i = browser.search.query.callCount;
       const res = await func('foo');
       assert.strictEqual(browser.search.query.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -1328,15 +1340,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message,
-          'Expected String but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Undefined.'));
       });
     });
 
     it('should throw if 1st argument is not string', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message,
-          'Expected String but got Number.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Number.'));
       });
     });
 
@@ -1384,31 +1396,31 @@ describe('browser', () => {
       const res = await func();
       assert.strictEqual(browser.sessions.getRecentlyClosed.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       browser.sessions.getRecentlyClosed.resolves([]);
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       browser.sessions.getRecentlyClosed.resolves([]);
       const res = await func(1);
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       browser.sessions.getRecentlyClosed.resolves([{}]);
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       browser.sessions.getRecentlyClosed.resolves([{ tab: { windowId: 2 } }]);
       const res = await func(1);
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get object', async () => {
@@ -1434,13 +1446,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Undefined.'));
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Number.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Number.'));
       });
     });
 
@@ -1450,7 +1464,7 @@ describe('browser', () => {
       const res = await func('foo', 1);
       assert.strictEqual(browser.sessions.getWindowValue.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get object', async () => {
@@ -1472,13 +1486,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Undefined.'));
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Number.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Number.'));
       });
     });
 
@@ -1488,7 +1504,7 @@ describe('browser', () => {
       const res = await func('foo');
       assert.strictEqual(browser.sessions.getWindowValue.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get object', async () => {
@@ -1503,13 +1519,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Undefined.'));
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Number.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected String but got Number.'));
       });
     });
 
@@ -1630,7 +1648,7 @@ describe('browser', () => {
         'not called');
       */
       assert.strictEqual(browser.storage.sync.get.callCount, l, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should not call function', async () => {
@@ -1647,7 +1665,7 @@ describe('browser', () => {
         'not called');
       */
       assert.strictEqual(browser.storage.sync.get.callCount, l, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -1713,7 +1731,7 @@ describe('browser', () => {
         'not called');
       */
       assert.strictEqual(browser.storage.sync.get.callCount, l, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should not call function', async () => {
@@ -1730,7 +1748,7 @@ describe('browser', () => {
         'not called');
       */
       assert.strictEqual(browser.storage.sync.get.callCount, l, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -1948,8 +1966,8 @@ describe('browser', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.instanceOf(e, TypeError, 'error');
-        assert.strictEqual(e.message, 'Expected Number but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got Undefined.'));
       });
     });
 
@@ -1988,7 +2006,7 @@ describe('browser', () => {
 
     it('should get null if no argument given', async () => {
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -2006,7 +2024,7 @@ describe('browser', () => {
       assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
         file
       }).callCount, i + 1, 'called');
-      assert.isFalse(errCalled, 'error not called');
+      assert.strictEqual(errCalled, false, 'error not called');
       assert.deepEqual(res, [{}], 'result');
     });
 
@@ -2025,8 +2043,8 @@ describe('browser', () => {
       assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
         file
       }).callCount, i + 1, 'called');
-      assert.isTrue(errCalled, 'error called');
-      assert.isFalse(res, 'result');
+      assert.strictEqual(errCalled, true, 'error called');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
@@ -2044,7 +2062,7 @@ describe('browser', () => {
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file
       }).callCount, i + 1, 'called');
-      assert.isFalse(errCalled, 'error not called');
+      assert.strictEqual(errCalled, false, 'error not called');
       assert.deepEqual(res, [{}], 'result');
     });
 
@@ -2063,8 +2081,8 @@ describe('browser', () => {
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file
       }).callCount, i + 1, 'called');
-      assert.isTrue(errCalled, 'error called');
-      assert.isFalse(res, 'result');
+      assert.strictEqual(errCalled, true, 'error called');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
@@ -2082,7 +2100,7 @@ describe('browser', () => {
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file
       }).callCount, i + 1, 'called');
-      assert.isFalse(errCalled, 'error not called');
+      assert.strictEqual(errCalled, false, 'error not called');
       assert.deepEqual(res, [{}], 'result');
     });
 
@@ -2101,8 +2119,8 @@ describe('browser', () => {
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file
       }).callCount, i + 1, 'called');
-      assert.isTrue(errCalled, 'error called');
-      assert.isFalse(res, 'result');
+      assert.strictEqual(errCalled, true, 'error called');
+      assert.strictEqual(res, false, 'result');
     });
   });
 
@@ -2136,7 +2154,7 @@ describe('browser', () => {
         i + 1, 'called');
       assert.strictEqual(browser.tabs.executeScript.withArgs(2, {}).callCount,
         j + 1, 'called');
-      assert.isTrue(errCalled, 'error called');
+      assert.strictEqual(errCalled, true, 'error called');
       assert.deepEqual(res, [[{}], false], 'result');
     });
 
@@ -2187,7 +2205,7 @@ describe('browser', () => {
         file,
         allFrames: true
       }).callCount, j + 1, 'called');
-      assert.isTrue(errCalled, 'error called');
+      assert.strictEqual(errCalled, true, 'error called');
       assert.deepEqual(res, [[{}, {}], false], 'result');
     });
   });
@@ -2197,35 +2215,35 @@ describe('browser', () => {
 
     it('should get null if no arguments given', async () => {
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null if no opts given', async () => {
       const i = browser.tabs.executeScript.callCount;
       const res = await func(1);
       assert.strictEqual(browser.tabs.executeScript.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null if opts is empty array', async () => {
       const i = browser.tabs.executeScript.callCount;
       const res = await func(1, []);
       assert.strictEqual(browser.tabs.executeScript.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null if opts is empty array', async () => {
       const i = browser.tabs.executeScript.callCount;
       const res = await func([]);
       assert.strictEqual(browser.tabs.executeScript.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get null if opts is empty array', async () => {
       const i = browser.tabs.executeScript.callCount;
       const res = await func(null, []);
       assert.strictEqual(browser.tabs.executeScript.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get result', async () => {
@@ -2248,7 +2266,7 @@ describe('browser', () => {
         i + 1, 'called');
       assert.strictEqual(browser.tabs.executeScript.withArgs(1, opt2).callCount,
         j + 1, 'called');
-      assert.isTrue(errCalled, 'error called');
+      assert.strictEqual(errCalled, true, 'error called');
       assert.deepEqual(res, [{}], 'result');
     });
 
@@ -2272,7 +2290,7 @@ describe('browser', () => {
         i + 1, 'called');
       assert.strictEqual(browser.tabs.executeScript.withArgs(opt2).callCount,
         j + 1, 'called');
-      assert.isTrue(errCalled, 'error called');
+      assert.strictEqual(errCalled, true, 'error called');
       assert.deepEqual(res, [{}], 'result');
     });
 
@@ -2296,7 +2314,7 @@ describe('browser', () => {
         i + 1, 'called');
       assert.strictEqual(browser.tabs.executeScript.withArgs(opt2).callCount,
         j + 1, 'called');
-      assert.isTrue(errCalled, 'error called');
+      assert.strictEqual(errCalled, true, 'error called');
       assert.deepEqual(res, [{}], 'result');
     });
   });
@@ -2323,7 +2341,7 @@ describe('browser', () => {
     it('should get null', async () => {
       browser.tabs.query.resolves([]);
       const res = await func(1);
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get number', async () => {
@@ -2394,13 +2412,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got Undefined.'));
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got String.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got String.'));
       });
     });
 
@@ -2416,15 +2436,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message,
-          'Expected Number or Array but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number or Array but got Undefined.'));
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.strictEqual(e.message,
-          'Expected Number or Array but got String.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number or Array but got String.'));
       });
     });
 
@@ -2446,21 +2466,21 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message,
-          'Expected Number or Array but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number or Array but got Undefined.'));
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.strictEqual(e.message,
-          'Expected Number or Array but got String.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number or Array but got String.'));
       });
     });
 
     it('should get null', async () => {
       const res = await func(1);
-      assert.isNull(res, 'res');
+      assert.deepEqual(res, null, 'res');
     });
 
     it('should get array', async () => {
@@ -2493,13 +2513,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got Undefined.'));
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got String.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got String.'));
       });
     });
 
@@ -2525,13 +2547,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected Array but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Array but got Undefined.'));
       });
     });
 
     it('should throw if argument is not number or array', async () => {
       await func('').catch(e => {
-        assert.strictEqual(e.message, 'Expected Array but got String.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Array but got String.'));
       });
     });
 
@@ -2553,20 +2577,22 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got Undefined.'));
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got String.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got String.'));
       });
     });
 
     it('should throw if tab does not exist', async () => {
       browser.tabs.update.withArgs(1).throws(new Error('error'));
       await func(1).catch(e => {
-        assert.strictEqual(e.message, 'error');
+        assert.deepStrictEqual(e, new Error('error'));
       });
     });
 
@@ -2576,7 +2602,7 @@ describe('browser', () => {
       const res = await func(1);
       assert.strictEqual(browser.tabs.update.withArgs(1).callCount, i + 1,
         'called');
-      assert.isObject(res, 'res');
+      assert.strictEqual(typeof res, 'object', 'res');
     });
 
     it('should get object', async () => {
@@ -2588,7 +2614,7 @@ describe('browser', () => {
         i + 1,
         'called'
       );
-      assert.isObject(res, 'res');
+      assert.strictEqual(typeof res, 'object', 'res');
     });
   });
 
@@ -2597,13 +2623,15 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got Undefined.'));
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got String.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got String.'));
       });
     });
 
@@ -2631,7 +2659,7 @@ describe('browser', () => {
       const res = await func();
       assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -2669,7 +2697,7 @@ describe('browser', () => {
       const res = await func();
       assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -2733,7 +2761,7 @@ describe('browser', () => {
       const res = await func();
       assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -2790,32 +2818,34 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got Undefined.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got Undefined.'));
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got String.');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got String.'));
       });
     });
 
     it('should get result', async () => {
       const res = await func(-1);
-      assert.isFalse(res, 'res');
+      assert.strictEqual(res, false, 'res');
     });
 
     it('should get result', async () => {
       const e = new Error('error');
       browser.tabs.get.withArgs(1).rejects(e);
       const res = await func(1);
-      assert.isFalse(res, 'res');
+      assert.strictEqual(res, false, 'res');
     });
 
     it('should get result', async () => {
       browser.tabs.get.withArgs(1).resolves({});
       const res = await func(1);
-      assert.isTrue(res, 'res');
+      assert.strictEqual(res, true, 'res');
     });
   });
 
@@ -2855,7 +2885,7 @@ describe('browser', () => {
       const i = browser.windows.create.callCount;
       const res = await func();
       assert.strictEqual(browser.windows.create.callCount, i + 1, 'called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get function called and get result', async () => {
@@ -2863,7 +2893,7 @@ describe('browser', () => {
       const i = browser.windows.create.callCount;
       const res = await func();
       assert.strictEqual(browser.windows.create.callCount, i + 1, 'called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get function called and get result', async () => {
@@ -2892,7 +2922,7 @@ describe('browser', () => {
       }).callCount;
       const res = await func();
       assert.strictEqual(browser.windows.getAll.callCount, i + 1, 'called');
-      assert.isArray(res, 'result');
+      assert.strictEqual(Array.isArray(res), true, 'result');
     });
 
     it('should get function called and get result', async () => {
@@ -2906,7 +2936,7 @@ describe('browser', () => {
       }).callCount;
       const res = await func(true);
       assert.strictEqual(browser.windows.getAll.callCount, i + 1, 'called');
-      assert.isArray(res, 'result');
+      assert.strictEqual(Array.isArray(res), true, 'result');
     });
   });
 
@@ -2918,7 +2948,7 @@ describe('browser', () => {
       const i = browser.windows.getCurrent.callCount;
       const res = await func();
       assert.strictEqual(browser.windows.getCurrent.callCount, i + 1, 'called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get function called and get result', async () => {
@@ -2926,7 +2956,7 @@ describe('browser', () => {
       const i = browser.windows.getCurrent.callCount;
       const res = await func();
       assert.strictEqual(browser.windows.getCurrent.callCount, i + 1, 'called');
-      assert.isNull(res, 'result');
+      assert.deepEqual(res, null, 'result');
     });
 
     it('should get function called and get result', async () => {
@@ -2946,8 +2976,8 @@ describe('browser', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got Undefined.',
-          'throw');
+        assert.deepStrictEqual(e,
+          new TypeError('Expected Number but got Undefined.'));
       });
     });
 
@@ -2978,7 +3008,7 @@ describe('browser', () => {
     it('should get result', async () => {
       browser.windows.getAll.resolves([]);
       const res = await func();
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
@@ -2991,7 +3021,7 @@ describe('browser', () => {
         }
       ]);
       const res = await func();
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
@@ -3004,7 +3034,7 @@ describe('browser', () => {
         }
       ]);
       const res = await func();
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
   });
 });
