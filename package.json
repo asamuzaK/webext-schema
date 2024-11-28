@@ -21,21 +21,23 @@
   },
   "devDependencies": {
     "@types/firefox-webext-browser": "^120.0.4",
-    "@types/node": "^22.8.2",
+    "@types/node": "^22.10.1",
     "@types/sinon": "^17.0.3",
     "c8": "^10.1.2",
-    "chai": "^5.1.2",
-    "eslint": "^9.13.0",
-    "eslint-plugin-import-x": "^4.3.1",
-    "eslint-plugin-jsdoc": "^50.4.3",
-    "eslint-plugin-regexp": "^2.6.0",
-    "eslint-plugin-unicorn": "^56.0.0",
-    "globals": "^15.11.0",
-    "mocha": "^10.7.3",
-    "neostandard": "^0.11.7",
+    "eslint": "^9.15.0",
+    "eslint-plugin-import-x": "^4.4.3",
+    "eslint-plugin-jsdoc": "^50.6.0",
+    "eslint-plugin-regexp": "^2.7.0",
+    "eslint-plugin-unicorn": "^56.0.1",
+    "globals": "^15.12.0",
+    "mocha": "^10.8.2",
+    "neostandard": "^0.11.9",
     "npm-run-all2": "^7.0.1",
-    "typescript": "^5.6.3",
-    "undici": "^6.20.1"
+    "typescript": "^5.7.2",
+    "undici": "^7.0.0"
+  },
+  "overrides": {
+    "glob": "^10.4.5"
   },
   "scripts": {
     "build": "npm run tsc && npm run lint && npm run test",
@@ -55,5 +57,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "version": "5.5.0"
+  "version": "5.5.1"
 }
