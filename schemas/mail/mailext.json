@@ -13066,11 +13066,25 @@
         {
           "id": "MessageAttachment",
           "type": "object",
-          "description": "Represents an attachment in a message. This includes all MIME parts with a <em>content-disposition</em> header set to <var>attachment</var>, but also related parts like inline images.",
+          "description": "Represents an attachment in a message.",
           "properties": {
+            "contentDisposition": {
+              "type": "string",
+              "description": "The content disposition of the attachment, for example <var>attachment</var> for normal attachments, or <var>inline</var> for inline attachments."
+            },
             "contentType": {
               "type": "string",
               "description": "The content type of the attachment. A value of <var>text/x-moz-deleted</var> indicates that the original attachment was permanently deleted and replaced by a placeholder text attachment with some meta information about the original attachment."
+            },
+            "headers": {
+              "type": "object",
+              "description": "A <em>dictionary object</em> of RFC 2047 decoded attachment headers as <em>key-value</em> pairs, with the header name as <em>key</em>, and an array of headers as <em>value</em>.",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
             },
             "name": {
               "type": "string",
@@ -14384,7 +14398,25 @@
       "namespace": "spaces",
       "types": [
         {
+          "id": "SpaceTabProperties",
+          "description": "Properties for the new tab being opened by clicking on the associated button in the spaces toolbar.",
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "optional": true,
+              "description": "The default URL. May point to a WebExtension page or a web page."
+            },
+            "cookieStoreId": {
+              "type": "string",
+              "optional": true,
+              "description": "The <a href='url-cookieStore'>CookieStore</a> id used by the tab. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons. The <permission>cookies</permission> permission is required to be able to specify this property. Furthermore, the <permission>contextualIdentities</permission> permission should be requested, to enable the contextual identities feature (enabled by default only on Thunderbird Daily)."
+            }
+          }
+        },
+        {
           "id": "SpaceButtonProperties",
+          "description": "Properties of a button in the spaces toolbar.",
           "choices": [
             {
               "max_manifest_version": 2,
@@ -14533,13 +14565,20 @@
               "description": "The name to assign to this space. May only contain alphanumeric characters and underscores. Must be unique for this extension."
             },
             {
-              "name": "defaultUrl",
-              "type": "string",
-              "description": "The default space url, loaded into a tab when the button in the spaces toolbar is clicked. Supported are <var>https://</var> and <var>http://</var> links, as well as links to WebExtension pages."
+              "name": "tabProperties",
+              "choices": [
+                {
+                  "$ref": "spaces.SpaceTabProperties"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "The properties for the new tab being opened, when the associated button in the spaces toolbar is clicked. Either a <em>string</em> specifiying the default URL, or a $(ref:spaces.SpaceTabProperties) object. The URL may point to a WebExtension page or a web page."
             },
             {
               "name": "buttonProperties",
-              "description": "Properties of the button for the new space.",
+              "description": "Properties of the button in the spaces toolbar for the new space.",
               "$ref": "spaces.SpaceButtonProperties",
               "optional": true,
               "default": {}
@@ -14674,14 +14713,23 @@
               "minimum": 1
             },
             {
-              "name": "defaultUrl",
-              "type": "string",
-              "description": "The default space url, loaded into a tab when the button in the spaces toolbar is clicked. Supported are <var>https://</var> and <var>http://</var> links, as well as links to WebExtension pages.",
-              "optional": true
+              "name": "tabProperties",
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "spaces.SpaceTabProperties"
+                },
+                {
+                  "$ref": "spaces.SpaceButtonProperties"
+                }
+              ],
+              "description": "The properties for the new tab being opened, when the associated button in the spaces toolbar is clicked. Either a <em>string</em> specifiying the default URL, or a $(ref:spaces.SpaceTabProperties) object. The URL may point to a WebExtension page or a web page."
             },
             {
               "name": "buttonProperties",
-              "description": "Only specified button properties will be updated.",
+              "description": "Properties of the button in the spaces toolbar for the specified space Only specified button properties will be updated.",
               "$ref": "spaces.SpaceButtonProperties",
               "optional": true
             }
@@ -15273,7 +15321,7 @@
                 "cookieStoreId": {
                   "type": "string",
                   "optional": true,
-                  "description": "The <a href='url-cookieStore'>CookieStore</a> id the new tab should use. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons."
+                  "description": "The <a href='url-cookieStore'>CookieStore</a> id the new tab should use. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons. The <permission>cookies</permission> permission is required to be able to specify this property. Furthermore, the <permission>contextualIdentities</permission> permission should be requested, to enable the contextual identities feature (enabled by default only on Thunderbird Daily)."
                 },
                 "selected": {
                   "deprecated": "Please use <var>createProperties.active</var>.",
@@ -16486,7 +16534,7 @@
                 "cookieStoreId": {
                   "type": "string",
                   "optional": true,
-                  "description": "The CookieStoreId to use for all tabs that were created when the window is opened."
+                  "description": "The <a href='url-cookieStore'>CookieStore</a> id which all initially opened tabs should use. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons. The <permission>cookies</permission> permission is required to be able to specify this property. Furthermore, the <permission>contextualIdentities</permission> permission should be requested, to enable the contextual identities feature (enabled by default only on Thunderbird Daily)."
                 },
                 "titlePreface": {
                   "type": "string",
