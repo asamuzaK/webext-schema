@@ -13423,6 +13423,7 @@
             },
             "name": {
               "type": "string",
+              "description": "Name must be at least 2, at should be at most 75 characters",
               "optional": false,
               "preprocess": "localize"
             },
@@ -13521,24 +13522,16 @@
                 {
                   "type": "object",
                   "properties": {
-                    "page": {
+                    "service_worker": {
+                      "optional": true,
                       "$ref": "ExtensionURL"
                     },
-                    "persistent": {
+                    "page": {
                       "optional": true,
-                      "type": "boolean",
-                      "max_manifest_version": 2,
-                      "default": true
-                    }
-                  },
-                  "additionalProperties": {
-                    "$ref": "UnrecognizedProperty"
-                  }
-                },
-                {
-                  "type": "object",
-                  "properties": {
+                      "$ref": "ExtensionURL"
+                    },
                     "scripts": {
+                      "optional": true,
                       "type": "array",
                       "items": {
                         "$ref": "ExtensionURL"
@@ -13547,6 +13540,7 @@
                     "type": {
                       "optional": true,
                       "type": "string",
+                      "description": "Only supported for page/scripts; not for service_worker yet, see bug 1775574",
                       "enum": [
                         "module",
                         "classic"
@@ -13557,20 +13551,24 @@
                       "type": "boolean",
                       "max_manifest_version": 2,
                       "default": true
+                    },
+                    "preferred_environment": {
+                      "optional": true,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "service_worker",
+                          "document"
+                        ],
+                        "onError": "warn"
+                      }
                     }
                   },
                   "additionalProperties": {
                     "$ref": "UnrecognizedProperty"
-                  }
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "service_worker": {
-                      "$ref": "ExtensionURL"
-                    }
                   },
-                  "postprocess": "requireBackgroundServiceWorkerEnabled"
+                  "postprocess": "checkRequiredManifestBackgroundKeys"
                 }
               ],
               "optional": true

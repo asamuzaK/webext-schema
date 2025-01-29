@@ -9590,6 +9590,7 @@
             "imageset",
             "web_manifest",
             "speculative",
+            "json",
             "other"
           ]
         },
@@ -12398,7 +12399,8 @@
             "bandwidth",
             "memory",
             "tracing",
-            "sandbox"
+            "sandbox",
+            "flows"
           ]
         },
         {
@@ -20423,6 +20425,7 @@
             "imageset",
             "web_manifest",
             "speculative",
+            "json",
             "other"
           ]
         },

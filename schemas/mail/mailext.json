@@ -3817,8 +3817,9 @@
       "events": [
         {
           "name": "onSearchRequest",
+          "max_manifest_version": 2,
           "type": "function",
-          "description": "Registering this listener will create and list a read-only address book in Thunderbird's address book window, similar to LDAP address books. When selecting this address book, users will first see no contacts, but they can search for them, which will fire this event. Contacts returned by the listener callback will be displayed as contact cards in the address book. Several listeners can be registered, to create multiple address books.\n\nThe event also fires for each registered listener (for each created read-only address book), when users type something into the mail composer's <em>To:</em> field, or into similar fields like the calendar meeting attendees field. Contacts returned by the listener callback will be added to the autocomplete results in the dropdown of that field.\n\nExample: <literalinclude>includes/addressBooks/onSearchRequest.js<lang>JavaScript</lang></literalinclude>",
+          "description": "Registering this listener will create a read-only address book, similar to an LDAP address book. When selecting this address book, users will first see no contacts, but they can search for them, which will fire this event. Contacts returned by the listener callback will be displayed as contact cards in the address book. Several listeners can be registered, to create multiple address books.\n\nThe event also fires for each registered listener (for each created read-only address book), when users type something into the mail composer's <em>To:</em> field, or into similar fields like the calendar meeting attendees field. Contacts returned by the listener callback will be added to the autocomplete results in the dropdown of that field.\n\nExample: <literalinclude>includes/addressBooks/onSearchRequest_mv2.js<lang>JavaScript</lang></literalinclude>",
           "parameters": [
             {
               "name": "node",
@@ -3846,7 +3847,7 @@
                 "addressBookName": {
                   "type": "string",
                   "optional": true,
-                  "description": "The name of the created address book."
+                  "description": "The name of the created address book. If not provided, the name of the extension is used."
                 },
                 "isSecure": {
                   "type": "boolean",
@@ -3856,7 +3857,55 @@
                 "id": {
                   "type": "string",
                   "optional": true,
-                  "description": "The unique ID of the created address book. If several listeners have been added, the <var>id</var> allows to identify which address book initiated the search request. If not provided, a unique ID will be generated for you."
+                  "description": "The unique identifier of the created address book. If not provided, a unique identifier will be generated for you."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "onSearchRequest",
+          "min_manifest_version": 3,
+          "type": "function",
+          "description": "Registering this listener will create a read-only address book, similar to an LDAP address book. When selecting this address book, users will first see no contacts, but they can search for them, which will fire this event. Contacts returned by the listener callback will be displayed as contact cards in the address book. Several listeners can be registered, to create multiple address books. **Ensure all listeners are at the top-level and use the synchronous pattern, otherwise the associated address books will be removed on background termination.**.\n\nThe event also fires for each registered listener (for each created read-only address book), when users type something into the mail composer's <em>To:</em> field, or into similar fields like the calendar meeting attendees field. Contacts returned by the listener callback will be added to the autocomplete results in the dropdown of that field.\n\nExample: <literalinclude>includes/addressBooks/onSearchRequest_mv3.js<lang>JavaScript</lang></literalinclude>",
+          "parameters": [
+            {
+              "name": "node",
+              "$ref": "AddressBookNode"
+            },
+            {
+              "name": "searchString",
+              "description": "The search text that the user entered. Not available when invoked from the advanced address book search dialog.",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "query",
+              "type": "string",
+              "description": "The boolean query expression corresponding to the search. **Note:** This parameter may change in future releases of Thunderbird.",
+              "optional": true
+            }
+          ],
+          "extraParameters": [
+            {
+              "name": "parameters",
+              "description": "Descriptions for the address book created by registering this listener.",
+              "type": "object",
+              "properties": {
+                "addressBookName": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The name of the created address book. If not provided, the name of the extension is used."
+                },
+                "isSecure": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether the address book search queries are using encrypted protocols like HTTPS."
+                },
+                "id": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The unique identifier of the created address book. If not provided, a unique identifier will be generated for you."
                 }
               }
             }
@@ -9675,7 +9724,7 @@
         {
           "name": "getUnifiedFolder",
           "type": "function",
-          "description": "Get one of the special unified mailbox folders, which are virtual search folders and return the content from all mail accounts.",
+          "description": "Get one of the special unified mailbox folders, which are virtual search folders and return the content from all mail accounts. Throws if the requested folder does not exist.",
           "async": "callback",
           "parameters": [
             {
@@ -9714,7 +9763,7 @@
         {
           "name": "getTagFolder",
           "type": "function",
-          "description": "Get one of the special virtual tag folders, which are virtual search folders and group messages from all mail accounts based on their tags.",
+          "description": "Get one of the special virtual tag folders, which are virtual search folders and group messages from all mail accounts based on their tags. Throws if the requested folder does not exist.",
           "async": "callback",
           "parameters": [
             {
@@ -14098,7 +14147,7 @@
             {
               "type": "string",
               "name": "color",
-              "description": "Tag color in hex format (i.e.: <var>#000080</var> for navy blue). Value will be stored as upper case.",
+              "description": "Tag color in hex format (i.e.: <var>#000080</var> for navy blue).",
               "pattern": "^#[0-9a-fA-F]{6}"
             }
           ]
@@ -14132,7 +14181,7 @@
                 "color": {
                   "type": "string",
                   "pattern": "^#[0-9a-fA-F]{6}",
-                  "description": "Tag color in hex format (i.e.: #000080 for navy blue). Value will be stored as upper case.",
+                  "description": "Tag color in hex format (i.e.: <var>#000080</var> for navy blue).",
                   "optional": true
                 }
               }
@@ -14177,11 +14226,33 @@
             },
             "color": {
               "type": "string",
-              "description": "Tag color."
+              "description": "Tag color in upper case hex format (i.e.: <var>#000080</var> for navy blue)."
             },
             "ordinal": {
               "type": "string",
-              "description": "Custom sort string (usually empty)."
+              "description": "A custom sort string."
+            }
+          }
+        },
+        {
+          "id": "MessageTagProperties",
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "string",
+              "optional": true,
+              "description": "Human-readable tag name."
+            },
+            "color": {
+              "type": "string",
+              "pattern": "^#[0-9a-fA-F]{6}",
+              "optional": true,
+              "description": "Tag color in upper case hex format (i.e.: <var>#000080</var> for navy blue)."
+            },
+            "ordinal": {
+              "type": "string",
+              "optional": true,
+              "description": "A custom sort string."
             }
           }
         },
@@ -14208,6 +14279,62 @@
               ]
             }
           }
+        }
+      ],
+      "events": [
+        {
+          "name": "onCreated",
+          "permissions": [
+            "messagesTagsList"
+          ],
+          "type": "function",
+          "description": "Fired when a new message tag has been created.",
+          "parameters": [
+            {
+              "name": "tag",
+              "$ref": "messages.tags.MessageTag"
+            }
+          ]
+        },
+        {
+          "name": "onUpdated",
+          "permissions": [
+            "messagesTagsList"
+          ],
+          "type": "function",
+          "description": "Fired when one or more properties of a message tag have been updated.",
+          "parameters": [
+            {
+              "type": "string",
+              "name": "key",
+              "description": "Unique tag identifier of the updated message tag."
+            },
+            {
+              "name": "changedProperties",
+              "$ref": "messages.tags.MessageTagProperties",
+              "description": "The changed message tag properties."
+            },
+            {
+              "name": "oldProperties",
+              "$ref": "messages.tags.MessageTagProperties",
+              "description": "The old values of the changed message tag properties."
+            }
+          ]
+        },
+        {
+          "name": "onDeleted",
+          "type": "function",
+          "description": "Fired when a message tag has been deleted.",
+          "permissions": [
+            "accountsRead"
+          ],
+          "parameters": [
+            {
+              "type": "string",
+              "name": "key",
+              "description": "Unique tag identifier of the deleted message tag."
+            }
+          ]
         }
       ],
       "functions": [
@@ -14238,7 +14365,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates a new message tag. Tagging a message will store the tag's key in the user's message. Throws if the specified tag key is used already.",
+          "description": "Creates a new message tag and returns the associated key. Tagging a message will store the tag's key in the user's message. Throws if the specified tag key is used already.",
           "async": true,
           "permissions": [
             "messagesTags"
@@ -14247,7 +14374,8 @@
             {
               "type": "string",
               "name": "key",
-              "description": "Unique tag identifier (will be converted to lower case). Must not include <var>()<>{/%*\"</var> or spaces.",
+              "optional": true,
+              "description": "Unique tag identifier (will be converted to lower case). Must not include <var>()<>{/%*\"</var> or spaces. Will be auto-generated if not provided.",
               "pattern": "^[^ ()/{%*<>\"]+$"
             },
             {
@@ -14258,8 +14386,19 @@
             {
               "type": "string",
               "name": "color",
-              "description": "Tag color in hex format (i.e.: #000080 for navy blue). Value will be stored as upper case.",
+              "description": "Tag color in hex format (i.e.: <var>#000080</var> for navy blue).",
               "pattern": "^#[0-9a-fA-F]{6}"
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string",
+                  "name": "key"
+                }
+              ]
             }
           ]
         },
@@ -14279,21 +14418,8 @@
               "pattern": "^[^ ()/{%*<>\"]+$"
             },
             {
-              "type": "object",
               "name": "updateProperties",
-              "properties": {
-                "tag": {
-                  "type": "string",
-                  "optional": true,
-                  "description": "Human-readable tag name."
-                },
-                "color": {
-                  "type": "string",
-                  "pattern": "^#[0-9a-fA-F]{6}",
-                  "description": "Tag color in hex format (i.e.: #000080 for navy blue). Value will be stored as upper case.",
-                  "optional": true
-                }
-              }
+              "$ref": "messages.tags.MessageTagProperties"
             }
           ]
         },
@@ -14411,6 +14537,16 @@
               "type": "string",
               "optional": true,
               "description": "The <a href='url-cookieStore'>CookieStore</a> id used by the tab. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons. The <permission>cookies</permission> permission is required to be able to specify this property. Furthermore, the <permission>contextualIdentities</permission> permission should be requested, to enable the contextual identities feature (enabled by default only on Thunderbird Daily)."
+            },
+            "linkHandler": {
+              "type": "string",
+              "enum": [
+                "strict",
+                "balanced",
+                "relaxed"
+              ],
+              "optional": true,
+              "description": "Thunderbird is a mail client, not a browser. It is possible to load a web page, but opening follow-up pages through hyperlinks should be handled by the user's default browser. This property specifies to what extent this behavior should be enforced. The default <var>balanced</var> link handler will open links to the same host directly in Thunderbird, everything else will be opened in the user's default browser. A <var>relaxed</var> link handler will open all links inside of Thunderbird, a <var>strict</var> link handler will open all links in the user's default browser, except links to the same page."
             }
           }
         },
@@ -15322,6 +15458,16 @@
                   "type": "string",
                   "optional": true,
                   "description": "The <a href='url-cookieStore'>CookieStore</a> id the new tab should use. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons. The <permission>cookies</permission> permission is required to be able to specify this property. Furthermore, the <permission>contextualIdentities</permission> permission should be requested, to enable the contextual identities feature (enabled by default only on Thunderbird Daily)."
+                },
+                "linkHandler": {
+                  "type": "string",
+                  "enum": [
+                    "strict",
+                    "balanced",
+                    "relaxed"
+                  ],
+                  "optional": true,
+                  "description": "Thunderbird is a mail client, not a browser. It is possible to load a web page, but opening follow-up pages through hyperlinks should be handled by the user's default browser. This property specifies to what extent this behavior should be enforced. The default <var>balanced</var> link handler will open links to the same host directly in Thunderbird, everything else will be opened in the user's default browser. A <var>relaxed</var> link handler will open all links inside of Thunderbird, a <var>strict</var> link handler will open all links in the user's default browser, except links to the same page."
                 },
                 "selected": {
                   "deprecated": "Please use <var>createProperties.active</var>.",
@@ -16535,6 +16681,16 @@
                   "type": "string",
                   "optional": true,
                   "description": "The <a href='url-cookieStore'>CookieStore</a> id which all initially opened tabs should use. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons. The <permission>cookies</permission> permission is required to be able to specify this property. Furthermore, the <permission>contextualIdentities</permission> permission should be requested, to enable the contextual identities feature (enabled by default only on Thunderbird Daily)."
+                },
+                "linkHandler": {
+                  "type": "string",
+                  "enum": [
+                    "strict",
+                    "balanced",
+                    "relaxed"
+                  ],
+                  "optional": true,
+                  "description": "Thunderbird is a mail client, not a browser. It is possible to load a web page, but opening follow-up pages through hyperlinks should be handled by the user's default browser. This property specifies to what extent this behavior should be enforced. The default <var>balanced</var> link handler will open links to the same host directly in Thunderbird, everything else will be opened in the user's default browser. A <var>relaxed</var> link handler will open all links inside of Thunderbird, a <var>strict</var> link handler will open all links in the user's default browser, except links to the same page."
                 },
                 "titlePreface": {
                   "type": "string",
