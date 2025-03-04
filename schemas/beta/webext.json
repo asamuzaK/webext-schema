@@ -968,6 +968,13 @@
               "description": "Called to return the registered commands."
             }
           ]
+        },
+        {
+          "name": "openShortcutSettings",
+          "type": "function",
+          "async": true,
+          "description": "Open extension shortcuts configuration page.",
+          "parameters": []
         }
       ]
     }
@@ -13423,7 +13430,7 @@
             },
             "name": {
               "type": "string",
-              "description": "Name must be at least 2, at should be at most 75 characters",
+              "description": "Name must be at least 2, and should be at most 75 characters",
               "optional": false,
               "preprocess": "localize"
             },

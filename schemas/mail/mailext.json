@@ -209,6 +209,13 @@
               "description": "Called to return the registered commands."
             }
           ]
+        },
+        {
+          "name": "openShortcutSettings",
+          "type": "function",
+          "async": true,
+          "description": "Open extension shortcuts configuration page.",
+          "parameters": []
         }
       ]
     }
@@ -8667,7 +8674,12 @@
             "lastUsed": {
               "$ref": "extensionTypes.Date",
               "optional": true,
-              "description": "Date the folder was last used (precision: seconds)."
+              "description": "Date the folder was last used. It is updated every time the folder was accessed, when the user moved or copied messages into the folder and when the folder received new messages. (precision: seconds)."
+            },
+            "lastUsedAsDestination": {
+              "$ref": "extensionTypes.Date",
+              "optional": true,
+              "description": "Date the folder was last used as a destination. It is updated every time the user moved or copied messages into the folder. (precision: seconds)."
             },
             "quota": {
               "type": "array",
@@ -8769,9 +8781,39 @@
           }
         },
         {
+          "id": "QueryDateRange",
+          "description": "An object defining a range for a date value to be used in queries.",
+          "choices": [
+            {
+              "type": "object",
+              "properties": {
+                "recent": {
+                  "type": "boolean",
+                  "description": "Whether the date must be considered to be recent by Thunderbird (within the last month) or not, to match the query."
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "after": {
+                  "$ref": "extensionTypes.Date",
+                  "optional": true,
+                  "description": "The minimum date required to match the query."
+                },
+                "before": {
+                  "$ref": "extensionTypes.Date",
+                  "optional": true,
+                  "description": "The maximum date required to match the query."
+                }
+              }
+            }
+          ]
+        },
+        {
           "id": "QueryRange",
           "type": "object",
-          "description": "An object defining a range.",
+          "description": "An object defining a range for an integer value to be used in queries.",
           "properties": {
             "min": {
               "type": "integer",
@@ -8805,7 +8847,7 @@
       "properties": {
         "DEFAULT_MOST_RECENT_LIMIT": {
           "value": -1,
-          "description": "The number of most recent folders used in Thunderbird's UI. Controled by the <var>mail.folder_widget.max_recent</var> preference."
+          "description": "The number of most recent folders used in Thunderbird's UI. Controlled by the <var>mail.folder_widget.max_recent</var> preference."
         }
       },
       "functions": [
@@ -8929,6 +8971,16 @@
                   "optional": true,
                   "description": "Whether the folder is a virtual search folder, or not."
                 },
+                "lastUsed": {
+                  "$ref": "QueryDateRange",
+                  "optional": true,
+                  "description": "Date the folder was last used (folder was accessed, user moved or copied messages into the folder or folder received new messages)."
+                },
+                "lastUsedAsDestination": {
+                  "$ref": "QueryDateRange",
+                  "optional": true,
+                  "description": "Date the folder was last used as a destination (user moved or copied messages into the folder)."
+                },
                 "limit": {
                   "type": "integer",
                   "optional": true,
@@ -8960,8 +9012,21 @@
                 },
                 "recent": {
                   "type": "boolean",
+                  "deprecated": "Deprecated. Use <var>queryInfo.lastUsed</var> and <var>queryInfo.sort</var>.",
                   "optional": true,
-                  "description": "Whether the folder (excluding subfolders) has been used within the last month, or not. The returned folders will be sorted by their recentness."
+                  "description": "Whether the folder (excluding subfolders) has been used within the last month, or not. The returned folders will be sorted by <var>lastUsed</var>."
+                },
+                "sort": {
+                  "type": "string",
+                  "enum": [
+                    "lastUsed",
+                    "lastUsedAsDestination",
+                    "name",
+                    "path"
+                  ],
+                  "optional": true,
+                  "default": "path",
+                  "description": "The sort order of the returned folders. If not specified, folders will be sorted by <var>path</var>. Sorting by <var>name</var> is case-insensitive."
                 },
                 "specialUse": {
                   "type": "array",
@@ -10976,6 +11041,7 @@
                 "editable",
                 "folder_pane",
                 "frame",
+                "header_pane_link",
                 "image",
                 "link",
                 "message_attachments",
@@ -13190,6 +13256,10 @@
             {
               "name": "changedProperties",
               "$ref": "messages.MessageProperties"
+            },
+            {
+              "name": "oldProperties",
+              "$ref": "messages.MessageProperties"
             }
           ]
         },
@@ -13246,7 +13316,7 @@
         {
           "name": "onNewMailReceived",
           "type": "function",
-          "description": "Fired when a new message is received, and has been through junk classification and message filters.",
+          "description": "Fired when a new message is received, and has been handled by message filters and junk classification. Filters running after junk classification may move the message again.",
           "permissions": [
             "accountsRead"
           ],
@@ -13880,6 +13950,18 @@
                 }
               ],
               "description": "The folder to move the messages to."
+            },
+            {
+              "name": "options",
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "isUserAction": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether this move operation should be treated as a user action, for example allowing undo."
+                }
+              }
             }
           ]
         },
@@ -13906,6 +13988,18 @@
               "name": "folderId",
               "$ref": "folders.MailFolderId",
               "description": "The folder to move the messages to."
+            },
+            {
+              "name": "options",
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "isUserAction": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether this move operation should be treated as a user action, for example allowing undo."
+                }
+              }
             }
           ]
         },
@@ -13940,6 +14034,18 @@
                 }
               ],
               "description": "The folder to copy the messages to."
+            },
+            {
+              "name": "options",
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "isUserAction": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether this copy operation should be treated as a user action, for example allowing undo."
+                }
+              }
             }
           ]
         },
@@ -13966,13 +14072,25 @@
               "name": "folderId",
               "$ref": "folders.MailFolderId",
               "description": "The folder to copy the messages to."
+            },
+            {
+              "name": "options",
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "isUserAction": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Whether this copy operation should be treated as a user action, for example allowing undo."
+                }
+              }
             }
           ]
         },
         {
           "name": "delete",
           "type": "function",
-          "description": "Deletes messages permanently, or moves them to the trash folder (honoring the account's deletion behavior settings). Deleting external messages will throw an <em>ExtensionError</em>. The <var>skipTrash</var> parameter allows immediate permanent deletion, bypassing the trash folder.",
+          "description": "Deletes messages permanently, or moves them to the trash folder (honoring the account's deletion behavior settings). Deleting external messages will throw an <em>ExtensionError</em>. The <var>deletePermanently</var> parameter allows immediate permanent deletion, bypassing the trash folder.",
           "async": true,
           "permissions": [
             "messagesDelete"
@@ -13987,10 +14105,30 @@
               }
             },
             {
-              "name": "skipTrash",
-              "type": "boolean",
-              "description": "If true, the message will be deleted permanently, regardless of the account's deletion behavior settings.",
-              "optional": true
+              "name": "options",
+              "optional": true,
+              "choices": [
+                {
+                  "type": "boolean",
+                  "deprecated": "Specify the options object instead of a plain boolean to delete messages permanently.",
+                  "description": "Whether the message will be deleted permanently, regardless of the account's deletion behavior settings."
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "deletePermanently": {
+                      "type": "boolean",
+                      "optional": true,
+                      "description": "Whether the message will be deleted permanently, regardless of the account's deletion behavior settings. Use this with care!"
+                    },
+                    "isUserAction": {
+                      "type": "boolean",
+                      "optional": true,
+                      "description": "Whether this copy operation should be treated as a user action, for example allowing undo. Note: Deleting messages permanently cannot be undone!"
+                    }
+                  }
+                }
+              ]
             }
           ]
         },
@@ -14437,6 +14575,280 @@
               "name": "key",
               "description": "Unique tag identifier (will be converted to lower case). Must not include <var>()<>{/%*\"</var> or spaces.",
               "pattern": "^[^ ()/{%*<>\"]+$"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "messenger_settings.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "OptionalPermission",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "messengerSettings"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "messengerSettings",
+      "description": "The messengerSettings API allows to access global messenger settings.",
+      "permissions": [
+        "messengerSettings"
+      ],
+      "properties": {
+        "messagePlainTextFlowedOutputEnabled": {
+          "$ref": "types.Setting",
+          "description": "Whether long lines in outgoing plain text messages will get soft line breaks (<var> \n</var>) or hard line breaks (<var>\n</var>), to comply with requirements from RFC 2822. Soft line breaks will be ignored when displayed by the receiving client. When flowed output is enabled, add-ons should not create plain text messages with manually inserted hard or soft line breaks to achieve a certain text width, as that will most probably interfere with the default line break handling and generate ridged text. When flowed output is disabled, add-ons could add hard line breaks to have control over the final message, but any line longer than the maximum line length will still receive additional hard line breaks. See $(ref:messengerSettings.messageLineLengthLimit)."
+        },
+        "messageLineLengthLimit": {
+          "$ref": "types.Setting",
+          "description": "The line length limit for outgoing messages, to comply with requirements from RFC 2822. See description of $(ref:messengerSettings.messagePlainTextFlowedOutputEnabled)."
+        }
+      }
+    }
+  ],
+  "messenger_utilities.json": [
+    {
+      "namespace": "messengerUtilities",
+      "types": [
+        {
+          "id": "ParsedMailbox",
+          "type": "object",
+          "description": "Representation of a parsed mailbox string (see RFC 5322, section 3.4).",
+          "properties": {
+            "name": {
+              "type": "string",
+              "optional": true,
+              "description": "The <var>display-name</var> associated with the provided address or group, if available."
+            },
+            "email": {
+              "type": "string",
+              "optional": true,
+              "description": "The <var>addr-spec</var> associated with the provided address, if available."
+            },
+            "group": {
+              "type": "array",
+              "optional": true,
+              "items": {
+                "$ref": "messengerUtilities.ParsedMailbox"
+              },
+              "description": "The members of the group, if available."
+            }
+          }
+        },
+        {
+          "id": "MailboxHeaders",
+          "type": "string",
+          "description": "MIME headers, which by default are treated as containing one or more mailbox strings.",
+          "enum": [
+            "bcc",
+            "cc",
+            "from",
+            "reply-to",
+            "resent-bcc",
+            "resent-cc",
+            "resent-from",
+            "resent-reply-to",
+            "resent-sender",
+            "resent-to",
+            "sender",
+            "to",
+            "approved",
+            "disposition-notification-to",
+            "delivered-to",
+            "return-receipt-to",
+            "mail-reply-to",
+            "mail-followup-to"
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "name": "convertToPlainText",
+          "type": "function",
+          "description": "Converts the provided body to readable plain text, without tags and leading/trailing whitespace.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "body",
+              "type": "string",
+              "description": "The to-be-converted body."
+            },
+            {
+              "name": "options",
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "flowed": {
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "The converted plain text will be wrapped to lines not longer than 72 characters and use format flowed, as defined by RFC 2646."
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "formatFileSize",
+          "type": "function",
+          "description": "Returns the provided file size in a human readable format (e.g. <var>12 bytes</var> or <var>11,4 GB</var>).",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "sizeInBytes",
+              "description": "The size in bytes."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "parseMailboxString",
+          "type": "function",
+          "description": "Parse a mailbox string containing one or more email addresses (see RFC 5322, section 3.4).",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "string",
+              "name": "mailboxString",
+              "description": "The string to be parsed (e.g. <var>User <user@example.com>, other-user@example.com</var>)"
+            },
+            {
+              "type": "boolean",
+              "name": "preserveGroups",
+              "optional": true,
+              "description": "Keep grouped hierachies. Groups may be specified in a mailbox string as follows: <var>GroupName : user1 <user1@example.com>, user2@example,com ;</var>."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "messengerUtilities.ParsedMailbox"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "decodeMimeHeader",
+          "type": "function",
+          "description": "Decode the provided header into a readable format according to RFC 2047.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "headerName",
+              "type": "string"
+            },
+            {
+              "name": "headerValue",
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "isMailBoxHeader",
+              "type": "boolean",
+              "optional": true,
+              "description": "Headers containing multiple mailbox strings need special handling. For example the header <var>=?UTF-8?Q?H=C3=B6rst=2C_Kenny?= <K.Hoerst@invalid>, new@thunderbird.bug</var> will be wrongly decoded to <var>Hörst, Kenny <K.Hoerst@invalid>, new@thunderbird.bug</var>, corrupting the structure of the first mailbox string. This option overrides the default behavior of treating the headers defined in $(ref:messengerUtilities.MailboxHeaders) as mailbox headers."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "encodeMimeHeader",
+          "type": "function",
+          "description": "Encode the provided header according to RFC 2047.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "headerName",
+              "type": "string"
+            },
+            {
+              "name": "headerValue",
+              "choices": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "isMailBoxHeader",
+              "type": "boolean",
+              "optional": true,
+              "description": "Headers containing multiple mailbox strings need special handling. This option overrides the default behavior of treating the headers defined in $(ref:messengerUtilities.MailboxHeaders) as mailbox headers."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -16107,245 +16519,6 @@
                   "description": "Is <var>true</var> when the tab is being closed because its window is being closed."
                 }
               }
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "utilities.json": [
-    {
-      "namespace": "messengerUtilities",
-      "types": [
-        {
-          "id": "ParsedMailbox",
-          "type": "object",
-          "description": "Representation of a parsed mailbox string (see RFC 5322, section 3.4).",
-          "properties": {
-            "name": {
-              "type": "string",
-              "optional": true,
-              "description": "The <var>display-name</var> associated with the provided address or group, if available."
-            },
-            "email": {
-              "type": "string",
-              "optional": true,
-              "description": "The <var>addr-spec</var> associated with the provided address, if available."
-            },
-            "group": {
-              "type": "array",
-              "optional": true,
-              "items": {
-                "$ref": "messengerUtilities.ParsedMailbox"
-              },
-              "description": "The members of the group, if available."
-            }
-          }
-        },
-        {
-          "id": "MailboxHeaders",
-          "type": "string",
-          "description": "MIME headers, which by default are treated as containing one or more mailbox strings.",
-          "enum": [
-            "bcc",
-            "cc",
-            "from",
-            "reply-to",
-            "resent-bcc",
-            "resent-cc",
-            "resent-from",
-            "resent-reply-to",
-            "resent-sender",
-            "resent-to",
-            "sender",
-            "to",
-            "approved",
-            "disposition-notification-to",
-            "delivered-to",
-            "return-receipt-to",
-            "mail-reply-to",
-            "mail-followup-to"
-          ]
-        }
-      ],
-      "functions": [
-        {
-          "name": "convertToPlainText",
-          "type": "function",
-          "description": "Converts the provided body to readable plain text, without tags and leading/trailing whitespace.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "body",
-              "type": "string",
-              "description": "The to-be-converted body."
-            },
-            {
-              "name": "options",
-              "type": "object",
-              "optional": true,
-              "properties": {
-                "flowed": {
-                  "type": "boolean",
-                  "optional": true,
-                  "description": "The converted plain text will be wrapped to lines not longer than 72 characters and use format flowed, as defined by RFC 2646."
-                }
-              }
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": [
-                {
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "formatFileSize",
-          "type": "function",
-          "description": "Returns the provided file size in a human readable format (e.g. <var>12 bytes</var> or <var>11,4 GB</var>).",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "integer",
-              "name": "sizeInBytes",
-              "description": "The size in bytes."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": [
-                {
-                  "type": "string"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "parseMailboxString",
-          "type": "function",
-          "description": "Parse a mailbox string containing one or more email addresses (see RFC 5322, section 3.4).",
-          "async": "callback",
-          "parameters": [
-            {
-              "type": "string",
-              "name": "mailboxString",
-              "description": "The string to be parsed (e.g. <var>User <user@example.com>, other-user@example.com</var>)"
-            },
-            {
-              "type": "boolean",
-              "name": "preserveGroups",
-              "optional": true,
-              "description": "Keep grouped hierachies. Groups may be specified in a mailbox string as follows: <var>GroupName : user1 <user1@example.com>, user2@example,com ;</var>."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": [
-                {
-                  "type": "array",
-                  "items": {
-                    "$ref": "messengerUtilities.ParsedMailbox"
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "decodeMimeHeader",
-          "type": "function",
-          "description": "Decode the provided header into a readable format according to RFC 2047.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "headerName",
-              "type": "string"
-            },
-            {
-              "name": "headerValue",
-              "choices": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
-            },
-            {
-              "name": "isMailBoxHeader",
-              "type": "boolean",
-              "optional": true,
-              "description": "Headers containing multiple mailbox strings need special handling. For example the header <var>=?UTF-8?Q?H=C3=B6rst=2C_Kenny?= <K.Hoerst@invalid>, new@thunderbird.bug</var> will be wrongly decoded to <var>Hörst, Kenny <K.Hoerst@invalid>, new@thunderbird.bug</var>, corrupting the structure of the first mailbox string. This option overrides the default behavior of treating the headers defined in $(ref:messengerUtilities.MailboxHeaders) as mailbox headers."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": [
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "encodeMimeHeader",
-          "type": "function",
-          "description": "Encode the provided header according to RFC 2047.",
-          "async": "callback",
-          "parameters": [
-            {
-              "name": "headerName",
-              "type": "string"
-            },
-            {
-              "name": "headerValue",
-              "choices": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
-            },
-            {
-              "name": "isMailBoxHeader",
-              "type": "boolean",
-              "optional": true,
-              "description": "Headers containing multiple mailbox strings need special handling. This option overrides the default behavior of treating the headers defined in $(ref:messengerUtilities.MailboxHeaders) as mailbox headers."
-            },
-            {
-              "type": "function",
-              "name": "callback",
-              "optional": true,
-              "parameters": [
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
             }
           ]
         }
