@@ -2382,6 +2382,7 @@
                 "audio",
                 "launcher",
                 "bookmark",
+                "page_action",
                 "tab",
                 "tools_menu"
               ]
@@ -2389,8 +2390,7 @@
             {
               "type": "string",
               "enum": [
-                "browser_action",
-                "page_action"
+                "browser_action"
               ],
               "max_manifest_version": 2
             },
@@ -7189,6 +7189,7 @@
           "name": "create",
           "type": "function",
           "description": "Creates an alarm. After the delay is expired, the onAlarm event is fired. If there is another alarm with the same name (or no name if none is specified), it will be cancelled and replaced by this alarm.",
+          "async": "callback",
           "parameters": [
             {
               "type": "string",
@@ -7217,6 +7218,12 @@
                   "description": "Number of minutes after which the alarm should recur repeatedly."
                 }
               }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
             }
           ]
         },
@@ -19080,7 +19087,8 @@
             "content"
           ],
           "description": "Delete the models the extension downloaded.",
-          "async": true
+          "async": true,
+          "parameters": []
         }
       ]
     }
@@ -20844,6 +20852,7 @@
             "cryptomining_content",
             "emailtracking",
             "emailtracking_content",
+            "consentmanager",
             "tracking",
             "tracking_ad",
             "tracking_analytics",
