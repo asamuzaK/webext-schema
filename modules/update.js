@@ -1,7 +1,6 @@
 /**
  * update.js
  */
-/* eslint-disable no-await-in-loop */
 
 /* api */
 import path from 'node:path';
@@ -116,15 +115,15 @@ export const getAllSchemaData = async (baseUrl, info) => {
   if (!isString(baseUrl)) {
     throw new TypeError(`Expected String but got ${getType(baseUrl)}.`);
   }
-  const schemas = [];
   const items = await getFileList(baseUrl);
+  const func = [];
   for (const item of items) {
     if (info) {
       console.info(`Fetching ${item}`);
     }
-    const schema = await getSchemaData(item, baseUrl);
-    schemas.push(schema);
+    func.push(getSchemaData(item, baseUrl));
   }
+  const schemas = await Promise.all(func);
   return schemas;
 };
 
@@ -142,14 +141,14 @@ export const getListedSchemaData = async (baseUrl, arr, info) => {
   if (!Array.isArray(arr)) {
     throw new TypeError(`Expected Array but got ${getType(arr)}.`);
   }
-  const schemas = [];
+  const func = [];
   for (const item of arr) {
     if (info) {
       console.info(`Fetching ${item}`);
     }
-    const schema = await getSchemaData(item, baseUrl);
-    schemas.push(schema);
+    func.push(getSchemaData(item, baseUrl));
   }
+  const schemas = await Promise.all(func);
   return schemas;
 };
 
@@ -169,16 +168,16 @@ export const getMailExtSchemaData = async (baseUrl, info) => {
     'commands.json',
     'pkcs11.json'
   ];
-  const schemas = [];
+  const func = [];
   for (const item of items) {
     if (!excludeFile.includes(item)) {
       if (info) {
         console.info(`Fetching ${item}`);
       }
-      const schema = await getSchemaData(item, schemaUrl);
-      schemas.push(schema);
+      func.push(getSchemaData(item, schemaUrl));
     }
   }
+  const schemas = await Promise.all(func);
   return schemas;
 };
 
@@ -191,35 +190,47 @@ export const getMailExtSchemaData = async (baseUrl, info) => {
 export const createUnifiedSchema = async (channel, info) => {
   const channelUrl = getChannelUrl(channel);
   const schema = {};
-  let arr;
   if (channel === 'mail') {
     const browserItems = [
       'commands.json',
       'pkcs11.json'
     ];
+    const browserUrl =
+      `${getChannelUrl('central')}browser/components/extensions/schemas/`;
+    const browserSchemas =
+      await getListedSchemaData(browserUrl, browserItems, info);
+    for (const item of browserSchemas) {
+      const { file, schema: itemSchema } = item;
+      schema[file] = itemSchema;
+    }
     const toolkitItems = [
       'content_scripts.json', 'experiments.json', 'extension.json', 'i18n.json',
       'management.json', 'permissions.json', 'runtime.json', 'theme.json'
     ];
-    const browserBaseUrl =
-      `${getChannelUrl('central')}browser/components/extensions/schemas/`;
-    const toolkitBaseUrl =
+    const toolkitUrl =
       `${getChannelUrl('central')}toolkit/components/extensions/schemas/`;
-    arr = await Promise.all([
-      getListedSchemaData(browserBaseUrl, browserItems, info),
-      getListedSchemaData(toolkitBaseUrl, toolkitItems, info),
-      getMailExtSchemaData(`${channelUrl}mail/components/extensions/`, info)
-    ]);
+    const toolkitSchemas =
+      await getListedSchemaData(toolkitUrl, toolkitItems, info);
+    for (const item of toolkitSchemas) {
+      const { file, schema: itemSchema } = item;
+      schema[file] = itemSchema;
+    }
+    const mailUrl = `${channelUrl}mail/components/extensions/`;
+    const mailSchemas = await getMailExtSchemaData(mailUrl, info);
+    for (const item of mailSchemas) {
+      const { file, schema: itemSchema } = item;
+      schema[file] = itemSchema;
+    }
   } else {
-    arr = await Promise.all([
-      getAllSchemaData(`${channelUrl}browser/components/extensions/schemas/`,
-        info),
-      getAllSchemaData(`${channelUrl}toolkit/components/extensions/schemas/`,
-        info)
-    ]);
-  }
-  for (const items of arr) {
-    for (const item of items) {
+    const browserUrl = `${channelUrl}browser/components/extensions/schemas/`;
+    const browserSchemas = await getAllSchemaData(browserUrl, info);
+    for (const item of browserSchemas) {
+      const { file, schema: itemSchema } = item;
+      schema[file] = itemSchema;
+    }
+    const toolkitUrl = `${channelUrl}toolkit/components/extensions/schemas/`;
+    const toolkitSchemas = await getAllSchemaData(toolkitUrl, info);
+    for (const item of toolkitSchemas) {
       const { file, schema: itemSchema } = item;
       schema[file] = itemSchema;
     }

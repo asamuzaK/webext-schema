@@ -420,6 +420,181 @@ describe('get MailExtensions schema data', () => {
 });
 
 describe('create unified schema', () => {
+  const globalDispatcher = getGlobalDispatcher();
+  const mockAgent = new MockAgent();
+  beforeEach(() => {
+    setGlobalDispatcher(mockAgent);
+    mockAgent.disableNetConnect();
+  });
+  afterEach(() => {
+    mockAgent.enableNetConnect();
+    setGlobalDispatcher(globalDispatcher);
+  });
+
+  it('should get object', async () => {
+    const stubInfo = sinon.stub(console, 'info');
+    const url = new URL('https://hg.mozilla.org');
+    const mockPool = mockAgent.get(url.origin);
+    const basePath = '/releases/mozilla-beta/raw-file/tip/';
+    const browserUrl =
+      `${url.origin}${basePath}browser/components/extensions/schemas/`;
+    const toolkitUrl =
+      `${url.origin}${basePath}toolkit/components/extensions/schemas/`;
+    mockPool.intercept({ path: `${browserUrl}jar.mn`, method: 'GET' })
+      .reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+    mockPool.intercept({ path: `${browserUrl}foo.json`, method: 'GET' })
+      .reply(200, '{ "foo": "Foo" }');
+    mockPool.intercept({ path: `${browserUrl}bar.json`, method: 'GET' })
+      .reply(200, '{ "bar": "Bar" }');
+    mockPool.intercept({ path: `${toolkitUrl}jar.mn`, method: 'GET' })
+      .reply(200, 'content/extensions/schemas/baz.json\ncontent/extensions/schemas/qux.json\n');
+    mockPool.intercept({ path: `${toolkitUrl}baz.json`, method: 'GET' })
+      .reply(200, '{ "baz": "Baz" }');
+    mockPool.intercept({ path: `${toolkitUrl}qux.json`, method: 'GET' })
+      .reply(200, '{ "qux": "Qux" }');
+    const res = await createUnifiedSchema();
+    assert.strictEqual(stubInfo.called, false, 'info');
+    stubInfo.restore();
+    assert.deepEqual(res, {
+      'foo.json': {
+        foo: 'Foo'
+      },
+      'bar.json': {
+        bar: 'Bar'
+      },
+      'baz.json': {
+        baz: 'Baz'
+      },
+      'qux.json': {
+        qux: 'Qux'
+      }
+    }, 'result');
+  });
+
+  it('should get object', async () => {
+    const stubInfo = sinon.stub(console, 'info');
+    const url = new URL('https://hg.mozilla.org');
+    const mockPool = mockAgent.get(url.origin);
+    const basePath = '/mozilla-central/raw-file/tip/';
+    const browserUrl =
+      `${url.origin}${basePath}browser/components/extensions/schemas/`;
+    const toolkitUrl =
+      `${url.origin}${basePath}toolkit/components/extensions/schemas/`;
+    mockPool.intercept({ path: `${browserUrl}jar.mn`, method: 'GET' })
+      .reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+    mockPool.intercept({ path: `${browserUrl}foo.json`, method: 'GET' })
+      .reply(200, '{ "foo": "Foo" }');
+    mockPool.intercept({ path: `${browserUrl}bar.json`, method: 'GET' })
+      .reply(200, '{ "bar": "Bar" }');
+    mockPool.intercept({ path: `${toolkitUrl}jar.mn`, method: 'GET' })
+      .reply(200, 'content/extensions/schemas/baz.json\ncontent/extensions/schemas/qux.json\n');
+    mockPool.intercept({ path: `${toolkitUrl}baz.json`, method: 'GET' })
+      .reply(200, '{ "baz": "Baz" }');
+    mockPool.intercept({ path: `${toolkitUrl}qux.json`, method: 'GET' })
+      .reply(200, '{ "qux": "Qux" }');
+    const res = await createUnifiedSchema('central', true);
+    assert.strictEqual(stubInfo.called, true, 'info');
+    stubInfo.restore();
+    assert.deepEqual(res, {
+      'foo.json': {
+        foo: 'Foo'
+      },
+      'bar.json': {
+        bar: 'Bar'
+      },
+      'baz.json': {
+        baz: 'Baz'
+      },
+      'qux.json': {
+        qux: 'Qux'
+      }
+    }, 'result');
+  });
+
+  it('should get object', async () => {
+    const stubInfo = sinon.stub(console, 'info');
+    const url = new URL('https://hg.mozilla.org');
+    const mockPool = mockAgent.get(url.origin);
+    const basePath = '/mozilla-central/raw-file/tip/';
+    const mailBasePath = '/comm-central/raw-file/tip/';
+    const browserUrl =
+      `${url.origin}${basePath}browser/components/extensions/schemas/`;
+    const toolkitUrl =
+      `${url.origin}${basePath}toolkit/components/extensions/schemas/`;
+    const mailBaseUrl =
+      `${url.origin}${mailBasePath}mail/components/extensions/`;
+    const mailUrl = `${mailBaseUrl}schemas/`;
+    mockPool.intercept({ path: `${browserUrl}commands.json`, method: 'GET' })
+      .reply(200, '{ "commands": "Commands" }');
+    mockPool.intercept({ path: `${browserUrl}pkcs11.json`, method: 'GET' })
+      .reply(200, '{ "pkcs11": "Pkcs11" }');
+    mockPool.intercept({
+      path: `${toolkitUrl}content_scripts.json`,
+      method: 'GET'
+    }).reply(200, '{ "content_scripts": "ContentScripts" }');
+    mockPool.intercept({ path: `${toolkitUrl}experiments.json`, method: 'GET' })
+      .reply(200, '{ "experiments": "Experiments" }');
+    mockPool.intercept({ path: `${toolkitUrl}extension.json`, method: 'GET' })
+      .reply(200, '{ "extension": "Extension" }');
+    mockPool.intercept({ path: `${toolkitUrl}i18n.json`, method: 'GET' })
+      .reply(200, '{ "i18n": "I18n" }');
+    mockPool.intercept({ path: `${toolkitUrl}management.json`, method: 'GET' })
+      .reply(200, '{ "management": "Management" }');
+    mockPool.intercept({ path: `${toolkitUrl}permissions.json`, method: 'GET' })
+      .reply(200, '{ "permissions": "Permissions" }');
+    mockPool.intercept({ path: `${toolkitUrl}runtime.json`, method: 'GET' })
+      .reply(200, '{ "runtime": "Runtime" }');
+    mockPool.intercept({ path: `${toolkitUrl}theme.json`, method: 'GET' })
+      .reply(200, '{ "theme": "Theme" }');
+    mockPool.intercept({ path: `${mailBaseUrl}jar.mn`, method: 'GET' })
+      .reply(200, 'content/extensions/schemas/foo.json\ncontent/extensions/schemas/bar.json\n');
+    mockPool.intercept({ path: `${mailUrl}foo.json`, method: 'GET' })
+      .reply(200, '{ "foo": "Foo" }');
+    mockPool.intercept({ path: `${mailUrl}bar.json`, method: 'GET' })
+      .reply(200, '{ "bar": "Bar" }');
+    const res = await createUnifiedSchema('mail', true);
+    assert.strictEqual(stubInfo.called, true, 'info');
+    stubInfo.restore();
+    assert.deepEqual(res, {
+      'commands.json': {
+        commands: 'Commands'
+      },
+      'pkcs11.json': {
+        pkcs11: 'Pkcs11'
+      },
+      'content_scripts.json': {
+        content_scripts: 'ContentScripts'
+      },
+      'experiments.json': {
+        experiments: 'Experiments'
+      },
+      'extension.json': {
+        extension: 'Extension'
+      },
+      'i18n.json': {
+        i18n: 'I18n'
+      },
+      'management.json': {
+        management: 'Management'
+      },
+      'permissions.json': {
+        permissions: 'Permissions'
+      },
+      'runtime.json': {
+        runtime: 'Runtime'
+      },
+      'theme.json': {
+        theme: 'Theme'
+      },
+      'foo.json': {
+        foo: 'Foo'
+      },
+      'bar.json': {
+        bar: 'Bar'
+      }
+    }, 'result');
+  });
+/*
   it('should get object', async () => {
     const stubAll = sinon.stub(Promise, 'all').resolves([]);
     const stubInfo = sinon.stub(console, 'info');
@@ -437,6 +612,7 @@ describe('create unified schema', () => {
     stubInfo.restore();
     assert.deepEqual(res, {}, 'result');
   });
+*/
 });
 
 describe('save schema file', () => {
