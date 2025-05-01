@@ -2382,6 +2382,7 @@
                 "audio",
                 "launcher",
                 "bookmark",
+                "page_action",
                 "tab",
                 "tools_menu"
               ]
@@ -2389,8 +2390,7 @@
             {
               "type": "string",
               "enum": [
-                "browser_action",
-                "page_action"
+                "browser_action"
               ],
               "max_manifest_version": 2
             },
@@ -4528,6 +4528,12 @@
               "optional": true,
               "minimum": -1,
               "description": "The ID of this tab's successor, if any; $(ref:tabs.TAB_ID_NONE) otherwise."
+            },
+            "groupId": {
+              "type": "integer",
+              "optional": true,
+              "minimum": -1,
+              "description": "The ID of the group that the tab belongs to. $(ref:tabGroups.TAB_GROUP_ID_NONE) (-1) if the tab does not belong to a tab group."
             }
           }
         },
@@ -4739,6 +4745,7 @@
             "autoDiscardable",
             "discarded",
             "favIconUrl",
+            "groupId",
             "hidden",
             "isArticle",
             "mutedInfo",
@@ -5165,6 +5172,12 @@
                   "minimum": -1,
                   "optional": true,
                   "description": "The ID of the tab that opened this tab. If specified, the opener tab must be in the same window as this tab."
+                },
+                "groupId": {
+                  "type": "integer",
+                  "minimum": -1,
+                  "optional": true,
+                  "description": "The ID of the group that the tabs are in, or $(ref:tabGroups.TAB_GROUP_ID_NONE) (-1) for ungrouped tabs."
                 },
                 "screen": {
                   "choices": [
@@ -6000,6 +6013,95 @@
               "name": "callback",
               "optional": true,
               "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "group",
+          "type": "function",
+          "description": "Adds one or more tabs to a specified group, or if no group is specified, adds the given tabs to a newly created group.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "options",
+              "type": "object",
+              "properties": {
+                "tabIds": {
+                  "description": "The tab ID or list of tab IDs to add to the specified group.",
+                  "choices": [
+                    {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "minItems": 1
+                    }
+                  ]
+                },
+                "groupId": {
+                  "type": "integer",
+                  "description": "The ID of the group to add the tabs to. If not specified, a new group will be created.",
+                  "minimum": 0,
+                  "optional": true
+                },
+                "createProperties": {
+                  "type": "object",
+                  "optional": true,
+                  "description": "Configurations for creating a group. Cannot be used if groupId is already specified.",
+                  "properties": {
+                    "windowId": {
+                      "type": "integer",
+                      "minimum": -2,
+                      "optional": true,
+                      "description": "The window of the new group. Defaults to the current window."
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "groupId",
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "The ID of the group that the tabs were added to."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "ungroup",
+          "type": "function",
+          "description": "Removes one or more tabs from their respective groups. If any groups become empty, they are deleted.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "tabIds",
+              "description": "The tab ID or list of tab IDs to remove from their respective groups.",
+              "choices": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "minItems": 1
+                }
+              ]
             }
           ]
         }
@@ -7189,6 +7291,7 @@
           "name": "create",
           "type": "function",
           "description": "Creates an alarm. After the delay is expired, the onAlarm event is fired. If there is another alarm with the same name (or no name if none is specified), it will be cancelled and replaced by this alarm.",
+          "async": "callback",
           "parameters": [
             {
               "type": "string",
@@ -7217,6 +7320,12 @@
                   "description": "Number of minutes after which the alarm should recur repeatedly."
                 }
               }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": []
             }
           ]
         },
@@ -19080,7 +19189,8 @@
             "content"
           ],
           "description": "Delete the models the extension downloaded.",
-          "async": true
+          "async": true,
+          "parameters": []
         }
       ]
     }
@@ -20844,6 +20954,7 @@
             "cryptomining_content",
             "emailtracking",
             "emailtracking_content",
+            "consentmanager",
             "tracking",
             "tracking_ad",
             "tracking_analytics",

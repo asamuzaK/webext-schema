@@ -4288,6 +4288,278 @@
       ]
     }
   ],
+  "tabGroups.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "OptionalPermissionNoPrompt",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "tabGroups"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "namespace": "tabGroups",
+      "description": "Use the browser.tabGroups API to interact with the browser's tab grouping system. You can use this API to modify, and rearrange tab groups.",
+      "permissions": [
+        "tabGroups"
+      ],
+      "types": [
+        {
+          "id": "Color",
+          "type": "string",
+          "description": "The group's color, using 'grey' spelling for compatibility with Chromium.",
+          "enum": [
+            "blue",
+            "cyan",
+            "grey",
+            "green",
+            "orange",
+            "pink",
+            "purple",
+            "red",
+            "yellow"
+          ]
+        },
+        {
+          "id": "TabGroup",
+          "type": "object",
+          "description": "State of a tab group inside of an open window.",
+          "properties": {
+            "collapsed": {
+              "type": "boolean",
+              "description": "Whether the tab group is collapsed or expanded in the tab strip."
+            },
+            "color": {
+              "$ref": "Color",
+              "description": "User-selected color name for the tab group's label/icons."
+            },
+            "id": {
+              "type": "integer",
+              "description": "Unique ID of the tab group."
+            },
+            "title": {
+              "type": "string",
+              "optional": true,
+              "description": "User-defined name of the tab group."
+            },
+            "windowId": {
+              "type": "integer",
+              "description": "Window that the tab group is in."
+            }
+          }
+        }
+      ],
+      "properties": {
+        "TAB_GROUP_ID_NONE": {
+          "value": -1,
+          "description": "An ID that represents the absence of a group."
+        }
+      },
+      "functions": [
+        {
+          "name": "get",
+          "type": "function",
+          "description": "Retrieves details about the specified group.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "groupId",
+              "minimum": 0
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "group",
+                  "$ref": "TabGroup"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "move",
+          "type": "function",
+          "description": "Move a group within, or to another window.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "groupId",
+              "minimum": 0
+            },
+            {
+              "type": "object",
+              "name": "moveProperties",
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "minimum": -1
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": 0
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "group",
+                  "$ref": "TabGroup"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "query",
+          "type": "function",
+          "description": "Return all grups, or find groups with specified properties.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "object",
+              "name": "queryInfo",
+              "optional": true,
+              "properties": {
+                "collapsed": {
+                  "type": "boolean",
+                  "optional": true
+                },
+                "color": {
+                  "$ref": "Color",
+                  "optional": true
+                },
+                "title": {
+                  "type": "string",
+                  "optional": true
+                },
+                "windowId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -2
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "groups",
+                  "type": "array",
+                  "items": {
+                    "$ref": "TabGroup"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "update",
+          "type": "function",
+          "description": "Modifies state of a specified group.",
+          "async": "callback",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "groupId",
+              "minimum": 0
+            },
+            {
+              "type": "object",
+              "name": "updateProperties",
+              "properties": {
+                "collapsed": {
+                  "type": "boolean",
+                  "optional": true
+                },
+                "color": {
+                  "$ref": "Color",
+                  "optional": true
+                },
+                "title": {
+                  "type": "string",
+                  "optional": true
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "group",
+                  "$ref": "TabGroup"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "onCreated",
+          "type": "function",
+          "description": "Fired when a tab group is created.",
+          "parameters": [
+            {
+              "$ref": "TabGroup",
+              "name": "group"
+            }
+          ]
+        },
+        {
+          "name": "onMoved",
+          "type": "function",
+          "description": "Fired when a tab group is moved, within a window or to another window.",
+          "parameters": [
+            {
+              "$ref": "TabGroup",
+              "name": "group"
+            }
+          ]
+        },
+        {
+          "name": "onRemoved",
+          "type": "function",
+          "description": "Fired when a tab group is removed.",
+          "parameters": [
+            {
+              "$ref": "TabGroup",
+              "name": "group"
+            }
+          ]
+        },
+        {
+          "name": "onUpdated",
+          "type": "function",
+          "description": "Fired when a tab group is updated.",
+          "parameters": [
+            {
+              "$ref": "TabGroup",
+              "name": "group"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "tabs.json": [
     {
       "namespace": "manifest",
@@ -4528,6 +4800,12 @@
               "optional": true,
               "minimum": -1,
               "description": "The ID of this tab's successor, if any; $(ref:tabs.TAB_ID_NONE) otherwise."
+            },
+            "groupId": {
+              "type": "integer",
+              "optional": true,
+              "minimum": -1,
+              "description": "The ID of the group that the tab belongs to. $(ref:tabGroups.TAB_GROUP_ID_NONE) (-1) if the tab does not belong to a tab group."
             }
           }
         },
@@ -4739,6 +5017,7 @@
             "autoDiscardable",
             "discarded",
             "favIconUrl",
+            "groupId",
             "hidden",
             "isArticle",
             "mutedInfo",
@@ -5165,6 +5444,12 @@
                   "minimum": -1,
                   "optional": true,
                   "description": "The ID of the tab that opened this tab. If specified, the opener tab must be in the same window as this tab."
+                },
+                "groupId": {
+                  "type": "integer",
+                  "minimum": -1,
+                  "optional": true,
+                  "description": "The ID of the group that the tabs are in, or $(ref:tabGroups.TAB_GROUP_ID_NONE) (-1) for ungrouped tabs."
                 },
                 "screen": {
                   "choices": [
@@ -6000,6 +6285,95 @@
               "name": "callback",
               "optional": true,
               "parameters": []
+            }
+          ]
+        },
+        {
+          "name": "group",
+          "type": "function",
+          "description": "Adds one or more tabs to a specified group, or if no group is specified, adds the given tabs to a newly created group.",
+          "async": "callback",
+          "parameters": [
+            {
+              "name": "options",
+              "type": "object",
+              "properties": {
+                "tabIds": {
+                  "description": "The tab ID or list of tab IDs to add to the specified group.",
+                  "choices": [
+                    {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "minItems": 1
+                    }
+                  ]
+                },
+                "groupId": {
+                  "type": "integer",
+                  "description": "The ID of the group to add the tabs to. If not specified, a new group will be created.",
+                  "minimum": 0,
+                  "optional": true
+                },
+                "createProperties": {
+                  "type": "object",
+                  "optional": true,
+                  "description": "Configurations for creating a group. Cannot be used if groupId is already specified.",
+                  "properties": {
+                    "windowId": {
+                      "type": "integer",
+                      "minimum": -2,
+                      "optional": true,
+                      "description": "The window of the new group. Defaults to the current window."
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "name": "groupId",
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "The ID of the group that the tabs were added to."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "ungroup",
+          "type": "function",
+          "description": "Removes one or more tabs from their respective groups. If any groups become empty, they are deleted.",
+          "async": true,
+          "parameters": [
+            {
+              "name": "tabIds",
+              "description": "The tab ID or list of tab IDs to remove from their respective groups.",
+              "choices": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "minItems": 1
+                }
+              ]
             }
           ]
         }
@@ -13942,6 +14316,54 @@
           ]
         },
         {
+          "id": "CommonDataCollectionPermission",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "authenticationInfo",
+                "bookmarksInfo",
+                "browsingHistory",
+                "financialAndPaymentInfo",
+                "healthInfo",
+                "locationInfo",
+                "personalCommunications",
+                "personallyIdentifyingInfo",
+                "websiteActivity",
+                "websiteContent"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "DataCollectionPermission",
+          "choices": [
+            {
+              "$ref": "CommonDataCollectionPermission"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "none"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "OptionalDataCollectionPermission",
+          "choices": [
+            {
+              "$ref": "CommonDataCollectionPermission"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "technicalAndInteraction"
+              ]
+            }
+          ]
+        },
+        {
           "id": "PermissionNoPrompt",
           "choices": [
             {
@@ -14042,6 +14464,31 @@
             "admin_install_only": {
               "type": "boolean",
               "optional": true
+            },
+            "data_collection_permissions": {
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "required": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "DataCollectionPermission",
+                    "onError": "warn"
+                  },
+                  "optional": true,
+                  "default": [],
+                  "postprocess": "checkValidRequiredDataCollection"
+                },
+                "optional": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "OptionalDataCollectionPermission",
+                    "onError": "warn"
+                  },
+                  "optional": true,
+                  "default": []
+                }
+              }
             }
           },
           "additionalProperties": {
@@ -15247,6 +15694,14 @@
               },
               "optional": true,
               "default": []
+            },
+            "data_collection": {
+              "type": "array",
+              "items": {
+                "$ref": "manifest.OptionalDataCollectionPermission"
+              },
+              "optional": true,
+              "default": []
             }
           }
         },
@@ -15273,6 +15728,14 @@
               "type": "array",
               "items": {
                 "$ref": "manifest.MatchPattern"
+              },
+              "optional": true,
+              "default": []
+            },
+            "data_collection": {
+              "type": "array",
+              "items": {
+                "$ref": "manifest.OptionalDataCollectionPermission"
               },
               "optional": true,
               "default": []
@@ -18425,6 +18888,7 @@
         {
           "name": "assertThrows",
           "type": "function",
+          "allowAmbiguousOptionalArguments": true,
           "parameters": [
             {
               "name": "func",
@@ -18432,12 +18896,29 @@
             },
             {
               "name": "expectedError",
-              "$ref": "ExpectedError"
+              "$ref": "ExpectedError",
+              "optional": true,
+              "description": "Required, unless running with extensions.wpt.enabled"
             },
             {
               "name": "message",
               "type": "string",
               "optional": true
+            }
+          ]
+        },
+        {
+          "name": "runTests",
+          "type": "function",
+          "async": true,
+          "parameters": [
+            {
+              "name": "tests",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "function"
+              }
             }
           ]
         }
