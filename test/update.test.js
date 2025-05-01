@@ -594,25 +594,6 @@ describe('create unified schema', () => {
       }
     }, 'result');
   });
-/*
-  it('should get object', async () => {
-    const stubAll = sinon.stub(Promise, 'all').resolves([]);
-    const stubInfo = sinon.stub(console, 'info');
-    const res = await createUnifiedSchema();
-    stubAll.restore();
-    stubInfo.restore();
-    assert.deepEqual(res, {}, 'result');
-  });
-
-  it('should get object', async () => {
-    const stubAll = sinon.stub(Promise, 'all').resolves([]);
-    const stubInfo = sinon.stub(console, 'info');
-    const res = await createUnifiedSchema('mail');
-    stubAll.restore();
-    stubInfo.restore();
-    assert.deepEqual(res, {}, 'result');
-  });
-*/
 });
 
 describe('save schema file', () => {
