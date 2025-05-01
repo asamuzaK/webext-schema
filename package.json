@@ -34,7 +34,7 @@
     "eslint-plugin-regexp": "^2.7.0",
     "eslint-plugin-unicorn": "^59.0.0",
     "globals": "^16.0.0",
-    "mocha": "^11.1.0",
+    "mocha": "^11.2.2",
     "neostandard": "^0.12.1",
     "npm-run-all2": "^7.0.2",
     "typescript": "^5.8.3",
@@ -58,5 +58,5 @@
     "update-mail": "node index update --channel=mail -i",
     "update-release": "node index update --channel=release -i"
   },
-  "version": "5.5.5"
+  "version": "5.5.6"
 }
