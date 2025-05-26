@@ -5950,7 +5950,7 @@
                   "type": "string",
                   "format": "relativeUrl",
                   "preprocess": "localize",
-                  "description": "A page for configuring accounts, to be displayed in the preferences UI. **Note:** Within this UI only a limited subset of the WebExtension APIs is available: <var>cloudFile</var>, <var>extension</var>, <var>i18n</var>, <var>runtime</var>, <var>storage</var>, <var>test</var>."
+                  "description": "A page for configuring accounts, to be displayed in the preferences UI. **Note:** Within this UI only a limited subset of the WebExtension APIs is available: <var>cloudFile</var>, <var>extension</var>, <var>i18n</var>, <var>runtime</var>, <var>storage</var>. The id of the to be configured cloud file account can be retrieved via <code>new URL(location.href).searchParams.get('accountId');</code>."
                 },
                 "name": {
                   "type": "string",
@@ -14871,7 +14871,87 @@
       ]
     }
   ],
+  "oauth_provider.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "oauth_provider": {
+              "description": "Describes an OAuth authentication provider for Thunderbird to use when connecting to mail/address book/calendar services. You will need to have a client ID registered with the provider to use this API.",
+              "type": "object",
+              "properties": {
+                "issuer": {
+                  "description": "A string to identify this provider in the login manager. This <em>should</em> match the hostname of the authorization endpoint, although that is not required.",
+                  "type": "string"
+                },
+                "clientId": {
+                  "description": "Identifies the OAuth client to the server.",
+                  "type": "string"
+                },
+                "clientSecret": {
+                  "description": "Identifies the OAuth client to the server.",
+                  "type": "string",
+                  "optional": true
+                },
+                "authorizationEndpoint": {
+                  "description": "OAuth authorization endpoint address.",
+                  "type": "string",
+                  "format": "url"
+                },
+                "tokenEndpoint": {
+                  "description": "OAuth token endpoint address.",
+                  "type": "string",
+                  "format": "url"
+                },
+                "redirectionEndpoint": {
+                  "description": "OAuth redirection endpoint.",
+                  "type": "string",
+                  "format": "url"
+                },
+                "usePKCE": {
+                  "description": "If the authorization uses PKCE.",
+                  "type": "boolean",
+                  "optional": true
+                },
+                "hostnames": {
+                  "description": "One or more hostnames which use this OAuth provider.",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "scopes": {
+                  "description": "The scopes to request when using this OAuth provider.",
+                  "type": "string"
+                }
+              },
+              "optional": true
+            }
+          }
+        }
+      ]
+    }
+  ],
   "sessions.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "$extend": "OptionalPermission",
+          "choices": [
+            {
+              "type": "string",
+              "enum": [
+                "sessions"
+              ]
+            }
+          ]
+        }
+      ]
+    },
     {
       "namespace": "sessions",
       "functions": [

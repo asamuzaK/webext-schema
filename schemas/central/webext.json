@@ -4434,7 +4434,6 @@
             {
               "type": "object",
               "name": "queryInfo",
-              "optional": true,
               "properties": {
                 "collapsed": {
                   "type": "boolean",
@@ -4543,6 +4542,16 @@
             {
               "$ref": "TabGroup",
               "name": "group"
+            },
+            {
+              "type": "object",
+              "name": "removeInfo",
+              "properties": {
+                "isWindowClosing": {
+                  "type": "boolean",
+                  "description": "True when the tab group is being closed because its window is being closed."
+                }
+              }
             }
           ]
         },
@@ -9410,6 +9419,7 @@
           "id": "SameSiteStatus",
           "type": "string",
           "enum": [
+            "unspecified",
             "no_restriction",
             "lax",
             "strict"
@@ -9703,7 +9713,7 @@
                   "$ref": "SameSiteStatus",
                   "optional": true,
                   "description": "The cookie's same-site status.",
-                  "default": "no_restriction"
+                  "default": "unspecified"
                 },
                 "expirationDate": {
                   "type": "number",
@@ -9957,7 +9967,7 @@
         {
           "id": "ResourceType",
           "type": "string",
-          "description": "How the requested resource will be used. Comparable to the webRequest.ResourceType type.",
+          "description": "How the requested resource will be used. Comparable to the webRequest.ResourceType type. object_subrequest is unsupported.",
           "enum": [
             "main_frame",
             "sub_frame",
@@ -14323,12 +14333,13 @@
               "enum": [
                 "authenticationInfo",
                 "bookmarksInfo",
-                "browsingHistory",
+                "browsingActivity",
                 "financialAndPaymentInfo",
                 "healthInfo",
                 "locationInfo",
                 "personalCommunications",
                 "personallyIdentifyingInfo",
+                "searchTerms",
                 "websiteActivity",
                 "websiteContent"
               ]
@@ -20906,7 +20917,6 @@
             "script",
             "image",
             "object",
-            "object_subrequest",
             "xmlhttprequest",
             "xslt",
             "ping",
