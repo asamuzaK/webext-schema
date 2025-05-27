@@ -206,12 +206,12 @@ export class Schema {
       const { $ref, properties, type, unsupported } = item;
       if (!unsupported) {
         $ref && this._refMap.set(`${namespace}.${key}`, { $ref, namespace });
-        if (Object.prototype.hasOwnProperty.call(item, 'value')) {
+        if (Object.hasOwn(item, 'value')) {
           target[key] = item.value;
         } else if (type === 'function') {
           target[key] = this._sandbox.stub();
         } else if (type === 'object' || $ref ||
-                   Object.prototype.hasOwnProperty.call(item, 'properties')) {
+                   Object.hasOwn(item, 'properties')) {
           target[key] ??= {};
           properties && this._mockProperties(
             target[key], properties, `${namespace}.${key}`
