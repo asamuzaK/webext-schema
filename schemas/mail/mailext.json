@@ -894,6 +894,28 @@
           }
         },
         {
+          "name": "getPreferredSystemLanguages",
+          "type": "function",
+          "async": "callback",
+          "description": "Gets the preferred locales of the operating system. This is different from the locales set in the browser; to get those, use $(ref:i18n.getAcceptLanguages).",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "languages",
+                  "type": "array",
+                  "items": {
+                    "$ref": "LanguageCode"
+                  },
+                  "description": "Array of LanguageCode"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "getUILanguage",
           "type": "function",
           "description": "Gets the browser UI language of the browser. This is different from $(ref:i18n.getAcceptLanguages) which returns the preferred user languages.",
@@ -2610,7 +2632,7 @@
           "choices": [
             {
               "type": "string",
-              "description": "A string containing a valid <a href='url-css-color-string'>CSS color string</a>, including hexadecimal or functional representations. For example the color *crimson* can be specified as: <li><var>crimson</var> <li><var>#dc143c</var> <li><var>rgb(220, 20, 60)</var> (or <var>rgba(220, 20, 60, 0.5)</var> to set 50% opacity) <li><var>hsl(348, 83%, 47%)</var> (or <var>hsla(348, 83%, 47%, 0.5)</var> to set 50% opacity)"
+              "description": "A string containing a valid $(url:css-color-string)[CSS color string], including hexadecimal or functional representations. For example the color *crimson* can be specified as: <li><var>crimson</var> <li><var>#dc143c</var> <li><var>rgb(220, 20, 60)</var> (or <var>rgba(220, 20, 60, 0.5)</var> to set 50% opacity) <li><var>hsl(348, 83%, 47%)</var> (or <var>hsla(348, 83%, 47%, 0.5)</var> to set 50% opacity)"
             },
             {
               "type": "array",
@@ -2641,13 +2663,13 @@
           "properties": {
             "stylesheet": {
               "optional": true,
-              "description": "URL to a stylesheet introducing additional CSS variables, extending the theme-able areas of Thunderbird. The <a href='url-theme-experiment'>theme_experiment add-on in our example repository</a> is using the stylesheet shown below, to add the <var>--chat-button-color</var> CSS color variable: <literalinclude>includes/theme/theme_experiment_style.css<lang>CSS</lang></literalinclude>The following <em>manifest.json</em> file maps the </var>--chat-button-color</var> CSS color variable to the theme color key <var>exp_chat_button</var> and uses it to set a color for the chat button: <literalinclude>includes/theme/theme_experiment_manifest.json<lang>JSON</lang></literalinclude>",
+              "description": "URL to a stylesheet introducing additional CSS variables, extending the theme-able areas of Thunderbird.",
               "$ref": "ExtensionURL"
             },
             "images": {
               "type": "object",
               "optional": true,
-              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map new theme image keys to internal Thunderbird CSS image variables. The new image key is usable as an image reference in $(ref:theme.ThemeType). Example: <literalinclude>includes/theme/theme_experiment_image.json<lang>JSON</lang></literalinclude>",
+              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map new theme image keys to internal Thunderbird CSS image variables. The new image key is usable as an image reference in $(ref:theme.ThemeType).",
               "additionalProperties": {
                 "type": "string"
               }
@@ -2655,7 +2677,7 @@
             "colors": {
               "type": "object",
               "optional": true,
-              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map new theme color keys to internal Thunderbird CSS color variables. The example shown below maps the theme color key <var>popup_affordance</var> to the CSS color variable </var>--arrowpanel-dimmed</var>. The new color key is usable as a color reference in $(ref:theme.ThemeType). <literalinclude>includes/theme/theme_experiment_color.json<lang>JSON</lang></literalinclude>",
+              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map new theme color keys to internal Thunderbird CSS color variables. The new color key is usable as a color reference in $(ref:theme.ThemeType).",
               "additionalProperties": {
                 "type": "string"
               }
@@ -2663,7 +2685,7 @@
             "properties": {
               "type": "object",
               "optional": true,
-              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map new theme property keys to internal Thunderbird CSS property variables. The new property key is usable as a property reference in $(ref:theme.ThemeType). Example: <literalinclude>includes/theme/theme_experiment_property.json<lang>JSON</lang></literalinclude>",
+              "description": "A <em>dictionary object</em> with one or more <em>key-value</em> pairs to map new theme property keys to internal Thunderbird CSS property variables. The new property key is usable as a property reference in $(ref:theme.ThemeType).",
               "additionalProperties": {
                 "type": "string"
               }
@@ -3005,12 +3027,13 @@
           "$import": "manifest.ManifestBase",
           "properties": {
             "theme": {
-              "$ref": "ThemeType"
+              "$ref": "ThemeType",
+              "description": "Properties for a static theme. A static theme must not contain any other WebExtension logic. If additional logic is required, request the <permission>theme</permission> permission and load/update the theme dynamically. More information about themes can be found in the $(url:dtn-web-extension-themes)[theme guide]"
             },
             "dark_theme": {
               "$ref": "ThemeType",
               "optional": true,
-              "description": "Fallback properties for the dark system theme."
+              "description": "Fallback properties for the dark system theme in a static theme."
             },
             "default_locale": {
               "type": "string",
@@ -3166,6 +3189,7 @@
     },
     {
       "namespace": "accounts",
+      "description": "The accounts API provides access to the user's server accounts.",
       "permissions": [
         "accountsRead"
       ],
@@ -3235,6 +3259,7 @@
               "max_manifest_version": 2,
               "type": "string",
               "enum": [
+                "ews",
                 "imap",
                 "nntp",
                 "none",
@@ -3246,6 +3271,7 @@
               "min_manifest_version": 3,
               "type": "string",
               "enum": [
+                "ews",
                 "imap",
                 "local",
                 "nntp",
@@ -3586,6 +3612,7 @@
     },
     {
       "namespace": "addressBooks",
+      "description": "The addressBooks API allows to access and manage the user's address books.",
       "permissions": [
         "addressBooks"
       ],
@@ -3834,6 +3861,7 @@
     },
     {
       "namespace": "addressBooks.provider",
+      "description": "The address book provider API allows to add address books, which are not stored or cached by Thunderbird itself, but are handled completely by the extension. Address books created by the this API will forward all access requests to the WebExtension.",
       "permissions": [
         "addressBooks"
       ],
@@ -3842,7 +3870,7 @@
           "name": "onSearchRequest",
           "max_manifest_version": 2,
           "type": "function",
-          "description": "Registering this listener will create a read-only address book, similar to an LDAP address book. When selecting this address book, users will first see no contacts, but they can search for them, which will fire this event. Contacts returned by the listener callback will be displayed as contact cards in the address book. Several listeners can be registered, to create multiple address books.\n\nThe event also fires for each registered listener (for each created read-only address book), when users type something into the mail composer's <em>To:</em> field, or into similar fields like the calendar meeting attendees field. Contacts returned by the listener callback will be added to the autocomplete results in the dropdown of that field.\n\nExample: <literalinclude>includes/addressBooks/onSearchRequest_mv2.js<lang>JavaScript</lang></literalinclude>",
+          "description": "Registering this listener will create a read-only address book, similar to an LDAP address book. When selecting this address book, users will first see no contacts, but they can search for contacts, which will fire this event. Contacts returned by the listener callback will be displayed as contact cards in the address book. Several listeners can be registered, to create multiple address books.",
           "parameters": [
             {
               "name": "node",
@@ -3857,7 +3885,7 @@
             {
               "name": "query",
               "type": "string",
-              "description": "The boolean query expression corresponding to the search. **Note:** This parameter may change in future releases of Thunderbird.",
+              "description": "The boolean query expression corresponding to the search.",
               "optional": true
             }
           ],
@@ -3884,13 +3912,27 @@
                 }
               }
             }
-          ]
+          ],
+          "returns": {
+            "type": "object",
+            "properties": {
+              "results": {
+                "type": "array",
+                "items": {
+                  "$ref": "ContactProperties"
+                }
+              },
+              "isCompleteResult": {
+                "type": "boolean"
+              }
+            }
+          }
         },
         {
           "name": "onSearchRequest",
           "min_manifest_version": 3,
           "type": "function",
-          "description": "Registering this listener will create a read-only address book, similar to an LDAP address book. When selecting this address book, users will first see no contacts, but they can search for them, which will fire this event. Contacts returned by the listener callback will be displayed as contact cards in the address book. Several listeners can be registered, to create multiple address books. **Ensure all listeners are at the top-level and use the synchronous pattern, otherwise the associated address books will be removed on background termination.**.\n\nThe event also fires for each registered listener (for each created read-only address book), when users type something into the mail composer's <em>To:</em> field, or into similar fields like the calendar meeting attendees field. Contacts returned by the listener callback will be added to the autocomplete results in the dropdown of that field.\n\nExample: <literalinclude>includes/addressBooks/onSearchRequest_mv3.js<lang>JavaScript</lang></literalinclude>",
+          "description": "Registering this listener will create a read-only address book, similar to an LDAP address book. When selecting this address book, users will first see no contacts, but they can search for contacts, which will fire this event. Contacts returned by the listener callback will be displayed as contact cards in the address book. Several listeners can be registered, to create multiple address books.",
           "parameters": [
             {
               "name": "node",
@@ -3905,7 +3947,7 @@
             {
               "name": "query",
               "type": "string",
-              "description": "The boolean query expression corresponding to the search. **Note:** This parameter may change in future releases of Thunderbird.",
+              "description": "The boolean query expression corresponding to the search.",
               "optional": true
             }
           ],
@@ -3932,7 +3974,21 @@
                 }
               }
             }
-          ]
+          ],
+          "returns": {
+            "type": "object",
+            "properties": {
+              "results": {
+                "type": "array",
+                "items": {
+                  "$ref": "ContactProperties"
+                }
+              },
+              "isCompleteResult": {
+                "type": "boolean"
+              }
+            }
+          }
         }
       ]
     },
@@ -3948,6 +4004,7 @@
     },
     {
       "namespace": "contacts",
+      "description": "The contacts API allows to access and manage the user's contacts.",
       "max_manifest_version": 2,
       "permissions": [
         "addressBooks"
@@ -4036,7 +4093,7 @@
         {
           "id": "ContactProperties",
           "type": "object",
-          "description": "A set of individual properties for a particular contact, and its vCard string. Further information can be found in $(doc:examples/vcard).",
+          "description": "A set of individual properties for a particular contact, and its vCard string. Further information can be found in $(doc:guides/vcard).",
           "patternProperties": {
             "^\\w+$": {
               "choices": [
@@ -4259,13 +4316,14 @@
             {
               "name": "id",
               "type": "string",
-              "description": "Assigns the contact an id. If an existing contact has this id, an exception is thrown. **Note:** Deprecated, the card's id should be specified in the vCard string instead.",
+              "description": "Assigns the contact an id. If an existing contact has this id, an exception is thrown.",
+              "deprecated": "The card's id should be specified directly in the vCard string.",
               "optional": true
             },
             {
               "name": "properties",
               "$ref": "ContactProperties",
-              "description": "The properties object for the new contact. If it includes a <var>vCard</var> member, all specified <a href='url-legacy-properties'>legacy properties</a> are ignored and the new contact will be based on the provided vCard string. If a UID is specified in the vCard string, which is already used by another contact, an exception is thrown. **Note:** Using individual properties is deprecated, use the <var>vCard</var> member instead."
+              "description": "The properties object for the new contact. If it includes a <var>vCard</var> member, all specified $(url:legacy-properties)[legacy properties] are ignored and the new contact will be based on the provided vCard string. If a UID is specified in the vCard string, which is already used by another contact, an exception is thrown."
             },
             {
               "type": "function",
@@ -4324,7 +4382,7 @@
             {
               "name": "properties",
               "$ref": "ContactProperties",
-              "description": "An object with properties to update the specified contact. Individual properties are removed, if they are set to <var>null</var>. If the provided object includes a <var>vCard</var> member, all specified <a href='url-legacy-properties'>legacy properties</a> are ignored and the details of the contact will be replaced by the provided vCard. Changes to the UID will be ignored. **Note:** Using individual properties is deprecated, use the <var>vCard</var> member instead. "
+              "description": "An object with properties to update the specified contact. Individual properties are removed, if they are set to <var>null</var>. If the provided object includes a <var>vCard</var> member, all specified $(url:legacy-properties)[legacy properties] are ignored and the details of the contact will be replaced by the provided vCard. Changes to the UID will be ignored."
             }
           ],
           "description": "Updates a contact."
@@ -4423,6 +4481,7 @@
     },
     {
       "namespace": "mailingLists",
+      "description": "The mailingLists API allows to access and manage the user's mailing lists.",
       "max_manifest_version": 2,
       "permissions": [
         "addressBooks"
@@ -4768,7 +4827,7 @@
                   "items": {
                     "$ref": "ThemeIcons"
                   },
-                  "description": "Specifies dark and light icons to be used with themes. The <var>light</var> icon is used on dark backgrounds and vice versa. **Note:** The default theme uses the <var>default_icon</var> for light backgrounds (if specified)."
+                  "description": "Specifies dark and light icons to be used with themes. The <var>light</var> icon is used on dark backgrounds and vice versa. The default theme uses the <var>default_icon</var> for light backgrounds (if specified)."
                 },
                 "default_popup": {
                   "type": "string",
@@ -4780,7 +4839,7 @@
                 "browser_style": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Enable browser styles. See the <a href='url-mdn-browser-styles'>MDN documentation on browser styles</a> for more information.",
+                  "description": "Enable browser styles. See the $(url:mdn-browser-styles)[MDN documentation on browser styles] for more information.",
                   "default": false
                 },
                 "default_area": {
@@ -4873,7 +4932,7 @@
                   "items": {
                     "$ref": "ThemeIcons"
                   },
-                  "description": "Specifies dark and light icons to be used with themes. The <var>light</var> icon is used on dark backgrounds and vice versa. **Note:** The default theme uses the <var>default_icon</var> for light backgrounds (if specified)."
+                  "description": "Specifies dark and light icons to be used with themes. The <var>light</var> icon is used on dark backgrounds and vice versa. The default theme uses the <var>default_icon</var> for light backgrounds (if specified)."
                 },
                 "default_popup": {
                   "type": "string",
@@ -4885,7 +4944,7 @@
                 "browser_style": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Enable browser styles. See the <a href='url-mdn-browser-styles'>MDN documentation on browser styles</a> for more information.",
+                  "description": "Enable browser styles. See the $(url:mdn-browser-styles)[MDN documentation on browser styles] for more information.",
                   "default": false
                 },
                 "default_area": {
@@ -4978,12 +5037,12 @@
             "type": "any"
           },
           "postprocess": "convertImageDataToURL",
-          "description": "Pixel data for an image. Must be an <a href='url-image-data'>ImageData</a> object (for example, from a <a href='url-canvas-element'>canvas</a> element)."
+          "description": "Pixel data for an image. Must be an $(url:image-data)[ImageData] object (for example, from a $(url:canvas-element)[canvas] element)."
         },
         {
           "id": "ImageDataDictionary",
           "type": "object",
-          "description": "A <em>dictionary object</em> to specify multiple <a href='url-image-data'>ImageData</a> objects in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>value</em> being an <a href='url-image-data'>ImageData</a> object, and <em>name</em> its size. Example: <literalinclude>includes/ImageDataDictionary.json<lang>JavaScript</lang></literalinclude>See the <a href='url-mdn-icon-size'>MDN documentation about choosing icon sizes</a> for more information on this.",
+          "description": "A <em>dictionary object</em> to specify multiple $(url:image-data)[ImageData] objects in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>value</em> being an $(url:image-data)[ImageData] object, and <em>name</em> its size.",
           "patternProperties": {
             "^[1-9]\\d*$": {
               "$ref": "ImageDataType"
@@ -5683,7 +5742,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when an action button is clicked. This event will not fire if the action has a popup. This is a user input event handler. For asynchronous listeners some <a href='url-user-input-restrictions'>restrictions</a> apply.",
+          "description": "Fired when an action button is clicked. This event will not fire if the action has a popup. This is a user input event handler. For asynchronous listeners some $(url:user-input-restrictions)[restrictions] apply.",
           "parameters": [
             {
               "name": "tab",
@@ -5930,7 +5989,7 @@
               "properties": {
                 "browser_style": {
                   "type": "boolean",
-                  "description": "Enable browser styles in the <var>management_url</var> page. See the <a href='url-mdn-browser-styles'>MDN documentation on browser styles</a> for more information.",
+                  "description": "Enable browser styles in the <var>management_url</var> page. See the $(url:mdn-browser-styles)[MDN documentation on browser styles] for more information.",
                   "optional": true,
                   "default": false
                 },
@@ -5938,7 +5997,7 @@
                   "type": "string",
                   "optional": true,
                   "deprecated": true,
-                  "description": "This property is no longer used. The only supported data format for the <var>data</var> argument in $(ref:cloudFile.onFileUpload) is <a href='url-dom-file'>File</a>."
+                  "description": "This property is no longer used. The only supported data format for the <var>data</var> argument in $(ref:cloudFile.onFileUpload) is $(url:dom-file)[File]."
                 },
                 "reuse_uploads": {
                   "description": "If a previously uploaded cloud file attachment is reused at a later time in a different message, Thunderbird may use the already known <var>url</var> and <var>templateInfo</var> values without triggering the registered $(ref:cloudFile.onFileUpload) listener again. Setting this option to <var>false</var> will always trigger the registered listener, providing the already known values through the <var>relatedFileInfo</var> parameter of the $(ref:cloudFile.onFileUpload) event, to let the provider decide how to handle these cases.",
@@ -5950,7 +6009,7 @@
                   "type": "string",
                   "format": "relativeUrl",
                   "preprocess": "localize",
-                  "description": "A page for configuring accounts, to be displayed in the preferences UI. **Note:** Within this UI only a limited subset of the WebExtension APIs is available: <var>cloudFile</var>, <var>extension</var>, <var>i18n</var>, <var>runtime</var>, <var>storage</var>. The id of the to be configured cloud file account can be retrieved via <code>new URL(location.href).searchParams.get('accountId');</code>."
+                  "description": "A page for configuring accounts, to be displayed in the preferences UI."
                 },
                 "name": {
                   "type": "string",
@@ -5978,6 +6037,7 @@
     },
     {
       "namespace": "cloudFile",
+      "description": "The cloudFile (a.k.a. fileLink) API allows to create a provider to store large attachments in the cloud instead of attaching them directly to the message.",
       "permissions": [
         "manifest:cloud_file"
       ],
@@ -6249,7 +6309,7 @@
                 },
                 "format": {
                   "optional": true,
-                  "description": "A format options object as used by <a href='url-date-time-format'>Intl.DateTimeFormat</a>. Defaults to: <literalinclude>includes/cloudFile/defaultDateFormat.js<lang>JavaScript</lang></literalinclude>",
+                  "description": "A format options object as used by $(url:date-time-format)[Intl.DateTimeFormat].",
                   "type": "object",
                   "additionalProperties": true
                 }
@@ -6449,6 +6509,7 @@
     },
     {
       "namespace": "compose",
+      "describtion": "The compose API allows to interact with the message composition window.",
       "types": [
         {
           "id": "ComposeRecipient",
@@ -6526,9 +6587,6 @@
               "max_manifest_version": 2,
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "$ref": "folders.MailFolder"
                 },
                 {
@@ -6536,6 +6594,9 @@
                   "enum": [
                     ""
                   ]
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ],
               "description": "An additional fcc folder which can be selected while composing the message, an empty string if not used. The permission <permission>accountsRead</permission> is required to use this property.",
@@ -6549,7 +6610,7 @@
             "attachVCard": {
               "type": "boolean",
               "optional": true,
-              "description": "Whether or not the vCard of the used identity will be attached to the message during send. **Note:** If the value has not been modified, selecting a different identity will load the default value of the new identity."
+              "description": "Whether or not the vCard of the used identity will be attached to the message during send."
             },
             "attachments": {
               "type": "array",
@@ -6664,9 +6725,6 @@
               "max_manifest_version": 2,
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "$ref": "folders.MailFolder"
                 },
                 {
@@ -6674,6 +6732,9 @@
                   "enum": [
                     ""
                   ]
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ],
               "optional": true,
@@ -6810,7 +6871,7 @@
             },
             "encryptBody": {
               "type": "boolean",
-              "description": "Whether encryption of the message body using the OpenPGP technology is enabled. **Note:** If encryption is enabled, but the <a href='url-help-cannot-encrypt'>preconditions</a> for sending an encrypted message are not met, the message cannot be sent."
+              "description": "Whether encryption of the message body using the OpenPGP technology is enabled."
             },
             "encryptSubject": {
               "type": "boolean",
@@ -6832,7 +6893,7 @@
             },
             "encryptBody": {
               "type": "boolean",
-              "description": "Whether encryption of the message body using the S/MIME technology is enabled. **Note:** If encryption is enabled, but the <a href='url-help-cannot-encrypt'>preconditions</a> for sending an encrypted message are not met, the message cannot be sent."
+              "description": "Whether encryption of the message body using the S/MIME technology is enabled."
             },
             "signMessage": {
               "type": "boolean",
@@ -6845,7 +6906,7 @@
         {
           "name": "onBeforeSend",
           "type": "function",
-          "description": "Fired when a message is about to be sent from the compose window. This is a user input event handler. For asynchronous listeners some <a href='url-user-input-restrictions'>restrictions</a> apply.",
+          "description": "Fired when a message is about to be sent from the compose window. This is a user input event handler. For asynchronous listeners some $(url:user-input-restrictions)[restrictions] apply.",
           "permissions": [
             "compose"
           ],
@@ -6956,7 +7017,7 @@
                   "items": {
                     "$ref": "messages.MessageHeader"
                   },
-                  "description": "The saved message(s). The number of saved messages depends on the applied file carbon copy configuration (fcc)."
+                  "description": "An array with exactly one element, the saved message."
                 }
               }
             }
@@ -7051,7 +7112,7 @@
         {
           "name": "beginNew",
           "type": "function",
-          "description": "Open a new message compose window.\n\n**Note:** The compose format can be set by <var>details.isPlainText</var> or by specifying only one of <var>details.body</var> or <var>details.plainTextBody</var>. Otherwise the default compose format of the selected identity is used.\n\n**Note:** Specifying <var>details.body</var> and <var>details.plainTextBody</var> without also specifying <var>details.isPlainText</var> threw an exception in Thunderbird up to version 97. Since Thunderbird 98, this combination creates a compose window with the compose format of the selected identity, using the matching <var>details.body</var> or <var>details.plainTextBody</var> value.\n\n**Note:** If no identity is specified, this function is using the default identity and not the identity of the referenced message.",
+          "description": "Open a new message compose window.",
           "async": "callback",
           "parameters": [
             {
@@ -7081,7 +7142,7 @@
         {
           "name": "beginReply",
           "type": "function",
-          "description": "Open a new message compose window replying to a given message.\n\n**Note:** The compose format can be set by <var>details.isPlainText</var> or by specifying only one of <var>details.body</var> or <var>details.plainTextBody</var>. Otherwise the default compose format of the selected identity is used.\n\n**Note:** Specifying <var>details.body</var> and <var>details.plainTextBody</var> without also specifying <var>details.isPlainText</var> threw an exception in Thunderbird up to version 97. Since Thunderbird 98, this combination creates a compose window with the compose format of the selected identity, using the matching <var>details.body</var> or <var>details.plainTextBody</var> value.\n\n**Note:** If no identity is specified, this function is using the default identity and not the identity of the referenced message.",
+          "description": "Open a new message compose window replying to a given message.",
           "async": "callback",
           "parameters": [
             {
@@ -7120,7 +7181,7 @@
         {
           "name": "beginForward",
           "type": "function",
-          "description": "Open a new message compose window forwarding a given message.\n\n**Note:** The compose format can be set by <var>details.isPlainText</var> or by specifying only one of <var>details.body</var> or <var>details.plainTextBody</var>. Otherwise the default compose format of the selected identity is used.\n\n**Note:** Specifying <var>details.body</var> and <var>details.plainTextBody</var> without also specifying <var>details.isPlainText</var> threw an exception in Thunderbird up to version 97. Since Thunderbird 98, this combination creates a compose window with the compose format of the selected identity, using the matching <var>details.body</var> or <var>details.plainTextBody</var> value.\n\n**Note:** If no identity is specified, this function is using the default identity and not the identity of the referenced message.",
+          "description": "Open a new message compose window forwarding a given message.",
           "async": "callback",
           "parameters": [
             {
@@ -7185,7 +7246,7 @@
           "name": "setComposeDetails",
           "type": "function",
           "async": true,
-          "description": "Updates the compose window. The properties of the given $(ref:compose.ComposeDetails) object will be used to overwrite the current values of the specified compose window, so only properties that are to be changed should be included. Modified settings will be treated as user initiated, and turn off further automatic changes on these settings.\n\nWhen updating any of the array properties (<var>customHeaders</var> and most address fields), make sure to first get the current values to not accidentally remove all existing entries when setting the new value.\n\n**Note:** The compose format of an existing compose window cannot be changed. Since Thunderbird 98, setting conflicting values for <var>details.body</var>, <var>details.plainTextBody</var> or <var>details.isPlaintext</var> no longer throws an exception, instead the compose window chooses the matching <var>details.body</var> or <var>details.plainTextBody</var> value and ignores the other.",
+          "description": "Updates the compose window. The properties of the given $(ref:compose.ComposeDetails) object will be used to overwrite the current values of the specified compose window, so only properties that are to be changed should be included. Modified settings will be treated as user initiated, and turn off further automatic changes on these settings.",
           "permissions": [
             "compose"
           ],
@@ -7281,7 +7342,7 @@
         {
           "name": "getAttachmentFile",
           "type": "function",
-          "description": "Gets the content of a $(ref:compose.ComposeAttachment) as a <a href='url-dom-file'>File</a> object.",
+          "description": "Gets the content of a $(ref:compose.ComposeAttachment) as a $(url:dom-file)[File] object.",
           "async": "callback",
           "parameters": [
             {
@@ -7503,7 +7564,7 @@
                       "items": {
                         "$ref": "messages.MessageHeader"
                       },
-                      "description": "The saved message(s). The number of saved messages depends on the applied file carbon copy configuration (fcc)."
+                      "description": "An array with exactly one element, the saved message."
                     }
                   }
                 }
@@ -7574,7 +7635,7 @@
                   "items": {
                     "$ref": "ThemeIcons"
                   },
-                  "description": "Specifies dark and light icons to be used with themes. The <var>light</var> icon is used on dark backgrounds and vice versa. **Note:** The default theme uses the <var>default_icon</var> for light backgrounds (if specified)."
+                  "description": "Specifies dark and light icons to be used with themes. The <var>light</var> icon is used on dark backgrounds and vice versa. The default theme uses the <var>default_icon</var> for light backgrounds (if specified)."
                 },
                 "default_popup": {
                   "type": "string",
@@ -7586,7 +7647,7 @@
                 "browser_style": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Enable browser styles. See the <a href='url-mdn-browser-styles'>MDN documentation on browser styles</a> for more information.",
+                  "description": "Enable browser styles. See the $(url:mdn-browser-styles)[MDN documentation on browser styles] for more information.",
                   "default": false
                 },
                 "default_area": {
@@ -7642,12 +7703,12 @@
             "type": "any"
           },
           "postprocess": "convertImageDataToURL",
-          "description": "Pixel data for an image. Must be an <a href='url-image-data'>ImageData</a> object (for example, from a <a href='url-canvas-element'>canvas</a> element)."
+          "description": "Pixel data for an image. Must be an $(url:image-data)[ImageData] object (for example, from a $(url:canvas-element)[canvas] element)."
         },
         {
           "id": "ImageDataDictionary",
           "type": "object",
-          "description": "A <em>dictionary object</em> to specify multiple <a href='url-image-data'>ImageData</a> objects in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>value</em> being an <a href='url-image-data'>ImageData</a> object, and <em>name</em> its size. Example: <literalinclude>includes/ImageDataDictionary.json<lang>JavaScript</lang></literalinclude>See the <a href='url-mdn-icon-size'>MDN documentation about choosing icon sizes</a> for more information on this.",
+          "description": "A <em>dictionary object</em> to specify multiple $(url:image-data)[ImageData] objects in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>value</em> being an $(url:image-data)[ImageData] object, and <em>name</em> its size.",
           "patternProperties": {
             "^[1-9]\\d*$": {
               "$ref": "ImageDataType"
@@ -8347,7 +8408,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a composeAction button is clicked. This event will not fire if the composeAction has a popup. This is a user input event handler. For asynchronous listeners some <a href='url-user-input-restrictions'>restrictions</a> apply.",
+          "description": "Fired when a composeAction button is clicked. This event will not fire if the composeAction has a popup. This is a user input event handler. For asynchronous listeners some $(url:user-input-restrictions)[restrictions] apply.",
           "parameters": [
             {
               "name": "tab",
@@ -8430,7 +8491,7 @@
         {
           "name": "register",
           "type": "function",
-          "description": "Register a compose script programmatically. **Note:** Registered scripts will only be applied to newly opened message composer tabs. To apply the script to already open message composer tab, manually inject your script by calling $(ref:tabs.executeScript) for each of the open <var>messageCompose</var> tabs.",
+          "description": "Register a compose script programmatically.",
           "async": true,
           "parameters": [
             {
@@ -8501,7 +8562,7 @@
         {
           "name": "register",
           "type": "function",
-          "description": "Register a message display script programmatically. **Note:** Registered scripts will only be applied to newly opened messages. To apply the script to already open messages, manually inject your script by calling $(ref:tabs.executeScript) for each of the open <var>messageDisplay</var> tabs.",
+          "description": "Register a message display script programmatically.",
           "async": true,
           "parameters": [
             {
@@ -8532,6 +8593,7 @@
     },
     {
       "namespace": "folders",
+      "description": "The folders API allows to access and manage the user's message folders.",
       "permissions": [
         "accountsRead"
       ],
@@ -8975,12 +9037,12 @@
                 "isTag": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Whether the folder is a virtual tag folder, or not. Note: Virtual tag folders are always skipped, unless this property is set to <var>true</var>"
+                  "description": "Whether the folder is a virtual tag folder, or not. Virtual tag folders are always skipped, unless this property is set to <var>true</var>"
                 },
                 "isUnified": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Whether the folder is a unified mailbox folder, or not. Note: Unified mailbox folders are always skipped, unless this property is set to <var>true</var>"
+                  "description": "Whether the folder is a unified mailbox folder, or not. Unified mailbox folders are always skipped, unless this property is set to <var>true</var>"
                 },
                 "isVirtual": {
                   "type": "boolean",
@@ -9180,15 +9242,15 @@
               "name": "destination",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.create() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 },
                 {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.create() requires to specify the MailFolderId of the account's rootFolder, instead of a full MailAccount object.",
                   "$ref": "accounts.MailAccount"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9222,11 +9284,11 @@
               "name": "folder",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.rename() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9290,11 +9352,11 @@
               "name": "source",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.move() requires to specify a MailFolderId for its source parameter, instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9302,15 +9364,15 @@
               "name": "destination",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.move() requires to specify a MailFolderId for its destination parameter, instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 },
                 {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.move() requires to specify the MailFolderId of the account's rootFolder for its destination parameter, instead of a full MailAccount object.",
                   "$ref": "accounts.MailAccount"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9370,11 +9432,11 @@
               "name": "source",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.copy() requires to specify a MailFolderId for its source parameter, instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9382,15 +9444,15 @@
               "name": "destination",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.copy() requires to specify a MailFolderId for its destination parameter, instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 },
                 {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.copy() requires to specify the MailFolderId of the account's rootFolder for its destination parameter, instead of a full MailAccount object.",
                   "$ref": "accounts.MailAccount"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9451,11 +9513,11 @@
               "name": "folder",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.delete() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             }
@@ -9492,11 +9554,11 @@
               "name": "folder",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.update() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9553,11 +9615,11 @@
               "name": "folder",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.getFolderInfo() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9607,11 +9669,11 @@
               "name": "folder",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.getFolderCapabilities() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9661,11 +9723,11 @@
               "name": "folder",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.getParentFolders() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9768,15 +9830,15 @@
               "name": "folder",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.getSubFolders() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
                 },
                 {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.getSubFolders() requires to specify the MailFolderId of the account's rootFolder, instead of a full MailAccount object.",
                   "$ref": "accounts.MailAccount"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -9878,11 +9940,11 @@
               "name": "folder",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: folders.markAsRead() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -10037,6 +10099,7 @@
     },
     {
       "namespace": "identities",
+      "description": "The identities API allows to manage the user's identities (each account can have multiple identities).",
       "permissions": [
         "accountsRead"
       ],
@@ -10350,6 +10413,7 @@
   "mailTabs.json": [
     {
       "namespace": "mailTabs",
+      "description": "The mailTabs API allows to interact with Thunderbird's main mail tab (a.k.a 3-pane tab).",
       "types": [
         {
           "id": "FolderMode",
@@ -10546,7 +10610,7 @@
             },
             "layout": {
               "type": "string",
-              "description": "Sets the arrangement of the folder pane, message list pane, and message display pane. Note that setting this applies it to all mail tabs.",
+              "description": "Sets the arrangement of the folder pane, message list pane, and message display pane. Setting a layout will be applied to all mail tabs.",
               "optional": true,
               "enum": [
                 "standard",
@@ -10728,7 +10792,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates a new mail tab. Standard tab properties can be adjusted via $(ref:tabs.update) after the mail tab has been created. **Note:** A new mail window can be created via $(ref:windows.create).",
+          "description": "Creates a new mail tab. Standard tab properties can be adjusted via $(ref:tabs.update) after the mail tab has been created. A new mail window can be created via $(ref:windows.create).",
           "async": "callback",
           "parameters": [
             {
@@ -11089,7 +11153,7 @@
               ]
             }
           ],
-          "description": "The different contexts a menu can appear in. Specifying <var>all</var> is equivalent to the combination of all other contexts excluding <var>tab</var> and <var>tools_menu</var>. More information about each context can be found in the <a href='url-ui-elements'>Supported UI Elements</a> article on developer.thunderbird.net."
+          "description": "The different contexts a menu can appear in. Specifying <var>all</var> is equivalent to the combination of all other contexts excluding <var>tab</var> and <var>tools_menu</var>. More information about each context can be found in the $(url:ui-elements)[Supported UI Elements] article on developer.thunderbird.net."
         },
         {
           "id": "ItemType",
@@ -11145,31 +11209,31 @@
             "linkText": {
               "type": "string",
               "optional": true,
-              "description": "If the element is a link, the text of that link. **Note:** Host permission is required."
+              "description": "If the element is a link, the text of that link."
             },
             "linkUrl": {
               "type": "string",
               "optional": true,
-              "description": "If the element is a link, the URL it points to. **Note:** Host permission is required."
+              "description": "If the element is a link, the URL it points to."
             },
             "srcUrl": {
               "type": "string",
-              "description": "Will be present for elements with a <em>src</em> URL. **Note:** Host permission is required.",
+              "description": "Will be present for elements with a <em>src</em> URL.",
               "optional": true
             },
             "pageUrl": {
               "type": "string",
-              "description": "The URL of the page where the menu item was clicked. This property is not set if the click occurred in a context where there is no current page, such as in a launcher context menu. **Note:** Host permission is required.",
+              "description": "The URL of the page where the menu item was clicked. This property is not set if the click occurred in a context where there is no current page, such as in a launcher context menu.",
               "optional": true
             },
             "frameUrl": {
               "type": "string",
-              "description": "The URL of the frame of the element where the context menu was clicked, if it was in a frame. **Note:** Host permission is required.",
+              "description": "The URL of the frame of the element where the context menu was clicked, if it was in a frame.",
               "optional": true
             },
             "selectionText": {
               "type": "string",
-              "description": "The text for the context selection, if any. **Note:** Host permission is required.",
+              "description": "The text for the context selection, if any.",
               "optional": true
             },
             "targetElementId": {
@@ -11435,7 +11499,7 @@
               "$ref": "MenuIconPath"
             }
           },
-          "description": "A <em>dictionary object</em> to specify paths for multiple icons in different sizes, so the best matching icon can be used, instead of scaling a standard icon to fit the pixel density of the user's display. Each entry is a <em>name-value</em> pair, with <em>name</em> being a size and <em>value</em> being a $(ref:menus.MenuIconPath). Example: <literalinclude>includes/IconPath.json<lang>JSON</lang></literalinclude>See the <a href='url-choosing-icon-size'>MDN documentation about choosing icon sizes</a> for more information on this. "
+          "description": "A <em>dictionary object</em> to specify paths for multiple icons in different sizes, so the best matching icon can be used, instead of scaling a standard icon to fit the pixel density of the user's display. Each entry is a <em>name-value</em> pair, with <em>name</em> being a size and <em>value</em> being a $(ref:menus.MenuIconPath)."
         },
         {
           "id": "MenuActionCommand",
@@ -11466,7 +11530,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates a new context menu item. Note that if an error occurs during creation, you may not find out until the creation callback fires (the details will be in <a href='url-runtime-last-error'>runtime.lastError</a>).",
+          "description": "Creates a new context menu item. Note that if an error occurs during creation, you may not find out until the creation callback fires (the details will be in $(url:runtime-last-error)[runtime.lastError]).",
           "returns": {
             "choices": [
               {
@@ -11573,7 +11637,7 @@
                     "type": "string"
                   },
                   "optional": true,
-                  "description": "Lets you restrict the item to apply only to documents whose URL matches one of the given patterns. (This applies to frames as well.) For details on the format of a pattern, see <a href='url-match-patterns'>Match Patterns</a>."
+                  "description": "Lets you restrict the item to apply only to documents whose URL matches one of the given patterns. (This applies to frames as well.) For details on the format of a pattern, see $(url:match-patterns)[Match Patterns]."
                 },
                 "targetUrlPatterns": {
                   "type": "array",
@@ -11606,7 +11670,7 @@
               "type": "function",
               "name": "callback",
               "optional": true,
-              "description": "Called when the item has been created in the browser. If there were any problems creating the item, details will be available in <a href='url-runtime-last-error'>runtime.lastError</a>.",
+              "description": "Called when the item has been created in the browser. If there were any problems creating the item, details will be available in $(url:runtime-last-error)[runtime.lastError].",
               "parameters": []
             }
           ]
@@ -11689,7 +11753,7 @@
                     {
                       "name": "tab",
                       "$ref": "tabs.Tab",
-                      "description": "The details of the tab where the click took place. **Note:** this parameter only present for extensions."
+                      "description": "The details of the tab where the click took place."
                     }
                   ]
                 },
@@ -11703,7 +11767,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "**Note:** You cannot change an item to be a child of one of its own descendants."
+                  "description": "The hierarchical parent of the element. Updating an element to become a child of its own descendants is not supported."
                 },
                 "documentUrlPatterns": {
                   "type": "array",
@@ -11782,7 +11846,7 @@
             "menus.overrideContext"
           ],
           "type": "function",
-          "description": "Show the matching menu items from this extension instead of the default menu. This should be called during a <a href='url-contextmenu-event'>contextmenu</a> event handler, and only applies to the menu that opens after this event.",
+          "description": "Show the matching menu items from this extension instead of the default menu. This should be called during a $(url:contextmenu-event)[contextmenu] event handler, and only applies to the menu that opens after this event.",
           "parameters": [
             {
               "name": "contextOptions",
@@ -11824,7 +11888,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a context menu item is clicked. This is a user input event handler. For asynchronous listeners some <a href='url-user-input-restrictions'>restrictions</a> apply.",
+          "description": "Fired when a context menu item is clicked. This is a user input event handler. For asynchronous listeners some $(url:user-input-restrictions)[restrictions] apply.",
           "parameters": [
             {
               "name": "info",
@@ -11884,7 +11948,7 @@
             "content",
             "devtools"
           ],
-          "description": "Retrieve the element that was associated with a recent <a href='url-contextmenu-event'>contextmenu</a> event.",
+          "description": "Retrieve the element that was associated with a recent $(url:contextmenu-event)[contextmenu] event.",
           "parameters": [
             {
               "type": "integer",
@@ -11907,6 +11971,7 @@
   "messageDisplay.json": [
     {
       "namespace": "messageDisplay",
+      "description": "A message can be displayed in either Thunderbird's main mail tab (a.k.a 3-pane tab), a tab of its own, or in a window of its own. All are referenced by <var>tabId</var> in this API. Display windows are considered to have exactly one tab, which has limited functionality compared to tabs from the main window.",
       "permissions": [
         "messagesRead"
       ],
@@ -12124,7 +12189,7 @@
                   "items": {
                     "$ref": "ThemeIcons"
                   },
-                  "description": "Specifies dark and light icons to be used with themes. The <var>light</var> icon is used on dark backgrounds and vice versa. **Note:** The default theme uses the <var>default_icon</var> for light backgrounds (if specified)."
+                  "description": "Specifies dark and light icons to be used with themes. The <var>light</var> icon is used on dark backgrounds and vice versa. The default theme uses the <var>default_icon</var> for light backgrounds (if specified)."
                 },
                 "default_popup": {
                   "type": "string",
@@ -12136,7 +12201,7 @@
                 "browser_style": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Enable browser styles. See the <a href='url-mdn-browser-styles'>MDN documentation on browser styles</a> for more information.",
+                  "description": "Enable browser styles. See the $(url:mdn-browser-styles)[MDN documentation on browser styles] for more information.",
                   "default": false
                 },
                 "default_area": {
@@ -12188,12 +12253,12 @@
             "type": "any"
           },
           "postprocess": "convertImageDataToURL",
-          "description": "Pixel data for an image. Must be an <a href='url-image-data'>ImageData</a> object (for example, from a <a href='url-canvas-element'>canvas</a> element)."
+          "description": "Pixel data for an image. Must be an $(url:image-data)[ImageData] object (for example, from a $(url:canvas-element)[canvas] element)."
         },
         {
           "id": "ImageDataDictionary",
           "type": "object",
-          "description": "A <em>dictionary object</em> to specify multiple <a href='url-image-data'>ImageData</a> objects in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>value</em> being an <a href='url-image-data'>ImageData</a> object, and <em>name</em> its size. Example: <literalinclude>includes/ImageDataDictionary.json<lang>JavaScript</lang></literalinclude>See the <a href='url-mdn-icon-size'>MDN documentation about choosing icon sizes</a> for more information on this.",
+          "description": "A <em>dictionary object</em> to specify multiple $(url:image-data)[ImageData] objects in different sizes, so the icon does not have to be scaled for a device with a different pixel density. Each entry is a <em>name-value</em> pair with <em>value</em> being an $(url:image-data)[ImageData] object, and <em>name</em> its size.",
           "patternProperties": {
             "^[1-9]\\d*$": {
               "$ref": "ImageDataType"
@@ -12893,7 +12958,7 @@
         {
           "name": "onClicked",
           "type": "function",
-          "description": "Fired when a messageDisplayAction button is clicked. This event will not fire if the messageDisplayAction has a popup. This is a user input event handler. For asynchronous listeners some <a href='url-user-input-restrictions'>restrictions</a> apply.",
+          "description": "Fired when a messageDisplayAction button is clicked. This event will not fire if the messageDisplayAction has a popup. This is a user input event handler. For asynchronous listeners some $(url:user-input-restrictions)[restrictions] apply.",
           "parameters": [
             {
               "name": "tab",
@@ -12936,6 +13001,7 @@
     },
     {
       "namespace": "messages",
+      "description": "The messages API allows to access and manage the user's messages.",
       "permissions": [
         "messagesRead"
       ],
@@ -13061,7 +13127,7 @@
         {
           "id": "MessageList",
           "type": "object",
-          "description": "See $(doc:examples/messageLists) for more information.",
+          "description": "See $(doc:guides/messageLists) for more information.",
           "properties": {
             "id": {
               "choices": [
@@ -13397,11 +13463,11 @@
               "name": "folder",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: messages.list() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ]
             },
@@ -13420,7 +13486,7 @@
         {
           "name": "continueList",
           "type": "function",
-          "description": "Returns the next chunk of messages in a list. See $(doc:examples/messageLists) for more information.",
+          "description": "Returns the next chunk of messages in a list. See $(doc:guides/messageLists) for more information.",
           "async": "callback",
           "parameters": [
             {
@@ -13494,7 +13560,7 @@
                 },
                 "decodeHeaders": {
                   "type": "boolean",
-                  "description": "Whether to decode RFC 2047 encoded headers of message parts. Defaults to <var>true</var>. **Note:** Automatic decoding of headers containing a list of comma separated mailbox strings can have unwanted side effects. Example: <literalinclude>includes/messages/badHeader.js<lang>JavaScript</lang></literalinclude>",
+                  "description": "Whether to decode RFC 2047 encoded headers of message parts. Defaults to <var>true</var>.",
                   "optional": true
                 },
                 "decodeContent": {
@@ -13548,7 +13614,7 @@
                   "choices": [
                     {
                       "max_manifest_version": 2,
-                      "description": "The message can either be returned as a DOM File or as a <a href='url-binary-string'>binary string</a>. The historic default is to return a binary string (kept for backward compatibility). However, it is now recommended to use the <var>File</var> format, because the DOM File object can be used as-is with the downloads API and has useful methods to access the content, like <a href='url-dom-file-text'>File.text()</a> and <a href='url-dom-file-array-buffer'>File.arrayBuffer()</a>. Working with binary strings is error prone and needs special handling: <literalinclude>includes/messages/decodeBinaryString.js<lang>JavaScript</lang></literalinclude> (see MDN for <a href='url-input-encoding'>supported input encodings</a>).",
+                      "description": "The message can either be returned as a DOM File or as a $(url:binary-string)[binary string]. The historic default is to return a binary string (kept for backward compatibility). However, it is now recommended to use the <var>File</var> format, because the DOM File object can be used as-is with the downloads API and has useful methods to access the content, like $(url:dom-file-text)[File.text()] and $(url:dom-file-array-buffer)[File.arrayBuffer()].",
                       "type": "string",
                       "enum": [
                         "File",
@@ -13557,7 +13623,7 @@
                     },
                     {
                       "min_manifest_version": 3,
-                      "description": "The message can either be returned as a DOM File (default) or as a <a href='url-binary-string'>binary string</a>. It is recommended to use the <var>File</var> format, because the DOM File object can be used as-is with the downloads API and has useful methods to access the content, like <a href='url-dom-file-text'>File.text()</a> and <a href='url-dom-file-array-buffer'>File.arrayBuffer()</a>. Working with binary strings is error prone and needs special handling: <literalinclude>includes/messages/decodeBinaryString.js<lang>JavaScript</lang></literalinclude> (see MDN for <a href='url-input-encoding'>supported input encodings</a>).",
+                      "description": "The message can either be returned as a DOM File (default) or as a $(url:binary-string)[binary string]. It is recommended to use the <var>File</var> format, because the DOM File object can be used as-is with the downloads API and has useful methods to access the content, like $(url:dom-file-text)[File.text()] and $(url:dom-file-array-buffer)[File.arrayBuffer()].",
                       "type": "string",
                       "enum": [
                         "File",
@@ -13619,7 +13685,7 @@
         {
           "name": "listInlineTextParts",
           "type": "function",
-          "description": "Lists all inline text parts of a message. These parts are not returned by $(ref:messages.listAttachments) and usually make up the readable content of the message, mostly with content type <var>text/plain</var> or <var>text/html</var>. If a message only includes a part with content type <var>text/html</var>, the method $(ref:messengerUtilities.convertToPlainText) can be used to retreive a plain text version. \n\n**Note:** A message usually contains only one inline text part per subtype, but technically messages can contain multiple inline text parts per subtype.",
+          "description": "Lists all inline text parts of a message. These parts are not returned by $(ref:messages.listAttachments) and usually make up the readable content of the message, mostly with content type <var>text/plain</var> or <var>text/html</var>. If a message only includes a part with content type <var>text/html</var>, the method $(ref:messengerUtilities.convertToPlainText) can be used to retreive a plain text version.",
           "async": "callback",
           "parameters": [
             {
@@ -13644,7 +13710,7 @@
         {
           "name": "getAttachmentFile",
           "type": "function",
-          "description": "Gets the content of a $(ref:messages.MessageAttachment) as a <a href='url-dom-file'>File</a> object.",
+          "description": "Gets the content of a $(ref:messages.MessageAttachment) as a $(url:dom-file)[File] object.",
           "async": "callback",
           "parameters": [
             {
@@ -13821,7 +13887,7 @@
                 "online": {
                   "type": "boolean",
                   "optional": true,
-                  "description": "Query the server directly instead of the local message database. Online queries currently only support querying the `headerMessageId` property. Currently only supported for NNTP accounts."
+                  "description": "Query the server directly instead of the local message database. Online queries currently only support querying the <var>headerMessageId</var> property. Currently only supported for NNTP accounts."
                 },
                 "recipients": {
                   "type": "string",
@@ -13958,11 +14024,11 @@
               "name": "destination",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: messages.move() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ],
               "description": "The folder to move the messages to."
@@ -14042,11 +14108,11 @@
               "name": "destination",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: messages.copy() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ],
               "description": "The folder to copy the messages to."
@@ -14135,12 +14201,12 @@
                     "deletePermanently": {
                       "type": "boolean",
                       "optional": true,
-                      "description": "Whether the message will be deleted permanently, regardless of the account's deletion behavior settings. Use this with care!"
+                      "description": "Whether the message will be deleted permanently, regardless of the account's deletion behavior settings. A permanently deleted message cannot be restored, even if the action is defined as a user action. Use this with care!"
                     },
                     "isUserAction": {
                       "type": "boolean",
                       "optional": true,
-                      "description": "Whether this copy operation should be treated as a user action, for example allowing undo. Note: Deleting messages permanently cannot be undone!"
+                      "description": "Whether this copy operation should be treated as a user action, for example allowing undo."
                     }
                   }
                 }
@@ -14169,11 +14235,11 @@
               "name": "destination",
               "choices": [
                 {
-                  "$ref": "folders.MailFolderId"
-                },
-                {
                   "deprecated": "Support deprecated since Thunderbird 121 and removed in Manifest V3: messages.import() requires to specify a MailFolderId instead of a full MailFolder object.",
                   "$ref": "folders.MailFolder"
+                },
+                {
+                  "$ref": "folders.MailFolderId"
                 }
               ],
               "description": "The folder to import the messages into."
@@ -14365,6 +14431,7 @@
     },
     {
       "namespace": "messages.tags",
+      "description": "The messages.tags API allows to manage the user's message tags.",
       "types": [
         {
           "id": "MessageTag",
@@ -14635,6 +14702,7 @@
   "messenger_utilities.json": [
     {
       "namespace": "messengerUtilities",
+      "description": "The messengerUtilities API provides helpful methods for working with messages and emails.",
       "types": [
         {
           "id": "ParsedMailbox",
@@ -14954,6 +15022,7 @@
     },
     {
       "namespace": "sessions",
+      "description": "The sessions API allows to add tab related session data to Thunderbird's tabs, which will be restored on app restart.",
       "functions": [
         {
           "name": "setTabValue",
@@ -15030,6 +15099,7 @@
   "spaces.json": [
     {
       "namespace": "spaces",
+      "description": "The spaces API allows to manage built-in and custom spaces, and to add buttons for custom spaces to Thunderbird's spaces toolbar.",
       "types": [
         {
           "id": "SpaceTabProperties",
@@ -15044,7 +15114,7 @@
             "cookieStoreId": {
               "type": "string",
               "optional": true,
-              "description": "The <a href='url-cookieStore'>CookieStore</a> id used by the tab. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons. The <permission>cookies</permission> permission is required to be able to specify this property. Furthermore, the <permission>contextualIdentities</permission> permission should be requested, to enable the contextual identities feature (enabled by default only on Thunderbird Daily)."
+              "description": "The $(url:cookieStore)[CookieStore] id used by the tab. Either a custom id created using the $(url:contextualIdentity)[contextualIdentities API], or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>."
             },
             "linkHandler": {
               "type": "string",
@@ -15212,13 +15282,13 @@
               "name": "tabProperties",
               "choices": [
                 {
-                  "$ref": "spaces.SpaceTabProperties"
+                  "type": "string"
                 },
                 {
-                  "type": "string"
+                  "$ref": "spaces.SpaceTabProperties"
                 }
               ],
-              "description": "The properties for the new tab being opened, when the associated button in the spaces toolbar is clicked. Either a <em>string</em> specifiying the default URL, or a $(ref:spaces.SpaceTabProperties) object. The URL may point to a WebExtension page or a web page."
+              "description": "The properties for the new tab being opened, when the associated button in the spaces toolbar is clicked. Either a <em>string</em> specifying the default URL, or a $(ref:spaces.SpaceTabProperties) object. The URL may point to a WebExtension page or a web page."
             },
             {
               "name": "buttonProperties",
@@ -15369,7 +15439,7 @@
                   "$ref": "spaces.SpaceButtonProperties"
                 }
               ],
-              "description": "The properties for the new tab being opened, when the associated button in the spaces toolbar is clicked. Either a <em>string</em> specifiying the default URL, or a $(ref:spaces.SpaceTabProperties) object. The URL may point to a WebExtension page or a web page."
+              "description": "The properties for the new tab being opened, when the associated button in the spaces toolbar is clicked. Either a <em>string</em> specifying the default URL, or a $(ref:spaces.SpaceTabProperties) object. The URL may point to a WebExtension page or a web page."
             },
             {
               "name": "buttonProperties",
@@ -15418,6 +15488,7 @@
   "spacesToolbar.json": [
     {
       "namespace": "spacesToolbar",
+      "description": "The spacesToolbar API allows to manage built-in and custom spaces, and to add buttons for custom spaces to Thunderbird's spaces toolbar.",
       "max_manifest_version": 2,
       "types": [
         {
@@ -15697,7 +15768,7 @@
             "cookieStoreId": {
               "type": "string",
               "optional": true,
-              "description": "The <a href='url-cookieStore'>CookieStore</a> id used by the tab. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons."
+              "description": "The $(url:cookieStore)[CookieStore] id used by the tab. Either a custom id created using the $(url:contextualIdentity)[contextualIdentities API], or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>."
             },
             "type": {
               "$ref": "TabType",
@@ -15772,12 +15843,12 @@
             "status",
             "title"
           ],
-          "description": "Event names supported in onUpdated."
+          "description": "Event names supported in $(ref:tabs.onUpdated)."
         },
         {
           "id": "UpdateFilter",
           "type": "object",
-          "description": "An object describing filters to apply to tabs.onUpdated events.",
+          "description": "An object describing filters to apply to $(ref:tabs.onUpdated) events.",
           "properties": {
             "urls": {
               "type": "array",
@@ -15862,7 +15933,7 @@
         {
           "name": "connect",
           "type": "function",
-          "description": "Connects to the content script(s) in the specified tab. The <a href='url-runtime-on-connect'>runtime.onConnect</a> event is fired in each content script running in the specified tab for the current extension. For more details, see <a href='url-content-scripts'>Content Script Messaging</a>.",
+          "description": "Connects to the content script(s) in the specified tab. The $(url:runtime-on-connect)[runtime.onConnect] event is fired in each content script running in the specified tab for the current extension. For more details, see $(url:content-scripts)[Content Script Messaging].",
           "parameters": [
             {
               "type": "integer",
@@ -15896,7 +15967,7 @@
         {
           "name": "sendMessage",
           "type": "function",
-          "description": "Sends a single message to the content script(s) in the specified tab, with an optional callback to run when a response is sent back. The <a href='url-runtime-on-message'>runtime.onMessage</a> event is fired in each content script running in the specified tab for the current extension.",
+          "description": "Sends a single message to the content script(s) in the specified tab, with an optional callback to run when a response is sent back. The $(url:runtime-on-message)[runtime.onMessage] event is fired in each content script running in the specified tab for the current extension.",
           "async": "responseCallback",
           "parameters": [
             {
@@ -15929,7 +16000,7 @@
                 {
                   "name": "response",
                   "type": "any",
-                  "description": "The JSON response object sent by the handler of the message. If an error occurs while connecting to the specified tab, the callback will be called with no arguments and <a href='url-runtime-last-error'>runtime.lastError</a> will be set to the error message."
+                  "description": "The JSON response object sent by the handler of the message. If an error occurs while connecting to the specified tab, the callback will be called with no arguments and $(url:runtime-last-error)[runtime.lastError] will be set to the error message."
                 }
               ]
             }
@@ -15938,7 +16009,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates a new content tab. To create message tabs, use the $(ref:messageDisplay.open). Only supported in <var>normal</var> windows. Same-site links in the loaded page are opened within Thunderbird, all other links are opened in the user's default browser. To override this behavior, add-ons have to register a <a href='url-content-script-click-capture'>content script</a> , capture click events and handle them manually.",
+          "description": "Creates a new content tab. To create message tabs, use the $(ref:messageDisplay.open). Only supported in <var>normal</var> windows. Same-site links in the loaded page are opened within Thunderbird, all other links are opened in the user's default browser. To override this behavior, add-ons have to register a $(url:content-script-click-capture)[content script] , capture click events and handle them manually.",
           "async": "callback",
           "parameters": [
             {
@@ -15971,7 +16042,7 @@
                 "cookieStoreId": {
                   "type": "string",
                   "optional": true,
-                  "description": "The <a href='url-cookieStore'>CookieStore</a> id the new tab should use. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons. The <permission>cookies</permission> permission is required to be able to specify this property. Furthermore, the <permission>contextualIdentities</permission> permission should be requested, to enable the contextual identities feature (enabled by default only on Thunderbird Daily)."
+                  "description": "The $(url:cookieStore)[CookieStore] id the new tab should use. Either a custom id created using the $(url:contextualIdentity)[contextualIdentities API], or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>."
                 },
                 "linkHandler": {
                   "type": "string",
@@ -16114,7 +16185,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "Match tabs against one or more <a href='url-match-patterns'>URL Patterns</a>. Note that fragment identifiers are not matched."
+                  "description": "Match tabs against one or more $(url:match-patterns)[URL Patterns]. Fragment identifiers are not matched."
                 },
                 "windowId": {
                   "type": "integer",
@@ -16146,7 +16217,7 @@
                     }
                   ],
                   "optional": true,
-                  "description": "The <a href='url-cookieStore'>CookieStore</a> id(s) used by the tabs. Either custom ids created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or built-in ones: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons."
+                  "description": "The $(url:cookieStore)[CookieStore] id(s) used by the tabs. Either custom ids created using the $(url:contextualIdentity)[contextualIdentities API], or built-in ones: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>."
                 }
               }
             },
@@ -16187,7 +16258,7 @@
                 "url": {
                   "type": "string",
                   "optional": true,
-                  "description": "A URL of a page to load. If the URL points to a content page (a web page, an extension page or a registered WebExtension protocol handler page), the tab will navigate to the requested page. All other URLs will be opened externally without changing the tab. **Note:** This function will throw an error, if a content page is loaded into a non-content tab (its type must be either <var>content</var> or <var>mail</var>)."
+                  "description": "A URL of a page to load. If the URL points to a content page (a web page, an extension page or a registered WebExtension protocol handler page), the tab will navigate to the requested page. All other URLs will be opened externally without changing the tab."
                 },
                 "active": {
                   "type": "boolean",
@@ -16213,7 +16284,7 @@
         {
           "name": "move",
           "type": "function",
-          "description": "Moves one or more tabs to a new position within its current window, or to a different window. Note that tabs can only be moved to and from windows of type <var>normal</var>.",
+          "description": "Moves one or more tabs to a new position within its current window, or to a different window. Tabs can only be moved to and from windows of type <var>normal</var>.",
           "async": "callback",
           "parameters": [
             {
@@ -16335,7 +16406,7 @@
           "name": "executeScript",
           "type": "function",
           "max_manifest_version": 2,
-          "description": "Injects JavaScript code into a page. For details, see the <a href='url-content-scripts'>programmatic injection</a> section of the content scripts doc.",
+          "description": "Injects JavaScript code into a page. For details, see the $(url:content-scripts)[programmatic injection] section of the content scripts doc.",
           "async": "callback",
           "parameters": [
             {
@@ -16373,7 +16444,7 @@
           "name": "insertCSS",
           "type": "function",
           "max_manifest_version": 2,
-          "description": "Injects CSS into a page. For details, see the <a href='url-content-scripts'>programmatic injection</a> section of the content scripts doc.",
+          "description": "Injects CSS into a page. For details, see the $(url:content-scripts)[programmatic injection] section of the content scripts doc.",
           "async": "callback",
           "parameters": [
             {
@@ -16401,7 +16472,7 @@
           "name": "removeCSS",
           "type": "function",
           "max_manifest_version": 2,
-          "description": "Removes injected CSS from a page. For details, see the <a href='url-content-scripts'>programmatic injection</a> section of the content scripts doc.",
+          "description": "Removes injected CSS from a page. For details, see the $(url:content-scripts)[programmatic injection] section of the content scripts doc.",
           "async": "callback",
           "parameters": [
             {
@@ -16519,7 +16590,7 @@
         {
           "name": "onActivated",
           "type": "function",
-          "description": "Fires when the active tab in a window changes. Note that the tab's URL may not be set at the time this event fired, but you can listen to onUpdated events to be notified when a URL is set.",
+          "description": "Fires when the active tab in a window changes. The tab's URL may not be set at the time this event fired, listen to the $(ref:tabs.onUpdated) event instead to be notified when a URL is set.",
           "parameters": [
             {
               "type": "object",
@@ -16872,7 +16943,7 @@
         {
           "name": "create",
           "type": "function",
-          "description": "Creates (opens) a new window with any optional sizing, position or default URL provided. When loading a page into a popup window, same-site links are opened within the same window, all other links are opened in the user's default browser. To override this behavior, add-ons have to register a <a href='url-content-script-click-capture'>content script</a> , capture click events and handle them manually. Same-site links with targets other than <var>_self</var> are opened in a new tab in the most recent <var>normal</var> Thunderbird window.",
+          "description": "Creates (opens) a new window with any optional sizing, position or default URL provided. When loading a page into a popup window, same-site links are opened within the same window, all other links are opened in the user's default browser. To override this behavior, add-ons have to register a $(url:content-script-click-capture)[content script] , capture click events and handle them manually. Same-site links with targets other than <var>_self</var> are opened in a new tab in the most recent <var>normal</var> Thunderbird window.",
           "async": "callback",
           "parameters": [
             {
@@ -16955,7 +17026,7 @@
                 "cookieStoreId": {
                   "type": "string",
                   "optional": true,
-                  "description": "The <a href='url-cookieStore'>CookieStore</a> id which all initially opened tabs should use. Either a custom id created using the <a href='url-contextualIdentity'>contextualIdentities API</a>, or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>. **Note:** The naming pattern was deliberately not changed for Thunderbird, but kept for compatibility reasons. The <permission>cookies</permission> permission is required to be able to specify this property. Furthermore, the <permission>contextualIdentities</permission> permission should be requested, to enable the contextual identities feature (enabled by default only on Thunderbird Daily)."
+                  "description": "The $(url:cookieStore)[CookieStore] id which all initially opened tabs should use. Either a custom id created using the $(url:contextualIdentity)[contextualIdentities API], or a built-in one: <var>firefox-default</var>, <var>firefox-container-1</var>, <var>firefox-container-2</var>, <var>firefox-container-3</var>, <var>firefox-container-4</var>, <var>firefox-container-5</var>."
                 },
                 "linkHandler": {
                   "type": "string",
@@ -17141,7 +17212,7 @@
         {
           "name": "onFocusChanged",
           "type": "function",
-          "description": "Fired when the currently focused window changes. Will be $(ref:windows.WINDOW_ID_NONE), if all windows have lost focus. **Note:** On some Linux window managers, WINDOW_ID_NONE will always be sent immediately preceding a switch from one window to another.",
+          "description": "Fired when the currently focused window changes. Will be $(ref:windows.WINDOW_ID_NONE), if all windows have lost focus.",
           "filters": [
             {
               "name": "windowTypes",

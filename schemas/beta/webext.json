@@ -4434,7 +4434,6 @@
             {
               "type": "object",
               "name": "queryInfo",
-              "optional": true,
               "properties": {
                 "collapsed": {
                   "type": "boolean",
@@ -4543,6 +4542,16 @@
             {
               "$ref": "TabGroup",
               "name": "group"
+            },
+            {
+              "type": "object",
+              "name": "removeInfo",
+              "properties": {
+                "isWindowClosing": {
+                  "type": "boolean",
+                  "description": "True when the tab group is being closed because its window is being closed."
+                }
+              }
             }
           ]
         },
@@ -5058,6 +5067,10 @@
             },
             "windowId": {
               "type": "integer",
+              "optional": true
+            },
+            "cookieStoreId": {
+              "type": "string",
               "optional": true
             }
           }
@@ -8287,6 +8300,24 @@
               "optional": true
             }
           ]
+        },
+        {
+          "name": "onUserSettingsChanged",
+          "type": "function",
+          "description": "Fired when user-specified settings relating to an extension's action change.",
+          "parameters": [
+            {
+              "name": "change",
+              "type": "object",
+              "properties": {
+                "isOnToolbar": {
+                  "type": "boolean",
+                  "description": "Whether the extension's action icon is visible on browser windows' top-level toolbar (i.e., whether the extension has been 'pinned' by the user).",
+                  "optional": true
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -8427,6 +8458,10 @@
         "zoomSiteSpecific": {
           "$ref": "types.Setting",
           "description": "This boolean setting controls whether zoom is applied on a per-site basis or to the current tab only. If privacy.resistFingerprinting is true, this setting has no effect and zoom is applied to the current tab only."
+        },
+        "verticalTabs": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether vertical tabs are enabled."
         }
       }
     },
@@ -9410,6 +9445,7 @@
           "id": "SameSiteStatus",
           "type": "string",
           "enum": [
+            "unspecified",
             "no_restriction",
             "lax",
             "strict"
@@ -9703,7 +9739,7 @@
                   "$ref": "SameSiteStatus",
                   "optional": true,
                   "description": "The cookie's same-site status.",
-                  "default": "no_restriction"
+                  "default": "unspecified"
                 },
                 "expirationDate": {
                   "type": "number",
@@ -9957,7 +9993,7 @@
         {
           "id": "ResourceType",
           "type": "string",
-          "description": "How the requested resource will be used. Comparable to the webRequest.ResourceType type.",
+          "description": "How the requested resource will be used. Comparable to the webRequest.ResourceType type. object_subrequest is unsupported.",
           "enum": [
             "main_frame",
             "sub_frame",
@@ -13020,6 +13056,28 @@
           }
         },
         {
+          "name": "getPreferredSystemLanguages",
+          "type": "function",
+          "async": "callback",
+          "description": "Gets the preferred locales of the operating system. This is different from the locales set in the browser; to get those, use $(ref:i18n.getAcceptLanguages).",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "languages",
+                  "type": "array",
+                  "items": {
+                    "$ref": "LanguageCode"
+                  },
+                  "description": "Array of LanguageCode"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "getUILanguage",
           "type": "function",
           "description": "Gets the browser UI language of the browser. This is different from $(ref:i18n.getAcceptLanguages) which returns the preferred user languages.",
@@ -14323,12 +14381,13 @@
               "enum": [
                 "authenticationInfo",
                 "bookmarksInfo",
-                "browsingHistory",
+                "browsingActivity",
                 "financialAndPaymentInfo",
                 "healthInfo",
                 "locationInfo",
                 "personalCommunications",
                 "personallyIdentifyingInfo",
+                "searchTerms",
                 "websiteActivity",
                 "websiteContent"
               ]
@@ -14487,6 +14546,11 @@
                   },
                   "optional": true,
                   "default": []
+                },
+                "has_previous_consent": {
+                  "type": "boolean",
+                  "optional": true,
+                  "default": false
                 }
               }
             }
@@ -20906,7 +20970,6 @@
             "script",
             "image",
             "object",
-            "object_subrequest",
             "xmlhttprequest",
             "xslt",
             "ping",
@@ -21333,7 +21396,6 @@
             "cryptomining_content",
             "emailtracking",
             "emailtracking_content",
-            "consentmanager",
             "tracking",
             "tracking_ad",
             "tracking_analytics",
@@ -21341,7 +21403,9 @@
             "tracking_content",
             "any_basic_tracking",
             "any_strict_tracking",
-            "any_social_tracking"
+            "any_social_tracking",
+            "consentmanager",
+            "antifraud"
           ],
           "description": "Tracking flags that match our internal tracking classification"
         },

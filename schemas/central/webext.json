@@ -5068,6 +5068,10 @@
             "windowId": {
               "type": "integer",
               "optional": true
+            },
+            "cookieStoreId": {
+              "type": "string",
+              "optional": true
             }
           }
         }
@@ -8296,6 +8300,24 @@
               "optional": true
             }
           ]
+        },
+        {
+          "name": "onUserSettingsChanged",
+          "type": "function",
+          "description": "Fired when user-specified settings relating to an extension's action change.",
+          "parameters": [
+            {
+              "name": "change",
+              "type": "object",
+              "properties": {
+                "isOnToolbar": {
+                  "type": "boolean",
+                  "description": "Whether the extension's action icon is visible on browser windows' top-level toolbar (i.e., whether the extension has been 'pinned' by the user).",
+                  "optional": true
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -8436,6 +8458,10 @@
         "zoomSiteSpecific": {
           "$ref": "types.Setting",
           "description": "This boolean setting controls whether zoom is applied on a per-site basis or to the current tab only. If privacy.resistFingerprinting is true, this setting has no effect and zoom is applied to the current tab only."
+        },
+        "verticalTabs": {
+          "$ref": "types.Setting",
+          "description": "This boolean setting controls whether vertical tabs are enabled."
         }
       }
     },
@@ -13030,6 +13056,28 @@
           }
         },
         {
+          "name": "getPreferredSystemLanguages",
+          "type": "function",
+          "async": "callback",
+          "description": "Gets the preferred locales of the operating system. This is different from the locales set in the browser; to get those, use $(ref:i18n.getAcceptLanguages).",
+          "parameters": [
+            {
+              "type": "function",
+              "name": "callback",
+              "parameters": [
+                {
+                  "name": "languages",
+                  "type": "array",
+                  "items": {
+                    "$ref": "LanguageCode"
+                  },
+                  "description": "Array of LanguageCode"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "getUILanguage",
           "type": "function",
           "description": "Gets the browser UI language of the browser. This is different from $(ref:i18n.getAcceptLanguages) which returns the preferred user languages.",
@@ -14498,6 +14546,11 @@
                   },
                   "optional": true,
                   "default": []
+                },
+                "has_previous_consent": {
+                  "type": "boolean",
+                  "optional": true,
+                  "default": false
                 }
               }
             }
@@ -17872,6 +17925,29 @@
               ]
             },
             {
+              "name": "getKeys",
+              "type": "function",
+              "description": "Gets the keys of all items in storage.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback with the keys of all items in storage, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [
+                    {
+                      "name": "keys",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "The keys of all items in storage."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
               "name": "set",
               "type": "function",
               "description": "Sets multiple items.",
@@ -18039,6 +18115,29 @@
                       "name": "bytesInUse",
                       "type": "integer",
                       "description": "Amount of space being used in storage, in bytes."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "getKeys",
+              "type": "function",
+              "description": "Gets the keys of all items in storage.",
+              "async": "callback",
+              "parameters": [
+                {
+                  "name": "callback",
+                  "type": "function",
+                  "description": "Callback with the keys of all items in storage, or on failure (in which case $(ref:runtime.lastError) will be set).",
+                  "parameters": [
+                    {
+                      "name": "keys",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "The keys of all items in storage."
                     }
                   ]
                 }
@@ -21343,7 +21442,6 @@
             "cryptomining_content",
             "emailtracking",
             "emailtracking_content",
-            "consentmanager",
             "tracking",
             "tracking_ad",
             "tracking_analytics",
@@ -21351,7 +21449,9 @@
             "tracking_content",
             "any_basic_tracking",
             "any_strict_tracking",
-            "any_social_tracking"
+            "any_social_tracking",
+            "consentmanager",
+            "antifraud"
           ],
           "description": "Tracking flags that match our internal tracking classification"
         },
