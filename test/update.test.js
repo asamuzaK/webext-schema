@@ -101,7 +101,7 @@ describe('get channel url', () => {
   it('should get result', () => {
     const res = getChannelUrl('release');
     assert.strictEqual(
-      res, 'https://hg.mozilla.org/releases/mozilla-release/raw-file/tip/',
+      res, 'https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/',
       'result'
     );
   });
@@ -711,7 +711,7 @@ describe('save schema file', () => {
 
   it('should create file', async () => {
     const url =
-      new URL('https://hg.mozilla.org/releases/mozilla-release/raw-file/tip/');
+      new URL('https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/');
     const mockPool = mockAgent.get(url.origin);
     mockPool.intercept({
       path: `${url.pathname}browser/components/extensions/schemas/jar.mn`,
@@ -742,8 +742,8 @@ describe('save schema file', () => {
     const i = stubWrite.callCount;
     const j = stubInfo.callCount;
     const filePath =
-      path.join(process.cwd(), 'schemas', 'release', 'webext.json');
-    const res = await saveSchemaFile('release');
+      path.join(process.cwd(), 'schemas', 'beta', 'webext.json');
+    const res = await saveSchemaFile('beta');
     const { callCount: writeCallCount } = stubWrite;
     const { callCount: infoCallCount } = stubInfo;
     stubInfo.restore();
@@ -755,7 +755,7 @@ describe('save schema file', () => {
 
   it('should create file', async () => {
     const url =
-      new URL('https://hg.mozilla.org/releases/mozilla-release/raw-file/tip/');
+      new URL('https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/');
     const mockPool = mockAgent.get(url.origin);
     mockPool.intercept({
       path: `${url.pathname}browser/components/extensions/schemas/jar.mn`,
@@ -786,8 +786,8 @@ describe('save schema file', () => {
     const i = stubWrite.callCount;
     const j = stubInfo.callCount;
     const filePath =
-      path.join(process.cwd(), 'schemas', 'release', 'webext.json');
-    const res = await saveSchemaFile('release', true);
+      path.join(process.cwd(), 'schemas', 'beta', 'webext.json');
+    const res = await saveSchemaFile('beta', true);
     const { callCount: writeCallCount } = stubWrite;
     const { callCount: infoCallCount } = stubInfo;
     stubInfo.restore();
@@ -814,11 +814,10 @@ describe('update schemas files', () => {
     const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
     const centralPath = url.pathname;
     const betaPath = '/releases/mozilla-beta/raw-file/tip/';
-    const releasePath = '/releases/mozilla-release/raw-file/tip/';
     const esrPath = `/releases/mozilla-esr${ESR_VER}/raw-file/tip/`;
     const mailPath = '/comm-central/raw-file/tip/';
     const mockPool = mockAgent.get(url.origin);
-    for (const item of [centralPath, betaPath, releasePath, esrPath]) {
+    for (const item of [centralPath, betaPath, esrPath]) {
       mockPool.intercept({
         path: `${item}browser/components/extensions/schemas/jar.mn`,
         method: 'GET'
@@ -888,11 +887,10 @@ describe('update schemas files', () => {
     const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
     const centralPath = url.pathname;
     const betaPath = '/releases/mozilla-beta/raw-file/tip/';
-    const releasePath = '/releases/mozilla-release/raw-file/tip/';
     const esrPath = `/releases/mozilla-esr${ESR_VER}/raw-file/tip/`;
     const mailPath = '/comm-central/raw-file/tip/';
     const mockPool = mockAgent.get(url.origin);
-    for (const item of [centralPath, betaPath, releasePath, esrPath]) {
+    for (const item of [centralPath, betaPath, esrPath]) {
       mockPool.intercept({
         path: `${item}browser/components/extensions/schemas/jar.mn`,
         method: 'GET'

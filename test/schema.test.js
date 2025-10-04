@@ -80,7 +80,7 @@ describe('Schema', () => {
 
     it('should get value', () => {
       const schema = new Schema('release');
-      assert.strictEqual(schema.channel, 'release');
+      assert.strictEqual(schema.channel, 'beta');
     });
 
     it('should get value', () => {
@@ -117,7 +117,7 @@ describe('Schema', () => {
     it('should set value', () => {
       const schema = new Schema();
       schema.channel = 'release';
-      assert.strictEqual(schema.channel, 'release');
+      assert.strictEqual(schema.channel, 'beta');
     });
 
     it('should set value', () => {
@@ -135,7 +135,7 @@ describe('Schema', () => {
     it('should set value', () => {
       const schema = new Schema('central');
       schema.channel = 'release';
-      assert.strictEqual(schema.channel, 'release');
+      assert.strictEqual(schema.channel, 'central');
     });
 
     it('should set value', () => {
@@ -147,7 +147,7 @@ describe('Schema', () => {
     it('should set value', () => {
       const schema = new Schema('mail');
       schema.channel = 'release';
-      assert.strictEqual(schema.channel, 'release');
+      assert.strictEqual(schema.channel, 'mail');
     });
   });
 
