@@ -23,13 +23,13 @@ export class Schema {
    * @param {...(string|object)} [args] - optional arguments
    *                                      {string} - release channel.
    *                                                 one of "beta", "central",
-   *                                                 "release", "esr", "mail".
+   *                                                 "esr", "mail".
    *                                      {object} - sinon config
    */
   constructor(...args) {
     const [arg1, arg2] = args;
     this.#channel =
-      isString(arg1) && /(?:centra|mai)l|beta|esr|release/.test(arg1)
+      isString(arg1) && /(?:centra|mai)l|beta|esr/.test(arg1)
         ? arg1
         : 'beta';
     this._sandbox =
@@ -48,7 +48,7 @@ export class Schema {
   }
 
   set channel(ch) {
-    if (isString(ch) && /(?:centra|mai)l|beta|esr|release/.test(ch)) {
+    if (isString(ch) && /(?:centra|mai)l|beta|esr/.test(ch)) {
       this.#channel = ch;
     }
   }

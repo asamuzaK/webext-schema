@@ -51,9 +51,6 @@ export const getChannelUrl = channel => {
     case 'mail':
       dir = 'comm-central/';
       break;
-    case 'release':
-      dir = 'releases/mozilla-release/';
-      break;
     default:
       dir = 'releases/mozilla-beta/';
   }
@@ -278,7 +275,6 @@ export const updateSchemas = async (cmdOpts = {}) => {
       saveSchemaFile('beta', info),
       saveSchemaFile('central', info),
       saveSchemaFile('esr', info),
-      saveSchemaFile('release', info),
       saveSchemaFile('mail', info)
     );
   }
