@@ -6447,6 +6447,12 @@
                   ],
                   "description": "The tab's new favicon URL. This property is only present if the extension's manifest includes the <code>\"tabs\"</code> permission."
                 },
+                "groupId": {
+                  "type": "integer",
+                  "optional": true,
+                  "minimum": -1,
+                  "description": "The tab's new group ID. $(ref:tabGroups.TAB_GROUP_ID_NONE) (-1) if the tab no longer belongs to a tab group."
+                },
                 "hidden": {
                   "type": "boolean",
                   "optional": true,
@@ -9115,6 +9121,11 @@
               "$ref": "extensionTypes.ExecutionWorld",
               "optional": true,
               "description": "The JavaScript world for a script to execute within. Defaults to \"ISOLATED\"."
+            },
+            "cssOrigin": {
+              "$ref": "extensionTypes.CSSOrigin",
+              "optional": true,
+              "description": "The css origin of the stylesheet to inject. Defaults to \"author\"."
             },
             "cookieStoreId": {
               "choices": [
@@ -12564,7 +12575,8 @@
             "user",
             "author"
           ],
-          "description": "The origin of the CSS to inject, this affects the cascading order (priority) of the stylesheet."
+          "description": "The origin of the CSS to inject, this affects the cascading order (priority) of the stylesheet.",
+          "preprocess": "stringToLowerCase"
         },
         {
           "id": "InjectDetails",
@@ -12606,6 +12618,7 @@
             "cssOrigin": {
               "$ref": "CSSOrigin",
               "optional": true,
+              "default": "author",
               "description": "The css origin of the stylesheet to inject. Defaults to \"author\"."
             }
           }
@@ -13503,7 +13516,7 @@
         },
         {
           "id": "ExtensionInstallType",
-          "description": "How the extension was installed. One of<br><var>development</var>: The extension was loaded unpacked in developer mode,<br><var>normal</var>: The extension was installed normally via an .xpi file,<br><var>sideload</var>: The extension was installed by other software on the machine,<br><var>admin</var>: The extension was installed by policy,<br><var>other</var>: The extension was installed by other means.",
+          "description": "How the extension was installed.<dl><dt>development</dt><dd>The extension was loaded unpacked in developer mode,</dd><dt>normal</dt><dd>The extension was installed normally via an .xpi file</dd><dt>sideload</dt><dd>The extension was installed by other software on the machine</dd><dt>admin</dt><dd>The extension was installed by policy</dd><dt>other</dt><dd>The extension was installed by other means.</dd></dl>",
           "type": "string",
           "enum": [
             "development",
@@ -14697,6 +14710,11 @@
               "items": {
                 "$ref": "ExtensionURL"
               }
+            },
+            "css_origin": {
+              "$ref": "extensionTypes.CSSOrigin",
+              "default": "author",
+              "optional": true
             },
             "js": {
               "type": "array",
@@ -16600,6 +16618,7 @@
             "aarch64",
             "arm",
             "ppc64",
+            "riscv64",
             "s390x",
             "sparc64",
             "x86-32",
@@ -16976,7 +16995,7 @@
           ],
           "returns": {
             "$ref": "Port",
-            "description": "Port through which messages can be sent and received. The port's $(ref:runtime.Port onDisconnect) event is fired if the extension/app does not exist. "
+            "description": "Port through which messages can be sent and received. The port's $(ref:runtime.Port.onDisconnect) event is fired if the extension/app does not exist. "
           }
         },
         {
@@ -17632,6 +17651,10 @@
               "items": {
                 "$ref": "manifest.ExtensionURL"
               }
+            },
+            "cssOrigin": {
+              "$ref": "extensionTypes.CSSOrigin",
+              "optional": true
             }
           }
         }
@@ -17889,203 +17912,6 @@
             },
             {
               "name": "getBytesInUse",
-              "unsupported": true,
-              "type": "function",
-              "description": "Gets the amount of space (in bytes) being used by one or more items.",
-              "async": "callback",
-              "parameters": [
-                {
-                  "name": "keys",
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  ],
-                  "description": "A single key or list of keys to get the total usage for. An empty list will return 0. Pass in <code>null</code> to get the total usage of all of storage.",
-                  "optional": true
-                },
-                {
-                  "name": "callback",
-                  "type": "function",
-                  "description": "Callback with the amount of space being used by storage, or on failure (in which case $(ref:runtime.lastError) will be set).",
-                  "parameters": [
-                    {
-                      "name": "bytesInUse",
-                      "type": "integer",
-                      "description": "Amount of space being used in storage, in bytes."
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "getKeys",
-              "type": "function",
-              "description": "Gets the keys of all items in storage.",
-              "async": "callback",
-              "parameters": [
-                {
-                  "name": "callback",
-                  "type": "function",
-                  "description": "Callback with the keys of all items in storage, or on failure (in which case $(ref:runtime.lastError) will be set).",
-                  "parameters": [
-                    {
-                      "name": "keys",
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "description": "The keys of all items in storage."
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "set",
-              "type": "function",
-              "description": "Sets multiple items.",
-              "async": "callback",
-              "parameters": [
-                {
-                  "name": "items",
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "any"
-                  },
-                  "description": "<p>An object which gives each key/value pair to update storage with. Any other key/value pairs in storage will not be affected.</p><p>Primitive values such as numbers will serialize as expected. Values with a <code>typeof</code> <code>\"object\"</code> and <code>\"function\"</code> will typically serialize to <code>{}</code>, with the exception of <code>Array</code> (serializes as expected), <code>Date</code>, and <code>Regex</code> (serialize using their <code>String</code> representation).</p>"
-                },
-                {
-                  "name": "callback",
-                  "type": "function",
-                  "description": "Callback on success, or on failure (in which case $(ref:runtime.lastError) will be set).",
-                  "parameters": [],
-                  "optional": true
-                }
-              ]
-            },
-            {
-              "name": "remove",
-              "type": "function",
-              "description": "Removes one or more items from storage.",
-              "async": "callback",
-              "parameters": [
-                {
-                  "name": "keys",
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  ],
-                  "description": "A single key or a list of keys for items to remove."
-                },
-                {
-                  "name": "callback",
-                  "type": "function",
-                  "description": "Callback on success, or on failure (in which case $(ref:runtime.lastError) will be set).",
-                  "parameters": [],
-                  "optional": true
-                }
-              ]
-            },
-            {
-              "name": "clear",
-              "type": "function",
-              "description": "Removes all items from storage.",
-              "async": "callback",
-              "parameters": [
-                {
-                  "name": "callback",
-                  "type": "function",
-                  "description": "Callback on success, or on failure (in which case $(ref:runtime.lastError) will be set).",
-                  "parameters": [],
-                  "optional": true
-                }
-              ]
-            }
-          ],
-          "events": [
-            {
-              "name": "onChanged",
-              "type": "function",
-              "description": "Fired when one or more items change.",
-              "parameters": [
-                {
-                  "name": "changes",
-                  "type": "object",
-                  "additionalProperties": {
-                    "$ref": "StorageChange"
-                  },
-                  "description": "Object mapping each key that changed to its corresponding $(ref:storage.StorageChange) for that item."
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "StorageAreaWithUsage",
-          "type": "object",
-          "functions": [
-            {
-              "name": "get",
-              "type": "function",
-              "description": "Gets one or more items from storage.",
-              "async": "callback",
-              "parameters": [
-                {
-                  "name": "keys",
-                  "choices": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    {
-                      "type": "object",
-                      "description": "Storage items to return in the callback, where the values are replaced with those from storage if they exist.",
-                      "additionalProperties": {
-                        "type": "any"
-                      }
-                    }
-                  ],
-                  "description": "A single key to get, list of keys to get, or a dictionary specifying default values (see description of the object).  An empty list or object will return an empty result object.  Pass in <code>null</code> to get the entire contents of storage.",
-                  "optional": true
-                },
-                {
-                  "name": "callback",
-                  "type": "function",
-                  "description": "Callback with storage items, or on failure (in which case $(ref:runtime.lastError) will be set).",
-                  "parameters": [
-                    {
-                      "name": "items",
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "any"
-                      },
-                      "description": "Object with items in their key-value mappings."
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "getBytesInUse",
               "type": "function",
               "description": "Gets the amount of space (in bytes) being used by one or more items.",
               "async": "callback",
@@ -18248,14 +18074,14 @@
             {
               "name": "areaName",
               "type": "string",
-              "description": "The name of the storage area (<code>\"sync\"</code>, <code>\"local\"</code> or <code>\"managed\"</code>) the changes are for."
+              "description": "The name of the storage area (<code>\"session\"</code>, <code>\"sync\"</code>, <code>\"local\"</code> or <code>\"managed\"</code>) the changes are for."
             }
           ]
         }
       ],
       "properties": {
         "sync": {
-          "$ref": "StorageAreaWithUsage",
+          "$ref": "StorageArea",
           "description": "Items in the <code>sync</code> storage area are synced by the browser.",
           "properties": {
             "QUOTA_BYTES": {
@@ -18309,7 +18135,7 @@
           "allowedContexts": [
             "devtools"
           ],
-          "$ref": "StorageAreaWithUsage",
+          "$ref": "StorageArea",
           "description": "Items in the <code>session</code> storage area are kept in memory, and only until the either browser or extension is closed or reloaded.",
           "properties": {
             "QUOTA_BYTES": {
