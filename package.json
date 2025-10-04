@@ -57,5 +57,5 @@
     "update:esr": "node index update --channel=esr -i",
     "update:mail": "node index update --channel=mail -i"
   },
-  "version": "5.6.1"
+  "version": "6.0.0"
 }
