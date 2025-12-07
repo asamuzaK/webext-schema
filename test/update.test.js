@@ -9,7 +9,6 @@ import { MockAgent, getGlobalDispatcher, setGlobalDispatcher } from 'undici';
 
 /* test */
 import {
-  ESR_VER,
   createUnifiedSchema, fetchText, getAllSchemaData, getChannelUrl, getFileList,
   getListedSchemaData, getMailExtSchemaData, getSchemaData, saveSchemaFile,
   updateSchemas
@@ -77,7 +76,7 @@ describe('get channel url', () => {
     const res = getChannelUrl('esr');
     assert.strictEqual(
       res,
-      `https://hg.mozilla.org/releases/mozilla-esr${ESR_VER}/raw-file/tip/`,
+      'https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/',
       'result'
     );
   });
@@ -814,10 +813,9 @@ describe('update schemas files', () => {
     const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
     const centralPath = url.pathname;
     const betaPath = '/releases/mozilla-beta/raw-file/tip/';
-    const esrPath = `/releases/mozilla-esr${ESR_VER}/raw-file/tip/`;
     const mailPath = '/comm-central/raw-file/tip/';
     const mockPool = mockAgent.get(url.origin);
-    for (const item of [centralPath, betaPath, esrPath]) {
+    for (const item of [centralPath, betaPath]) {
       mockPool.intercept({
         path: `${item}browser/components/extensions/schemas/jar.mn`,
         method: 'GET'
@@ -887,10 +885,9 @@ describe('update schemas files', () => {
     const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
     const centralPath = url.pathname;
     const betaPath = '/releases/mozilla-beta/raw-file/tip/';
-    const esrPath = `/releases/mozilla-esr${ESR_VER}/raw-file/tip/`;
     const mailPath = '/comm-central/raw-file/tip/';
     const mockPool = mockAgent.get(url.origin);
-    for (const item of [centralPath, betaPath, esrPath]) {
+    for (const item of [centralPath, betaPath]) {
       mockPool.intercept({
         path: `${item}browser/components/extensions/schemas/jar.mn`,
         method: 'GET'
