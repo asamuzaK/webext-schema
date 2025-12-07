@@ -73,9 +73,9 @@ describe('Schema', () => {
       assert.strictEqual(schema.channel, 'central');
     });
 
-    it('should get value', () => {
+    it('should get default value', () => {
       const schema = new Schema('esr');
-      assert.strictEqual(schema.channel, 'esr');
+      assert.strictEqual(schema.channel, 'beta');
     });
 
     it('should get value', () => {
@@ -108,10 +108,10 @@ describe('Schema', () => {
       assert.strictEqual(schema.channel, 'central');
     });
 
-    it('should set value', () => {
+    it('should not set value', () => {
       const schema = new Schema();
       schema.channel = 'esr';
-      assert.strictEqual(schema.channel, 'esr');
+      assert.strictEqual(schema.channel, 'beta');
     });
 
     it('should set value', () => {
@@ -138,10 +138,10 @@ describe('Schema', () => {
       assert.strictEqual(schema.channel, 'central');
     });
 
-    it('should set value', () => {
+    it('should not set value', () => {
       const schema = new Schema('central');
       schema.channel = 'esr';
-      assert.strictEqual(schema.channel, 'esr');
+      assert.strictEqual(schema.channel, 'central');
     });
 
     it('should set value', () => {
