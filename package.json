@@ -56,5 +56,5 @@
     "update:central": "node index update --channel=central -i",
     "update:mail": "node index update --channel=mail -i"
   },
-  "version": "6.0.0"
+  "version": "7.0.0"
 }
