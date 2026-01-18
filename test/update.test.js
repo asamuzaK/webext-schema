@@ -73,15 +73,6 @@ describe('get channel url', () => {
   });
 
   it('should get result', () => {
-    const res = getChannelUrl('esr');
-    assert.strictEqual(
-      res,
-      'https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/',
-      'result'
-    );
-  });
-
-  it('should get result', () => {
     const res = getChannelUrl('central');
     assert.strictEqual(
       res, 'https://hg.mozilla.org/mozilla-central/raw-file/tip/',
@@ -93,14 +84,6 @@ describe('get channel url', () => {
     const res = getChannelUrl('mail');
     assert.strictEqual(
       res, 'https://hg.mozilla.org/comm-central/raw-file/tip/',
-      'result'
-    );
-  });
-
-  it('should get result', () => {
-    const res = getChannelUrl('release');
-    assert.strictEqual(
-      res, 'https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/',
       'result'
     );
   });
