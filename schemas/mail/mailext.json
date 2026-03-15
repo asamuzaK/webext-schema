@@ -821,7 +821,7 @@
           "properties": {
             "default_locale": {
               "type": "string",
-              "optional": "true"
+              "optional": true
             },
             "l10n_resources": {
               "type": "array",
@@ -4475,6 +4475,17 @@
             {
               "name": "node",
               "$ref": "ContactNode"
+            }
+          ]
+        },
+        {
+          "name": "onManyCreated",
+          "type": "function",
+          "description": "Fired when a large number of contacts are added. The contacts are not emitted for performance reasons. The event indicates significant changes, and consumers should rebuild any cached representation of the address book.",
+          "parameters": [
+            {
+              "name": "node",
+              "$ref": "AddressBookNode"
             }
           ]
         },
@@ -16019,6 +16030,12 @@
               "optional": true,
               "minimum": -1,
               "description": "The ID of the group that the tab belongs to. -1 if the tab does not belong to a tab group."
+            },
+            "splitViewId": {
+              "type": "integer",
+              "optional": true,
+              "minimum": -1,
+              "description": "The ID of the Split View that the tab belongs to. -1 if the tab does not belong to a split view."
             }
           }
         },
