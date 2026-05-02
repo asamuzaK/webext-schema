@@ -2980,7 +2980,8 @@
                     ]
                   },
                   "maxItems": 15,
-                  "optional": true
+                  "optional": true,
+                  "description": "An array of alignment values, one for each image in <var>additional_backgrounds</var>."
                 },
                 "additional_backgrounds_tiling": {
                   "type": "array",
@@ -2994,7 +2995,8 @@
                     ]
                   },
                   "maxItems": 15,
-                  "optional": true
+                  "optional": true,
+                  "description": "An array of tiling values, one for each image in <var>additional_backgrounds</var>."
                 },
                 "color_scheme": {
                   "description": "If set, overrides the general theme (context menus, toolbars, content area).",
@@ -4856,6 +4858,7 @@
           "$extend": "WebExtensionManifest",
           "properties": {
             "action": {
+              "description": "Defines the appearance and behavior of an action button in the toolbar.",
               "min_manifest_version": 3,
               "type": "object",
               "additionalProperties": {
@@ -4961,6 +4964,7 @@
           "$extend": "WebExtensionManifest",
           "properties": {
             "browser_action": {
+              "description": "Defines the appearance and behavior of a browserAction button in the toolbar.",
               "max_manifest_version": 2,
               "type": "object",
               "additionalProperties": {
@@ -6041,6 +6045,7 @@
           "$extend": "WebExtensionManifest",
           "properties": {
             "cloud_file": {
+              "description": "Defines a cloud file provider for uploading large attachments to a remote server.",
               "type": "object",
               "additionalProperties": {
                 "$ref": "UnrecognizedProperty"
@@ -7674,6 +7679,7 @@
           "$extend": "WebExtensionManifest",
           "properties": {
             "compose_action": {
+              "description": "Defines the appearance and behavior of a composeAction button in the message compose window.",
               "type": "object",
               "additionalProperties": {
                 "$ref": "UnrecognizedProperty"
@@ -8507,11 +8513,96 @@
               ]
             }
           ]
+        },
+        {
+          "id": "ComposeScript",
+          "type": "object",
+          "description": "A script and/or CSS to inject into compose windows via the manifest.",
+          "properties": {
+            "js": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of JavaScript files to inject.",
+              "items": {
+                "$ref": "ExtensionURL"
+              }
+            },
+            "css": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of CSS files to inject.",
+              "items": {
+                "$ref": "ExtensionURL"
+              }
+            }
+          },
+          "additionalProperties": {
+            "$ref": "UnrecognizedProperty"
+          }
+        },
+        {
+          "id": "MessageDisplayScript",
+          "type": "object",
+          "description": "A script and/or CSS to inject into message display pages via the manifest.",
+          "properties": {
+            "js": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of JavaScript files to inject.",
+              "items": {
+                "$ref": "ExtensionURL"
+              }
+            },
+            "css": {
+              "type": "array",
+              "optional": true,
+              "description": "The list of CSS files to inject.",
+              "items": {
+                "$ref": "ExtensionURL"
+              }
+            },
+            "run_at": {
+              "type": "string",
+              "optional": true,
+              "default": "document_idle",
+              "enum": [
+                "document_start",
+                "document_end",
+                "document_idle"
+              ],
+              "description": "Determines when the files specified in css and js are injected. The states directly correspond to <code>Document.readyState</code>: <var>loading</var>, <var>interactive</var> and <var>complete</var>."
+            }
+          },
+          "additionalProperties": {
+            "$ref": "UnrecognizedProperty"
+          }
+        },
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "compose_scripts": {
+              "type": "array",
+              "optional": true,
+              "description": "Scripts and CSS to inject into compose windows.",
+              "items": {
+                "$ref": "ComposeScript"
+              }
+            },
+            "message_display_scripts": {
+              "type": "array",
+              "optional": true,
+              "description": "Scripts and CSS to inject into message display pages.",
+              "items": {
+                "$ref": "MessageDisplayScript"
+              }
+            }
+          }
         }
       ]
     },
     {
       "namespace": "composeScripts",
+      "description": "The composeScripts API allows to register and unregister scripts for the message compose window.",
       "permissions": [
         "compose"
       ],
@@ -8572,6 +8663,7 @@
     },
     {
       "namespace": "messageDisplayScripts",
+      "description": "The messageDisplayScripts API allows to register and unregister scripts for the message display window.",
       "permissions": [
         "messagesModify"
       ],
@@ -12262,6 +12354,7 @@
           "$extend": "WebExtensionManifest",
           "properties": {
             "message_display_action": {
+              "description": "Defines the appearance and behavior of a messageDisplayAction button in the message display window.",
               "type": "object",
               "additionalProperties": {
                 "$ref": "UnrecognizedProperty"
@@ -14796,6 +14889,32 @@
           ]
         },
         {
+          "name": "get",
+          "type": "function",
+          "description": "Returns a message tag identified by its key.",
+          "async": "callback",
+          "permissions": [
+            "messagesTagsList"
+          ],
+          "parameters": [
+            {
+              "type": "string",
+              "name": "key",
+              "description": "The key of the message tag to retrieve."
+            },
+            {
+              "type": "function",
+              "name": "callback",
+              "optional": true,
+              "parameters": [
+                {
+                  "$ref": "messages.tags.MessageTag"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "create",
           "type": "function",
           "description": "Creates a new message tag and returns the associated key. Tagging a message will store the tag's key in the user's message. Throws if the specified tag key is used already.",
@@ -15186,7 +15305,7 @@
           "$extend": "WebExtensionManifest",
           "properties": {
             "oauth_provider": {
-              "description": "Describes an OAuth authentication provider for Thunderbird to use when connecting to mail/address book/calendar services. You will need to have a client ID registered with the provider to use this API.",
+              "description": "Describes an OAuth authentication provider for Thunderbird. You will need to have a client ID registered with the provider to use this API.",
               "type": "object",
               "properties": {
                 "issuer": {
