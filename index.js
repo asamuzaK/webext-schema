@@ -9,11 +9,17 @@
 /* api */
 import process from 'node:process';
 import { parseCommand } from './modules/commander.js';
-import { logErr, throwErr } from './modules/common.js';
 export { Schema } from './modules/schema.js';
 
 /* process */
-process.on('uncaughtException', throwErr);
-process.on('unhandledRejection', logErr);
+process.on('uncaughtException', err => {
+  console.error('Fatal Error (Uncaught Exception):', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', reason => {
+  console.error('Fatal Error (Unhandled Rejection):', reason);
+  process.exit(1);
+});
 
 parseCommand(process.argv);
