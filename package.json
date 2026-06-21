@@ -19,36 +19,37 @@
   },
   "dependencies": {
     "camelize": "^1.0.1",
-    "commander": "^14.0.3",
+    "commander": "^15.0.0",
     "decamelize": "^6.0.1",
     "json5": "^2.2.3",
     "sinon": "^22.0.0"
   },
   "devDependencies": {
     "@types/firefox-webext-browser": "^143.0.0",
-    "@types/node": "^25.9.1",
+    "@types/node": "^26.0.0",
     "@types/sinon": "^21.0.1",
     "c8": "^11.0.0",
     "eslint": "^9.39.4",
-    "eslint-plugin-jsdoc": "^63.0.0",
+    "eslint-plugin-jsdoc": "^63.0.6",
     "eslint-plugin-regexp": "^3.1.0",
     "eslint-plugin-unicorn": "^64.0.0",
     "globals": "^17.6.0",
     "mocha": "^11.7.6",
     "neostandard": "^0.13.0",
-    "npm-run-all2": "^9.0.0",
     "typescript": "^6.0.3",
-    "undici": "^8.0.2"
+    "undici": "^7.28.0"
   },
   "overrides": {
     "c8": {
       "yargs": "^18.0.0"
     },
     "eslint": {
-      "brace-expansion": "^1.1.13"
+      "brace-expansion": "^1.1.13",
+      "js-yaml": "^4.2.0"
     },
     "mocha": {
-      "diff": "^8.0.3"
+      "diff": "^8.0.3",
+      "js-yaml": "^4.2.0"
     },
     "serialize-javascript": "^7.0.4"
   },
@@ -57,13 +58,11 @@
     "lint": "eslint . --fix",
     "start": "node index",
     "test": "npm run test:central",
+    "test:all": "npm run test:beta && npm run test:central",
     "test:beta": "c8 mocha --require=test/mocha/setup.js --channel=beta --exit test/*.test.js",
     "test:central": "c8 mocha --require=test/mocha/setup.js --channel=central --exit test/*.test.js",
-    "test:esr": "c8 mocha --require=test/mocha/setup.js --channel=esr --exit test/*.test.js",
-    "test:release": "c8 mocha --require=test/mocha/setup.js --channel=release --exit test/*.test.js",
-    "testall": "npm-run-all -s test:*",
     "tsc": "node index clean --dir=types -i && npx tsc",
-    "update": "npm-run-all -s update:*",
+    "update": "npm run update:beta && npm run update:central && npm run update:mail",
     "update:beta": "node index update --channel=beta -i",
     "update:central": "node index update --channel=central -i",
     "update:mail": "node index update --channel=mail -i"
