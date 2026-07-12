@@ -27,7 +27,7 @@ describe('Process Error Handlers', () => {
 
   it('should handle uncaughtException', () => {
     const listeners = process.listeners('uncaughtException');
-    const targetListener = listeners.find(fn => 
+    const targetListener = listeners.find(fn =>
       fn.toString().includes('Fatal Error (Uncaught Exception)')
     );
     assert.ok(targetListener,
@@ -43,7 +43,7 @@ describe('Process Error Handlers', () => {
 
   it('should handle unhandledRejection', () => {
     const listeners = process.listeners('unhandledRejection');
-    const targetListener = listeners.find(fn => 
+    const targetListener = listeners.find(fn =>
       fn.toString().includes('Fatal Error (Unhandled Rejection)')
     );
     assert.ok(targetListener,
