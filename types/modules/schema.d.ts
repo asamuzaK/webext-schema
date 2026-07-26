@@ -1,14 +1,16 @@
-export class Schema {
-    constructor(...args?: (string | object)[]);
+import sinon from 'sinon';
+export declare class Schema {
+    #private;
     _sandbox: sinon.SinonSandbox;
     _importMap: Map<any, any>;
     _refMap: Map<any, any>;
     _browser: {
         _sandbox: sinon.SinonSandbox;
-    };
+    } | null;
     _schema: any;
-    set channel(ch: any);
+    constructor(...args?: (string | object)[]);
     get channel(): any;
+    set channel(ch: any);
     private _getTargetFromNamespace;
     private _assignImportMap;
     private _assignRefMap;
@@ -21,6 +23,4 @@ export class Schema {
     getAll(): object;
     list(): Array<string>;
     mock(): object;
-    #private;
 }
-import sinon from 'sinon';

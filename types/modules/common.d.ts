@@ -1,7 +1,7 @@
-export function throwErr(e: object): never;
-export function logErr(e: object): boolean;
-export function logWarn(msg: string | object): boolean;
-export function logMsg(msg: string | object): string | object;
-export function getType(o: object): string;
-export function isObjectNotEmpty(o: object): boolean;
-export function isString(o: object): boolean;
+export declare const throwErr: (e: object) => never;
+export declare const logErr: (e: object) => boolean;
+export declare const logWarn: (msg: string | object) => boolean;
+export declare const logMsg: (msg: string | object) => string | object;
+export declare const getType: (o: object) => string;
+export declare const isObjectNotEmpty: (o: object) => boolean;
+export declare const isString: (o: object) => boolean;
