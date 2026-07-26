@@ -5,7 +5,12 @@ import path from 'node:path';
 import process from 'node:process';
 import sinon from 'sinon';
 import { afterEach, beforeEach, describe, it } from 'mocha';
-import { MockAgent, getGlobalDispatcher, setGlobalDispatcher } from 'undici';
+import {
+  fetch as undiciFetch,
+  getGlobalDispatcher,
+  MockAgent,
+  setGlobalDispatcher
+} from 'undici';
 
 /* test */
 import {
@@ -15,15 +20,18 @@ import {
 } from '../modules/update.js';
 
 describe('fetch text', () => {
+  const originalFetch = globalThis.fetch;
   const globalDispatcher = getGlobalDispatcher();
   const mockAgent = new MockAgent();
   beforeEach(() => {
     setGlobalDispatcher(mockAgent);
     mockAgent.disableNetConnect();
+    globalThis.fetch = undiciFetch;
   });
   afterEach(() => {
     mockAgent.enableNetConnect();
     setGlobalDispatcher(globalDispatcher);
+    globalThis.fetch = originalFetch;
   });
 
   it('should throw', async () => {
@@ -90,15 +98,18 @@ describe('get channel url', () => {
 });
 
 describe('get schema data', () => {
+  const originalFetch = globalThis.fetch;
   const globalDispatcher = getGlobalDispatcher();
   const mockAgent = new MockAgent();
   beforeEach(() => {
     setGlobalDispatcher(mockAgent);
     mockAgent.disableNetConnect();
+    globalThis.fetch = undiciFetch;
   });
   afterEach(() => {
     mockAgent.enableNetConnect();
     setGlobalDispatcher(globalDispatcher);
+    globalThis.fetch = originalFetch;
   });
 
   it('should throw', async () => {
@@ -130,15 +141,18 @@ describe('get schema data', () => {
 });
 
 describe('get schema file list from jar manifest', () => {
+  const originalFetch = globalThis.fetch;
   const globalDispatcher = getGlobalDispatcher();
   const mockAgent = new MockAgent();
   beforeEach(() => {
     setGlobalDispatcher(mockAgent);
     mockAgent.disableNetConnect();
+    globalThis.fetch = undiciFetch;
   });
   afterEach(() => {
     mockAgent.enableNetConnect();
     setGlobalDispatcher(globalDispatcher);
+    globalThis.fetch = originalFetch;
   });
 
   it('should throw', async () => {
@@ -163,15 +177,18 @@ describe('get schema file list from jar manifest', () => {
 });
 
 describe('get all schema data', () => {
+  const originalFetch = globalThis.fetch;
   const globalDispatcher = getGlobalDispatcher();
   const mockAgent = new MockAgent();
   beforeEach(() => {
     setGlobalDispatcher(mockAgent);
     mockAgent.disableNetConnect();
+    globalThis.fetch = undiciFetch;
   });
   afterEach(() => {
     mockAgent.enableNetConnect();
     setGlobalDispatcher(globalDispatcher);
+    globalThis.fetch = originalFetch;
   });
 
   it('should throw', async () => {
@@ -241,15 +258,18 @@ describe('get all schema data', () => {
 });
 
 describe('get listed schema data', () => {
+  const originalFetch = globalThis.fetch;
   const globalDispatcher = getGlobalDispatcher();
   const mockAgent = new MockAgent();
   beforeEach(() => {
     setGlobalDispatcher(mockAgent);
     mockAgent.disableNetConnect();
+    globalThis.fetch = undiciFetch;
   });
   afterEach(() => {
     mockAgent.enableNetConnect();
     setGlobalDispatcher(globalDispatcher);
+    globalThis.fetch = originalFetch;
   });
 
   it('should throw', async () => {
@@ -324,15 +344,18 @@ describe('get listed schema data', () => {
 });
 
 describe('get MailExtensions schema data', () => {
+  const originalFetch = globalThis.fetch;
   const globalDispatcher = getGlobalDispatcher();
   const mockAgent = new MockAgent();
   beforeEach(() => {
     setGlobalDispatcher(mockAgent);
     mockAgent.disableNetConnect();
+    globalThis.fetch = undiciFetch;
   });
   afterEach(() => {
     mockAgent.enableNetConnect();
     setGlobalDispatcher(globalDispatcher);
+    globalThis.fetch = originalFetch;
   });
 
   it('should throw', async () => {
@@ -402,15 +425,18 @@ describe('get MailExtensions schema data', () => {
 });
 
 describe('create unified schema', () => {
+  const originalFetch = globalThis.fetch;
   const globalDispatcher = getGlobalDispatcher();
   const mockAgent = new MockAgent();
   beforeEach(() => {
     setGlobalDispatcher(mockAgent);
     mockAgent.disableNetConnect();
+    globalThis.fetch = undiciFetch;
   });
   afterEach(() => {
     mockAgent.enableNetConnect();
     setGlobalDispatcher(globalDispatcher);
+    globalThis.fetch = originalFetch;
   });
 
   it('should get object', async () => {
@@ -579,15 +605,18 @@ describe('create unified schema', () => {
 });
 
 describe('save schema file', () => {
+  const originalFetch = globalThis.fetch;
   const globalDispatcher = getGlobalDispatcher();
   const mockAgent = new MockAgent();
   beforeEach(() => {
     setGlobalDispatcher(mockAgent);
     mockAgent.disableNetConnect();
+    globalThis.fetch = undiciFetch;
   });
   afterEach(() => {
     mockAgent.enableNetConnect();
     setGlobalDispatcher(globalDispatcher);
+    globalThis.fetch = originalFetch;
   });
 
   it('should throw', async () => {
@@ -781,15 +810,18 @@ describe('save schema file', () => {
 });
 
 describe('update schemas files', () => {
+  const originalFetch = globalThis.fetch;
   const globalDispatcher = getGlobalDispatcher();
   const mockAgent = new MockAgent();
   beforeEach(() => {
     setGlobalDispatcher(mockAgent);
     mockAgent.disableNetConnect();
+    globalThis.fetch = undiciFetch;
   });
   afterEach(() => {
     mockAgent.enableNetConnect();
     setGlobalDispatcher(globalDispatcher);
+    globalThis.fetch = originalFetch;
   });
 
   it('should not call function', async () => {
