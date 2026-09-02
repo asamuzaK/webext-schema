@@ -50,7 +50,7 @@ export const getChannelUrl = channel => {
     default:
       dir = 'releases/mozilla-beta/';
   }
-  return `https://hg.mozilla.org/${dir}raw-file/tip/`;
+  return `https://hg-edge.mozilla.org/${dir}raw-file/tip/`;
 };
 
 /**

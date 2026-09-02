@@ -67,7 +67,7 @@ describe('get channel url', () => {
   it('should get result', () => {
     const res = getChannelUrl();
     assert.strictEqual(
-      res, 'https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/',
+      res, 'https://hg-edge.mozilla.org/releases/mozilla-beta/raw-file/tip/',
       'result'
     );
   });
@@ -75,7 +75,7 @@ describe('get channel url', () => {
   it('should get result', () => {
     const res = getChannelUrl('beta');
     assert.strictEqual(
-      res, 'https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/',
+      res, 'https://hg-edge.mozilla.org/releases/mozilla-beta/raw-file/tip/',
       'result'
     );
   });
@@ -83,7 +83,7 @@ describe('get channel url', () => {
   it('should get result', () => {
     const res = getChannelUrl('central');
     assert.strictEqual(
-      res, 'https://hg.mozilla.org/mozilla-central/raw-file/tip/',
+      res, 'https://hg-edge.mozilla.org/mozilla-central/raw-file/tip/',
       'result'
     );
   });
@@ -91,7 +91,7 @@ describe('get channel url', () => {
   it('should get result', () => {
     const res = getChannelUrl('mail');
     assert.strictEqual(
-      res, 'https://hg.mozilla.org/comm-central/raw-file/tip/',
+      res, 'https://hg-edge.mozilla.org/comm-central/raw-file/tip/',
       'result'
     );
   });
@@ -441,7 +441,7 @@ describe('create unified schema', () => {
 
   it('should get object', async () => {
     const stubInfo = sinon.stub(console, 'info');
-    const url = new URL('https://hg.mozilla.org');
+    const url = new URL('https://hg-edge.mozilla.org');
     const mockPool = mockAgent.get(url.origin);
     const basePath = '/releases/mozilla-beta/raw-file/tip/';
     const browserUrl =
@@ -481,7 +481,7 @@ describe('create unified schema', () => {
 
   it('should get object', async () => {
     const stubInfo = sinon.stub(console, 'info');
-    const url = new URL('https://hg.mozilla.org');
+    const url = new URL('https://hg-edge.mozilla.org');
     const mockPool = mockAgent.get(url.origin);
     const basePath = '/mozilla-central/raw-file/tip/';
     const browserUrl =
@@ -521,7 +521,7 @@ describe('create unified schema', () => {
 
   it('should get object', async () => {
     const stubInfo = sinon.stub(console, 'info');
-    const url = new URL('https://hg.mozilla.org');
+    const url = new URL('https://hg-edge.mozilla.org');
     const mockPool = mockAgent.get(url.origin);
     const basePath = '/mozilla-central/raw-file/tip/';
     const mailBasePath = '/comm-central/raw-file/tip/';
@@ -627,7 +627,7 @@ describe('save schema file', () => {
   });
 
   it('should create file', async () => {
-    const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
+    const url = new URL('https://hg-edge.mozilla.org/mozilla-central/raw-file/tip/');
     const mockPool = mockAgent.get(url.origin);
     const browserItems = [
       'commands.json',
@@ -674,7 +674,7 @@ describe('save schema file', () => {
   });
 
   it('should create file', async () => {
-    const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
+    const url = new URL('https://hg-edge.mozilla.org/mozilla-central/raw-file/tip/');
     const mockPool = mockAgent.get(url.origin);
     const browserItems = [
       'commands.json',
@@ -722,7 +722,7 @@ describe('save schema file', () => {
 
   it('should create file', async () => {
     const url =
-      new URL('https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/');
+      new URL('https://hg-edge.mozilla.org/releases/mozilla-beta/raw-file/tip/');
     const mockPool = mockAgent.get(url.origin);
     mockPool.intercept({
       path: `${url.pathname}browser/components/extensions/schemas/jar.mn`,
@@ -766,7 +766,7 @@ describe('save schema file', () => {
 
   it('should create file', async () => {
     const url =
-      new URL('https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/');
+      new URL('https://hg-edge.mozilla.org/releases/mozilla-beta/raw-file/tip/');
     const mockPool = mockAgent.get(url.origin);
     mockPool.intercept({
       path: `${url.pathname}browser/components/extensions/schemas/jar.mn`,
@@ -825,7 +825,7 @@ describe('update schemas files', () => {
   });
 
   it('should not call function', async () => {
-    const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
+    const url = new URL('https://hg-edge.mozilla.org/mozilla-central/raw-file/tip/');
     const centralPath = url.pathname;
     const betaPath = '/releases/mozilla-beta/raw-file/tip/';
     const mailPath = '/comm-central/raw-file/tip/';
@@ -897,7 +897,7 @@ describe('update schemas files', () => {
   });
 
   it('should not call function', async () => {
-    const url = new URL('https://hg.mozilla.org/mozilla-central/raw-file/tip/');
+    const url = new URL('https://hg-edge.mozilla.org/mozilla-central/raw-file/tip/');
     const centralPath = url.pathname;
     const betaPath = '/releases/mozilla-beta/raw-file/tip/';
     const mailPath = '/comm-central/raw-file/tip/';
@@ -970,7 +970,7 @@ describe('update schemas files', () => {
 
   it('should not call function', async () => {
     const url =
-      new URL('https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/');
+      new URL('https://hg-edge.mozilla.org/releases/mozilla-beta/raw-file/tip/');
     const mockPool = mockAgent.get(url.origin);
     mockPool.intercept({
       path: `${url.pathname}browser/components/extensions/schemas/jar.mn`,
@@ -1012,7 +1012,7 @@ describe('update schemas files', () => {
 
   it('should not call function', async () => {
     const url =
-      new URL('https://hg.mozilla.org/releases/mozilla-beta/raw-file/tip/');
+      new URL('https://hg-edge.mozilla.org/releases/mozilla-beta/raw-file/tip/');
     const mockPool = mockAgent.get(url.origin);
     mockPool.intercept({
       path: `${url.pathname}browser/components/extensions/schemas/jar.mn`,
