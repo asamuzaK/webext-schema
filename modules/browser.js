@@ -1063,7 +1063,7 @@ export const warmupTab = async tabId => {
 export const captureVisibleTab = async (windowId, opt) => {
   const info = await runtime.getBrowserInfo();
   let isGranted;
-  if (info.vender === 'Mozilla') {
+  if (info.vendor === 'Mozilla') {
     const browserVersion = parseFloat(info.version);
     isGranted = (browserVersion >= 126 && await isPermissionGranted({
       permissions: ['activeTab']

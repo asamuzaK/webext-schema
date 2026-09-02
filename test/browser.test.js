@@ -2648,7 +2648,7 @@ describe('browser', () => {
 
     it('should not call function if permission is not granted', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        vender: 'Mozilla',
+        vendor: 'Mozilla',
         version: '125.0.1'
       });
       browser.permissions.contains.withArgs({
@@ -2663,7 +2663,7 @@ describe('browser', () => {
 
     it('should call function', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        vender: 'Mozilla',
+        vendor: 'Mozilla',
         version: '125.0.1'
       });
       browser.permissions.contains.withArgs({
@@ -2683,7 +2683,7 @@ describe('browser', () => {
 
     it('should not call function if permission is not granted', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        vender: 'Mozilla',
+        vendor: 'Mozilla',
         version: '126.0.a1'
       });
       browser.permissions.contains.withArgs({
@@ -2701,7 +2701,7 @@ describe('browser', () => {
 
     it('should call function', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        vender: 'Mozilla',
+        vendor: 'Mozilla',
         version: '126.0a1'
       });
       browser.permissions.contains.withArgs({
@@ -2724,7 +2724,7 @@ describe('browser', () => {
 
     it('should call function', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        vender: 'Mozilla',
+        vendor: 'Mozilla',
         version: '126.0a1'
       });
       browser.permissions.contains.withArgs({
@@ -2747,7 +2747,7 @@ describe('browser', () => {
 
     it('should not call function if permission is not granted', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        vender: 'Foo',
+        vendor: 'Foo',
         version: '126.0.1'
       });
       browser.permissions.contains.withArgs({
@@ -2765,7 +2765,7 @@ describe('browser', () => {
 
     it('should call function', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        vender: 'Foo',
+        vendor: 'Foo',
         version: '126.0.1'
       });
       browser.permissions.contains.withArgs({
@@ -2788,7 +2788,7 @@ describe('browser', () => {
 
     it('should call function', async () => {
       browser.runtime.getBrowserInfo.resolves({
-        vender: 'Foo',
+        vendor: 'Foo',
         version: '126.0.1'
       });
       browser.permissions.contains.withArgs({
