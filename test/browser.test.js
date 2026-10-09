@@ -213,10 +213,16 @@ describe('browser', () => {
       browser.bookmarks.getTree.resolves([{}]);
       const res = await func();
       assert.strictEqual(browser.bookmarks.get.callCount, i, 'not called get');
-      assert.strictEqual(browser.bookmarks.getSubTree.callCount, j,
-        'not called get sub tree');
-      assert.strictEqual(browser.bookmarks.getTree.callCount, k + 1,
-        'called get tree');
+      assert.strictEqual(
+        browser.bookmarks.getSubTree.callCount,
+        j,
+        'not called get sub tree'
+      );
+      assert.strictEqual(
+        browser.bookmarks.getTree.callCount,
+        k + 1,
+        'called get tree'
+      );
       assert.deepEqual(res, [{}], 'result');
     });
 
@@ -234,10 +240,16 @@ describe('browser', () => {
       browser.bookmarks.getSubTree.withArgs('foo').resolves([{}]);
       const res = await func('foo');
       assert.strictEqual(browser.bookmarks.get.callCount, i, 'not called get');
-      assert.strictEqual(browser.bookmarks.getSubTree.callCount, j + 1,
-        'called get sub tree');
-      assert.strictEqual(browser.bookmarks.getTree.callCount, k,
-        'not called get tree');
+      assert.strictEqual(
+        browser.bookmarks.getSubTree.callCount,
+        j + 1,
+        'called get sub tree'
+      );
+      assert.strictEqual(
+        browser.bookmarks.getTree.callCount,
+        k,
+        'not called get tree'
+      );
       assert.deepEqual(res, [{}], 'result');
     });
 
@@ -248,10 +260,16 @@ describe('browser', () => {
       browser.bookmarks.get.withArgs(['foo', 'bar']).resolves([{}, {}]);
       const res = await func(['foo', 'bar']);
       assert.strictEqual(browser.bookmarks.get.callCount, i + 1, 'called get');
-      assert.strictEqual(browser.bookmarks.getSubTree.callCount, j,
-        'not called get sub tree');
-      assert.strictEqual(browser.bookmarks.getTree.callCount, k,
-        'not called get tree');
+      assert.strictEqual(
+        browser.bookmarks.getSubTree.callCount,
+        j,
+        'not called get sub tree'
+      );
+      assert.strictEqual(
+        browser.bookmarks.getTree.callCount,
+        k,
+        'not called get tree'
+      );
       assert.deepEqual(res, [{}, {}], 'result');
     });
   });
@@ -264,7 +282,8 @@ describe('browser', () => {
       const i = browser.browserSettings.closeTabsByDoubleClick.get.callCount;
       const res = await func({ foo: 'bar' });
       assert.strictEqual(
-        browser.browserSettings.closeTabsByDoubleClick.get.callCount, i,
+        browser.browserSettings.closeTabsByDoubleClick.get.callCount,
+        i,
         'not called'
       );
       assert.deepEqual(res, null, 'result');
@@ -276,7 +295,8 @@ describe('browser', () => {
     });
 
     it('should get object', async () => {
-      browser.browserSettings.closeTabsByDoubleClick.get.withArgs({})
+      browser.browserSettings.closeTabsByDoubleClick.get
+        .withArgs({})
         .resolves({});
       const res = await func();
       assert.deepEqual(res, {}, 'result');
@@ -291,7 +311,8 @@ describe('browser', () => {
       const i = browser.browserSettings.contextMenuShowEvent.get.callCount;
       const res = await func();
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.get.callCount, i,
+        browser.browserSettings.contextMenuShowEvent.get.callCount,
+        i,
         'not called'
       );
       assert.strictEqual(res, false, 'result');
@@ -305,11 +326,13 @@ describe('browser', () => {
       });
       const res = await func();
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.get.callCount, i + 1,
+        browser.browserSettings.contextMenuShowEvent.get.callCount,
+        i + 1,
         'called'
       );
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.set.callCount, j,
+        browser.browserSettings.contextMenuShowEvent.set.callCount,
+        j,
         'not called'
       );
       assert.strictEqual(res, true, 'result');
@@ -325,11 +348,13 @@ describe('browser', () => {
       browser.browserSettings.contextMenuShowEvent.set.resolves(true);
       const res = await func();
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.get.callCount, i + 1,
+        browser.browserSettings.contextMenuShowEvent.get.callCount,
+        i + 1,
         'called'
       );
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.set.callCount, j + 1,
+        browser.browserSettings.contextMenuShowEvent.set.callCount,
+        j + 1,
         'called'
       );
       assert.strictEqual(res, true, 'result');
@@ -345,11 +370,13 @@ describe('browser', () => {
       browser.browserSettings.contextMenuShowEvent.set.resolves(false);
       const res = await func();
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.get.callCount, i + 1,
+        browser.browserSettings.contextMenuShowEvent.get.callCount,
+        i + 1,
         'called'
       );
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.set.callCount, j + 1,
+        browser.browserSettings.contextMenuShowEvent.set.callCount,
+        j + 1,
         'called'
       );
       assert.strictEqual(res, false, 'result');
@@ -364,11 +391,13 @@ describe('browser', () => {
       });
       const res = await func();
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.get.callCount, i + 1,
+        browser.browserSettings.contextMenuShowEvent.get.callCount,
+        i + 1,
         'called'
       );
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.set.callCount, j,
+        browser.browserSettings.contextMenuShowEvent.set.callCount,
+        j,
         'not called'
       );
       assert.strictEqual(res, false, 'result');
@@ -383,7 +412,8 @@ describe('browser', () => {
       const i = browser.browserSettings.contextMenuShowEvent.clear.callCount;
       const res = await func();
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.clear.callCount, i,
+        browser.browserSettings.contextMenuShowEvent.clear.callCount,
+        i,
         'not called'
       );
       assert.strictEqual(res, false, 'result');
@@ -394,7 +424,8 @@ describe('browser', () => {
       browser.browserSettings.contextMenuShowEvent.clear.resolves(true);
       const res = await func();
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.clear.callCount, i + 1,
+        browser.browserSettings.contextMenuShowEvent.clear.callCount,
+        i + 1,
         'called'
       );
       assert.strictEqual(res, true, 'result');
@@ -405,7 +436,8 @@ describe('browser', () => {
       browser.browserSettings.contextMenuShowEvent.clear.resolves(false);
       const res = await func();
       assert.strictEqual(
-        browser.browserSettings.contextMenuShowEvent.clear.callCount, i + 1,
+        browser.browserSettings.contextMenuShowEvent.clear.callCount,
+        i + 1,
         'called'
       );
       assert.strictEqual(res, false, 'result');
@@ -420,7 +452,9 @@ describe('browser', () => {
       const i = browser.browserSettings.newTabPosition.get.callCount;
       const res = await func();
       assert.strictEqual(
-        browser.browserSettings.newTabPosition.get.callCount, i, 'not called'
+        browser.browserSettings.newTabPosition.get.callCount,
+        i,
+        'not called'
       );
       assert.deepEqual(res, null, 'result');
     });
@@ -430,7 +464,9 @@ describe('browser', () => {
       browser.browserSettings.newTabPosition.get.resolves('foo');
       const res = await func();
       assert.strictEqual(
-        browser.browserSettings.newTabPosition.get.callCount, i + 1, 'called'
+        browser.browserSettings.newTabPosition.get.callCount,
+        i + 1,
+        'called'
       );
       assert.strictEqual(res, 'foo', 'result');
     });
@@ -475,19 +511,31 @@ describe('browser', () => {
     it('should get null', async () => {
       browser.permissions.contains.resolves(false);
       const res = await func('foo', '');
-      assert.strictEqual(browser.commands.reset.calledOnce, false,
-        'not called');
-      assert.strictEqual(browser.commands.update.calledOnce, false,
-        'not called');
+      assert.strictEqual(
+        browser.commands.reset.calledOnce,
+        false,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.commands.update.calledOnce,
+        false,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func('foo', 'a');
-      assert.strictEqual(browser.commands.reset.calledOnce, false,
-        'not called');
-      assert.strictEqual(browser.commands.update.calledOnce, false,
-        'not called');
+      assert.strictEqual(
+        browser.commands.reset.calledOnce,
+        false,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.commands.update.calledOnce,
+        false,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -496,8 +544,11 @@ describe('browser', () => {
       browser.commands.update.rejects();
       const res = await func('foo', '');
       assert.strictEqual(browser.commands.reset.calledOnce, true, 'called');
-      assert.strictEqual(browser.commands.update.calledOnce, false,
-        'not called');
+      assert.strictEqual(
+        browser.commands.update.calledOnce,
+        false,
+        'not called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -505,56 +556,135 @@ describe('browser', () => {
       browser.commands.reset.rejects();
       browser.commands.update.resolves(undefined);
       const items = [
-        'Alt+1', 'Command+1', 'Ctrl+1', 'MacCtrl+1',
-        'Alt+Shift+1', 'Command+Shift+1', 'Ctrl+Shift+1', 'MacCtrl+Shift+1',
-        'Alt+Command+1', 'Alt+Ctrl+1', 'Alt+MacCtrl+1',
-        'Command+Alt+1', 'Command+MacCtrl+1',
-        'Ctrl+Alt+1', 'Ctrl+MacCtrl+1',
-        'MacCtrl+Alt+1', 'MacCtrl+Command+1', 'MacCtrl+Ctrl+1',
-        'Alt+a', 'Command+a', 'Ctrl+a', 'MacCtrl+a',
-        'Alt+Shift+a', 'Command+Shift+a', 'Ctrl+Shift+a', 'MacCtrl+Shift+a',
-        'Alt+Command+a', 'Alt+Ctrl+a', 'Alt+MacCtrl+a',
-        'Command+Alt+a', 'Command+MacCtrl+a',
-        'Ctrl+Alt+a', 'Ctrl+MacCtrl+a',
-        'MacCtrl+Alt+a', 'MacCtrl+Command+a', 'MacCtrl+Ctrl+a',
-        'Alt+F1', 'Command+F1', 'Ctrl+F1', 'MacCtrl+F1',
-        'Alt+Shift+F1', 'Command+Shift+F1', 'Ctrl+Shift+F1', 'MacCtrl+Shift+F1',
-        'Alt+Command+F1', 'Alt+Ctrl+F1', 'Alt+MacCtrl+F1',
-        'Command+Alt+F1', 'Command+MacCtrl+F1',
-        'Ctrl+Alt+F1', 'Ctrl+MacCtrl+F1',
-        'MacCtrl+Alt+F1', 'MacCtrl+Command+F1', 'MacCtrl+Ctrl+F1',
-        'Alt+PageDown', 'Command+PageDown', 'Ctrl+PageDown', 'MacCtrl+PageDown',
-        'Alt+Shift+PageDown', 'Command+Shift+PageDown', 'Ctrl+Shift+PageDown',
+        'Alt+1',
+        'Command+1',
+        'Ctrl+1',
+        'MacCtrl+1',
+        'Alt+Shift+1',
+        'Command+Shift+1',
+        'Ctrl+Shift+1',
+        'MacCtrl+Shift+1',
+        'Alt+Command+1',
+        'Alt+Ctrl+1',
+        'Alt+MacCtrl+1',
+        'Command+Alt+1',
+        'Command+MacCtrl+1',
+        'Ctrl+Alt+1',
+        'Ctrl+MacCtrl+1',
+        'MacCtrl+Alt+1',
+        'MacCtrl+Command+1',
+        'MacCtrl+Ctrl+1',
+        'Alt+a',
+        'Command+a',
+        'Ctrl+a',
+        'MacCtrl+a',
+        'Alt+Shift+a',
+        'Command+Shift+a',
+        'Ctrl+Shift+a',
+        'MacCtrl+Shift+a',
+        'Alt+Command+a',
+        'Alt+Ctrl+a',
+        'Alt+MacCtrl+a',
+        'Command+Alt+a',
+        'Command+MacCtrl+a',
+        'Ctrl+Alt+a',
+        'Ctrl+MacCtrl+a',
+        'MacCtrl+Alt+a',
+        'MacCtrl+Command+a',
+        'MacCtrl+Ctrl+a',
+        'Alt+F1',
+        'Command+F1',
+        'Ctrl+F1',
+        'MacCtrl+F1',
+        'Alt+Shift+F1',
+        'Command+Shift+F1',
+        'Ctrl+Shift+F1',
+        'MacCtrl+Shift+F1',
+        'Alt+Command+F1',
+        'Alt+Ctrl+F1',
+        'Alt+MacCtrl+F1',
+        'Command+Alt+F1',
+        'Command+MacCtrl+F1',
+        'Ctrl+Alt+F1',
+        'Ctrl+MacCtrl+F1',
+        'MacCtrl+Alt+F1',
+        'MacCtrl+Command+F1',
+        'MacCtrl+Ctrl+F1',
+        'Alt+PageDown',
+        'Command+PageDown',
+        'Ctrl+PageDown',
+        'MacCtrl+PageDown',
+        'Alt+Shift+PageDown',
+        'Command+Shift+PageDown',
+        'Ctrl+Shift+PageDown',
         'MacCtrl+Shift+PageDown',
-        'Alt+Command+PageDown', 'Alt+Ctrl+PageDown', 'Alt+MacCtrl+PageDown',
-        'Command+Alt+PageDown', 'Command+MacCtrl+PageDown',
-        'Ctrl+Alt+PageDown', 'Ctrl+MacCtrl+PageDown',
-        'MacCtrl+Alt+PageDown', 'MacCtrl+Command+PageDown',
+        'Alt+Command+PageDown',
+        'Alt+Ctrl+PageDown',
+        'Alt+MacCtrl+PageDown',
+        'Command+Alt+PageDown',
+        'Command+MacCtrl+PageDown',
+        'Ctrl+Alt+PageDown',
+        'Ctrl+MacCtrl+PageDown',
+        'MacCtrl+Alt+PageDown',
+        'MacCtrl+Command+PageDown',
         'MacCtrl+Ctrl+PageDown',
-        'Alt+Up', 'Command+Up', 'Ctrl+Up', 'MacCtrl+Up',
-        'Alt+Shift+Up', 'Command+Shift+Up', 'Ctrl+Shift+Up', 'MacCtrl+Shift+Up',
-        'Alt+Command+Up', 'Alt+Ctrl+Up', 'Alt+MacCtrl+Up',
-        'Command+Alt+Up', 'Command+MacCtrl+Up',
-        'Ctrl+Alt+Up', 'Ctrl+MacCtrl+Up',
-        'MacCtrl+Alt+Up', 'MacCtrl+Command+Up', 'MacCtrl+Ctrl+Up',
-        'Alt+Left', 'Command+Left', 'Ctrl+Left', 'MacCtrl+Left',
-        'Alt+Shift+Left', 'Command+Shift+Left', 'Ctrl+Shift+Left',
+        'Alt+Up',
+        'Command+Up',
+        'Ctrl+Up',
+        'MacCtrl+Up',
+        'Alt+Shift+Up',
+        'Command+Shift+Up',
+        'Ctrl+Shift+Up',
+        'MacCtrl+Shift+Up',
+        'Alt+Command+Up',
+        'Alt+Ctrl+Up',
+        'Alt+MacCtrl+Up',
+        'Command+Alt+Up',
+        'Command+MacCtrl+Up',
+        'Ctrl+Alt+Up',
+        'Ctrl+MacCtrl+Up',
+        'MacCtrl+Alt+Up',
+        'MacCtrl+Command+Up',
+        'MacCtrl+Ctrl+Up',
+        'Alt+Left',
+        'Command+Left',
+        'Ctrl+Left',
+        'MacCtrl+Left',
+        'Alt+Shift+Left',
+        'Command+Shift+Left',
+        'Ctrl+Shift+Left',
         'MacCtrl+Shift+Left',
-        'Alt+Command+Left', 'Alt+Ctrl+Left', 'Alt+MacCtrl+Left',
-        'Command+Alt+Left', 'Command+MacCtrl+Left',
-        'Ctrl+Alt+Left', 'Ctrl+MacCtrl+Left',
-        'MacCtrl+Alt+Left', 'MacCtrl+Command+Left', 'MacCtrl+Ctrl+Left',
-        'F1', 'F12',
-        'MediaNextTrack', 'MediaPrevTrack', 'MediaPlayPause', 'MediaStop'
+        'Alt+Command+Left',
+        'Alt+Ctrl+Left',
+        'Alt+MacCtrl+Left',
+        'Command+Alt+Left',
+        'Command+MacCtrl+Left',
+        'Ctrl+Alt+Left',
+        'Ctrl+MacCtrl+Left',
+        'MacCtrl+Alt+Left',
+        'MacCtrl+Command+Left',
+        'MacCtrl+Ctrl+Left',
+        'F1',
+        'F12',
+        'MediaNextTrack',
+        'MediaPrevTrack',
+        'MediaPlayPause',
+        'MediaStop'
       ];
       for (const item of items) {
         const i = browser.commands.update.callCount;
         // eslint-disable-next-line no-await-in-loop
         const res = await func('foo', item);
-        assert.strictEqual(browser.commands.update.callCount, i + 1,
-                           `called ${item}`);
-        assert.strictEqual(browser.commands.reset.calledOnce, false,
-          'not called');
+        assert.strictEqual(
+          browser.commands.update.callCount,
+          i + 1,
+          `called ${item}`
+        );
+        assert.strictEqual(
+          browser.commands.reset.calledOnce,
+          false,
+          'not called'
+        );
         assert.strictEqual(res, undefined, 'result');
       }
     });
@@ -564,8 +694,11 @@ describe('browser', () => {
       browser.commands.update.resolves(undefined);
       const res = await func('foo', ' Ctrl+a ');
       assert.strictEqual(browser.commands.update.calledOnce, true, 'called');
-      assert.strictEqual(browser.commands.reset.calledOnce, false,
-        'not called');
+      assert.strictEqual(
+        browser.commands.reset.calledOnce,
+        false,
+        'not called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
   });
@@ -577,8 +710,11 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.contextualIdentities.query.callCount;
       const res = await func();
-      assert.strictEqual(browser.contextualIdentities.query.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.contextualIdentities.query.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -609,15 +745,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Undefined.')
+        );
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Number.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Number.')
+        );
       });
     });
 
@@ -625,13 +765,17 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.contextualIdentities.get.callCount;
       const res = await func('foo');
-      assert.strictEqual(browser.contextualIdentities.get.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.contextualIdentities.get.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
     it('should throw', async () => {
-      browser.contextualIdentities.get.withArgs('foo')
+      browser.contextualIdentities.get
+        .withArgs('foo')
         .rejects(new Error('error'));
       await func('foo').catch(e => {
         assert.deepStrictEqual(e, new Error('error'));
@@ -698,12 +842,16 @@ describe('browser', () => {
       const { called } = stub;
       stub.restore();
       assert.strictEqual(called, false, 'not logged');
-      assert.deepEqual(res, [
-        {
-          enabled: true,
-          type: 'theme'
-        }
-      ], 'result');
+      assert.deepEqual(
+        res,
+        [
+          {
+            enabled: true,
+            type: 'theme'
+          }
+        ],
+        'result'
+      );
     });
   });
 
@@ -712,15 +860,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Undefined.')
+        );
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Number.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Number.')
+        );
       });
     });
 
@@ -791,14 +943,18 @@ describe('browser', () => {
         }
       ]);
       const res = await func();
-      assert.deepEqual(res, [
-        {
-          type: 'extension'
-        },
-        {
-          type: 'extension'
-        }
-      ], 'result');
+      assert.deepEqual(
+        res,
+        [
+          {
+            type: 'extension'
+          },
+          {
+            type: 'extension'
+          }
+        ],
+        'result'
+      );
     });
   });
 
@@ -807,15 +963,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Undefined.')
+        );
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Number.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Number.')
+        );
       });
     });
 
@@ -823,8 +983,11 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.notifications.clear.callCount;
       const res = await func('foo');
-      assert.strictEqual(browser.notifications.clear.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.notifications.clear.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -840,15 +1003,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Undefined.')
+        );
       });
     });
 
     it('should throw if first argument is not string', async () => {
       await func(1).catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Number.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Number.')
+        );
       });
     });
 
@@ -856,8 +1023,11 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.notifications.create.callCount;
       const res = await func('foo');
-      assert.strictEqual(browser.notifications.create.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.notifications.create.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -872,8 +1042,11 @@ describe('browser', () => {
       browser.notifications.create.withArgs('foo', {}).resolves('bar');
       const i = browser.notifications.onClosed.addListener.callCount;
       const res = await func('foo', {});
-      assert.strictEqual(browser.notifications.onClosed.addListener.callCount,
-        i + 1, 'called');
+      assert.strictEqual(
+        browser.notifications.onClosed.addListener.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, 'bar', 'result');
     });
 
@@ -882,8 +1055,11 @@ describe('browser', () => {
       browser.notifications.create.withArgs('foo', {}).resolves('bar');
       const i = browser.notifications.onClosed.addListener.callCount;
       const res = await func('foo', {});
-      assert.strictEqual(browser.notifications.onClosed.addListener.callCount,
-        i, 'not called');
+      assert.strictEqual(
+        browser.notifications.onClosed.addListener.callCount,
+        i,
+        'not called'
+      );
       assert.strictEqual(res, 'bar', 'result');
     });
   });
@@ -893,34 +1069,41 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String or Array but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String or Array but got Undefined.')
+        );
       });
     });
 
     it('should throw if given argument is not string or array', async () => {
       await func(1).catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String or Array but got Number.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String or Array but got Number.')
+        );
       });
     });
 
     it('should get result', async () => {
-      browser.permissions.remove.withArgs({ permissions: ['foo'] })
+      browser.permissions.remove
+        .withArgs({ permissions: ['foo'] })
         .resolves(true);
       const res = await func('foo');
       assert.strictEqual(res, true, 'result');
     });
 
     it('should get result', async () => {
-      browser.permissions.remove.withArgs({ permissions: ['foo'] })
+      browser.permissions.remove
+        .withArgs({ permissions: ['foo'] })
         .resolves(false);
       const res = await func('foo');
       assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
-      browser.permissions.remove.withArgs({ permissions: ['foo'] })
+      browser.permissions.remove
+        .withArgs({ permissions: ['foo'] })
         .resolves(true);
       const res = await func(['foo']);
       assert.strictEqual(res, true, 'result');
@@ -932,34 +1115,41 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String or Array but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String or Array but got Undefined.')
+        );
       });
     });
 
     it('should throw if given argument is not string or array', async () => {
       await func(1).catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String or Array but got Number.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String or Array but got Number.')
+        );
       });
     });
 
     it('should get result', async () => {
-      browser.permissions.request.withArgs({ permissions: ['foo'] })
+      browser.permissions.request
+        .withArgs({ permissions: ['foo'] })
         .resolves(true);
       const res = await func('foo');
       assert.strictEqual(res, true, 'result');
     });
 
     it('should get result', async () => {
-      browser.permissions.request.withArgs({ permissions: ['foo'] })
+      browser.permissions.request
+        .withArgs({ permissions: ['foo'] })
         .resolves(false);
       const res = await func('foo');
       assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
-      browser.permissions.request.withArgs({ permissions: ['foo'] })
+      browser.permissions.request
+        .withArgs({ permissions: ['foo'] })
         .resolves(true);
       const res = await func(['foo']);
       assert.strictEqual(res, true, 'result');
@@ -1030,7 +1220,8 @@ describe('browser', () => {
     });
 
     it('should get object', async () => {
-      browser.runtime.connect.withArgs('foo', { foo: 'bar' })
+      browser.runtime.connect
+        .withArgs('foo', { foo: 'bar' })
         .resolves({ bar: 'baz' });
       const res = await func('foo', { foo: 'bar' });
       assert.deepEqual(res, { bar: 'baz' }, 'result');
@@ -1069,8 +1260,11 @@ describe('browser', () => {
       const j = browser.runtime.sendMessage.callCount;
       const res = await func();
       assert.strictEqual(browser.tabs.sendMessage.callCount, i, 'not called');
-      assert.strictEqual(browser.runtime.sendMessage.callCount, j,
-        'not called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        j,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -1078,18 +1272,23 @@ describe('browser', () => {
       browser.runtime.sendMessage.withArgs('foo', null).resolves({});
       const i = browser.runtime.sendMessage.callCount;
       const res = await func(null, 'foo');
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, {}, 'result');
     });
 
     it('should call function', async () => {
-      browser.runtime.sendMessage.withArgs('foo', { bar: 'baz' })
-        .resolves({});
+      browser.runtime.sendMessage.withArgs('foo', { bar: 'baz' }).resolves({});
       const i = browser.runtime.sendMessage.callCount;
       const res = await func(null, 'foo', { bar: 'baz' });
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, {}, 'result');
     });
 
@@ -1097,8 +1296,11 @@ describe('browser', () => {
       browser.runtime.sendMessage.withArgs('foo', 'bar', null).resolves({});
       const i = browser.runtime.sendMessage.callCount;
       const res = await func('foo', 'bar');
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, {}, 'result');
     });
 
@@ -1115,8 +1317,11 @@ describe('browser', () => {
       const j = browser.runtime.sendMessage.callCount;
       const res = await func(browser.tabs.TAB_ID_NONE, 'foo');
       assert.strictEqual(browser.tabs.sendMessage.callCount, i, 'not called');
-      assert.strictEqual(browser.runtime.sendMessage.callCount, j,
-        'not called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        j,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
   });
@@ -1144,8 +1349,11 @@ describe('browser', () => {
       browser.scripting.executeScript.resolves([{}]);
       const i = browser.scripting.executeScript.callCount;
       const res = await func();
-      assert.strictEqual(browser.scripting.executeScript.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -1155,8 +1363,11 @@ describe('browser', () => {
       const res = await func({
         target: {}
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -1168,8 +1379,11 @@ describe('browser', () => {
           tabId: 1
         }
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -1182,8 +1396,11 @@ describe('browser', () => {
           tabId: 1
         }
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -1210,8 +1427,11 @@ describe('browser', () => {
           tabId: 1
         }
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, [{}], 'result');
     });
 
@@ -1224,8 +1444,11 @@ describe('browser', () => {
           tabId: 1
         }
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -1238,8 +1461,11 @@ describe('browser', () => {
           tabId: 1
         }
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, [{}], 'result');
     });
 
@@ -1253,8 +1479,11 @@ describe('browser', () => {
           tabId: 1
         }
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, [{}], 'result');
     });
   });
@@ -1264,15 +1493,13 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message,
-          'Expected String but got Undefined.');
+        assert.strictEqual(e.message, 'Expected String but got Undefined.');
       });
     });
 
     it('should throw if 1st argument is not string', async () => {
       await func(1).catch(e => {
-        assert.strictEqual(e.message,
-          'Expected String but got Number.');
+        assert.strictEqual(e.message, 'Expected String but got Number.');
       });
     });
 
@@ -1296,22 +1523,32 @@ describe('browser', () => {
         tabId: 1
       }).callCount;
       const res = await func('foo');
-      assert.strictEqual(browser.search.query.withArgs({
-        text: 'foo',
-        tabId: 1
-      }).callCount, i + 1, 'called');
-      assert.deepEqual(res, {
-        id: 1
-      }, 'result');
+      assert.strictEqual(
+        browser.search.query.withArgs({
+          text: 'foo',
+          tabId: 1
+        }).callCount,
+        i + 1,
+        'called'
+      );
+      assert.deepEqual(
+        res,
+        {
+          id: 1
+        },
+        'result'
+      );
     });
 
     it('should call function', async () => {
-      browser.tabs.create.withArgs({
-        index: 2
-      }).resolves({
-        id: 1,
-        index: 2
-      });
+      browser.tabs.create
+        .withArgs({
+          index: 2
+        })
+        .resolves({
+          id: 1,
+          index: 2
+        });
       browser.tabs.get.withArgs(1).resolves({
         id: 1,
         index: 2
@@ -1323,14 +1560,22 @@ describe('browser', () => {
       const res = await func('foo', {
         index: 2
       });
-      assert.strictEqual(browser.search.query.withArgs({
-        text: 'foo',
-        tabId: 1
-      }).callCount, i + 1, 'called');
-      assert.deepEqual(res, {
-        id: 1,
-        index: 2
-      }, 'result');
+      assert.strictEqual(
+        browser.search.query.withArgs({
+          text: 'foo',
+          tabId: 1
+        }).callCount,
+        i + 1,
+        'called'
+      );
+      assert.deepEqual(
+        res,
+        {
+          id: 1,
+          index: 2
+        },
+        'result'
+      );
     });
   });
 
@@ -1339,15 +1584,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Undefined.')
+        );
       });
     });
 
     it('should throw if 1st argument is not string', async () => {
       await func(1).catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Number.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Number.')
+        );
       });
     });
 
@@ -1363,9 +1612,13 @@ describe('browser', () => {
         query: 'foo'
       }).callCount;
       await func('foo');
-      assert.strictEqual(browser.search.search.withArgs({
-        query: 'foo'
-      }).callCount, i + 1, 'called');
+      assert.strictEqual(
+        browser.search.search.withArgs({
+          query: 'foo'
+        }).callCount,
+        i + 1,
+        'called'
+      );
     });
 
     it('should call function', async () => {
@@ -1378,11 +1631,15 @@ describe('browser', () => {
         engine: 'bar',
         tabId: 1
       });
-      assert.strictEqual(browser.search.search.withArgs({
-        engine: 'bar',
-        query: 'foo',
-        tabId: 1
-      }).callCount, i + 1, 'called');
+      assert.strictEqual(
+        browser.search.search.withArgs({
+          engine: 'bar',
+          query: 'foo',
+          tabId: 1
+        }).callCount,
+        i + 1,
+        'called'
+      );
     });
   });
 
@@ -1393,8 +1650,11 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.sessions.getRecentlyClosed.callCount;
       const res = await func();
-      assert.strictEqual(browser.sessions.getRecentlyClosed.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.sessions.getRecentlyClosed.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -1445,15 +1705,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Undefined.')
+        );
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Number.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Number.')
+        );
       });
     });
 
@@ -1461,8 +1725,11 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.sessions.getWindowValue.callCount;
       const res = await func('foo', 1);
-      assert.strictEqual(browser.sessions.getWindowValue.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.sessions.getWindowValue.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -1474,7 +1741,8 @@ describe('browser', () => {
 
     it('should get object', async () => {
       browser.sessions.getWindowValue
-        .withArgs(browser.windows.WINDOW_ID_CURRENT, 'foo').resolves('bar');
+        .withArgs(browser.windows.WINDOW_ID_CURRENT, 'foo')
+        .resolves('bar');
       const res = await func('foo');
       assert.strictEqual(res, 'bar', 'result');
     });
@@ -1485,15 +1753,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Undefined.')
+        );
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Number.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Number.')
+        );
       });
     });
 
@@ -1501,8 +1773,11 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.sessions.getWindowValue.callCount;
       const res = await func('foo');
-      assert.strictEqual(browser.sessions.getWindowValue.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.sessions.getWindowValue.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -1518,15 +1793,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Undefined.')
+        );
       });
     });
 
     it('should throw if given argument is not string', async () => {
       await func(1).catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected String but got Number.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected String but got Number.')
+        );
       });
     });
 
@@ -1534,22 +1813,31 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.sessions.setWindowValue.callCount;
       await func('foo');
-      assert.strictEqual(browser.sessions.setWindowValue.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.sessions.setWindowValue.callCount,
+        i,
+        'not called'
+      );
     });
 
     it('should call function', async () => {
       const i = browser.sessions.setWindowValue.callCount;
       await func('foo', 'bar', 1);
-      assert.strictEqual(browser.sessions.setWindowValue.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.sessions.setWindowValue.callCount,
+        i + 1,
+        'called'
+      );
     });
 
     it('should call function', async () => {
       const i = browser.sessions.setWindowValue.callCount;
       await func('foo', 'bar');
-      assert.strictEqual(browser.sessions.setWindowValue.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.sessions.setWindowValue.callCount,
+        i + 1,
+        'called'
+      );
     });
   });
 
@@ -1563,10 +1851,16 @@ describe('browser', () => {
       // const k = browser.storage.session.clear.callCount;
       const l = browser.storage.sync.clear.callCount;
       await func();
-      assert.strictEqual(browser.storage.local.clear.callCount, i,
-        'not called');
-      assert.strictEqual(browser.storage.managed.clear.callCount, j,
-        'not called');
+      assert.strictEqual(
+        browser.storage.local.clear.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.storage.managed.clear.callCount,
+        j,
+        'not called'
+      );
       /*
       assert.strictEqual(browser.storage.session.clear.callCount, k,
         'not called');
@@ -1580,10 +1874,16 @@ describe('browser', () => {
       // const k = browser.storage.session.clear.callCount;
       const l = browser.storage.sync.clear.callCount;
       await func('foo');
-      assert.strictEqual(browser.storage.local.clear.callCount, i,
-        'not called');
-      assert.strictEqual(browser.storage.managed.clear.callCount, j,
-        'not called');
+      assert.strictEqual(
+        browser.storage.local.clear.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.storage.managed.clear.callCount,
+        j,
+        'not called'
+      );
       /*
       assert.strictEqual(browser.storage.session.clear.callCount, k,
         'not called');
@@ -1594,22 +1894,31 @@ describe('browser', () => {
     it('should call function', async () => {
       const i = browser.storage.local.clear.callCount;
       await func();
-      assert.strictEqual(browser.storage.local.clear.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.clear.callCount,
+        i + 1,
+        'called'
+      );
     });
 
     it('should call function', async () => {
       const i = browser.storage.local.clear.callCount;
       await func('local');
-      assert.strictEqual(browser.storage.local.clear.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.clear.callCount,
+        i + 1,
+        'called'
+      );
     });
 
     it('should not call function', async () => {
       const i = browser.storage.managed.clear.callCount;
       await func('managed');
-      assert.strictEqual(browser.storage.managed.clear.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.storage.managed.clear.callCount,
+        i,
+        'not called'
+      );
     });
 
     /*
@@ -1638,10 +1947,12 @@ describe('browser', () => {
       // const k = browser.storage.session.get.callCount;
       const l = browser.storage.sync.get.callCount;
       const res = await func();
-      assert.strictEqual(browser.storage.local.get.callCount, i,
-        'not called');
-      assert.strictEqual(browser.storage.managed.get.callCount, j,
-        'not called');
+      assert.strictEqual(browser.storage.local.get.callCount, i, 'not called');
+      assert.strictEqual(
+        browser.storage.managed.get.callCount,
+        j,
+        'not called'
+      );
       /*
       assert.strictEqual(browser.storage.session.get.callCount, k,
         'not called');
@@ -1657,8 +1968,11 @@ describe('browser', () => {
       const l = browser.storage.sync.get.callCount;
       const res = await func('foo');
       assert.strictEqual(browser.storage.local.get.callCount, i, 'not called');
-      assert.strictEqual(browser.storage.managed.get.callCount, j,
-        'not called');
+      assert.strictEqual(
+        browser.storage.managed.get.callCount,
+        j,
+        'not called'
+      );
       /*
       assert.strictEqual(browser.storage.session.get.callCount, k,
         'not called');
@@ -1687,8 +2001,11 @@ describe('browser', () => {
       browser.storage.managed.get.resolves({ foo: 'bar' });
       const i = browser.storage.managed.get.callCount;
       const res = await func('managed');
-      assert.strictEqual(browser.storage.managed.get.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.managed.get.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, { foo: 'bar' }, 'result');
     });
 
@@ -1723,8 +2040,11 @@ describe('browser', () => {
       const l = browser.storage.sync.get.callCount;
       const res = await func('foo');
       assert.strictEqual(browser.storage.local.get.callCount, i, 'not called');
-      assert.strictEqual(browser.storage.managed.get.callCount, j,
-        'not called');
+      assert.strictEqual(
+        browser.storage.managed.get.callCount,
+        j,
+        'not called'
+      );
       /*
       assert.strictEqual(browser.storage.session.get.callCount, k,
         'not called');
@@ -1740,8 +2060,11 @@ describe('browser', () => {
       const l = browser.storage.sync.get.callCount;
       const res = await func('foo', 'bar');
       assert.strictEqual(browser.storage.local.get.callCount, i, 'not called');
-      assert.strictEqual(browser.storage.managed.get.callCount, j,
-        'not called');
+      assert.strictEqual(
+        browser.storage.managed.get.callCount,
+        j,
+        'not called'
+      );
       /*
       assert.strictEqual(browser.storage.session.get.callCount, k,
         'not called');
@@ -1770,8 +2093,11 @@ describe('browser', () => {
       browser.storage.managed.get.withArgs('foo').resolves({ foo: 'bar' });
       const i = browser.storage.managed.get.callCount;
       const res = await func('foo', 'managed');
-      assert.strictEqual(browser.storage.managed.get.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.managed.get.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, { foo: 'bar' }, 'result');
     });
 
@@ -1805,16 +2131,25 @@ describe('browser', () => {
       // const k = browser.storage.session.remove.callCount;
       const l = browser.storage.sync.remove.callCount;
       await func('foo');
-      assert.strictEqual(browser.storage.local.remove.callCount, i,
-        'not called');
-      assert.strictEqual(browser.storage.managed.remove.callCount, j,
-        'not called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.storage.managed.remove.callCount,
+        j,
+        'not called'
+      );
       /*
       assert.strictEqual(browser.storage.session.remove.callCount, k,
         'not called');
       */
-      assert.strictEqual(browser.storage.sync.remove.callCount, l,
-        'not called');
+      assert.strictEqual(
+        browser.storage.sync.remove.callCount,
+        l,
+        'not called'
+      );
     });
 
     it('should not call function', async () => {
@@ -1823,37 +2158,55 @@ describe('browser', () => {
       // const k = browser.storage.session.remove.callCount;
       const l = browser.storage.sync.remove.callCount;
       await func('foo', 'bar');
-      assert.strictEqual(browser.storage.local.remove.callCount, i,
-        'not called');
-      assert.strictEqual(browser.storage.managed.remove.callCount, j,
-        'not called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.storage.managed.remove.callCount,
+        j,
+        'not called'
+      );
       /*
       assert.strictEqual(browser.storage.session.remove.callCount, k,
         'not called');
       */
-      assert.strictEqual(browser.storage.sync.remove.callCount, l,
-        'not called');
+      assert.strictEqual(
+        browser.storage.sync.remove.callCount,
+        l,
+        'not called'
+      );
     });
 
     it('should call function', async () => {
       const i = browser.storage.local.remove.callCount;
       await func('foo');
-      assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i + 1,
+        'called'
+      );
     });
 
     it('should call function', async () => {
       const i = browser.storage.local.remove.callCount;
       await func('foo', 'local');
-      assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i + 1,
+        'called'
+      );
     });
 
     it('should not call function', async () => {
       const i = browser.storage.managed.remove.callCount;
       await func('foo', 'managed');
-      assert.strictEqual(browser.storage.managed.remove.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.storage.managed.remove.callCount,
+        i,
+        'not called'
+      );
     });
 
     /*
@@ -1868,8 +2221,11 @@ describe('browser', () => {
     it('should call function', async () => {
       const i = browser.storage.sync.remove.callCount;
       await func('foo', 'sync');
-      assert.strictEqual(browser.storage.sync.remove.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.sync.remove.callCount,
+        i + 1,
+        'called'
+      );
     });
   });
 
@@ -1883,10 +2239,12 @@ describe('browser', () => {
       // const k = browser.storage.session.set.callCount;
       const l = browser.storage.sync.set.callCount;
       await func('foo');
-      assert.strictEqual(browser.storage.local.set.callCount, i,
-        'not called');
-      assert.strictEqual(browser.storage.managed.set.callCount, j,
-        'not called');
+      assert.strictEqual(browser.storage.local.set.callCount, i, 'not called');
+      assert.strictEqual(
+        browser.storage.managed.set.callCount,
+        j,
+        'not called'
+      );
       /*
       assert.strictEqual(browser.storage.session.set.callCount, k,
         'not called');
@@ -1915,8 +2273,11 @@ describe('browser', () => {
     it('should not call function', async () => {
       const i = browser.storage.managed.set.callCount;
       await func('foo', 'managed');
-      assert.strictEqual(browser.storage.managed.set.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.storage.managed.set.callCount,
+        i,
+        'not called'
+      );
     });
 
     /*
@@ -1965,8 +2326,10 @@ describe('browser', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got Undefined.')
+        );
       });
     });
 
@@ -1994,8 +2357,11 @@ describe('browser', () => {
       browser.tabs.query.resolves([{}]);
       browser.tabs.query.withArgs({}).resolves([{}, {}]);
       const res = await func({});
-      assert.strictEqual(browser.tabs.query.withArgs({}).callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.tabs.query.withArgs({}).callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, [{}, {}], 'result');
     });
   });
@@ -2014,15 +2380,21 @@ describe('browser', () => {
       const i = browser.tabs.executeScript.withArgs(1, {
         file
       }).callCount;
-      browser.tabs.executeScript.withArgs(1, {
-        file
-      }).resolves([{}]);
+      browser.tabs.executeScript
+        .withArgs(1, {
+          file
+        })
+        .resolves([{}]);
       const res = await func(1, { file });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
-        file
-      }).callCount, i + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(1, {
+          file
+        }).callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, false, 'error not called');
       assert.deepEqual(res, [{}], 'result');
     });
@@ -2033,15 +2405,21 @@ describe('browser', () => {
       const i = browser.tabs.executeScript.withArgs(1, {
         file
       }).callCount;
-      browser.tabs.executeScript.withArgs(1, {
-        file
-      }).rejects(new Error('error'));
+      browser.tabs.executeScript
+        .withArgs(1, {
+          file
+        })
+        .rejects(new Error('error'));
       const res = await func(1, { file });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
-        file
-      }).callCount, i + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(1, {
+          file
+        }).callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, true, 'error called');
       assert.strictEqual(res, false, 'result');
     });
@@ -2052,15 +2430,21 @@ describe('browser', () => {
       const i = browser.tabs.executeScript.withArgs({
         file
       }).callCount;
-      browser.tabs.executeScript.withArgs({
-        file
-      }).resolves([{}]);
+      browser.tabs.executeScript
+        .withArgs({
+          file
+        })
+        .resolves([{}]);
       const res = await func({ file });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs({
-        file
-      }).callCount, i + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs({
+          file
+        }).callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, false, 'error not called');
       assert.deepEqual(res, [{}], 'result');
     });
@@ -2071,15 +2455,21 @@ describe('browser', () => {
       const i = browser.tabs.executeScript.withArgs({
         file
       }).callCount;
-      browser.tabs.executeScript.withArgs({
-        file
-      }).rejects(new Error('error'));
+      browser.tabs.executeScript
+        .withArgs({
+          file
+        })
+        .rejects(new Error('error'));
       const res = await func({ file });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs({
-        file
-      }).callCount, i + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs({
+          file
+        }).callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, true, 'error called');
       assert.strictEqual(res, false, 'result');
     });
@@ -2090,15 +2480,21 @@ describe('browser', () => {
       const i = browser.tabs.executeScript.withArgs({
         file
       }).callCount;
-      browser.tabs.executeScript.withArgs({
-        file
-      }).resolves([{}]);
+      browser.tabs.executeScript
+        .withArgs({
+          file
+        })
+        .resolves([{}]);
       const res = await func(null, { file });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs({
-        file
-      }).callCount, i + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs({
+          file
+        }).callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, false, 'error not called');
       assert.deepEqual(res, [{}], 'result');
     });
@@ -2109,15 +2505,21 @@ describe('browser', () => {
       const i = browser.tabs.executeScript.withArgs({
         file
       }).callCount;
-      browser.tabs.executeScript.withArgs({
-        file
-      }).rejects(new Error('error'));
+      browser.tabs.executeScript
+        .withArgs({
+          file
+        })
+        .rejects(new Error('error'));
       const res = await func(null, { file });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs({
-        file
-      }).callCount, i + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs({
+          file
+        }).callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, true, 'error called');
       assert.strictEqual(res, false, 'result');
     });
@@ -2149,10 +2551,16 @@ describe('browser', () => {
       const res = await func();
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs(1, {}).callCount,
-        i + 1, 'called');
-      assert.strictEqual(browser.tabs.executeScript.withArgs(2, {}).callCount,
-        j + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(1, {}).callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(2, {}).callCount,
+        j + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, true, 'error called');
       assert.deepEqual(res, [[{}], false], 'result');
     });
@@ -2182,28 +2590,40 @@ describe('browser', () => {
           url: 'about:blank'
         }
       ]);
-      browser.tabs.executeScript.withArgs(1, {
-        file,
-        allFrames: true
-      }).resolves([{}, {}]);
-      browser.tabs.executeScript.withArgs(2, {
-        file,
-        allFrames: true
-      }).rejects(new Error('error'));
+      browser.tabs.executeScript
+        .withArgs(1, {
+          file,
+          allFrames: true
+        })
+        .resolves([{}, {}]);
+      browser.tabs.executeScript
+        .withArgs(2, {
+          file,
+          allFrames: true
+        })
+        .rejects(new Error('error'));
       const res = await func({
         file,
         allFrames: true
       });
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
-        file,
-        allFrames: true
-      }).callCount, i + 1, 'called');
-      assert.strictEqual(browser.tabs.executeScript.withArgs(2, {
-        file,
-        allFrames: true
-      }).callCount, j + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(1, {
+          file,
+          allFrames: true
+        }).callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(2, {
+          file,
+          allFrames: true
+        }).callCount,
+        j + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, true, 'error called');
       assert.deepEqual(res, [[{}, {}], false], 'result');
     });
@@ -2261,10 +2681,16 @@ describe('browser', () => {
       const res = await func(1, opts);
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs(1, opt).callCount,
-        i + 1, 'called');
-      assert.strictEqual(browser.tabs.executeScript.withArgs(1, opt2).callCount,
-        j + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(1, opt).callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(1, opt2).callCount,
+        j + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, true, 'error called');
       assert.deepEqual(res, [{}], 'result');
     });
@@ -2285,10 +2711,16 @@ describe('browser', () => {
       const res = await func(opts);
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs(opt).callCount,
-        i + 1, 'called');
-      assert.strictEqual(browser.tabs.executeScript.withArgs(opt2).callCount,
-        j + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(opt).callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(opt2).callCount,
+        j + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, true, 'error called');
       assert.deepEqual(res, [{}], 'result');
     });
@@ -2309,10 +2741,16 @@ describe('browser', () => {
       const res = await func(null, opts);
       const { calledOnce: errCalled } = stubErr;
       stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs(opt).callCount,
-        i + 1, 'called');
-      assert.strictEqual(browser.tabs.executeScript.withArgs(opt2).callCount,
-        j + 1, 'called');
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(opt).callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.tabs.executeScript.withArgs(opt2).callCount,
+        j + 1,
+        'called'
+      );
       assert.strictEqual(errCalled, true, 'error called');
       assert.deepEqual(res, [{}], 'result');
     });
@@ -2411,15 +2849,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got Undefined.')
+        );
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got String.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got String.')
+        );
       });
     });
 
@@ -2435,15 +2877,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number or Array but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number or Array but got Undefined.')
+        );
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number or Array but got String.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number or Array but got String.')
+        );
       });
     });
 
@@ -2465,15 +2911,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number or Array but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number or Array but got Undefined.')
+        );
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number or Array but got String.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number or Array but got String.')
+        );
       });
     });
 
@@ -2512,23 +2962,30 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got Undefined.')
+        );
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got String.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got String.')
+        );
       });
     });
 
     it('should call function', async () => {
       const i = browser.tabs.reload.withArgs(1, null).callCount;
       await func(1);
-      assert.strictEqual(browser.tabs.reload.withArgs(1, null).callCount, i + 1,
-        'res');
+      assert.strictEqual(
+        browser.tabs.reload.withArgs(1, null).callCount,
+        i + 1,
+        'res'
+      );
     });
 
     it('should call function', async () => {
@@ -2536,7 +2993,8 @@ describe('browser', () => {
       await func(1, { foo: 'bar' });
       assert.strictEqual(
         browser.tabs.reload.withArgs(1, { foo: 'bar' }).callCount,
-        i + 1, 'res'
+        i + 1,
+        'res'
       );
     });
   });
@@ -2546,15 +3004,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Array but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Array but got Undefined.')
+        );
       });
     });
 
     it('should throw if argument is not number or array', async () => {
       await func('').catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Array but got String.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Array but got String.')
+        );
       });
     });
 
@@ -2576,15 +3038,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got Undefined.')
+        );
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got String.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got String.')
+        );
       });
     });
 
@@ -2599,8 +3065,11 @@ describe('browser', () => {
       browser.tabs.update.withArgs(1).resolves({});
       const i = browser.tabs.update.withArgs(1).callCount;
       const res = await func(1);
-      assert.strictEqual(browser.tabs.update.withArgs(1).callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.tabs.update.withArgs(1).callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(typeof res, 'object', 'res');
     });
 
@@ -2622,15 +3091,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got Undefined.')
+        );
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got String.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got String.')
+        );
       });
     });
 
@@ -2651,13 +3124,18 @@ describe('browser', () => {
         vendor: 'Mozilla',
         version: '125.0.1'
       });
-      browser.permissions.contains.withArgs({
-        origins: ['<all_urls>']
-      }).resolves(false);
+      browser.permissions.contains
+        .withArgs({
+          origins: ['<all_urls>']
+        })
+        .resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
       const res = await func();
-      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.tabs.captureVisibleTab.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -2666,18 +3144,26 @@ describe('browser', () => {
         vendor: 'Mozilla',
         version: '125.0.1'
       });
-      browser.permissions.contains.withArgs({
-        origins: ['<all_urls>']
-      }).resolves(true);
+      browser.permissions.contains
+        .withArgs({
+          origins: ['<all_urls>']
+        })
+        .resolves(true);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
-      browser.tabs.captureVisibleTab.withArgs(windowId, {
-        format: 'png'
-      }).resolves(url);
+      const url =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+      browser.tabs.captureVisibleTab
+        .withArgs(windowId, {
+          format: 'png'
+        })
+        .resolves(url);
       const res = await func();
-      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.tabs.captureVisibleTab.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, url, 'result');
     });
 
@@ -2686,16 +3172,23 @@ describe('browser', () => {
         vendor: 'Mozilla',
         version: '126.0.a1'
       });
-      browser.permissions.contains.withArgs({
-        permissions: ['activeTab']
-      }).resolves(false);
-      browser.permissions.contains.withArgs({
-        origins: ['<all_urls>']
-      }).resolves(false);
+      browser.permissions.contains
+        .withArgs({
+          permissions: ['activeTab']
+        })
+        .resolves(false);
+      browser.permissions.contains
+        .withArgs({
+          origins: ['<all_urls>']
+        })
+        .resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
       const res = await func();
-      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.tabs.captureVisibleTab.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -2704,21 +3197,31 @@ describe('browser', () => {
         vendor: 'Mozilla',
         version: '126.0a1'
       });
-      browser.permissions.contains.withArgs({
-        permissions: ['activeTab']
-      }).resolves(false);
-      browser.permissions.contains.withArgs({
-        origins: ['<all_urls>']
-      }).resolves(true);
+      browser.permissions.contains
+        .withArgs({
+          permissions: ['activeTab']
+        })
+        .resolves(false);
+      browser.permissions.contains
+        .withArgs({
+          origins: ['<all_urls>']
+        })
+        .resolves(true);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
-      browser.tabs.captureVisibleTab.withArgs(windowId, {
-        format: 'png'
-      }).resolves(url);
+      const url =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+      browser.tabs.captureVisibleTab
+        .withArgs(windowId, {
+          format: 'png'
+        })
+        .resolves(url);
       const res = await func();
-      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.tabs.captureVisibleTab.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, url, 'result');
     });
 
@@ -2727,21 +3230,31 @@ describe('browser', () => {
         vendor: 'Mozilla',
         version: '126.0a1'
       });
-      browser.permissions.contains.withArgs({
-        permissions: ['activeTab']
-      }).resolves(true);
-      browser.permissions.contains.withArgs({
-        origins: ['<all_urls>']
-      }).resolves(false);
+      browser.permissions.contains
+        .withArgs({
+          permissions: ['activeTab']
+        })
+        .resolves(true);
+      browser.permissions.contains
+        .withArgs({
+          origins: ['<all_urls>']
+        })
+        .resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
-      browser.tabs.captureVisibleTab.withArgs(windowId, {
-        format: 'png'
-      }).resolves(url);
+      const url =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+      browser.tabs.captureVisibleTab
+        .withArgs(windowId, {
+          format: 'png'
+        })
+        .resolves(url);
       const res = await func();
-      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.tabs.captureVisibleTab.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, url, 'result');
     });
 
@@ -2750,16 +3263,23 @@ describe('browser', () => {
         vendor: 'Foo',
         version: '126.0.1'
       });
-      browser.permissions.contains.withArgs({
-        permissions: ['activeTab']
-      }).resolves(false);
-      browser.permissions.contains.withArgs({
-        origins: ['<all_urls>']
-      }).resolves(false);
+      browser.permissions.contains
+        .withArgs({
+          permissions: ['activeTab']
+        })
+        .resolves(false);
+      browser.permissions.contains
+        .withArgs({
+          origins: ['<all_urls>']
+        })
+        .resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
       const res = await func();
-      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.tabs.captureVisibleTab.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, null, 'result');
     });
 
@@ -2768,21 +3288,31 @@ describe('browser', () => {
         vendor: 'Foo',
         version: '126.0.1'
       });
-      browser.permissions.contains.withArgs({
-        permissions: ['activeTab']
-      }).resolves(true);
-      browser.permissions.contains.withArgs({
-        origins: ['<all_urls>']
-      }).resolves(false);
+      browser.permissions.contains
+        .withArgs({
+          permissions: ['activeTab']
+        })
+        .resolves(true);
+      browser.permissions.contains
+        .withArgs({
+          origins: ['<all_urls>']
+        })
+        .resolves(false);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
-      browser.tabs.captureVisibleTab.withArgs(windowId, {
-        format: 'png'
-      }).resolves(url);
+      const url =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+      browser.tabs.captureVisibleTab
+        .withArgs(windowId, {
+          format: 'png'
+        })
+        .resolves(url);
       const res = await func();
-      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.tabs.captureVisibleTab.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, url, 'result');
     });
 
@@ -2791,23 +3321,33 @@ describe('browser', () => {
         vendor: 'Foo',
         version: '126.0.1'
       });
-      browser.permissions.contains.withArgs({
-        permissions: ['activeTab']
-      }).resolves(false);
-      browser.permissions.contains.withArgs({
-        origins: ['<all_urls>']
-      }).resolves(true);
+      browser.permissions.contains
+        .withArgs({
+          permissions: ['activeTab']
+        })
+        .resolves(false);
+      browser.permissions.contains
+        .withArgs({
+          origins: ['<all_urls>']
+        })
+        .resolves(true);
       const i = browser.tabs.captureVisibleTab.callCount;
       const windowId = browser.windows.WINDOW_ID_CURRENT;
-      const url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
-      browser.tabs.captureVisibleTab.withArgs(windowId, {
-        format: 'png'
-      }).resolves(url);
+      const url =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+      browser.tabs.captureVisibleTab
+        .withArgs(windowId, {
+          format: 'png'
+        })
+        .resolves(url);
       const res = await func(windowId, {
         format: 'png'
       });
-      assert.strictEqual(browser.tabs.captureVisibleTab.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.tabs.captureVisibleTab.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, url, 'result');
     });
   });
@@ -2817,15 +3357,19 @@ describe('browser', () => {
 
     it('should throw if no argument given', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got Undefined.')
+        );
       });
     });
 
     it('should throw if argument is not number', async () => {
       await func('').catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got String.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got String.')
+        );
       });
     });
 
@@ -2855,8 +3399,7 @@ describe('browser', () => {
       browser.permissions.contains.resolves(false);
       const i = browser.theme.getCurrent.callCount;
       await func('foo');
-      assert.strictEqual(browser.theme.getCurrent.callCount, i,
-        'not called');
+      assert.strictEqual(browser.theme.getCurrent.callCount, i, 'not called');
     });
 
     it('should get function called and get result', async () => {
@@ -2911,10 +3454,12 @@ describe('browser', () => {
     const func = mjs.getAllNormalWindows;
 
     it('should get function called and get result', async () => {
-      browser.windows.getAll.withArgs({
-        populate: false,
-        windowTypes: ['normal']
-      }).resolves([]);
+      browser.windows.getAll
+        .withArgs({
+          populate: false,
+          windowTypes: ['normal']
+        })
+        .resolves([]);
       const i = browser.windows.getAll.withArgs({
         populate: false,
         windowTypes: ['normal']
@@ -2925,10 +3470,12 @@ describe('browser', () => {
     });
 
     it('should get function called and get result', async () => {
-      browser.windows.getAll.withArgs({
-        populate: true,
-        windowTypes: ['normal']
-      }).resolves([]);
+      browser.windows.getAll
+        .withArgs({
+          populate: true,
+          windowTypes: ['normal']
+        })
+        .resolves([]);
       const i = browser.windows.getAll.withArgs({
         populate: true,
         windowTypes: ['normal']
@@ -2975,8 +3522,10 @@ describe('browser', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.deepStrictEqual(e,
-          new TypeError('Expected Number but got Undefined.'));
+        assert.deepStrictEqual(
+          e,
+          new TypeError('Expected Number but got Undefined.')
+        );
       });
     });
 
@@ -2989,9 +3538,11 @@ describe('browser', () => {
     });
 
     it('should get result', async () => {
-      browser.windows.get.withArgs(1, {
-        populate: true
-      }).resolves({});
+      browser.windows.get
+        .withArgs(1, {
+          populate: true
+        })
+        .resolves({});
       const i = browser.windows.get.callCount;
       const res = await func(1, {
         populate: true

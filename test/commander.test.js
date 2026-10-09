@@ -7,7 +7,9 @@ import { describe, it } from 'mocha';
 
 /* test */
 import {
-  commander, cleanDirectory, parseCommand
+  commander,
+  cleanDirectory,
+  parseCommand
 } from '../modules/commander.js';
 
 describe('clean directory', () => {
@@ -67,11 +69,7 @@ describe('parse command', () => {
   it('should not parse', () => {
     const stubParse = sinon.stub(commander, 'parse');
     const i = stubParse.callCount;
-    parseCommand([
-      'foo',
-      'bar',
-      'baz'
-    ]);
+    parseCommand(['foo', 'bar', 'baz']);
     assert.strictEqual(stubParse.callCount, i, 'not called');
     stubParse.restore();
   });
@@ -81,11 +79,7 @@ describe('parse command', () => {
     const stubVer = sinon.stub(commander, 'version');
     const i = stubParse.callCount;
     const j = stubVer.callCount;
-    parseCommand([
-      'foo',
-      'bar',
-      '-v'
-    ]);
+    parseCommand(['foo', 'bar', '-v']);
     assert.strictEqual(stubParse.callCount, i + 1, 'called');
     assert.strictEqual(stubVer.callCount, j + 1, 'called');
     stubParse.restore();
@@ -99,11 +93,7 @@ describe('parse command', () => {
     const i = stubParse.callCount;
     const j = stubVer.callCount;
     const k = spyCmd.callCount;
-    parseCommand([
-      'foo',
-      'bar',
-      'clean'
-    ]);
+    parseCommand(['foo', 'bar', 'clean']);
     assert.strictEqual(stubParse.callCount, i + 1, 'called');
     assert.strictEqual(stubVer.callCount, j + 1, 'called');
     assert.strictEqual(spyCmd.callCount, k + 1, 'called');
@@ -119,11 +109,7 @@ describe('parse command', () => {
     const i = stubParse.callCount;
     const j = stubVer.callCount;
     const k = spyCmd.callCount;
-    parseCommand([
-      'foo',
-      'bar',
-      'update'
-    ]);
+    parseCommand(['foo', 'bar', 'update']);
     assert.strictEqual(stubParse.callCount, i + 1, 'called');
     assert.strictEqual(stubVer.callCount, j + 1, 'called');
     assert.strictEqual(spyCmd.callCount, k + 1, 'called');

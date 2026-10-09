@@ -70,7 +70,8 @@ export const getSchemaData = async (file, baseUrl) => {
   const text = await fetchText(href);
   const schema = JSON5.parse(text);
   return {
-    file, schema
+    file,
+    schema
   };
 };
 
@@ -158,10 +159,7 @@ export const getMailExtSchemaData = async (baseUrl, info) => {
   }
   const items = await getFileList(baseUrl);
   const schemaUrl = `${baseUrl}schemas/`;
-  const excludeFile = [
-    'commands.json',
-    'pkcs11.json'
-  ];
+  const excludeFile = ['commands.json', 'pkcs11.json'];
   const schemas = [];
   for (const item of items) {
     if (!excludeFile.includes(item)) {
@@ -185,26 +183,33 @@ export const createUnifiedSchema = async (channel, info) => {
   const channelUrl = getChannelUrl(channel);
   const schema = {};
   if (channel === 'mail') {
-    const browserItems = [
-      'commands.json',
-      'pkcs11.json'
-    ];
-    const browserUrl =
-      `${getChannelUrl('central')}browser/components/extensions/schemas/`;
-    const browserSchemas =
-      await getListedSchemaData(browserUrl, browserItems, info);
+    const browserItems = ['commands.json', 'pkcs11.json'];
+    const browserUrl = `${getChannelUrl('central')}browser/components/extensions/schemas/`;
+    const browserSchemas = await getListedSchemaData(
+      browserUrl,
+      browserItems,
+      info
+    );
     for (const item of browserSchemas) {
       const { file, schema: itemSchema } = item;
       schema[file] = itemSchema;
     }
     const toolkitItems = [
-      'content_scripts.json', 'experiments.json', 'extension.json', 'i18n.json',
-      'management.json', 'permissions.json', 'runtime.json', 'theme.json'
+      'content_scripts.json',
+      'experiments.json',
+      'extension.json',
+      'i18n.json',
+      'management.json',
+      'permissions.json',
+      'runtime.json',
+      'theme.json'
     ];
-    const toolkitUrl =
-      `${getChannelUrl('central')}toolkit/components/extensions/schemas/`;
-    const toolkitSchemas =
-      await getListedSchemaData(toolkitUrl, toolkitItems, info);
+    const toolkitUrl = `${getChannelUrl('central')}toolkit/components/extensions/schemas/`;
+    const toolkitSchemas = await getListedSchemaData(
+      toolkitUrl,
+      toolkitItems,
+      info
+    );
     for (const item of toolkitSchemas) {
       const { file, schema: itemSchema } = item;
       schema[file] = itemSchema;
@@ -245,10 +250,16 @@ export const saveSchemaFile = async (channel, info) => {
   const schema = await createUnifiedSchema(channel, info);
   const content = `${JSON.stringify(schema, null, INDENT)}\n`;
   const fileName = channel === 'mail' ? 'mailext' : 'webext';
-  const filePath =
-    path.resolve(DIR_CWD, 'schemas', channel, `${fileName}.json`);
+  const filePath = path.resolve(
+    DIR_CWD,
+    'schemas',
+    channel,
+    `${fileName}.json`
+  );
   const file = await createFile(filePath, content, {
-    encoding: CHAR, flag: 'w', mode: PERM_FILE
+    encoding: CHAR,
+    flag: 'w',
+    mode: PERM_FILE
   });
   if (file && info) {
     console.info(`Created: ${file}`);

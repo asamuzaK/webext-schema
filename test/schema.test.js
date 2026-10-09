@@ -200,13 +200,16 @@ describe('Schema', () => {
         namespace: 'foo'
       });
       schema._assignImportMap();
-      assert.deepEqual(schema._browser, {
-        foo: {
-          baz: {}
+      assert.deepEqual(
+        schema._browser,
+        {
+          foo: {
+            baz: {}
+          },
+          bar: {}
         },
-        bar: {
-        }
-      }, 'browser');
+        'browser'
+      );
       assert.strictEqual(schema._importMap.size, 0, 'size');
     });
 
@@ -223,14 +226,18 @@ describe('Schema', () => {
         namespace: 'bar'
       });
       schema._assignImportMap();
-      assert.deepEqual(schema._browser, {
-        foo: {
-          baz: {}
+      assert.deepEqual(
+        schema._browser,
+        {
+          foo: {
+            baz: {}
+          },
+          bar: {
+            baz: {}
+          }
         },
-        bar: {
-          baz: {}
-        }
-      }, 'browser');
+        'browser'
+      );
       assert.strictEqual(schema._importMap.size, 0, 'size');
     });
 
@@ -249,16 +256,20 @@ describe('Schema', () => {
         namespace: 'bar'
       });
       schema._assignImportMap();
-      assert.deepEqual(schema._browser, {
-        foo: {
-          baz: {
+      assert.deepEqual(
+        schema._browser,
+        {
+          foo: {
+            baz: {
+              qux: {}
+            }
+          },
+          bar: {
             qux: {}
           }
         },
-        bar: {
-          qux: {}
-        }
-      }, 'browser');
+        'browser'
+      );
       assert.strictEqual(schema._importMap.size, 0, 'size');
     });
 
@@ -279,18 +290,22 @@ describe('Schema', () => {
         namespace: 'bar'
       });
       schema._assignImportMap();
-      assert.deepEqual(schema._browser, {
-        foo: {
-          baz: {
-            qux: {}
+      assert.deepEqual(
+        schema._browser,
+        {
+          foo: {
+            baz: {
+              qux: {}
+            }
+          },
+          bar: {
+            quux: {
+              qux: {}
+            }
           }
         },
-        bar: {
-          quux: {
-            qux: {}
-          }
-        }
-      }, 'browser');
+        'browser'
+      );
       assert.strictEqual(schema._importMap.size, 0, 'size');
     });
 
@@ -309,16 +324,20 @@ describe('Schema', () => {
         namespace: 'foo'
       });
       schema._assignImportMap();
-      assert.deepEqual(schema._browser, {
-        foo: {
-          bar: {
-            qux: {}
-          },
-          baz: {
-            qux: {}
+      assert.deepEqual(
+        schema._browser,
+        {
+          foo: {
+            bar: {
+              qux: {}
+            },
+            baz: {
+              qux: {}
+            }
           }
-        }
-      }, 'browser');
+        },
+        'browser'
+      );
       assert.strictEqual(schema._importMap.size, 0, 'size');
     });
   });
@@ -345,13 +364,16 @@ describe('Schema', () => {
         namespace: 'foo'
       });
       schema._assignRefMap();
-      assert.deepEqual(schema._browser, {
-        foo: {
-          baz: {}
+      assert.deepEqual(
+        schema._browser,
+        {
+          foo: {
+            baz: {}
+          },
+          bar: {}
         },
-        bar: {
-        }
-      }, 'browser');
+        'browser'
+      );
       assert.strictEqual(schema._refMap.size, 0, 'size');
     });
 
@@ -368,14 +390,18 @@ describe('Schema', () => {
         namespace: 'bar'
       });
       schema._assignRefMap();
-      assert.deepEqual(schema._browser, {
-        foo: {
-          baz: {}
+      assert.deepEqual(
+        schema._browser,
+        {
+          foo: {
+            baz: {}
+          },
+          bar: {
+            baz: {}
+          }
         },
-        bar: {
-          baz: {}
-        }
-      }, 'browser');
+        'browser'
+      );
       assert.strictEqual(schema._refMap.size, 0, 'size');
     });
 
@@ -394,16 +420,20 @@ describe('Schema', () => {
         namespace: 'bar'
       });
       schema._assignRefMap();
-      assert.deepEqual(schema._browser, {
-        foo: {
-          baz: {
+      assert.deepEqual(
+        schema._browser,
+        {
+          foo: {
+            baz: {
+              qux: {}
+            }
+          },
+          bar: {
             qux: {}
           }
         },
-        bar: {
-          qux: {}
-        }
-      }, 'browser');
+        'browser'
+      );
       assert.strictEqual(schema._refMap.size, 0, 'size');
     });
 
@@ -424,18 +454,22 @@ describe('Schema', () => {
         namespace: 'bar'
       });
       schema._assignRefMap();
-      assert.deepEqual(schema._browser, {
-        foo: {
-          baz: {
-            qux: {}
+      assert.deepEqual(
+        schema._browser,
+        {
+          foo: {
+            baz: {
+              qux: {}
+            }
+          },
+          bar: {
+            quux: {
+              qux: {}
+            }
           }
         },
-        bar: {
-          quux: {
-            qux: {}
-          }
-        }
-      }, 'browser');
+        'browser'
+      );
       assert.strictEqual(schema._refMap.size, 0, 'size');
     });
 
@@ -454,16 +488,20 @@ describe('Schema', () => {
         namespace: 'foo'
       });
       schema._assignRefMap();
-      assert.deepEqual(schema._browser, {
-        foo: {
-          bar: {
-            qux: {}
-          },
-          baz: {
-            qux: {}
+      assert.deepEqual(
+        schema._browser,
+        {
+          foo: {
+            bar: {
+              qux: {}
+            },
+            baz: {
+              qux: {}
+            }
           }
-        }
-      }, 'browser');
+        },
+        'browser'
+      );
       assert.strictEqual(schema._refMap.size, 0, 'size');
     });
   });
@@ -520,26 +558,35 @@ describe('Schema', () => {
       assert.strictEqual(typeof res.foo, 'object', 'result');
       assert.strictEqual(typeof res.foo.addListener, 'function', 'addListener');
       assert.strictEqual(typeof res.foo.hasListener, 'function', 'hasListener');
-      assert.strictEqual(typeof res.foo.removeListener, 'function',
-        'removeListener');
+      assert.strictEqual(
+        typeof res.foo.removeListener,
+        'function',
+        'removeListener'
+      );
     });
 
     it('should add listeners', () => {
       const schema = new Schema();
-      const res = schema._mockEvents({
-        foo: {}
-      }, [
+      const res = schema._mockEvents(
         {
-          name: 'foo',
-          type: 'function'
-        }
-      ]);
+          foo: {}
+        },
+        [
+          {
+            name: 'foo',
+            type: 'function'
+          }
+        ]
+      );
       assert.strictEqual(typeof res, 'object', 'result');
       assert.strictEqual(typeof res.foo, 'object', 'result');
       assert.strictEqual(typeof res.foo.addListener, 'function', 'addListener');
       assert.strictEqual(typeof res.foo.hasListener, 'function', 'hasListener');
-      assert.strictEqual(typeof res.foo.removeListener, 'function',
-        'removeListener');
+      assert.strictEqual(
+        typeof res.foo.removeListener,
+        'function',
+        'removeListener'
+      );
     });
   });
 
@@ -597,14 +644,17 @@ describe('Schema', () => {
 
     it('should add functions', () => {
       const schema = new Schema();
-      const res = schema._mockFunctions({
-        foo: {}
-      }, [
+      const res = schema._mockFunctions(
         {
-          name: 'foo',
-          type: 'function'
-        }
-      ]);
+          foo: {}
+        },
+        [
+          {
+            name: 'foo',
+            type: 'function'
+          }
+        ]
+      );
       assert.strictEqual(typeof res, 'object', 'result');
       assert.strictEqual(typeof res.foo, 'function', 'function');
     });
@@ -634,107 +684,154 @@ describe('Schema', () => {
 
     it('should not add properties', () => {
       const schema = new Schema();
-      const res = schema._mockProperties({}, {
-        bar: {
-          name: 'baz',
-          type: 'function',
-          unsupported: true
-        }
-      }, 'foo');
+      const res = schema._mockProperties(
+        {},
+        {
+          bar: {
+            name: 'baz',
+            type: 'function',
+            unsupported: true
+          }
+        },
+        'foo'
+      );
       assert.deepEqual(res, {}, 'result');
     });
 
     it('should set map', () => {
       const schema = new Schema();
-      const res = schema._mockProperties({
-      }, {
-        bar: {
-          $ref: 'baz'
-        }
-      }, 'foo');
-      assert.deepEqual(res, {
-        bar: {}
-      }, 'result');
-      assert.deepEqual(Array.from(schema._refMap), [
-        [
-          'foo.bar',
-          {
-            $ref: 'baz',
-            namespace: 'foo'
+      const res = schema._mockProperties(
+        {},
+        {
+          bar: {
+            $ref: 'baz'
           }
-        ]
-      ], 'map');
+        },
+        'foo'
+      );
+      assert.deepEqual(
+        res,
+        {
+          bar: {}
+        },
+        'result'
+      );
+      assert.deepEqual(
+        Array.from(schema._refMap),
+        [
+          [
+            'foo.bar',
+            {
+              $ref: 'baz',
+              namespace: 'foo'
+            }
+          ]
+        ],
+        'map'
+      );
     });
 
     it('should add properties', () => {
       const schema = new Schema();
-      const res = schema._mockProperties({
-      }, {
-        bar: {
-          value: -1
-        }
-      }, 'foo');
-      assert.deepEqual(res, {
-        bar: -1
-      }, 'result');
+      const res = schema._mockProperties(
+        {},
+        {
+          bar: {
+            value: -1
+          }
+        },
+        'foo'
+      );
+      assert.deepEqual(
+        res,
+        {
+          bar: -1
+        },
+        'result'
+      );
     });
 
     it('should add properties', () => {
       const schema = new Schema();
-      const res = schema._mockProperties({
-      }, {
-        bar: {
-          type: 'function'
-        }
-      }, 'foo');
+      const res = schema._mockProperties(
+        {},
+        {
+          bar: {
+            type: 'function'
+          }
+        },
+        'foo'
+      );
       assert.strictEqual(typeof res, 'object', 'result');
       assert.strictEqual(typeof res.bar, 'function', 'property');
     });
 
     it('should add properties', () => {
       const schema = new Schema();
-      const res = schema._mockProperties({
-      }, {
-        bar: {
-          type: 'object'
-        }
-      }, 'foo');
-      assert.deepEqual(res, {
-        bar: {}
-      }, 'result');
+      const res = schema._mockProperties(
+        {},
+        {
+          bar: {
+            type: 'object'
+          }
+        },
+        'foo'
+      );
+      assert.deepEqual(
+        res,
+        {
+          bar: {}
+        },
+        'result'
+      );
     });
 
     it('should add properties', () => {
       const schema = new Schema();
-      const res = schema._mockProperties({
-        bar: {}
-      }, {
-        bar: {
-          properties: {
-            baz: {
-              type: 'object'
+      const res = schema._mockProperties(
+        {
+          bar: {}
+        },
+        {
+          bar: {
+            properties: {
+              baz: {
+                type: 'object'
+              }
             }
           }
-        }
-      }, 'foo');
-      assert.deepEqual(res, {
-        bar: {
-          baz: {}
-        }
-      }, 'result');
+        },
+        'foo'
+      );
+      assert.deepEqual(
+        res,
+        {
+          bar: {
+            baz: {}
+          }
+        },
+        'result'
+      );
     });
 
     it('should add properties', () => {
       const schema = new Schema();
-      const res = schema._mockProperties({
-      }, {
-        bar: {
-          type: 'string'
-        }
-      }, 'foo');
-      assert.deepEqual(res, {
-        bar: null
-      }, 'result');
+      const res = schema._mockProperties(
+        {},
+        {
+          bar: {
+            type: 'string'
+          }
+        },
+        'foo'
+      );
+      assert.deepEqual(
+        res,
+        {
+          bar: null
+        },
+        'result'
+      );
     });
   });
 
@@ -762,57 +859,83 @@ describe('Schema', () => {
 
     it('should set map', () => {
       const schema = new Schema();
-      const res = schema._mockTypes({
-      }, [
-        {
-          $import: 'bar',
-          id: 'baz'
-        }
-      ], 'foo');
-      assert.deepEqual(res, {
-        baz: {}
-      }, 'result');
-      assert.deepEqual(Array.from(schema._importMap), [
+      const res = schema._mockTypes(
+        {},
         [
-          'foo.baz',
           {
             $import: 'bar',
-            namespace: 'foo'
+            id: 'baz'
           }
-        ]
-      ], 'map');
+        ],
+        'foo'
+      );
+      assert.deepEqual(
+        res,
+        {
+          baz: {}
+        },
+        'result'
+      );
+      assert.deepEqual(
+        Array.from(schema._importMap),
+        [
+          [
+            'foo.baz',
+            {
+              $import: 'bar',
+              namespace: 'foo'
+            }
+          ]
+        ],
+        'map'
+      );
     });
 
     it('should add types', () => {
       const schema = new Schema();
-      const res = schema._mockTypes({
-      }, [
+      const res = schema._mockTypes(
+        {},
+        [
+          {
+            id: 'baz',
+            type: 'object'
+          }
+        ],
+        'foo'
+      );
+      assert.deepEqual(
+        res,
         {
-          id: 'baz',
-          type: 'object'
-        }
-      ], 'foo');
-      assert.deepEqual(res, {
-        baz: {}
-      }, 'result');
+          baz: {}
+        },
+        'result'
+      );
     });
 
     it('should add types', () => {
       const schema = new Schema();
-      const res = schema._mockTypes({
-        baz: {}
-      }, [
+      const res = schema._mockTypes(
         {
-          events: [],
-          functions: [],
-          id: 'baz',
-          properties: {},
-          type: 'object'
-        }
-      ], 'foo');
-      assert.deepEqual(res, {
-        baz: {}
-      }, 'result');
+          baz: {}
+        },
+        [
+          {
+            events: [],
+            functions: [],
+            id: 'baz',
+            properties: {},
+            type: 'object'
+          }
+        ],
+        'foo'
+      );
+      assert.deepEqual(
+        res,
+        {
+          baz: {}
+        },
+        'result'
+      );
     });
   });
 
@@ -865,8 +988,11 @@ describe('Schema', () => {
   describe('get schema', () => {
     it('should throw', () => {
       const schema = new Schema();
-      assert.throws(() => schema.get(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => schema.get(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should get null', () => {
@@ -973,137 +1099,276 @@ describe('Schema', () => {
       const browser = schema.mock();
       assert.strictEqual(typeof browser, 'object', 'browser');
       const {
-        bookmarks, browserAction, browserSettings, commands, contextMenus,
-        contextualIdentities, devtools, i18n, management, menus, notifications,
-        permissions, privacy, runtime, sessions, storage, tabs, theme, windows
+        bookmarks,
+        browserAction,
+        browserSettings,
+        commands,
+        contextMenus,
+        contextualIdentities,
+        devtools,
+        i18n,
+        management,
+        menus,
+        notifications,
+        permissions,
+        privacy,
+        runtime,
+        sessions,
+        storage,
+        tabs,
+        theme,
+        windows
       } = browser;
       const { inspectedWindow } = devtools;
       assert.strictEqual(typeof bookmarks, 'object', 'bookmarks');
-      assert.strictEqual(typeof bookmarks.create, 'function',
-        'bookmarks.create');
-      assert.strictEqual(typeof bookmarks.create.callCount, 'number',
-        'stub bookmarks.create');
+      assert.strictEqual(
+        typeof bookmarks.create,
+        'function',
+        'bookmarks.create'
+      );
+      assert.strictEqual(
+        typeof bookmarks.create.callCount,
+        'number',
+        'stub bookmarks.create'
+      );
       assert.strictEqual(typeof browserAction, 'object', 'browserAction');
-      assert.strictEqual(typeof browserAction.setTitle, 'function',
-        'browserAction.setTitle');
-      assert.strictEqual(typeof browserAction.setTitle.callCount, 'number',
-        'stub browserAction.setTitle');
-      assert.strictEqual(typeof browserAction.onClicked, 'object',
-        'browserAction.onClicked');
-      assert.strictEqual(typeof browserAction.onClicked.addListener, 'function',
-        'browserAction.onClicked.addListener');
-      assert.strictEqual(typeof browserAction.onClicked.addListener.callCount,
-        'number', 'stub browserAction.onClicked.addListener.callCount');
+      assert.strictEqual(
+        typeof browserAction.setTitle,
+        'function',
+        'browserAction.setTitle'
+      );
+      assert.strictEqual(
+        typeof browserAction.setTitle.callCount,
+        'number',
+        'stub browserAction.setTitle'
+      );
+      assert.strictEqual(
+        typeof browserAction.onClicked,
+        'object',
+        'browserAction.onClicked'
+      );
+      assert.strictEqual(
+        typeof browserAction.onClicked.addListener,
+        'function',
+        'browserAction.onClicked.addListener'
+      );
+      assert.strictEqual(
+        typeof browserAction.onClicked.addListener.callCount,
+        'number',
+        'stub browserAction.onClicked.addListener.callCount'
+      );
       assert.strictEqual(typeof browserSettings, 'object', 'browserSettings');
-      assert.strictEqual(typeof browserSettings.closeTabsByDoubleClick,
-        'object', 'browserSettings.closeTabsByDoubleClick');
+      assert.strictEqual(
+        typeof browserSettings.closeTabsByDoubleClick,
+        'object',
+        'browserSettings.closeTabsByDoubleClick'
+      );
       assert.strictEqual(typeof commands, 'object', 'commands');
-      assert.strictEqual(typeof commands.update, 'function',
-        'commands.update');
-      assert.strictEqual(typeof commands.update.callCount, 'number',
-        'stub commands.update');
+      assert.strictEqual(typeof commands.update, 'function', 'commands.update');
+      assert.strictEqual(
+        typeof commands.update.callCount,
+        'number',
+        'stub commands.update'
+      );
       assert.strictEqual(typeof contextMenus, 'object', 'contextMenus');
-      assert.strictEqual(typeof contextMenus.create, 'function',
-        'contextMenus.create');
-      assert.strictEqual(typeof contextMenus.create.callCount, 'number',
-        'stub contextMenus.create');
-      assert.strictEqual(typeof contextualIdentities, 'object',
-        'contextualIdentities');
-      assert.strictEqual(typeof contextualIdentities.get, 'function',
-        'contextualIdentities.get');
-      assert.strictEqual(typeof contextualIdentities.get.callCount, 'number',
-        'stub contextualIdentities.get');
+      assert.strictEqual(
+        typeof contextMenus.create,
+        'function',
+        'contextMenus.create'
+      );
+      assert.strictEqual(
+        typeof contextMenus.create.callCount,
+        'number',
+        'stub contextMenus.create'
+      );
+      assert.strictEqual(
+        typeof contextualIdentities,
+        'object',
+        'contextualIdentities'
+      );
+      assert.strictEqual(
+        typeof contextualIdentities.get,
+        'function',
+        'contextualIdentities.get'
+      );
+      assert.strictEqual(
+        typeof contextualIdentities.get.callCount,
+        'number',
+        'stub contextualIdentities.get'
+      );
       assert.strictEqual(typeof devtools, 'object', 'devtools');
       assert.strictEqual(typeof inspectedWindow, 'object', 'inspectedWindow');
-      assert.strictEqual(typeof inspectedWindow.reload, 'function',
-        'inspectedWindow.reload');
-      assert.strictEqual(typeof inspectedWindow.reload.callCount, 'number',
-        'stub inspectedWindow.reload');
+      assert.strictEqual(
+        typeof inspectedWindow.reload,
+        'function',
+        'inspectedWindow.reload'
+      );
+      assert.strictEqual(
+        typeof inspectedWindow.reload.callCount,
+        'number',
+        'stub inspectedWindow.reload'
+      );
       assert.strictEqual(typeof i18n, 'object', 'i18n');
-      assert.strictEqual(typeof i18n.getMessage, 'function',
-        'i18n.getMessage');
-      assert.strictEqual(typeof i18n.getMessage.callCount, 'number',
-        'stub i18n.getMessage');
+      assert.strictEqual(typeof i18n.getMessage, 'function', 'i18n.getMessage');
+      assert.strictEqual(
+        typeof i18n.getMessage.callCount,
+        'number',
+        'stub i18n.getMessage'
+      );
       assert.strictEqual(typeof management, 'object', 'management');
-      assert.strictEqual(typeof management.get, 'function',
-        'management.get');
-      assert.strictEqual(typeof management.get.callCount, 'number',
-        'stub management.get');
+      assert.strictEqual(typeof management.get, 'function', 'management.get');
+      assert.strictEqual(
+        typeof management.get.callCount,
+        'number',
+        'stub management.get'
+      );
       assert.strictEqual(typeof menus, 'object', 'menus');
-      assert.strictEqual(typeof menus.create, 'function',
-        'menus.create');
-      assert.strictEqual(typeof menus.create.callCount, 'number',
-        'stub menus.create');
-      assert.strictEqual(typeof menus.getTargetElement, 'function',
-        'menus.getTargetElement');
-      assert.strictEqual(typeof menus.getTargetElement.callCount, 'number',
-        'stub menus.getTargetElement');
-      assert.strictEqual(typeof menus.removeAll, 'function',
-        'menus.removeAll');
-      assert.strictEqual(typeof menus.removeAll.callCount, 'number',
-        'stub menus.removeAll');
+      assert.strictEqual(typeof menus.create, 'function', 'menus.create');
+      assert.strictEqual(
+        typeof menus.create.callCount,
+        'number',
+        'stub menus.create'
+      );
+      assert.strictEqual(
+        typeof menus.getTargetElement,
+        'function',
+        'menus.getTargetElement'
+      );
+      assert.strictEqual(
+        typeof menus.getTargetElement.callCount,
+        'number',
+        'stub menus.getTargetElement'
+      );
+      assert.strictEqual(typeof menus.removeAll, 'function', 'menus.removeAll');
+      assert.strictEqual(
+        typeof menus.removeAll.callCount,
+        'number',
+        'stub menus.removeAll'
+      );
       assert.strictEqual(typeof notifications, 'object', 'notifications');
-      assert.strictEqual(typeof notifications.create, 'function',
-        'notifications.create');
-      assert.strictEqual(typeof notifications.create.callCount, 'number',
-        'stub notifications.create');
-      assert.strictEqual(typeof notifications.onClosed, 'object',
-        'notifications.onClosed');
-      assert.strictEqual(typeof notifications.onClosed.addListener, 'function',
-        'notifications.onClosed.addListener');
-      assert.strictEqual(typeof notifications.onClosed.addListener.callCount,
-        'number', 'stub notifications.onClosed.addListener');
+      assert.strictEqual(
+        typeof notifications.create,
+        'function',
+        'notifications.create'
+      );
+      assert.strictEqual(
+        typeof notifications.create.callCount,
+        'number',
+        'stub notifications.create'
+      );
+      assert.strictEqual(
+        typeof notifications.onClosed,
+        'object',
+        'notifications.onClosed'
+      );
+      assert.strictEqual(
+        typeof notifications.onClosed.addListener,
+        'function',
+        'notifications.onClosed.addListener'
+      );
+      assert.strictEqual(
+        typeof notifications.onClosed.addListener.callCount,
+        'number',
+        'stub notifications.onClosed.addListener'
+      );
       assert.strictEqual(typeof permissions, 'object', 'permissions');
-      assert.strictEqual(typeof permissions.request, 'function',
-        'permissions.request');
-      assert.strictEqual(typeof permissions.request.callCount, 'number',
-        'stub permissions.request');
-      assert.strictEqual(typeof privacy.network.tlsVersionRestrictionConfig,
-        'object', 'privacy.network.tlsVersionRestrictionConfig');
+      assert.strictEqual(
+        typeof permissions.request,
+        'function',
+        'permissions.request'
+      );
+      assert.strictEqual(
+        typeof permissions.request.callCount,
+        'number',
+        'stub permissions.request'
+      );
+      assert.strictEqual(
+        typeof privacy.network.tlsVersionRestrictionConfig,
+        'object',
+        'privacy.network.tlsVersionRestrictionConfig'
+      );
       assert.strictEqual(typeof runtime, 'object', 'runtime');
-      assert.strictEqual(typeof runtime.connect, 'function',
-        'runtime.connect');
-      assert.strictEqual(typeof runtime.connect.callCount, 'number',
-        'stub runtime.connect');
+      assert.strictEqual(typeof runtime.connect, 'function', 'runtime.connect');
+      assert.strictEqual(
+        typeof runtime.connect.callCount,
+        'number',
+        'stub runtime.connect'
+      );
       assert.strictEqual(typeof runtime.Port, 'object', 'runtime.Port');
-      assert.strictEqual(typeof runtime.Port.disconnect, 'function',
-        'runtime.Port.disconnect');
-      assert.strictEqual(typeof runtime.Port.onDisconnect.addListener,
-        'function', 'runtime.Port.disconnect');
-      assert.strictEqual(typeof runtime.Port.onDisconnect.addListener,
-        'function', 'runtime.Port.onDisconnect.addListener');
+      assert.strictEqual(
+        typeof runtime.Port.disconnect,
+        'function',
+        'runtime.Port.disconnect'
+      );
+      assert.strictEqual(
+        typeof runtime.Port.onDisconnect.addListener,
+        'function',
+        'runtime.Port.disconnect'
+      );
+      assert.strictEqual(
+        typeof runtime.Port.onDisconnect.addListener,
+        'function',
+        'runtime.Port.onDisconnect.addListener'
+      );
       assert.strictEqual(typeof sessions, 'object', 'sessions');
-      assert.strictEqual(typeof sessions.getRecentlyClosed, 'function',
-        'sessions.getRecentlyClosed');
-      assert.strictEqual(typeof sessions.getRecentlyClosed.callCount, 'number',
-        'stub sessions.getRecentlyClosed');
+      assert.strictEqual(
+        typeof sessions.getRecentlyClosed,
+        'function',
+        'sessions.getRecentlyClosed'
+      );
+      assert.strictEqual(
+        typeof sessions.getRecentlyClosed.callCount,
+        'number',
+        'stub sessions.getRecentlyClosed'
+      );
       assert.strictEqual(typeof storage, 'object', 'storage');
       assert.strictEqual(typeof storage.local, 'object', 'storage.local');
-      assert.strictEqual(typeof storage.local.get, 'function',
-        'storage.local.get');
-      assert.strictEqual(typeof storage.local.get.callCount, 'number',
-        'stub storage.local.get');
-      assert.strictEqual(typeof storage.onChanged, 'object',
-        'storage.onChanged');
-      assert.strictEqual(typeof storage.onChanged.addListener, 'function',
-        'storage.onChanged.addListener');
-      assert.strictEqual(typeof storage.onChanged.addListener.callCount,
-        'number', 'stub storage.onChanged.addListener');
+      assert.strictEqual(
+        typeof storage.local.get,
+        'function',
+        'storage.local.get'
+      );
+      assert.strictEqual(
+        typeof storage.local.get.callCount,
+        'number',
+        'stub storage.local.get'
+      );
+      assert.strictEqual(
+        typeof storage.onChanged,
+        'object',
+        'storage.onChanged'
+      );
+      assert.strictEqual(
+        typeof storage.onChanged.addListener,
+        'function',
+        'storage.onChanged.addListener'
+      );
+      assert.strictEqual(
+        typeof storage.onChanged.addListener.callCount,
+        'number',
+        'stub storage.onChanged.addListener'
+      );
       assert.strictEqual(typeof tabs, 'object', 'tabs');
-      assert.strictEqual(typeof tabs.get, 'function',
-        'tabs.get');
-      assert.strictEqual(typeof tabs.get.callCount, 'number',
-        'stub tabs.get');
+      assert.strictEqual(typeof tabs.get, 'function', 'tabs.get');
+      assert.strictEqual(typeof tabs.get.callCount, 'number', 'stub tabs.get');
       assert.strictEqual(typeof theme, 'object', 'theme');
-      assert.strictEqual(typeof theme.getCurrent, 'function',
-        'theme.getCurrent');
-      assert.strictEqual(typeof theme.getCurrent.callCount, 'number',
-        'stub theme.getCurrent');
+      assert.strictEqual(
+        typeof theme.getCurrent,
+        'function',
+        'theme.getCurrent'
+      );
+      assert.strictEqual(
+        typeof theme.getCurrent.callCount,
+        'number',
+        'stub theme.getCurrent'
+      );
       assert.strictEqual(typeof windows, 'object', 'windows');
-      assert.strictEqual(typeof windows.get, 'function',
-        'windows.get');
-      assert.strictEqual(typeof windows.get.callCount, 'number',
-        'stub windows.get');
+      assert.strictEqual(typeof windows.get, 'function', 'windows.get');
+      assert.strictEqual(
+        typeof windows.get.callCount,
+        'number',
+        'stub windows.get'
+      );
     });
 
     it('should get stubbed api', () => {
@@ -1111,144 +1376,282 @@ describe('Schema', () => {
       const browser = schema.mock();
       assert.strictEqual(typeof browser, 'object', 'browser');
       const {
-        bookmarks, browserAction, browserSettings, commands, contextMenus,
-        contextualIdentities, devtools, i18n, management, menus, notifications,
-        permissions, privacy, runtime, sessions, storage, tabs, theme, windows
+        bookmarks,
+        browserAction,
+        browserSettings,
+        commands,
+        contextMenus,
+        contextualIdentities,
+        devtools,
+        i18n,
+        management,
+        menus,
+        notifications,
+        permissions,
+        privacy,
+        runtime,
+        sessions,
+        storage,
+        tabs,
+        theme,
+        windows
       } = browser;
       const { inspectedWindow } = devtools;
       assert.strictEqual(typeof bookmarks, 'object', 'bookmarks');
-      assert.strictEqual(typeof bookmarks.create, 'function',
-        'bookmarks.create');
-      assert.strictEqual(typeof bookmarks.create.callCount, 'number',
-        'stub bookmarks.create');
+      assert.strictEqual(
+        typeof bookmarks.create,
+        'function',
+        'bookmarks.create'
+      );
+      assert.strictEqual(
+        typeof bookmarks.create.callCount,
+        'number',
+        'stub bookmarks.create'
+      );
       assert.strictEqual(typeof browserAction, 'object', 'browserAction');
-      assert.strictEqual(typeof browserAction.setTitle, 'function',
-        'browserAction.setTitle');
-      assert.strictEqual(typeof browserAction.setTitle.callCount, 'number',
-        'stub browserAction.setTitle');
-      assert.strictEqual(typeof browserAction.onClicked, 'object',
-        'browserAction.onClicked');
-      assert.strictEqual(typeof browserAction.onClicked.addListener, 'function',
-        'browserAction.onClicked.addListener');
-      assert.strictEqual(typeof browserAction.onClicked.addListener.callCount,
-        'number', 'stub browserAction.onClicked.addListener.callCount');
+      assert.strictEqual(
+        typeof browserAction.setTitle,
+        'function',
+        'browserAction.setTitle'
+      );
+      assert.strictEqual(
+        typeof browserAction.setTitle.callCount,
+        'number',
+        'stub browserAction.setTitle'
+      );
+      assert.strictEqual(
+        typeof browserAction.onClicked,
+        'object',
+        'browserAction.onClicked'
+      );
+      assert.strictEqual(
+        typeof browserAction.onClicked.addListener,
+        'function',
+        'browserAction.onClicked.addListener'
+      );
+      assert.strictEqual(
+        typeof browserAction.onClicked.addListener.callCount,
+        'number',
+        'stub browserAction.onClicked.addListener.callCount'
+      );
       assert.strictEqual(typeof browserSettings, 'object', 'browserSettings');
-      assert.strictEqual(typeof browserSettings.closeTabsByDoubleClick,
-        'object', 'browserSettings.closeTabsByDoubleClick');
+      assert.strictEqual(
+        typeof browserSettings.closeTabsByDoubleClick,
+        'object',
+        'browserSettings.closeTabsByDoubleClick'
+      );
       assert.strictEqual(typeof commands, 'object', 'commands');
-      assert.strictEqual(typeof commands.update, 'function',
-        'commands.update');
-      assert.strictEqual(typeof commands.update.callCount, 'number',
-        'stub commands.update');
+      assert.strictEqual(typeof commands.update, 'function', 'commands.update');
+      assert.strictEqual(
+        typeof commands.update.callCount,
+        'number',
+        'stub commands.update'
+      );
       assert.strictEqual(typeof contextMenus, 'object', 'contextMenus');
-      assert.strictEqual(typeof contextMenus.create, 'function',
-        'contextMenus.create');
-      assert.strictEqual(typeof contextMenus.create.callCount, 'number',
-        'stub contextMenus.create');
-      assert.strictEqual(typeof contextualIdentities, 'object',
-        'contextualIdentities');
-      assert.strictEqual(typeof contextualIdentities.get, 'function',
-        'contextualIdentities.get');
-      assert.strictEqual(typeof contextualIdentities.get.callCount, 'number',
-        'stub contextualIdentities.get');
+      assert.strictEqual(
+        typeof contextMenus.create,
+        'function',
+        'contextMenus.create'
+      );
+      assert.strictEqual(
+        typeof contextMenus.create.callCount,
+        'number',
+        'stub contextMenus.create'
+      );
+      assert.strictEqual(
+        typeof contextualIdentities,
+        'object',
+        'contextualIdentities'
+      );
+      assert.strictEqual(
+        typeof contextualIdentities.get,
+        'function',
+        'contextualIdentities.get'
+      );
+      assert.strictEqual(
+        typeof contextualIdentities.get.callCount,
+        'number',
+        'stub contextualIdentities.get'
+      );
       assert.strictEqual(typeof devtools, 'object', 'devtools');
       assert.strictEqual(typeof inspectedWindow, 'object', 'inspectedWindow');
-      assert.strictEqual(typeof inspectedWindow.reload, 'function',
-        'inspectedWindow.reload');
-      assert.strictEqual(typeof inspectedWindow.reload.callCount, 'number',
-        'stub inspectedWindow.reload');
+      assert.strictEqual(
+        typeof inspectedWindow.reload,
+        'function',
+        'inspectedWindow.reload'
+      );
+      assert.strictEqual(
+        typeof inspectedWindow.reload.callCount,
+        'number',
+        'stub inspectedWindow.reload'
+      );
       assert.strictEqual(typeof i18n, 'object', 'i18n');
-      assert.strictEqual(typeof i18n.getMessage, 'function',
-        'i18n.getMessage');
-      assert.strictEqual(typeof i18n.getMessage.callCount, 'number',
-        'stub i18n.getMessage');
+      assert.strictEqual(typeof i18n.getMessage, 'function', 'i18n.getMessage');
+      assert.strictEqual(
+        typeof i18n.getMessage.callCount,
+        'number',
+        'stub i18n.getMessage'
+      );
       assert.strictEqual(typeof management, 'object', 'management');
-      assert.strictEqual(typeof management.get, 'function',
-        'management.get');
-      assert.strictEqual(typeof management.get.callCount, 'number',
-        'stub management.get');
+      assert.strictEqual(typeof management.get, 'function', 'management.get');
+      assert.strictEqual(
+        typeof management.get.callCount,
+        'number',
+        'stub management.get'
+      );
       assert.strictEqual(typeof menus, 'object', 'menus');
-      assert.strictEqual(typeof menus.create, 'function',
-        'menus.create');
-      assert.strictEqual(typeof menus.create.callCount, 'number',
-        'stub menus.create');
-      assert.strictEqual(typeof menus.getTargetElement, 'function',
-        'menus.getTargetElement');
-      assert.strictEqual(typeof menus.getTargetElement.callCount, 'number',
-        'stub menus.getTargetElement');
-      assert.strictEqual(typeof menus.removeAll, 'function',
-        'menus.removeAll');
-      assert.strictEqual(typeof menus.removeAll.callCount, 'number',
-        'stub menus.removeAll');
+      assert.strictEqual(typeof menus.create, 'function', 'menus.create');
+      assert.strictEqual(
+        typeof menus.create.callCount,
+        'number',
+        'stub menus.create'
+      );
+      assert.strictEqual(
+        typeof menus.getTargetElement,
+        'function',
+        'menus.getTargetElement'
+      );
+      assert.strictEqual(
+        typeof menus.getTargetElement.callCount,
+        'number',
+        'stub menus.getTargetElement'
+      );
+      assert.strictEqual(typeof menus.removeAll, 'function', 'menus.removeAll');
+      assert.strictEqual(
+        typeof menus.removeAll.callCount,
+        'number',
+        'stub menus.removeAll'
+      );
       assert.strictEqual(typeof notifications, 'object', 'notifications');
-      assert.strictEqual(typeof notifications.create, 'function',
-        'notifications.create');
-      assert.strictEqual(typeof notifications.create.callCount, 'number',
-        'stub notifications.create');
-      assert.strictEqual(typeof notifications.onClosed, 'object',
-        'notifications.onClosed');
-      assert.strictEqual(typeof notifications.onClosed.addListener, 'function',
-        'notifications.onClosed.addListener');
-      assert.strictEqual(typeof notifications.onClosed.addListener.callCount,
-        'number', 'stub notifications.onClosed.addListener');
+      assert.strictEqual(
+        typeof notifications.create,
+        'function',
+        'notifications.create'
+      );
+      assert.strictEqual(
+        typeof notifications.create.callCount,
+        'number',
+        'stub notifications.create'
+      );
+      assert.strictEqual(
+        typeof notifications.onClosed,
+        'object',
+        'notifications.onClosed'
+      );
+      assert.strictEqual(
+        typeof notifications.onClosed.addListener,
+        'function',
+        'notifications.onClosed.addListener'
+      );
+      assert.strictEqual(
+        typeof notifications.onClosed.addListener.callCount,
+        'number',
+        'stub notifications.onClosed.addListener'
+      );
       assert.strictEqual(typeof permissions, 'object', 'permissions');
-      assert.strictEqual(typeof permissions.request, 'function',
-        'permissions.request');
-      assert.strictEqual(typeof permissions.request.callCount, 'number',
-        'stub permissions.request');
-      assert.strictEqual(typeof privacy.network.tlsVersionRestrictionConfig,
-        'object', 'privacy.network.tlsVersionRestrictionConfig');
+      assert.strictEqual(
+        typeof permissions.request,
+        'function',
+        'permissions.request'
+      );
+      assert.strictEqual(
+        typeof permissions.request.callCount,
+        'number',
+        'stub permissions.request'
+      );
+      assert.strictEqual(
+        typeof privacy.network.tlsVersionRestrictionConfig,
+        'object',
+        'privacy.network.tlsVersionRestrictionConfig'
+      );
       assert.strictEqual(typeof runtime, 'object', 'runtime');
-      assert.strictEqual(typeof runtime.connect, 'function',
-        'runtime.connect');
-      assert.strictEqual(typeof runtime.connect.callCount, 'number',
-        'stub runtime.connect');
+      assert.strictEqual(typeof runtime.connect, 'function', 'runtime.connect');
+      assert.strictEqual(
+        typeof runtime.connect.callCount,
+        'number',
+        'stub runtime.connect'
+      );
       assert.strictEqual(typeof runtime.Port, 'object', 'runtime.Port');
-      assert.strictEqual(typeof runtime.Port.disconnect, 'function',
-        'runtime.Port.disconnect');
-      assert.strictEqual(typeof runtime.Port.onDisconnect.addListener,
-        'function', 'runtime.Port.disconnect');
-      assert.strictEqual(typeof runtime.Port.onDisconnect.addListener,
-        'function', 'runtime.Port.onDisconnect.addListener');
+      assert.strictEqual(
+        typeof runtime.Port.disconnect,
+        'function',
+        'runtime.Port.disconnect'
+      );
+      assert.strictEqual(
+        typeof runtime.Port.onDisconnect.addListener,
+        'function',
+        'runtime.Port.disconnect'
+      );
+      assert.strictEqual(
+        typeof runtime.Port.onDisconnect.addListener,
+        'function',
+        'runtime.Port.onDisconnect.addListener'
+      );
       assert.strictEqual(typeof sessions, 'object', 'sessions');
-      assert.strictEqual(typeof sessions.getRecentlyClosed, 'function',
-        'sessions.getRecentlyClosed');
-      assert.strictEqual(typeof sessions.getRecentlyClosed.callCount, 'number',
-        'stub sessions.getRecentlyClosed');
+      assert.strictEqual(
+        typeof sessions.getRecentlyClosed,
+        'function',
+        'sessions.getRecentlyClosed'
+      );
+      assert.strictEqual(
+        typeof sessions.getRecentlyClosed.callCount,
+        'number',
+        'stub sessions.getRecentlyClosed'
+      );
       assert.strictEqual(typeof storage, 'object', 'storage');
       assert.strictEqual(typeof storage.local, 'object', 'storage.local');
-      assert.strictEqual(typeof storage.local.get, 'function',
-        'storage.local.get');
-      assert.strictEqual(typeof storage.local.get.callCount, 'number',
-        'stub storage.local.get');
-      assert.strictEqual(typeof storage.onChanged, 'object',
-        'storage.onChanged');
-      assert.strictEqual(typeof storage.onChanged.addListener, 'function',
-        'storage.onChanged.addListener');
-      assert.strictEqual(typeof storage.onChanged.addListener.callCount,
-        'number', 'stub storage.onChanged.addListener');
+      assert.strictEqual(
+        typeof storage.local.get,
+        'function',
+        'storage.local.get'
+      );
+      assert.strictEqual(
+        typeof storage.local.get.callCount,
+        'number',
+        'stub storage.local.get'
+      );
+      assert.strictEqual(
+        typeof storage.onChanged,
+        'object',
+        'storage.onChanged'
+      );
+      assert.strictEqual(
+        typeof storage.onChanged.addListener,
+        'function',
+        'storage.onChanged.addListener'
+      );
+      assert.strictEqual(
+        typeof storage.onChanged.addListener.callCount,
+        'number',
+        'stub storage.onChanged.addListener'
+      );
       assert.strictEqual(typeof tabs, 'object', 'tabs');
-      assert.strictEqual(typeof tabs.get, 'function',
-        'tabs.get');
-      assert.strictEqual(typeof tabs.get.callCount, 'number',
-        'stub tabs.get');
+      assert.strictEqual(typeof tabs.get, 'function', 'tabs.get');
+      assert.strictEqual(typeof tabs.get.callCount, 'number', 'stub tabs.get');
       assert.strictEqual(typeof theme, 'object', 'theme');
-      assert.strictEqual(typeof theme.getCurrent, 'function',
-        'theme.getCurrent');
-      assert.strictEqual(typeof theme.getCurrent.callCount, 'number',
-        'stub theme.getCurrent');
+      assert.strictEqual(
+        typeof theme.getCurrent,
+        'function',
+        'theme.getCurrent'
+      );
+      assert.strictEqual(
+        typeof theme.getCurrent.callCount,
+        'number',
+        'stub theme.getCurrent'
+      );
       assert.strictEqual(typeof windows, 'object', 'windows');
-      assert.strictEqual(typeof windows.get, 'function',
-        'windows.get');
-      assert.strictEqual(typeof windows.get.callCount, 'number',
-        'stub windows.get');
+      assert.strictEqual(typeof windows.get, 'function', 'windows.get');
+      assert.strictEqual(
+        typeof windows.get.callCount,
+        'number',
+        'stub windows.get'
+      );
     });
 
     it('should access sandbox', () => {
       const browser = new Schema().mock();
       assert.strictEqual(typeof browser._sandbox, 'object', 'sandbox');
-      assert.strictEqual(typeof browser._sandbox.stub, 'function',
-        'stub');
+      assert.strictEqual(typeof browser._sandbox.stub, 'function', 'stub');
       const i = browser.runtime.connect.callCount;
       browser.runtime.connect();
       assert.strictEqual(browser.runtime.connect.callCount, i + 1, 'called');
@@ -1268,10 +1671,16 @@ describe('Schema', () => {
       const port2 = mockConnect({ name: 'bar' });
       assert.strictEqual(port1.name, 'foo', 'name');
       assert.strictEqual(port2.name, 'bar', 'name');
-      assert.strictEqual(typeof port1.onDisconnect.addListener, 'function',
-        'function');
-      assert.strictEqual(typeof port2.onDisconnect.addListener, 'function',
-        'function');
+      assert.strictEqual(
+        typeof port1.onDisconnect.addListener,
+        'function',
+        'function'
+      );
+      assert.strictEqual(
+        typeof port2.onDisconnect.addListener,
+        'function',
+        'function'
+      );
 
       // reset
       mockConnect.reset();

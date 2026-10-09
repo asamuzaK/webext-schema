@@ -28,9 +28,7 @@ export class Schema {
   constructor(...args) {
     const [arg1, arg2] = args;
     this.#channel =
-      isString(arg1) && /^(?:central|mail)$/.test(arg1)
-        ? arg1
-        : 'beta';
+      isString(arg1) && /^(?:central|mail)$/.test(arg1) ? arg1 : 'beta';
     this._sandbox =
       (isObjectNotEmpty(arg1) && sinon.createSandbox(arg1)) ||
       (isObjectNotEmpty(arg2) && sinon.createSandbox(arg2)) ||
@@ -209,12 +207,18 @@ export class Schema {
           target[key] = item.value;
         } else if (type === 'function') {
           target[key] = this._sandbox.stub();
-        } else if (type === 'object' || $ref ||
-                   Object.hasOwn(item, 'properties')) {
+        } else if (
+          type === 'object' ||
+          $ref ||
+          Object.hasOwn(item, 'properties')
+        ) {
           target[key] ??= {};
-          properties && this._mockProperties(
-            target[key], properties, `${namespace}.${key}`
-          );
+          properties &&
+            this._mockProperties(
+              target[key],
+              properties,
+              `${namespace}.${key}`
+            );
         } else {
           target[key] = null;
         }
@@ -339,14 +343,17 @@ export class Schema {
     for (const [key, value] of schemaItems) {
       const items = Object.values(value);
       for (const item of items) {
-        const {
-          $import, events, functions, namespace, properties, types
-        } = item;
+        const { $import, events, functions, namespace, properties, types } =
+          item;
         const fileKey = camelize(key.replace(/\.json$/, '')).toLowerCase();
         const itemKey = namespace.replace(/\./g, '').toLowerCase();
-        if (fileKey === itemKey || fileKey.startsWith(itemKey) ||
-            itemKey.startsWith(fileKey) || aliasKeys.includes(itemKey) ||
-            $import) {
+        if (
+          fileKey === itemKey ||
+          fileKey.startsWith(itemKey) ||
+          itemKey.startsWith(fileKey) ||
+          aliasKeys.includes(itemKey) ||
+          $import
+        ) {
           const mapKey = [];
           let ns;
           if (namespace.includes('.')) {
