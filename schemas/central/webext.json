@@ -8816,6 +8816,63 @@
       ]
     }
   ],
+  "builtin_widget.json": [
+    {
+      "namespace": "manifest",
+      "types": [
+        {
+          "id": "WidgetSize",
+          "type": "string",
+          "enum": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        {
+          "id": "BuiltinWidget",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "page": {
+              "$ref": "ExtensionURL",
+              "description": "Path to the widget content."
+            },
+            "sizes": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "WidgetSize"
+              },
+              "description": "Sizes the widget can be displayed at."
+            },
+            "default_size": {
+              "$ref": "WidgetSize",
+              "optional": true,
+              "description": "Size the widget is displayed at until one is chosen. Defaults to the first of sizes."
+            },
+            "pref_branch": {
+              "type": "string",
+              "optional": true,
+              "pattern": "^[A-Za-z][\\w-]*(\\.[\\w-]+)*$",
+              "description": "Pref branch that stores whether the widget is enabled and the size chosen for it, in <pref_branch>.enabled and <pref_branch>.size."
+            }
+          }
+        },
+        {
+          "$extend": "WebExtensionManifest",
+          "properties": {
+            "builtin_widget": {
+              "$ref": "BuiltinWidget",
+              "optional": true,
+              "privileged": true,
+              "description": "Declares a widget provided by a privileged extension."
+            }
+          }
+        }
+      ]
+    }
+  ],
   "captive_portal.json": [
     {
       "namespace": "manifest",
@@ -16825,6 +16882,11 @@
               "optional": true,
               "description": "The $(ref:tabs.Tab) which opened the connection, if any. This property will <strong>only</strong> be present when the connection was opened from a tab (including content scripts), and <strong>only</strong> if the receiver is an extension, not an app."
             },
+            "windowId": {
+              "type": "integer",
+              "optional": true,
+              "description": "The window ID of the document that opened the connection."
+            },
             "frameId": {
               "type": "integer",
               "optional": true,
@@ -16879,8 +16941,8 @@
           "id": "PlatformArch",
           "type": "string",
           "enum": [
-            "aarch64",
             "arm",
+            "arm64",
             "ppc64",
             "riscv64",
             "s390x",
